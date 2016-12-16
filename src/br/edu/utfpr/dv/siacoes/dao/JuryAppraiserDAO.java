@@ -1,0 +1,160 @@
+package br.edu.utfpr.dv.siacoes.dao;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
+import br.edu.utfpr.dv.siacoes.model.Project;
+import br.edu.utfpr.dv.siacoes.model.Thesis;
+import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
+
+public class JuryAppraiserDAO {
+	
+	public JuryAppraiser findById(int id) throws SQLException{
+		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement(
+				"SELECT juryappraiser.*, appraiser.name as appraiserName, jury.date, jury.startTime, jury.endTime, " +
+				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
+				"FROM juryappraiser INNER JOIN user appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
+				"INNER JOIN jury ON jury.idJury=juryappraiser.idJury " +
+				"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
+				"LEFT JOIN project ON project.idProject=jury.idProject " +
+				"LEFT JOIN user tstudent ON tstudent.idUser=thesis.idStudent " +
+				"LEFT JOIN user pstudent ON pstudent.idUser=project.idStudent " +
+				"WHERE juryappraiser.idJuryAppraiser=?");
+		
+		stmt.setInt(1, id);
+		
+		ResultSet rs = stmt.executeQuery();
+		
+		if(rs.next()){
+			return this.loadObject(rs);
+		}else{
+			return null;
+		}
+	}
+	
+	public JuryAppraiser findByAppraiser(int idJury, int idUser) throws SQLException{
+		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement(
+				"SELECT juryappraiser.*, appraiser.name as appraiserName, jury.date, jury.startTime, jury.endTime, " +
+				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
+				"FROM juryappraiser INNER JOIN user appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
+				"INNER JOIN jury ON jury.idJury=juryappraiser.idJury " +
+				"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
+				"LEFT JOIN project ON project.idProject=jury.idProject " +
+				"LEFT JOIN user tstudent ON tstudent.idUser=thesis.idStudent " +
+				"LEFT JOIN user pstudent ON pstudent.idUser=project.idStudent " +
+				"WHERE juryappraiser.idJury=? AND juryappraiser.idAppraiser=?");
+		
+		stmt.setInt(1, idJury);
+		stmt.setInt(2, idUser);
+		
+		ResultSet rs = stmt.executeQuery();
+		
+		if(rs.next()){
+			return this.loadObject(rs);
+		}else{
+			return null;
+		}
+	}
+	
+	public List<JuryAppraiser> listAppraisers(int idJury) throws SQLException{
+		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT juryappraiser.*, appraiser.name as appraiserName, jury.date, jury.startTime, jury.endTime, " +
+				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
+				"FROM juryappraiser INNER JOIN user appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
+				"INNER JOIN jury ON jury.idJury=juryappraiser.idJury " +
+				"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
+				"LEFT JOIN project ON project.idProject=jury.idProject " +
+				"LEFT JOIN user tstudent ON tstudent.idUser=thesis.idStudent " +
+				"LEFT JOIN user pstudent ON pstudent.idUser=project.idStudent " +
+				"WHERE juryappraiser.idJury = " + String.valueOf(idJury));
+		List<JuryAppraiser> list = new ArrayList<JuryAppraiser>();
+		
+		while(rs.next()){
+			list.add(this.loadObject(rs));
+		}
+		
+		return list;
+	}
+	
+	public int save(JuryAppraiser appraiser) throws SQLException{
+		boolean insert = (appraiser.getIdJuryAppraiser() == 0);
+		PreparedStatement stmt;
+		
+		if(insert){
+			stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("INSERT INTO juryappraiser(idJury, idAppraiser, file, fileType, comments) VALUES(?, ?, NULL, 0, '')", Statement.RETURN_GENERATED_KEYS);
+		}else{
+			stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("UPDATE juryappraiser SET idJury=?, idAppraiser=?, file=?, fileType=?, comments=? WHERE idJuryAppraiser=?");
+		}
+		
+		stmt.setInt(1, appraiser.getJury().getIdJury());
+		stmt.setInt(2, appraiser.getAppraiser().getIdUser());
+		
+		if(!insert){
+			stmt.setBytes(3, appraiser.getFile());
+			stmt.setInt(4, appraiser.getFileType().getValue());
+			stmt.setString(5, appraiser.getComments());
+			stmt.setInt(6, appraiser.getIdJuryAppraiser());
+		}
+		
+		stmt.execute();
+		
+		if(insert){
+			ResultSet rs = stmt.getGeneratedKeys();
+			
+			if(rs.next()){
+				appraiser.setIdJuryAppraiser(rs.getInt(1));
+			}
+		}
+		
+		return appraiser.getIdJuryAppraiser();
+	}
+	
+	private JuryAppraiser loadObject(ResultSet rs) throws SQLException{
+		JuryAppraiser p = new JuryAppraiser();
+		
+		p.setIdJuryAppraiser(rs.getInt("idJuryAppraiser"));
+		p.getJury().setIdJury(rs.getInt("idJury"));
+		p.getAppraiser().setIdUser(rs.getInt("idAppraiser"));
+		p.getAppraiser().setName(rs.getString("appraiserName"));
+		p.setFile(rs.getBytes("file"));
+		p.setComments(rs.getString("comments"));
+		p.setFileType(DocumentType.valueOf(rs.getInt("fileType")));
+		
+		if(rs.getInt("idThesis") != 0){
+			p.getJury().setThesis(new Thesis());
+			p.getJury().getThesis().setIdThesis(rs.getInt("idThesis"));
+			p.getJury().getThesis().setTitle(rs.getString("thesisTitle"));
+			p.getJury().getThesis().getStudent().setName(rs.getString("thesisStudent"));
+		}else{
+			p.getJury().setProject(new Project());
+			p.getJury().getProject().setIdProject(rs.getInt("idProject"));
+			p.getJury().getProject().setTitle(rs.getString("projectTitle"));
+			p.getJury().getProject().getStudent().setName(rs.getString("projectStudent"));
+		}
+		
+		return p;
+	}
+	
+	public boolean appraiserHasJury(int idJury, int idUser, Date startDate, Date endDate) throws SQLException{
+		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement(
+				"SELECT COUNT(*) AS total FROM jury INNER JOIN juryappraiser ON juryappraiser.idJury=jury.idJury " +
+				"WHERE jury.idJury <> ? AND juryappraiser.idAppraiser = ? AND jury.date BETWEEN ? AND ?");
+		
+		stmt.setInt(1, idJury);
+		stmt.setInt(2, idUser);
+		stmt.setTimestamp(3, new java.sql.Timestamp(startDate.getTime()));
+		stmt.setTimestamp(4, new java.sql.Timestamp(endDate.getTime()));
+		
+		ResultSet rs = stmt.executeQuery();
+		rs.next();
+		
+		return (rs.getInt("total") > 0);
+	}
+
+}

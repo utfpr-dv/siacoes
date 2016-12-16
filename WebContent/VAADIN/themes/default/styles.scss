@@ -1,0 +1,9 @@
+@import "addons.scss";
+@import "default.scss";
+
+/* This file prefixes all rules with the theme name to avoid causing conflicts with other themes. */
+/* The actual styles should be defined in default.scss */
+.default {
+  @include addons;
+  @include default;
+}

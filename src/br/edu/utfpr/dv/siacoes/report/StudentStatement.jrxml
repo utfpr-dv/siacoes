@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.2.final using JasperReports Library version 6.2.2  -->
+<!-- 2016-06-02T22:29:51 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="StudentStatement" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="764acd4a-1ba3-4380-ab6f-2858cc5be4ec">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="brasao_republica" class="Object"/>
+	<parameter name="logo_utfpr" class="Object"/>
+	<parameter name="campus" class="java.lang.String"/>
+	<parameter name="department" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="date" class="java.util.Date">
+		<fieldDescription><![CDATA[date]]></fieldDescription>
+	</field>
+	<field name="student" class="java.lang.String">
+		<fieldDescription><![CDATA[student]]></fieldDescription>
+	</field>
+	<field name="studentCode" class="java.lang.String">
+		<fieldDescription><![CDATA[studentCode]]></fieldDescription>
+	</field>
+	<field name="name" class="java.lang.String">
+		<fieldDescription><![CDATA[name]]></fieldDescription>
+	</field>
+	<field name="startTime" class="java.util.Date">
+		<fieldDescription><![CDATA[startTime]]></fieldDescription>
+	</field>
+	<field name="endTime" class="java.util.Date">
+		<fieldDescription><![CDATA[endTime]]></fieldDescription>
+	</field>
+	<field name="event" class="java.lang.String">
+		<fieldDescription><![CDATA[event]]></fieldDescription>
+	</field>
+	<field name="managerName" class="java.lang.String">
+		<fieldDescription><![CDATA[managerName]]></fieldDescription>
+	</field>
+	<field name="title" class="java.lang.String">
+		<fieldDescription><![CDATA[title]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="59" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="480" height="50" uuid="b4dc7b2b-213f-4bd8-bae4-988132c8921a"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA["MINISTÉRIO DA EDUCAÇÃO\nUNIVERSIDADE TECNOLÓGICA FEDERAL DO PARANÁ\n" + $P{campus} + "\n" + $P{department}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="54" width="480" height="1" uuid="6e4ee852-9064-45ee-a28e-7f4752dc5a41"/>
+			</line>
+			<line>
+				<reportElement x="0" y="58" width="480" height="1" forecolor="#FDC426" uuid="f3203ca4-5b06-4119-9795-dbabcde11e99">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</line>
+			<image>
+				<reportElement x="0" y="0" width="110" height="50" uuid="13caf175-8c2f-46ac-af53-1829619c290d"/>
+				<imageExpression><![CDATA[$P{brasao_republica}]]></imageExpression>
+			</image>
+			<image hAlign="Right">
+				<reportElement x="380" y="0" width="100" height="50" uuid="14048bc3-b8a5-47ed-861a-356407fa0c66"/>
+				<imageExpression><![CDATA[$P{logo_utfpr}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="667" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="64" width="480" height="36" uuid="34cbae25-e719-4d37-8cb6-41dcaea7f710"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Declaração]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="142" width="480" height="220" uuid="bdcf4c6b-5e39-4289-bae1-48d5f976db86"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font size="12"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA["                                              Declaro para os devidos fins de direito que o(a) acadêmico(a) " + $F{name} + ", registro acadêmico " + $F{studentCode} + ", esteve presente e acompanhou a Defesa Pública de " + $F{event} + " do(a) acadêmico(a) " + $F{student} + " com tema \"" + $F{title} + "\", a qual ocorreu no dia " + DATEFORMAT($F{date}, "dd/MM/yyyy") + ", com início às " + DATEFORMAT($F{startTime}, "HH:mm") + " e término às " + DATEFORMAT($F{endTime}, "HH:mm") + "."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="432" width="480" height="21" uuid="9ab6c1d1-a15d-42ab-9feb-82f650c117ba"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{managerName}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="119" y="422" width="241" height="1" uuid="f8cd120a-5eff-477f-91c4-a9eec58e7871">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</line>
+			<textField>
+				<reportElement x="0" y="454" width="480" height="21" uuid="45573bbb-c13f-49ad-b29d-3fadd99d3246"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Responsável pelas Atividades de " + $F{event}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
