@@ -11,3 +11,11 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+/admin.txt
+/atividades_complementares.jpg
+/cidades.sql
+/estados.sql
+/estagio.jpg
+/Estagio.pdf
+/Novas Implementações.txt
+/tcc.jpg
