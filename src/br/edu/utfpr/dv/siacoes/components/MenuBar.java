@@ -16,19 +16,23 @@ import com.vaadin.ui.MenuBar.MenuItem;
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.AttendanceBO;
 import br.edu.utfpr.dv.siacoes.bo.DeadlineBO;
-import br.edu.utfpr.dv.siacoes.bo.DepartmentBO;
 import br.edu.utfpr.dv.siacoes.bo.FinalDocumentBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
+import br.edu.utfpr.dv.siacoes.bo.SigacConfigBO;
+import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
+import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.bo.ThesisBO;
 import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
-import br.edu.utfpr.dv.siacoes.model.Department;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.model.SigacConfig;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.SupervisorFeedbackReport;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
@@ -42,11 +46,20 @@ import br.edu.utfpr.dv.siacoes.view.AttendanceView;
 import br.edu.utfpr.dv.siacoes.view.BugReportView;
 import br.edu.utfpr.dv.siacoes.view.CalendarView;
 import br.edu.utfpr.dv.siacoes.view.CampusView;
+import br.edu.utfpr.dv.siacoes.view.CityView;
+import br.edu.utfpr.dv.siacoes.view.CompanySupervisorView;
+import br.edu.utfpr.dv.siacoes.view.CompanyView;
+import br.edu.utfpr.dv.siacoes.view.CountryView;
 import br.edu.utfpr.dv.siacoes.view.DeadlineView;
 import br.edu.utfpr.dv.siacoes.view.DepartmentView;
 import br.edu.utfpr.dv.siacoes.view.DocumentView;
 import br.edu.utfpr.dv.siacoes.view.EmailMessageView;
 import br.edu.utfpr.dv.siacoes.view.EvaluationItemView;
+import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
+import br.edu.utfpr.dv.siacoes.view.InternshipCalendarView;
+import br.edu.utfpr.dv.siacoes.view.InternshipEvaluationItemView;
+import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
+import br.edu.utfpr.dv.siacoes.view.InternshipView;
 import br.edu.utfpr.dv.siacoes.view.LibraryView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
 import br.edu.utfpr.dv.siacoes.view.MainView;
@@ -56,6 +69,8 @@ import br.edu.utfpr.dv.siacoes.view.ProposalView;
 import br.edu.utfpr.dv.siacoes.view.SigacView;
 import br.edu.utfpr.dv.siacoes.view.SigesView;
 import br.edu.utfpr.dv.siacoes.view.SigetView;
+import br.edu.utfpr.dv.siacoes.view.StateView;
+import br.edu.utfpr.dv.siacoes.view.StudentView;
 import br.edu.utfpr.dv.siacoes.view.SupervisorChangeView;
 import br.edu.utfpr.dv.siacoes.view.SupervisorView;
 import br.edu.utfpr.dv.siacoes.view.ThemeSuggestionView;
@@ -68,6 +83,7 @@ import br.edu.utfpr.dv.siacoes.window.EditPasswordWindow;
 import br.edu.utfpr.dv.siacoes.window.EditProjectWindow;
 import br.edu.utfpr.dv.siacoes.window.EditProposalWindow;
 import br.edu.utfpr.dv.siacoes.window.EditSigacWindow;
+import br.edu.utfpr.dv.siacoes.window.EditSigesWindow;
 import br.edu.utfpr.dv.siacoes.window.EditSigetWindow;
 import br.edu.utfpr.dv.siacoes.window.EditSupervisorWindow;
 import br.edu.utfpr.dv.siacoes.window.EditThesisWindow;
@@ -79,9 +95,36 @@ import com.vaadin.ui.UI;
 public class MenuBar extends CustomComponent {
 	
 	private final com.vaadin.ui.MenuBar menu;
+	private SigetConfig sigetConfig;
+	private SigacConfig sigacConfig;
+	private SigesConfig sigesConfig;
 	
 	public MenuBar(SystemModule module){
 		this.menu = new com.vaadin.ui.MenuBar();
+		
+		SigetConfigBO bo = new SigetConfigBO();
+		this.sigetConfig = new SigetConfig();
+		try {
+			this.sigetConfig = bo.findByDepartment(Session.getUser().getDepartment().getIdDepartment());
+		} catch (Exception e1) {
+			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
+		}
+		
+		SigacConfigBO bo2 = new SigacConfigBO();
+		this.sigacConfig = new SigacConfig();
+		try {
+			this.sigacConfig = bo2.findByDepartment(Session.getUser().getDepartment().getIdDepartment());
+		} catch (Exception e1) {
+			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
+		}
+		
+		SigesConfigBO bo3 = new SigesConfigBO();
+		this.sigesConfig = new SigesConfig();
+		try {
+			this.sigesConfig = bo3.findByDepartment(Session.getUser().getDepartment().getIdDepartment());
+		} catch (Exception e1) {
+			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
+		}
 		
 		HorizontalLayout layout = new HorizontalLayout(this.menu);
 		
@@ -120,8 +163,10 @@ public class MenuBar extends CustomComponent {
 		}
 		
 		if(module == SystemModule.SIGET){
-			if(Session.getUser().getDepartment().isSigetRegisterProposal()){
-				MenuItem proposal = this.menu.addItem("Proposta de TCC 1", null);
+			MenuItem register = this.menu.addItem("Registro de TCC", null);
+			
+			if(this.sigetConfig.isRegisterProposal()){
+				MenuItem proposal = register.addItem("Proposta de TCC 1", null);
 				if(Session.isUserManager(SystemModule.SIGET)){
 					proposal.addItem("Listar Propostas", new Command(){
 		        	    @Override
@@ -167,12 +212,13 @@ public class MenuBar extends CustomComponent {
 		        	    }
 		        	});
 				}
+				register.addSeparator();
 			}
 	    	
 			if(Session.isUserStudent() || Session.isUserManager(SystemModule.SIGET)){
-		    	MenuItem project = this.menu.addItem("Projeto de TCC 1", null);
+		    	MenuItem project = register.addItem("Projeto de TCC 1", null);
 		    	if(Session.isUserStudent()){
-		    		if(!Session.getUser().getDepartment().isSigetRegisterProposal()){
+		    		if(!this.sigetConfig.isRegisterProposal()){
 		    			project.addItem("Registrar Orientação", new Command(){
 			        	    @Override
 			        	    public void menuSelected(MenuItem selectedItem){
@@ -220,7 +266,7 @@ public class MenuBar extends CustomComponent {
 									Proposal proposal = pbo.findCurrentProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
 									
 									if(proposal == null){
-										if(Session.getUser().getDepartment().isSigetRegisterProposal()){
+										if(sigetConfig.isRegisterProposal()){
 											throw new Exception("Não foi encontrada a submissão da proposta. É necessário primeiramente submeter a proposta.");
 										}else{
 											throw new Exception("Não foi encontrada o registro de orientação. É necessário primeiramente registrar a orientação.");
@@ -333,6 +379,7 @@ public class MenuBar extends CustomComponent {
 		        	layout.addComponent(button);
 		        	this.prepareDownloadStage1(button);
 		    	}
+		    	
 		    	if(Session.isUserManager(SystemModule.SIGET)){
 		    		project.addItem("Listar Projetos", new Command(){
 		        	    @Override
@@ -342,7 +389,9 @@ public class MenuBar extends CustomComponent {
 		        	});
 		    	}
 		    	
-		    	MenuItem thesis = this.menu.addItem("Monografia de TCC 2", null);
+		    	register.addSeparator();
+		    	
+		    	MenuItem thesis = register.addItem("Monografia de TCC 2", null);
 		    	if(Session.isUserStudent()){
 		    		thesis.addItem("Submeter Monografia", new Command(){
 		        	    @Override
@@ -472,6 +521,7 @@ public class MenuBar extends CustomComponent {
 		        	layout.addComponent(button);
 			    	this.prepareDownloadStage2(button);
 		    	}
+		    	
 		    	if(Session.isUserManager(SystemModule.SIGET)){
 		    		thesis.addItem("Listar Monografias", new Command(){
 		        	    @Override
@@ -482,8 +532,9 @@ public class MenuBar extends CustomComponent {
 		    	}
 			}
 	    	
+	    	MenuItem supervision = this.menu.addItem("Orientação", null);
+	    	
 	    	if(Session.isUserStudent()){
-	    		MenuItem supervision = this.menu.addItem("Orientação", null);
 	    		supervision.addItem("Lista de Orientadores", new Command(){
 	        	    @Override
 	        	    public void menuSelected(MenuItem selectedItem){
@@ -491,12 +542,16 @@ public class MenuBar extends CustomComponent {
 	        	    }
 	        	});
 	    		supervision.addSeparator();
-	    		supervision.addItem("Registro de Reuniões", new Command(){
-	        	    @Override
-	        	    public void menuSelected(MenuItem selectedItem){
-	        	        UI.getCurrent().getNavigator().navigateTo(AttendanceView.NAME);
-	        	    }
-	        	});
+	    	}
+    		
+	    	supervision.addItem("Registro de Reuniões", new Command(){
+        	    @Override
+        	    public void menuSelected(MenuItem selectedItem){
+        	        UI.getCurrent().getNavigator().navigateTo(AttendanceView.NAME);
+        	    }
+        	});
+    		
+	    	if(Session.isUserStudent()){
 	    		supervision.addSeparator();
 	    		supervision.addItem("Alterar Orientador", new Command(){
 	        	    @Override
@@ -528,25 +583,31 @@ public class MenuBar extends CustomComponent {
 						}
 	        	    }
 	        	});
-	    	}
-	    	
-	    	if(Session.isUserProfessor()){
-	    		MenuItem professor = this.menu.addItem("Professor", null);
-	    		professor.addItem("Registro de Reuniões", new Command(){
+	    	}else if(Session.isUserProfessor()){
+	    		supervision.addSeparator();
+    			supervision.addItem("Validar Versão Final", new Command(){
 	        	    @Override
 	        	    public void menuSelected(MenuItem selectedItem){
-	        	    	UI.getCurrent().getNavigator().navigateTo(AttendanceView.NAME);
-	        	    }
-	        	});
-	    		professor.addSeparator();
-	    		professor.addItem("Agenda de Bancas", new Command(){
-	        	    @Override
-	        	    public void menuSelected(MenuItem selectedItem){
-	        	    	UI.getCurrent().getNavigator().navigateTo(CalendarView.NAME);
+	        	        UI.getCurrent().getNavigator().navigateTo(FinalDocumentView.NAME);
 	        	    }
 	        	});
 	    	}
 	    	
+    		MenuItem calendar = this.menu.addItem("Bancas", null);
+    		calendar.addItem("Agenda de Bancas", new Command(){
+        	    @Override
+        	    public void menuSelected(MenuItem selectedItem){
+        	    	UI.getCurrent().getNavigator().navigateTo(CalendarView.NAME + "/1");
+        	    }
+        	});
+    		calendar.addSeparator();
+	    	calendar.addItem((Session.isUserProfessor() ? "Minhas Bancas" : "Bancas que Assisti"), new Command(){
+        	    @Override
+        	    public void menuSelected(MenuItem selectedItem){
+        	    	UI.getCurrent().getNavigator().navigateTo(CalendarView.NAME);
+        	    }
+        	});
+    		
 	    	if(Session.isUserAdministrator() || Session.isUserManager(SystemModule.SIGET)){
 	    		MenuItem administration = this.menu.addItem("Administração", null);
 	    		if(Session.isUserManager(SystemModule.SIGET)){
@@ -575,10 +636,7 @@ public class MenuBar extends CustomComponent {
 		        	    @Override
 		        	    public void menuSelected(MenuItem selectedItem){
 		        	    	try{
-		        	    		DepartmentBO bo = new DepartmentBO();
-		        	    		Department department = bo.findById(Session.getUser().getDepartment().getIdDepartment());
-		        	    		
-		        	    		UI.getCurrent().addWindow(new EditSigetWindow(department, null));
+		        	    		UI.getCurrent().addWindow(new EditSigetWindow(sigetConfig, null));
 		        	    	}catch(Exception e){
 		        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 		        	    		
@@ -664,10 +722,7 @@ public class MenuBar extends CustomComponent {
 		        	    @Override
 		        	    public void menuSelected(MenuItem selectedItem){
 		        	    	try{
-		        	    		DepartmentBO bo = new DepartmentBO();
-		        	    		Department department = bo.findById(Session.getUser().getDepartment().getIdDepartment());
-		        	    		
-		        	    		UI.getCurrent().addWindow(new EditSigacWindow(department, null));
+		        	    		UI.getCurrent().addWindow(new EditSigacWindow(sigacConfig, null));
 		        	    	}catch(Exception e){
 		        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 		        	    		
@@ -677,8 +732,137 @@ public class MenuBar extends CustomComponent {
 		        	});
 	    		}
 			}
-		}else if(module == SystemModule.SIGES){
 			
+			MenuItem repository = this.menu.addItem("Repositório", null);
+	    	repository.addItem("Regulamentos de Atividades Complementares e Anexos", new Command(){
+	    	    @Override
+	    	    public void menuSelected(MenuItem selectedItem){
+	    	        UI.getCurrent().getNavigator().navigateTo(DocumentView.NAME + "/" + String.valueOf(SystemModule.SIGAC.getValue()));
+	    	    }
+	    	});
+		}else if(module == SystemModule.SIGES){
+			if(Session.isUserManager(SystemModule.SIGES)){
+				MenuItem register = this.menu.addItem("Cadastros", null);
+				register.addItem("Países", new Command(){
+    	    	    @Override
+    	    	    public void menuSelected(MenuItem selectedItem){
+    	    	        UI.getCurrent().getNavigator().navigateTo(CountryView.NAME);
+    	    	    }
+    	    	});
+				register.addItem("Estados", new Command(){
+    	    	    @Override
+    	    	    public void menuSelected(MenuItem selectedItem){
+    	    	        UI.getCurrent().getNavigator().navigateTo(StateView.NAME);
+    	    	    }
+    	    	});
+				register.addItem("Cidades", new Command(){
+    	    	    @Override
+    	    	    public void menuSelected(MenuItem selectedItem){
+    	    	        UI.getCurrent().getNavigator().navigateTo(CityView.NAME);
+    	    	    }
+    	    	});
+				register.addSeparator();
+				register.addItem("Empresas", new Command(){
+    	    	    @Override
+    	    	    public void menuSelected(MenuItem selectedItem){
+    	    	        UI.getCurrent().getNavigator().navigateTo(CompanyView.NAME);
+    	    	    }
+    	    	});
+				register.addItem("Supervisores", new Command(){
+    	    	    @Override
+    	    	    public void menuSelected(MenuItem selectedItem){
+    	    	        UI.getCurrent().getNavigator().navigateTo(CompanySupervisorView.NAME);
+    	    	    }
+    	    	});
+				register.addSeparator();
+				register.addItem("Alunos", new Command(){
+    	    	    @Override
+    	    	    public void menuSelected(MenuItem selectedItem){
+    	    	        UI.getCurrent().getNavigator().navigateTo(StudentView.NAME);
+    	    	    }
+    	    	});
+			}
+			
+			MenuItem internship = this.menu.addItem("Estágio", null);
+			if(Session.isUserManager(SystemModule.SIGES)){
+				internship.addItem("Registro de Estágio", new Command(){
+		    	    @Override
+		    	    public void menuSelected(MenuItem selectedItem){
+		    	        UI.getCurrent().getNavigator().navigateTo(InternshipView.NAME + "/1");
+		    	    }
+		    	});
+				internship.addSeparator();
+			}
+			if(Session.isUserProfessor()){
+				internship.addItem("Meus Orientados", new Command(){
+		    	    @Override
+		    	    public void menuSelected(MenuItem selectedItem){
+		    	        UI.getCurrent().getNavigator().navigateTo(InternshipView.NAME);
+		    	    }
+		    	});
+			}else if(Session.isUserStudent()){
+				internship.addItem("Meus Estágios", new Command(){
+		    	    @Override
+		    	    public void menuSelected(MenuItem selectedItem){
+		    	        UI.getCurrent().getNavigator().navigateTo(InternshipView.NAME);
+		    	    }
+		    	});
+			}
+			
+			MenuItem calendar = this.menu.addItem("Bancas", null);
+    		calendar.addItem("Agenda de Bancas", new Command(){
+        	    @Override
+        	    public void menuSelected(MenuItem selectedItem){
+        	    	UI.getCurrent().getNavigator().navigateTo(InternshipCalendarView.NAME + "/1");
+        	    }
+        	});
+	    	calendar.addSeparator();
+	    	calendar.addItem((Session.isUserProfessor() ? "Minhas Bancas" : "Bancas que Assisti"), new Command(){
+        	    @Override
+        	    public void menuSelected(MenuItem selectedItem){
+        	    	UI.getCurrent().getNavigator().navigateTo(InternshipCalendarView.NAME);
+        	    }
+        	});
+    		
+    		if(Session.isUserAdministrator() || Session.isUserManager(SystemModule.SIGES)){
+	    		MenuItem administration = this.menu.addItem("Administração", null);
+	    		if(Session.isUserManager(SystemModule.SIGES)){
+		    		administration.addItem("Quesitos de Avaliação", new Command(){
+		        	    @Override
+		        	    public void menuSelected(MenuItem selectedItem){
+		        	        UI.getCurrent().getNavigator().navigateTo(InternshipEvaluationItemView.NAME);
+		        	    }
+		        	});
+		    		administration.addSeparator();
+		    		administration.addItem("Configurações", new Command(){
+		        	    @Override
+		        	    public void menuSelected(MenuItem selectedItem){
+		        	    	try{
+		        	    		UI.getCurrent().addWindow(new EditSigesWindow(sigesConfig, null));
+		        	    	}catch(Exception e){
+		        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+		        	    		
+		        	    		Notification.show("Carregar Configurações", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		        	    	}
+		        	    }
+		        	});
+	    		}
+	    	}
+	    	
+	    	MenuItem repository = this.menu.addItem("Repositório", null);
+	    	repository.addItem("Regulamentos de Estágio e Anexos", new Command(){
+	    	    @Override
+	    	    public void menuSelected(MenuItem selectedItem){
+	    	        UI.getCurrent().getNavigator().navigateTo(DocumentView.NAME + "/" + String.valueOf(SystemModule.SIGES.getValue()));
+	    	    }
+	    	});
+	    	repository.addSeparator();
+	    	repository.addItem("Biblioteca", new Command(){
+	    	    @Override
+	    	    public void menuSelected(MenuItem selectedItem){
+	    	        UI.getCurrent().getNavigator().navigateTo(InternshipLibraryView.NAME);
+	    	    }
+	    	});
 		}else{
 			if(Session.isUserAdministrator()){
 				MenuItem administration = this.menu.addItem("Administração", null);

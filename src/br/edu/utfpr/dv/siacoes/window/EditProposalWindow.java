@@ -10,10 +10,12 @@ import java.util.logging.Logger;
 
 import org.vaadin.dialogs.ConfirmDialog;
 
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -28,6 +30,7 @@ import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.bo.DeadlineBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
+import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
 import br.edu.utfpr.dv.siacoes.components.ProfessorComboBox;
@@ -37,6 +40,7 @@ import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
@@ -46,6 +50,7 @@ import br.edu.utfpr.dv.siacoes.view.ListView;
 public class EditProposalWindow extends EditWindow {
 
 	private final Proposal proposal;
+	private SigetConfig sigetConfig;
 	
 	private final CampusComboBox comboCampus;
 	private final DepartmentComboBox comboDepartment;
@@ -58,6 +63,7 @@ public class EditProposalWindow extends EditWindow {
 	private final YearField textYear;
 	private final DateField textSubmissionDate;
 	private final Upload uploadFile;
+	private final Image imageFileUploaded;
 	private final HorizontalLayout layoutAppraisers;
 	private Grid gridAppraisers;
 	private final Button buttonAddAppraiser;
@@ -67,7 +73,15 @@ public class EditProposalWindow extends EditWindow {
 	public EditProposalWindow(Proposal proposal, ListView parentView){
 		super("Editar Proposta", parentView);
 		
-		if(!Session.getUser().getDepartment().isSigetRegisterProposal()){
+		SigetConfigBO bo = new SigetConfigBO();
+		this.sigetConfig = new SigetConfig();
+		try {
+			this.sigetConfig = bo.findByDepartment(Session.getUser().getDepartment().getIdDepartment());
+		} catch (Exception e1) {
+			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
+		}
+		
+		if(!sigetConfig.isRegisterProposal()){
 			this.setCaption("Registrar Orientação");
 		}
 		
@@ -112,9 +126,13 @@ public class EditProposalWindow extends EditWindow {
 		this.textSubmissionDate.setDateFormat("dd/MM/yyyy");
 		
 		DocumentUploader listener = new DocumentUploader();
-		this.uploadFile = new Upload("Enviar Arquivo (Formato PDF, Tam. Máx. 5 MB)", listener);
+		this.uploadFile = new Upload("(Formato PDF, Tam. Máx. 5 MB)", listener);
 		this.uploadFile.addSucceededListener(listener);
-		this.uploadFile.setButtonCaption("Enviar");
+		this.uploadFile.setButtonCaption("Enviar Arquivo");
+		this.uploadFile.setImmediate(true);
+		
+		this.imageFileUploaded = new Image("", new ThemeResource("images/ok.png"));
+		this.imageFileUploaded.setVisible(false);
 		
 		this.layoutAppraisers = new HorizontalLayout();
 		
@@ -146,8 +164,8 @@ public class EditProposalWindow extends EditWindow {
 		this.addField(new HorizontalLayout(this.textTitle, this.textSubarea));
 		this.addField(new HorizontalLayout(this.comboSupervisor, this.comboCosupervisor));
 		
-		if(Session.getUser().getDepartment().isSigetRegisterProposal()){
-			this.addField(new HorizontalLayout(this.uploadFile, this.comboSemester, this.textYear, this.textSubmissionDate));
+		if(sigetConfig.isRegisterProposal()){
+			this.addField(new HorizontalLayout(this.uploadFile, this.imageFileUploaded, this.comboSemester, this.textYear, this.textSubmissionDate));
 		}else{
 			this.addField(new HorizontalLayout(this.comboSemester, this.textYear, this.textSubmissionDate));
 		}
@@ -349,6 +367,8 @@ public class EditProposalWindow extends EditWindow {
 		@Override
 		public OutputStream receiveUpload(String filename, String mimeType) {
 			try {
+				imageFileUploaded.setVisible(false);
+				
 				if(DocumentType.fromMimeType(mimeType) != DocumentType.PDF){
 					throw new Exception("O arquivo precisa estar no formato PDF.");
 				}
@@ -380,6 +400,10 @@ public class EditProposalWindow extends EditWindow {
 	            input.read(buffer);
 	            
 	            proposal.setFile(buffer);
+	            
+	            imageFileUploaded.setVisible(true);
+	            
+	            Notification.show("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.", Notification.Type.HUMANIZED_MESSAGE);
 	        } catch (Exception e) {
 	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	            

@@ -3,11 +3,13 @@ package br.edu.utfpr.dv.siacoes.window;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.Receiver;
@@ -23,6 +25,7 @@ public class EditJuryAppraiserFeedbackWindow extends EditWindow {
 	private final JuryAppraiser appraiser;
 	
 	private final Upload uploadFile;
+	private final Image imageFileUploaded;
 
 	public EditJuryAppraiserFeedbackWindow(JuryAppraiser appraiser){
 		super("Enviar Feedback", null);
@@ -37,8 +40,12 @@ public class EditJuryAppraiserFeedbackWindow extends EditWindow {
 		this.uploadFile = new Upload("Enviar Arquivo (Formato PDF, Tam. Máx. 5 MB)", listener);
 		this.uploadFile.addSucceededListener(listener);
 		this.uploadFile.setButtonCaption("Enviar");
+		this.uploadFile.setImmediate(true);
 		
-		this.addField(this.uploadFile);
+		this.imageFileUploaded = new Image("", new ThemeResource("images/ok.png"));
+		this.imageFileUploaded.setVisible(false);
+		
+		this.addField(new HorizontalLayout(this.uploadFile, this.imageFileUploaded));
 	}
 	
 	@Override
@@ -70,6 +77,8 @@ public class EditJuryAppraiserFeedbackWindow extends EditWindow {
 		@Override
 		public OutputStream receiveUpload(String filename, String mimeType) {
 			try {
+				imageFileUploaded.setVisible(false);
+				
 				if(DocumentType.fromMimeType(mimeType) != DocumentType.PDF){
 					throw new Exception("O arquivo precisa estar no formato PDF.");
 				}
@@ -101,6 +110,10 @@ public class EditJuryAppraiserFeedbackWindow extends EditWindow {
 	            input.read(buffer);
 	            
 	            appraiser.setFile(buffer);
+	            
+	            imageFileUploaded.setVisible(true);
+	            
+	            Notification.show("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.", Notification.Type.HUMANIZED_MESSAGE);
 	        } catch (Exception e) {
 	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	            

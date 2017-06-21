@@ -6,24 +6,20 @@ import java.util.logging.Logger;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
-import br.edu.utfpr.dv.siacoes.bo.DepartmentBO;
-import br.edu.utfpr.dv.siacoes.model.Department;
+import br.edu.utfpr.dv.siacoes.bo.SigacConfigBO;
+import br.edu.utfpr.dv.siacoes.model.SigacConfig;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditSigacWindow extends EditWindow {
 	
-	private final Department department;
+	private final SigacConfig config;
 	
 	private final TextField textMinimumScore;
 	
-	public EditSigacWindow(Department department, ListView parentView){
+	public EditSigacWindow(SigacConfig config, ListView parentView){
 		super("Configurações SIGAC", parentView);
 		
-		if(department == null){
-			this.department = new Department();
-		}else{
-			this.department = department;
-		}
+		this.config = config;
 		
 		this.textMinimumScore = new TextField("Pontuação Mínima");
 		this.textMinimumScore.setWidth("100px");
@@ -34,17 +30,17 @@ public class EditSigacWindow extends EditWindow {
 	}
 	
 	private void loadConfigurations(){
-		this.textMinimumScore.setValue(String.valueOf(this.department.getSigacMinimumScore()));
+		this.textMinimumScore.setValue(String.valueOf(this.config.getMinimumScore()));
 	}
 
 	@Override
 	public void save() {
 		try{
-			DepartmentBO bo = new DepartmentBO();
+			SigacConfigBO bo = new SigacConfigBO();
 			
-			this.department.setSigacMinimumScore(Double.parseDouble(this.textMinimumScore.getValue()));
+			this.config.setMinimumScore(Double.parseDouble(this.textMinimumScore.getValue()));
 			
-			bo.save(this.department);
+			bo.save(this.config);
 			
 			Notification.show("Salvar Configurações", "Configurações salvas com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
 			

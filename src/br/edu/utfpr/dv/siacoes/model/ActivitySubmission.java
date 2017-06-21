@@ -45,6 +45,7 @@ public class ActivitySubmission {
 	
 	private int idActivitySubmission;
 	private User student;
+	private User feedbackUser;
 	private Department department;
 	private Activity activity;
 	private int semester;
@@ -56,10 +57,12 @@ public class ActivitySubmission {
 	private ActivityFeedback feedback;
 	private Date feedbackDate;
 	private double validatedAmount;
+	private String comments;
 	
 	public ActivitySubmission(){
 		this.setIdActivitySubmission(0);
 		this.setStudent(new User());
+		this.setFeedbackUser(new User());
 		this.setDepartment(new Department());
 		this.setActivity(new Activity());
 		this.setSemester(DateUtils.getSemester());
@@ -71,6 +74,7 @@ public class ActivitySubmission {
 		this.setFeedback(ActivityFeedback.NONE);
 		this.setFeedbackDate(null);
 		this.setValidatedAmount(0);
+		this.setComments("");
 	}
 	
 	public int getIdActivitySubmission() {
@@ -84,6 +88,12 @@ public class ActivitySubmission {
 	}
 	public void setStudent(User student) {
 		this.student = student;
+	}
+	public User getFeedbackUser() {
+		return feedbackUser;
+	}
+	public void setFeedbackUser(User feedbackUser) {
+		this.feedbackUser = feedbackUser;
 	}
 	public Department getDepartment() {
 		return department;
@@ -150,6 +160,12 @@ public class ActivitySubmission {
 	}
 	public void setValidatedAmount(double validatedAmount){
 		this.validatedAmount = validatedAmount;
+	}
+	public String getComments() {
+		return comments;
+	}
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 	public double getScore(){
 		if(this.getFeedback() == ActivityFeedback.APPROVED){

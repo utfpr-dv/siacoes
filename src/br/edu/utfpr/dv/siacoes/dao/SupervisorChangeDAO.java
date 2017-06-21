@@ -1,5 +1,6 @@
 package br.edu.utfpr.dv.siacoes.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,15 +21,18 @@ import br.edu.utfpr.dv.siacoes.util.DateUtils;
 public class SupervisorChangeDAO {
 	
 	public int save(SupervisorChange change) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
 		try{
-			ConnectionDAO.getInstance().getConnection().setAutoCommit(false);
+			conn = ConnectionDAO.getInstance().getConnection();
+			conn.setAutoCommit(false);
 			boolean insert = (change.getIdSupervisorChange() == 0);
-			PreparedStatement stmt;
 			
 			if(insert){
-				stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("INSERT INTO supervisorchange(idProposal, idOldSupervisor, idNewSupervisor, idOldCosupervisor, idNewCosupervisor, date, comments, approved, approvalDate, approvalComments) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO supervisorchange(idProposal, idOldSupervisor, idNewSupervisor, idOldCosupervisor, idNewCosupervisor, date, comments, approved, approvalDate, approvalComments) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("UPDATE supervisorchange SET idProposal=?, idOldSupervisor=?, idNewSupervisor=?, idOldCosupervisor=?, idNewCosupervisor=?, date=?, comments=?, approved=?, approvalDate=?, approvalComments=? WHERE idSupervisorChange=?");
+				stmt = conn.prepareStatement("UPDATE supervisorchange SET idProposal=?, idOldSupervisor=?, idNewSupervisor=?, idOldCosupervisor=?, idNewCosupervisor=?, date=?, comments=?, approved=?, approvalDate=?, approvalComments=? WHERE idSupervisorChange=?");
 			}
 			
 			stmt.setInt(1, change.getProposal().getIdProposal());
@@ -89,150 +93,212 @@ public class SupervisorChangeDAO {
 				}
 			}
 			
-			ConnectionDAO.getInstance().getConnection().commit();
+			conn.commit();
 			
 			return change.getIdSupervisorChange();	
 		}catch(SQLException e){
-			ConnectionDAO.getInstance().getConnection().rollback();
+			conn.rollback();
 			throw e;
 		}finally{
-			ConnectionDAO.getInstance().getConnection().setAutoCommit(true);
+			conn.setAutoCommit(true);
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
 	}
 	
 	public List<SupervisorChange> list(int idDepartment, int semester, int year, boolean onlyPending) throws SQLException{
-		Date initialDate = DateUtils.getStartDate(semester, year);
-		Date finalDate = DateUtils.getEndDate(semester, year);
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement(
-				"SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
-				"oldsupervisor.name AS oldSupervisorName, oldcosupervisor.name AS oldCosupervisorName, newsupervisor.name AS newSupervisorName " +
-				"FROM supervisorchange INNER JOIN proposal ON proposal.idProposal=supervisorchange.idProposal " +
-				"INNER JOIN user student ON student.idUser=proposal.idStudent " +
-				"LEFT JOIN user oldsupervisor ON oldsupervisor.idUser=supervisorchange.idOldSupervisor " +
-				"LEFT JOIN user oldcosupervisor ON oldcosupervisor.idUser=supervisorchange.idOldCosupervisor " +
-				"LEFT JOIN user newsupervisor ON newsupervisor.idUser=supervisorchange.idNewSupervisor " +
-				"WHERE proposal.idDepartment=? AND supervisorchange.date BETWEEN ? AND ? " + (onlyPending ? " AND supervisorchange.approved=0" : ""));
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
 		
-		stmt.setInt(1, idDepartment);
-		stmt.setTimestamp(2, new java.sql.Timestamp(initialDate.getTime()));
-		stmt.setTimestamp(3, new java.sql.Timestamp(finalDate.getTime()));
-		
-		ResultSet rs = stmt.executeQuery();
-		
-		List<SupervisorChange> list = new ArrayList<SupervisorChange>();
-		
-		while(rs.next()){
-			list.add(this.loadObject(rs));
+			Date initialDate = DateUtils.getStartDate(semester, year);
+			Date finalDate = DateUtils.getEndDate(semester, year);
+			
+			stmt = conn.prepareStatement(
+					"SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
+					"oldsupervisor.name AS oldSupervisorName, oldcosupervisor.name AS oldCosupervisorName, newsupervisor.name AS newSupervisorName " +
+					"FROM supervisorchange INNER JOIN proposal ON proposal.idProposal=supervisorchange.idProposal " +
+					"INNER JOIN user student ON student.idUser=proposal.idStudent " +
+					"LEFT JOIN user oldsupervisor ON oldsupervisor.idUser=supervisorchange.idOldSupervisor " +
+					"LEFT JOIN user oldcosupervisor ON oldcosupervisor.idUser=supervisorchange.idOldCosupervisor " +
+					"LEFT JOIN user newsupervisor ON newsupervisor.idUser=supervisorchange.idNewSupervisor " +
+					"WHERE proposal.idDepartment=? AND supervisorchange.date BETWEEN ? AND ? " + (onlyPending ? " AND supervisorchange.approved=0" : ""));
+			
+			stmt.setInt(1, idDepartment);
+			stmt.setTimestamp(2, new java.sql.Timestamp(initialDate.getTime()));
+			stmt.setTimestamp(3, new java.sql.Timestamp(finalDate.getTime()));
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			List<SupervisorChange> list = new ArrayList<SupervisorChange>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return list;
 	}
 	
 	public SupervisorChange findById(int id) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		ResultSet rs = stmt.executeQuery("SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
-				"oldSupervisor.name AS oldSupervisorName, oldcosupervisor.name AS oldCosupervisorName, newsupervisor.name AS newSupervisorName " +
-				"FROM supervisorchange INNER JOIN proposal ON proposal.idProposal=supervisorchange.idProposal " +
-				"INNER JOIN user student ON student.idUser=proposal.idStudent " +
-				"LEFT JOIN user oldsupervisor ON oldsupervisor.idUser=supervisorchange.idOldSupervisor " +
-				"LEFT JOIN user oldcosupervisor ON oldcosupervisor.idUser=supervisorchange.idOldCosupervisor " +
-				"LEFT JOIN user newsupervisor ON newsupervisor.idUser=supervisorchange.idNewSupervisor " +
-				"WHERE supervisorchange.idSupervisorChange=" + String.valueOf(id));
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
 		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
+			ResultSet rs = stmt.executeQuery("SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
+					"oldSupervisor.name AS oldSupervisorName, oldcosupervisor.name AS oldCosupervisorName, newsupervisor.name AS newSupervisorName " +
+					"FROM supervisorchange INNER JOIN proposal ON proposal.idProposal=supervisorchange.idProposal " +
+					"INNER JOIN user student ON student.idUser=proposal.idStudent " +
+					"LEFT JOIN user oldsupervisor ON oldsupervisor.idUser=supervisorchange.idOldSupervisor " +
+					"LEFT JOIN user oldcosupervisor ON oldcosupervisor.idUser=supervisorchange.idOldCosupervisor " +
+					"LEFT JOIN user newsupervisor ON newsupervisor.idUser=supervisorchange.idNewSupervisor " +
+					"WHERE supervisorchange.idSupervisorChange=" + String.valueOf(id));
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			conn.setAutoCommit(true);
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
 	}
 	
 	public SupervisorChange findPendingChange(int idProposal) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		ResultSet rs = stmt.executeQuery("SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
-				"oldSupervisor.name AS oldSupervisorName, oldcosupervisor.name AS oldCosupervisorName, newsupervisor.name AS newSupervisorName " +
-				"FROM supervisorchange INNER JOIN proposal ON proposal.idProposal=supervisorchange.idProposal " +
-				"INNER JOIN user student ON student.idUser=proposal.idStudent " +
-				"LEFT JOIN user oldsupervisor ON oldsupervisor.idUser=supervisorchange.idOldSupervisor " +
-				"LEFT JOIN user oldcosupervisor ON oldcosupervisor.idUser=supervisorchange.idOldCosupervisor " +
-				"LEFT JOIN user newsupervisor ON newsupervisor.idUser=supervisorchange.idNewSupervisor " +
-				"WHERE supervisorchange.approved=0 AND supervisorchange.idProposal=" + String.valueOf(idProposal));
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
 		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
+			ResultSet rs = stmt.executeQuery("SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
+					"oldSupervisor.name AS oldSupervisorName, oldcosupervisor.name AS oldCosupervisorName, newsupervisor.name AS newSupervisorName " +
+					"FROM supervisorchange INNER JOIN proposal ON proposal.idProposal=supervisorchange.idProposal " +
+					"INNER JOIN user student ON student.idUser=proposal.idStudent " +
+					"LEFT JOIN user oldsupervisor ON oldsupervisor.idUser=supervisorchange.idOldSupervisor " +
+					"LEFT JOIN user oldcosupervisor ON oldcosupervisor.idUser=supervisorchange.idOldCosupervisor " +
+					"LEFT JOIN user newsupervisor ON newsupervisor.idUser=supervisorchange.idNewSupervisor " +
+					"WHERE supervisorchange.approved=0 AND supervisorchange.idProposal=" + String.valueOf(idProposal));
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			conn.setAutoCommit(true);
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
 	}
 	
 	public User findCurrentSupervisor(int idProposal) throws SQLException{
 		int idUser = 0;
+		Connection conn = null;
+		Statement stmt = null;
 		
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
 		
-		ResultSet rs = stmt.executeQuery("SELECT idNewSupervisor FROM SupervisorChange WHERE approved=1 AND idProposal = " + String.valueOf(idProposal) + " ORDER BY date DESC");
-		
-		if(rs.next()){
-			idUser = rs.getInt("idNewSupervisor");
-		}else{
-			ProjectDAO pdao = new ProjectDAO();
-			Project project = pdao.findByProposal(idProposal);
+			ResultSet rs = stmt.executeQuery("SELECT idNewSupervisor FROM SupervisorChange WHERE approved=1 AND idProposal = " + String.valueOf(idProposal) + " ORDER BY date DESC");
 			
-			if(project == null){
-				ProposalDAO dao = new ProposalDAO();
-				Proposal proposal = dao.findById(idProposal);
-				
-				idUser = proposal.getSupervisor().getIdUser();
+			if(rs.next()){
+				idUser = rs.getInt("idNewSupervisor");
 			}else{
-				ThesisDAO tdao = new ThesisDAO();
-				Thesis thesis = tdao.findByProject(project.getIdProject());
+				ProjectDAO pdao = new ProjectDAO();
+				Project project = pdao.findByProposal(idProposal);
 				
-				if(thesis == null){
-					idUser = project.getSupervisor().getIdUser();
+				if(project == null){
+					ProposalDAO dao = new ProposalDAO();
+					Proposal proposal = dao.findById(idProposal);
+					
+					idUser = proposal.getSupervisor().getIdUser();
 				}else{
-					idUser = thesis.getSupervisor().getIdUser();
+					ThesisDAO tdao = new ThesisDAO();
+					Thesis thesis = tdao.findByProject(project.getIdProject());
+					
+					if(thesis == null){
+						idUser = project.getSupervisor().getIdUser();
+					}else{
+						idUser = thesis.getSupervisor().getIdUser();
+					}
 				}
 			}
+			
+			UserDAO dao = new UserDAO();
+			return dao.findById(idUser);
+		}finally{
+			conn.setAutoCommit(true);
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		UserDAO dao = new UserDAO();
-		return dao.findById(idUser);
 	}
 	
 	public User findCurrentCosupervisor(int idProposal) throws SQLException{
 		int idUser = 0;
+		Connection conn = null;
+		Statement stmt = null;
 		
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
 		
-		ResultSet rs = stmt.executeQuery("SELECT idNewCosupervisor FROM SupervisorChange WHERE approved=1 AND idProposal = " + String.valueOf(idProposal) + " ORDER BY date DESC");
-		
-		if(rs.next()){
-			idUser = rs.getInt("idNewCosupervisor");
-		}else{
-			ProjectDAO pdao = new ProjectDAO();
-			Project project = pdao.findByProposal(idProposal);
+			ResultSet rs = stmt.executeQuery("SELECT idNewCosupervisor FROM SupervisorChange WHERE approved=1 AND idProposal = " + String.valueOf(idProposal) + " ORDER BY date DESC");
 			
-			if(project == null){
-				ProposalDAO dao = new ProposalDAO();
-				Proposal proposal = dao.findById(idProposal);
-				
-				idUser = proposal.getCosupervisor().getIdUser();
+			if(rs.next()){
+				idUser = rs.getInt("idNewCosupervisor");
 			}else{
-				ThesisDAO tdao = new ThesisDAO();
-				Thesis thesis = tdao.findByProject(project.getIdProject());
+				ProjectDAO pdao = new ProjectDAO();
+				Project project = pdao.findByProposal(idProposal);
 				
-				if(thesis == null){
-					idUser = project.getCosupervisor().getIdUser();
+				if(project == null){
+					ProposalDAO dao = new ProposalDAO();
+					Proposal proposal = dao.findById(idProposal);
+					
+					idUser = proposal.getCosupervisor().getIdUser();
 				}else{
-					idUser = thesis.getCosupervisor().getIdUser();
+					ThesisDAO tdao = new ThesisDAO();
+					Thesis thesis = tdao.findByProject(project.getIdProject());
+					
+					if(thesis == null){
+						idUser = project.getCosupervisor().getIdUser();
+					}else{
+						idUser = thesis.getCosupervisor().getIdUser();
+					}
 				}
 			}
+			
+			UserDAO dao = new UserDAO();
+			return dao.findById(idUser);
+		}finally{
+			conn.setAutoCommit(true);
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		UserDAO dao = new UserDAO();
-		return dao.findById(idUser);
 	}
 	
 	private SupervisorChange loadObject(ResultSet rs) throws SQLException{

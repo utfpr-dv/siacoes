@@ -1,9 +1,11 @@
 package br.edu.utfpr.dv.siacoes.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,86 +14,145 @@ import br.edu.utfpr.dv.siacoes.model.ThemeSuggestion;
 public class ThemeSuggestionDAO {
 	
 	public ThemeSuggestion findById(int id) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT * FROM themesuggestion WHERE idThemeSuggestion=?");
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, id);
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM themesuggestion WHERE idThemeSuggestion=?");
 		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
+			stmt.setInt(1, id);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
 	}
 	
 	public List<ThemeSuggestion> listAll(boolean onlyActives) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		ResultSet rs = stmt.executeQuery("SELECT * FROM themesuggestion " + (onlyActives ? " WHERE active=1 " : "") + " ORDER BY submissionDate DESC, title");
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
 		
-		List<ThemeSuggestion> list = new ArrayList<ThemeSuggestion>();
-		
-		while(rs.next()){
-			list.add(this.loadObject(rs));
+			ResultSet rs = stmt.executeQuery("SELECT * FROM themesuggestion " + (onlyActives ? " WHERE active=1 " : "") + " ORDER BY submissionDate DESC, title");
+			
+			List<ThemeSuggestion> list = new ArrayList<ThemeSuggestion>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return list;
 	}
 	
 	public List<ThemeSuggestion> listByDepartment(int idDepartment, boolean onlyActives) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		ResultSet rs = stmt.executeQuery("SELECT * FROM themesuggestion WHERE idDepartment=" + String.valueOf(idDepartment) + (onlyActives ? " AND active=1 " : "") + " ORDER BY submissionDate DESC, title");
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
 		
-		List<ThemeSuggestion> list = new ArrayList<ThemeSuggestion>();
-		
-		while(rs.next()){
-			list.add(this.loadObject(rs));
+			ResultSet rs = stmt.executeQuery("SELECT * FROM themesuggestion WHERE idDepartment=" + String.valueOf(idDepartment) + (onlyActives ? " AND active=1 " : "") + " ORDER BY submissionDate DESC, title");
+			
+			List<ThemeSuggestion> list = new ArrayList<ThemeSuggestion>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return list;
 	}
 	
 	public int save(ThemeSuggestion theme) throws SQLException{
 		boolean insert = (theme.getIdThemeSuggestion() == 0);
-		PreparedStatement stmt;
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		if(insert){
-			stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("INSERT INTO themesuggestion(idDepartment, title, proponent, objectives, proposal, submissionDate, active) VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-		}else{
-			stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("UPDATE themesuggestion SET idDepartment=?, title=?, proponent=?, objectives=?, proposal=?, submissionDate=?, active=? WHERE idThemeSuggestion=?");
-		}
-		
-		stmt.setInt(1, theme.getDepartment().getIdDepartment());
-		stmt.setString(2, theme.getTitle());
-		stmt.setString(3, theme.getProponent());
-		stmt.setString(4, theme.getObjectives());
-		stmt.setString(5, theme.getProposal());
-		stmt.setDate(6, new java.sql.Date(theme.getSubmissionDate().getTime()));
-		stmt.setInt(7, (theme.isActive() ? 1 : 0));
-		
-		if(!insert){
-			stmt.setInt(8, theme.getIdThemeSuggestion());
-		}
-		
-		stmt.execute();
-		
-		if(insert){
-			ResultSet rs = stmt.getGeneratedKeys();
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
 			
-			if(rs.next()){
-				theme.setIdThemeSuggestion(rs.getInt(1));
+			if(insert){
+				stmt = conn.prepareStatement("INSERT INTO themesuggestion(idDepartment, idUser, title, proponent, objectives, proposal, submissionDate, active) VALUES(?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			}else{
+				stmt = conn.prepareStatement("UPDATE themesuggestion SET idDepartment=?, idUser=?, title=?, proponent=?, objectives=?, proposal=?, submissionDate=?, active=? WHERE idThemeSuggestion=?");
 			}
+			
+			stmt.setInt(1, theme.getDepartment().getIdDepartment());
+			if((theme.getUser() == null) || (theme.getUser().getIdUser() == 0)){
+				stmt.setNull(2, Types.INTEGER);
+			}else{
+				stmt.setInt(2, theme.getUser().getIdUser());
+			}
+			stmt.setString(3, theme.getTitle());
+			stmt.setString(4, theme.getProponent());
+			stmt.setString(5, theme.getObjectives());
+			stmt.setString(6, theme.getProposal());
+			stmt.setDate(7, new java.sql.Date(theme.getSubmissionDate().getTime()));
+			stmt.setInt(8, (theme.isActive() ? 1 : 0));
+			
+			if(!insert){
+				stmt.setInt(9, theme.getIdThemeSuggestion());
+			}
+			
+			stmt.execute();
+			
+			if(insert){
+				ResultSet rs = stmt.getGeneratedKeys();
+				
+				if(rs.next()){
+					theme.setIdThemeSuggestion(rs.getInt(1));
+				}
+			}
+			
+			return theme.getIdThemeSuggestion();
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return theme.getIdThemeSuggestion();
 	}
 	
 	public boolean delete(int id) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		return stmt.execute("DELETE FROM themesuggestion WHERE idThemeSuggestion = " + String.valueOf(id));
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+		
+			return stmt.execute("DELETE FROM themesuggestion WHERE idThemeSuggestion = " + String.valueOf(id));
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
 	}
 	
 	private ThemeSuggestion loadObject(ResultSet rs) throws SQLException{
@@ -99,6 +160,7 @@ public class ThemeSuggestionDAO {
 		
 		theme.setIdThemeSuggestion(rs.getInt("idThemeSuggestion"));
 		theme.getDepartment().setIdDepartment(rs.getInt("idDepartment"));
+		theme.getUser().setIdUser(rs.getInt("idUser"));
 		theme.setTitle(rs.getString("title"));
 		theme.setProponent(rs.getString("proponent"));
 		theme.setObjectives(rs.getString("objectives"));

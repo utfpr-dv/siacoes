@@ -1,15 +1,12 @@
 package br.edu.utfpr.dv.siacoes.window;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.vaadin.dialogs.ConfirmDialog;
 import org.vaadin.thomas.timefield.TimeField;
 
-import com.vaadin.event.SelectionEvent;
-import com.vaadin.event.SelectionEvent.SelectionListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
@@ -22,17 +19,16 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 
+import br.edu.utfpr.dv.siacoes.Session;
+import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryStudentBO;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryStudent;
-import br.edu.utfpr.dv.siacoes.model.StatementReport;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
-import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
-import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditJuryWindow extends EditWindow {
@@ -57,8 +53,6 @@ public class EditJuryWindow extends EditWindow {
 	private final TimeField textEndTime;
 	private final TextArea textComments;
 	private final TabSheet tabContainer;
-	
-	private Button.ClickListener listenerClickDownload;
 	
 	public EditJuryWindow(Jury jury, ListView parentView){
 		super("Banca", parentView);
@@ -126,7 +120,12 @@ public class EditJuryWindow extends EditWindow {
             }
         });
 		
-		this.buttonAppraiserStatement = new Button("Declaração");
+		this.buttonAppraiserStatement = new Button("Declaração", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadProfessorStatement();
+            }
+        });
 		
 		HorizontalLayout layoutGridButtons = new HorizontalLayout(this.buttonAddAppraiser, this.buttonRemoveAppraiser, this.buttonAppraiserScore, this.buttonAppraiserStatement);
 		layoutGridButtons.setSpacing(true);
@@ -149,7 +148,12 @@ public class EditJuryWindow extends EditWindow {
             }
         });
 		
-		this.buttonParticipantStatement = new Button("Gerar Declaração");
+		this.buttonParticipantStatement = new Button("Gerar Declaração", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadStudentStatement();
+            }
+        });
 		
 		HorizontalLayout layoutGridButtons2 = new HorizontalLayout(this.buttonAddParticipant, this.buttonRemoveParticipant, this.buttonParticipantStatement);
 		layoutGridButtons2.setSpacing(true);
@@ -163,7 +167,7 @@ public class EditJuryWindow extends EditWindow {
 		this.addField(this.tabContainer);
 		
 		this.loadJury();
-		this.textDate.focus();
+		this.textLocal.focus();
 	}
 	
 	private void loadJury(){
@@ -222,14 +226,6 @@ public class EditJuryWindow extends EditWindow {
 		this.gridAppraisers.addColumn("Nome", String.class);
 		this.gridAppraisers.setWidth("690px");
 		this.gridAppraisers.setHeight("300px");
-		this.gridAppraisers.addSelectionListener(new SelectionListener() {
-			@Override
-			public void select(SelectionEvent event) {
-				prepareDownloadProfessorStatement();
-			}
-		});
-		
-		this.prepareDownloadProfessorStatement();
 		
 		if(this.jury.getAppraisers() != null){
 			User supervisor = this.jury.getSupervisor();
@@ -255,14 +251,6 @@ public class EditJuryWindow extends EditWindow {
 		this.gridParticipants.addColumn("Nome", String.class);
 		this.gridParticipants.setWidth("690px");
 		this.gridParticipants.setHeight("300px");
-		this.gridParticipants.addSelectionListener(new SelectionListener() {
-			@Override
-			public void select(SelectionEvent event) {
-				prepareDownloadStudentStatement();
-			}
-		});
-		
-		this.prepareDownloadStudentStatement();
 		
 		if(this.jury.getAppraisers() != null){
 			for(JuryStudent student : this.jury.getParticipants()){
@@ -362,7 +350,7 @@ public class EditJuryWindow extends EditWindow {
 		int index = this.getParticipantSelectedIndex();
 		
 		if(index == -1){
-			Notification.show("Selecionar Participant", "Selecione o participante para remover.", Notification.Type.WARNING_MESSAGE);
+			Notification.show("Selecionar Participante", "Selecione o participante para remover.", Notification.Type.WARNING_MESSAGE);
 		}else{
 			try{
 				ConfirmDialog.show(UI.getCurrent(), "Confirma a remoção do participante?", new ConfirmDialog.Listener() {
@@ -393,78 +381,44 @@ public class EditJuryWindow extends EditWindow {
 		}
 	}
 	
-	private void prepareDownloadProfessorStatement(){
+	private void downloadProfessorStatement(){
 		int index = this.getAppraiserSelectedIndex();
 		
-		this.buttonAppraiserStatement.removeClickListener(this.listenerClickDownload);
-		new ExtensionUtils().removeAllExtensions(this.buttonAppraiserStatement);
-		
 		if(index == -1){
-			this.listenerClickDownload = new Button.ClickListener() {
-	            @Override
-	            public void buttonClick(ClickEvent event) {
-	            	Notification.show("Gerar Declaração", "Selecione o membro para gerar a declaração.", Notification.Type.WARNING_MESSAGE);
-	            }
-	        };
-	        
-			this.buttonAppraiserStatement.addClickListener(this.listenerClickDownload);
+			Notification.show("Gerar Declaração", "Selecione o membro para gerar a declaração.", Notification.Type.WARNING_MESSAGE);
 		}else{
 			try{
-				JuryAppraiserBO bo = new JuryAppraiserBO();
+				CertificateBO bo = new CertificateBO();
+				byte[] report = bo.getJuryProfessorStatement(this.jury.getAppraisers().get(index).getIdJuryAppraiser());
 				
-				List<StatementReport> list = new ArrayList<StatementReport>();
-				list.add(bo.getStatementReport(this.jury.getAppraisers().get(index).getIdJuryAppraiser()));
+				Session.putReport(report);
 				
-				new ReportUtils().prepareForPdfReport("ProfessorStatement", "Declaração", list, this.buttonAppraiserStatement);
+				getUI().getPage().open("#!certificate/session", "_blank");
 			}catch(Exception e){
-				this.listenerClickDownload = new Button.ClickListener() {
-		            @Override
-		            public void buttonClick(ClickEvent event) {
-		            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-		            	
-		            	Notification.show("Gerar Declaração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-		            }
-		        };
-		        
-        		this.buttonAppraiserStatement.addClickListener(this.listenerClickDownload);
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+	        	
+	        	Notification.show("Gerar Declaração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
 		}
 	}
 	
-	private void prepareDownloadStudentStatement(){
+	private void downloadStudentStatement(){
 		int index = this.getParticipantSelectedIndex();
 		
-		this.buttonParticipantStatement.removeClickListener(this.listenerClickDownload);
-		new ExtensionUtils().removeAllExtensions(this.buttonParticipantStatement);
-		
 		if(index == -1){
-			this.listenerClickDownload = new Button.ClickListener() {
-	            @Override
-	            public void buttonClick(ClickEvent event) {
-	            	Notification.show("Gerar Declaração", "Selecione o participante para gerar a declaração.", Notification.Type.WARNING_MESSAGE);
-	            }
-	        };
-	        
-			this.buttonParticipantStatement.addClickListener(this.listenerClickDownload);
+			Notification.show("Gerar Declaração", "Selecione o aluno para gerar a declaração.", Notification.Type.WARNING_MESSAGE);
 		}else{
 			try{
-				JuryStudentBO bo = new JuryStudentBO();
+				CertificateBO bo = new CertificateBO();
+				byte[] report = bo.getJuryStudentStatement(this.jury.getParticipants().get(index).getIdJuryStudent());
 				
-				List<StatementReport> list = new ArrayList<StatementReport>();
-				list.add(bo.getStatementReport(this.jury.getParticipants().get(index).getIdJuryStudent()));
+				Session.putReport(report);
 				
-				new ReportUtils().prepareForPdfReport("StudentStatement", "Declaração", list, this.buttonParticipantStatement);
+				getUI().getPage().open("#!certificate/session", "_blank");
 			}catch(Exception e){
-				this.listenerClickDownload = new Button.ClickListener() {
-		            @Override
-		            public void buttonClick(ClickEvent event) {
-		            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-		            	
-		            	Notification.show("Gerar Declaração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-		            }
-		        };
-		        
-        		this.buttonParticipantStatement.addClickListener(this.listenerClickDownload);
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+	        	
+	        	Notification.show("Gerar Declaração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
 		}
 	}

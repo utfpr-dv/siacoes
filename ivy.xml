@@ -62,5 +62,17 @@
 		<!-- Compiler for custom widget sets. Should not be deployed -->
 		<dependency org="com.vaadin" name="vaadin-client-compiler"
 			rev="&vaadin.version;" conf="widgetset-compile->default" />
+		
+		<!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
+		<dependency org="com.google.zxing" name="core" rev="3.3.0"/>
+		
+		<!-- https://mvnrepository.com/artifact/com.google.zxing/javase -->
+		<dependency org="com.google.zxing" name="javase" rev="3.3.0"/>
+		
+		<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-bridge -->
+		<dependency org="org.apache.xmlgraphics" name="batik-bridge" rev="1.9"/>
+		
+		<!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-jdbc -->
+		<dependency org="org.apache.tomcat" name="tomcat-jdbc" rev="8.5.14"/>
 	</dependencies>
 </ivy-module>

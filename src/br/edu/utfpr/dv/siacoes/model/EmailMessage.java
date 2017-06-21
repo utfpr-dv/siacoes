@@ -3,7 +3,9 @@ package br.edu.utfpr.dv.siacoes.model;
 public class EmailMessage {
 	
 	public enum MessageType{
-		NONE(0), SUPERVISORCHANGEREQUEST(1), SUPERVISORCHANGEAPPROVAL(2);
+		NONE(0), ACTIVITYSUBMITED(1), 
+		ACTIVITYAPPROVED(2),
+		ACTIVITYREPPROVED(3);
 		
 		private final int value; 
 		MessageType(int value){ 
@@ -26,12 +28,14 @@ public class EmailMessage {
 		
 		public String toString(){
 			switch(this){
-			case SUPERVISORCHANGEREQUEST:
-				return "Pedido de Alteração de Orientador";
-			case SUPERVISORCHANGEAPPROVAL:
-				return "Resposta para Alteração de Orientador";
-			default:
-				return "";
+				case ACTIVITYSUBMITED:
+					return "Comprovante de Atividade Complementar Enviado";
+				case ACTIVITYAPPROVED:
+					return "Comprovante de Atividade Complementar Aprovado";
+				case ACTIVITYREPPROVED:
+					return "Comprovante de Atividade Complementar Reprovado";
+				default:
+					return "";
 			}
 		}
 	}

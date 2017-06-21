@@ -8,7 +8,6 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
@@ -71,7 +70,7 @@ public class EvaluationItemView extends ListView {
 		this.getGrid().addColumn("TCC", Integer.class);
 		this.getGrid().addColumn("Avaliação", String.class);
 		this.getGrid().addColumn("Quesito", String.class);
-		this.getGrid().addColumn("Peso", Integer.class);
+		this.getGrid().addColumn("Peso", Double.class);
 		
 		try {
 			int stage = 0;

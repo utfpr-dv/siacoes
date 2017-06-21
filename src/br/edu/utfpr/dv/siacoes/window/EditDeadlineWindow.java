@@ -10,12 +10,14 @@ import com.vaadin.ui.Notification;
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.bo.DeadlineBO;
+import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditDeadlineWindow extends EditWindow {
@@ -50,7 +52,15 @@ public class EditDeadlineWindow extends EditWindow {
 		
 		this.year = new YearField();
 		
-		if(Session.getUser().getDepartment().isSigetRegisterProposal()){
+		SigetConfigBO bo = new SigetConfigBO();
+		SigetConfig sigetConfig = new SigetConfig();
+		try {
+			sigetConfig = bo.findByDepartment(Session.getUser().getDepartment().getIdDepartment());
+		} catch (Exception e1) {
+			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
+		}
+		
+		if(sigetConfig.isRegisterProposal()){
 			this.proposalDeadline = new DateField("Data Limite da Proposta");
 		}else{
 			this.proposalDeadline = new DateField("Data Limite para Registro de Orientação");

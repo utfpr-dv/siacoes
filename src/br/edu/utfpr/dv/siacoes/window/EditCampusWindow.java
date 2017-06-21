@@ -116,7 +116,7 @@ public class EditCampusWindow extends EditWindow {
 			
 			bo.save(this.campus);
 			
-			Notification.show("Salvar Câmpus", "Cãmpus salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			Notification.show("Salvar Câmpus", "Câmpus salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
 			
 			this.parentViewRefreshGrid();
 			this.close();

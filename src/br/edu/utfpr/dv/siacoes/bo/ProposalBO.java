@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.ProposalDAO;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Department;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 
@@ -89,10 +90,10 @@ public class ProposalBO {
 			throw new Exception("Informe o ano e semestre da proposta.");
 		}
 		
-		DepartmentBO bo = new DepartmentBO();
-		Department department = bo.findById(proposal.getDepartment().getIdDepartment());
+		SigetConfigBO bo = new SigetConfigBO();
+		SigetConfig config = bo.findByDepartment(proposal.getDepartment().getIdDepartment());
 		
-		if((department != null) && department.isSigetRegisterProposal()){
+		if((config != null) && config.isRegisterProposal()){
 			if(proposal.getFile() == null){
 				throw new Exception("É necessário enviar o arquivo da proposta.");
 			}

@@ -8,8 +8,10 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
@@ -56,6 +58,7 @@ public class EditThesisWindow extends EditWindow {
 	private final YearField textYear;
 	private final DateField textSubmissionDate;
 	private final Upload uploadFile;
+	private final Image imageFileUploaded;
 	private final TextArea textAbstract;
 	private final TabSheet tabData;
 	
@@ -107,9 +110,13 @@ public class EditThesisWindow extends EditWindow {
 		this.textSubmissionDate.setDateFormat("dd/MM/yyyy");
 		
 		DocumentUploader listener = new DocumentUploader();
-		this.uploadFile = new Upload("Enviar Arquivo (Formato PDF, Tam. Máx. 5 MB)", listener);
+		this.uploadFile = new Upload("(Formato PDF, Tam. Máx. 5 MB)", listener);
 		this.uploadFile.addSucceededListener(listener);
-		this.uploadFile.setButtonCaption("Enviar");
+		this.uploadFile.setButtonCaption("Enviar Arquivo");
+		this.uploadFile.setImmediate(true);
+		
+		this.imageFileUploaded = new Image("", new ThemeResource("images/ok.png"));
+		this.imageFileUploaded.setVisible(false);
 		
 		VerticalLayout v1 = new VerticalLayout();
 		v1.setSpacing(true);
@@ -123,7 +130,7 @@ public class EditThesisWindow extends EditWindow {
 		HorizontalLayout h3 = new HorizontalLayout(this.comboSupervisor, this.comboCosupervisor);
 		h3.setSpacing(true);
 		
-		HorizontalLayout h4 = new HorizontalLayout(this.uploadFile, this.comboSemester, this.textYear, this.textSubmissionDate);
+		HorizontalLayout h4 = new HorizontalLayout(this.uploadFile, this.imageFileUploaded, this.comboSemester, this.textYear, this.textSubmissionDate);
 		h4.setSpacing(true);
 		
 		v1.addComponent(h1);
@@ -254,6 +261,8 @@ public class EditThesisWindow extends EditWindow {
 		@Override
 		public OutputStream receiveUpload(String filename, String mimeType) {
 			try {
+				imageFileUploaded.setVisible(false);
+				
 				if(DocumentType.fromMimeType(mimeType) != DocumentType.PDF){
 					throw new Exception("O arquivo precisa estar no formato PDF.");
 				}
@@ -285,6 +294,10 @@ public class EditThesisWindow extends EditWindow {
 	            input.read(buffer);
 	            
 	            thesis.setFile(buffer);
+	            
+	            imageFileUploaded.setVisible(true);
+	            
+	            Notification.show("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.", Notification.Type.HUMANIZED_MESSAGE);
 	        } catch (Exception e) {
 	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	            

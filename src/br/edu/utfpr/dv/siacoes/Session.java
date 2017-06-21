@@ -66,4 +66,16 @@ public class Session {
 		}
 	}
 	
+	public static void putReport(byte[] report){
+		VaadinSession.getCurrent().setAttribute("report", report);
+	}
+	
+	public static byte[] getReport(){
+		byte[] report = (byte[]) VaadinSession.getCurrent().getAttribute("report");
+		
+		VaadinSession.getCurrent().setAttribute("report", null);
+		
+		return report;
+	}
+	
 }

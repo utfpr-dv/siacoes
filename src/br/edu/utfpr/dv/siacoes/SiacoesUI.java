@@ -10,20 +10,32 @@ import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 
+import br.edu.utfpr.dv.siacoes.model.InternshipEvaluationItem;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.view.ActivitySubmissionView;
 import br.edu.utfpr.dv.siacoes.view.ActivityGroupView;
 import br.edu.utfpr.dv.siacoes.view.ActivityUnitView;
 import br.edu.utfpr.dv.siacoes.view.ActivityView;
 import br.edu.utfpr.dv.siacoes.view.AttendanceView;
+import br.edu.utfpr.dv.siacoes.view.AuthenticateView;
 import br.edu.utfpr.dv.siacoes.view.BugReportView;
 import br.edu.utfpr.dv.siacoes.view.CalendarView;
 import br.edu.utfpr.dv.siacoes.view.CampusView;
+import br.edu.utfpr.dv.siacoes.view.CertificateView;
+import br.edu.utfpr.dv.siacoes.view.CityView;
+import br.edu.utfpr.dv.siacoes.view.CompanySupervisorView;
+import br.edu.utfpr.dv.siacoes.view.CompanyView;
+import br.edu.utfpr.dv.siacoes.view.CountryView;
 import br.edu.utfpr.dv.siacoes.view.DeadlineView;
 import br.edu.utfpr.dv.siacoes.view.DepartmentView;
 import br.edu.utfpr.dv.siacoes.view.DocumentView;
 import br.edu.utfpr.dv.siacoes.view.EmailMessageView;
 import br.edu.utfpr.dv.siacoes.view.EvaluationItemView;
+import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
+import br.edu.utfpr.dv.siacoes.view.InternshipCalendarView;
+import br.edu.utfpr.dv.siacoes.view.InternshipEvaluationItemView;
+import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
+import br.edu.utfpr.dv.siacoes.view.InternshipView;
 import br.edu.utfpr.dv.siacoes.view.LibraryView;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
@@ -34,6 +46,8 @@ import br.edu.utfpr.dv.siacoes.view.ProposalView;
 import br.edu.utfpr.dv.siacoes.view.SigacView;
 import br.edu.utfpr.dv.siacoes.view.SigesView;
 import br.edu.utfpr.dv.siacoes.view.SigetView;
+import br.edu.utfpr.dv.siacoes.view.StateView;
+import br.edu.utfpr.dv.siacoes.view.StudentView;
 import br.edu.utfpr.dv.siacoes.view.SupervisorChangeView;
 import br.edu.utfpr.dv.siacoes.view.SupervisorView;
 import br.edu.utfpr.dv.siacoes.view.ThemeSuggestionView;
@@ -86,6 +100,19 @@ public class SiacoesUI extends UI {
         getNavigator().addView(SupervisorChangeView.NAME, SupervisorChangeView.class);
         getNavigator().addView(EmailMessageView.NAME, EmailMessageView.class);
         getNavigator().addView(BugReportView.NAME, BugReportView.class);
+        getNavigator().addView(CountryView.NAME, CountryView.class);
+        getNavigator().addView(StateView.NAME, StateView.class);
+        getNavigator().addView(CityView.NAME, CityView.class);
+        getNavigator().addView(CompanyView.NAME, CompanyView.class);
+        getNavigator().addView(CompanySupervisorView.NAME, CompanySupervisorView.class);
+        getNavigator().addView(InternshipView.NAME, InternshipView.class);
+        getNavigator().addView(StudentView.NAME, StudentView.class);
+        getNavigator().addView(AuthenticateView.NAME, AuthenticateView.class);
+        getNavigator().addView(CertificateView.NAME, CertificateView.class);
+        getNavigator().addView(InternshipCalendarView.NAME, InternshipCalendarView.class);
+        getNavigator().addView(InternshipEvaluationItemView.NAME, InternshipEvaluationItemView.class);
+        getNavigator().addView(FinalDocumentView.NAME, FinalDocumentView.class);
+        getNavigator().addView(InternshipLibraryView.NAME, InternshipLibraryView.class);
         
         //
         // We use a view change handler to ensure the user is always redirected
@@ -101,7 +128,9 @@ public class SiacoesUI extends UI {
                 boolean isLoginView = event.getNewView() instanceof LoginView;
                 boolean isMainView = ((event.getNewView() instanceof SigacView) || (event.getNewView() instanceof SigesView) || (event.getNewView() instanceof SigetView) || (event.getNewView() instanceof MainView));
                 
-                if (!isLoggedIn && !isLoginView) {
+                if ((event.getNewView() instanceof AuthenticateView) || (event.getNewView() instanceof CertificateView)){
+                	return true;
+                } else if (!isLoggedIn && !isLoginView) {
                     // Redirect to login view always if a user has not yet
                     // logged in
                     getNavigator().navigateTo(LoginView.NAME);
@@ -109,7 +138,7 @@ public class SiacoesUI extends UI {
                 } else if (isLoggedIn && isLoginView) {
                     // If someone tries to access to login view while logged in,
                     // then cancel
-                    return false;
+                    return true;
                 } else if(!isMainView && !isLoginView) {
                 	ListView view = (ListView)event.getNewView();
                 	

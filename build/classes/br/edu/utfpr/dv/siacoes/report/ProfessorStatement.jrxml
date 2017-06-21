@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.2.final using JasperReports Library version 6.2.2  -->
-<!-- 2016-06-02T22:29:18 -->
+<!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
+<!-- 2017-04-28T14:05:13 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ProfessorStatement" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="913fa94e-8ee3-4f00-b27a-dcb65cd3decc">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -46,6 +46,21 @@
 	<field name="title" class="java.lang.String">
 		<fieldDescription><![CDATA[title]]></fieldDescription>
 	</field>
+	<field name="link" class="java.lang.String">
+		<fieldDescription><![CDATA[link]]></fieldDescription>
+	</field>
+	<field name="guid" class="java.lang.String">
+		<fieldDescription><![CDATA[guid]]></fieldDescription>
+	</field>
+	<field name="generatedDate" class="java.util.Date">
+		<fieldDescription><![CDATA[generatedDate]]></fieldDescription>
+	</field>
+	<field name="qrCode" class="java.io.InputStream">
+		<fieldDescription><![CDATA[qrCode]]></fieldDescription>
+	</field>
+	<field name="departmentManager" class="java.lang.String">
+		<fieldDescription><![CDATA[departmentManager]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -77,7 +92,7 @@
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="664" splitType="Stretch">
+		<band height="558" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="67" width="480" height="30" uuid="f13cbcb1-fb48-4795-861e-2f4f32ca56aa"/>
 				<box>
@@ -100,24 +115,85 @@
 				<textFieldExpression><![CDATA["                                              Declaro para os devidos fins de direito que o(a) professor(a) " + $F{name} + " participou da Banca Examinadora de " + $F{event} + " do(a) acadêmico(a) " + $F{student} + " com tema \"" + $F{title} + "\", a qual ocorreu no dia " + DATEFORMAT($F{date}, "dd/MM/yyyy") + ", com início às " + DATEFORMAT($F{startTime}, "HH:mm") + " e término às " + DATEFORMAT($F{endTime}, "HH:mm") + "."]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="435" width="480" height="21" uuid="2f10a7ec-230f-42e0-bab7-1da6e69dd442"/>
+				<reportElement x="0" y="419" width="480" height="21" uuid="2f10a7ec-230f-42e0-bab7-1da6e69dd442"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{managerName}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="119" y="425" width="241" height="1" uuid="927513fb-6220-400a-8007-d7be849a0616">
+				<reportElement x="119" y="409" width="241" height="1" uuid="927513fb-6220-400a-8007-d7be849a0616">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 			</line>
 			<textField>
-				<reportElement x="0" y="457" width="480" height="21" uuid="a3693cab-9a42-4d44-a9ff-ce8ad9987774"/>
+				<reportElement x="0" y="441" width="480" height="21" uuid="a3693cab-9a42-4d44-a9ff-ce8ad9987774"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Responsável pelas Atividades de " + $F{event}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="1" y="511" width="480" height="21" uuid="82726c92-aebe-4ad1-b7cb-5913177f7cd0"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{departmentManager}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="120" y="501" width="241" height="1" uuid="d9095e11-b10e-4aa8-b5fe-3d0e7e03e464">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</line>
+			<textField>
+				<reportElement x="1" y="533" width="480" height="21" uuid="0c29e5a3-59ee-4782-b71e-28e65280b1f8"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Coordenador do Curso"]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
+	<pageFooter>
+		<band height="100">
+			<textField>
+				<reportElement x="0" y="19" width="483" height="15" uuid="0344bd16-a0ae-4481-a864-08e03068a64b">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{link}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="60" width="414" height="20" uuid="bc03f1d1-2515-4c38-92e6-6dbb6d1e30db"/>
+				<textFieldExpression><![CDATA["Código de autenticação: " + $F{guid}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="80" width="414" height="17" uuid="641dfbc3-d76f-4181-a0ee-c66ff8139e58"/>
+				<textFieldExpression><![CDATA["Gerado em: " + DATEFORMAT($F{generatedDate}, "dd/MM/yyyy HH:mm")]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="414" y="34" width="66" height="66" uuid="058ad239-03f9-4a65-ba4e-5358344089b2">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{qrCode}]]></imageExpression>
+			</image>
+			<line>
+				<reportElement x="0" y="2" width="480" height="1" uuid="2387ec5d-7b7d-4dda-8886-f830bbc838f1"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="5" width="280" height="15" uuid="c04ce1cd-b5cf-4920-85db-9612dbccf400">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<text><![CDATA[Para autenticar este documento, acesse o link abaixo:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="40" width="130" height="20" uuid="a995d1f0-6416-4ec8-8d28-036dcb09c68e">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<text><![CDATA[Ou leia o QRCode ao lado.]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
 </jasperReport>

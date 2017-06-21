@@ -1,5 +1,6 @@
 package br.edu.utfpr.dv.siacoes.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,53 +19,14 @@ import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 public class ProposalDAO {
 	
 	public Proposal findById(int id) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join user student on student.idUser=proposal.idStudent inner join user supervisor on supervisor.idUser=proposal.idSupervisor left join user cosupervisor on cosupervisor.idUser=proposal.idCosupervisor WHERE idProposal = ?");
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, id);
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join user student on student.idUser=proposal.idStudent inner join user supervisor on supervisor.idUser=proposal.idSupervisor left join user cosupervisor on cosupervisor.idUser=proposal.idCosupervisor WHERE idProposal = ?");
 		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
-		}
-	}
-	
-	public Proposal findByProject(int idProject) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT idProposal FROM project WHERE idProject=?");
-		
-		stmt.setInt(1, idProject);
-		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return this.findById(rs.getInt("idProposal"));
-		}else{
-			return null;
-		}
-	}
-	
-	public Proposal findCurrentProposal(int idStudent, int idDepartment, int semester, int year) throws SQLException{
-		ThesisDAO tdao = new ThesisDAO();
-		Thesis thesis = tdao.findCurrentThesis(idStudent, idDepartment, semester, year);
-		
-		ProjectDAO pdao = new ProjectDAO();
-		Project project;
-		
-		if(thesis == null){
-			project = pdao.findCurrentProject(idStudent, idDepartment, semester, year);
-		}else{
-			project = pdao.findById(thesis.getProject().getIdProject());	
-		}
-		
-		if(project == null){
-			PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join user student on student.idUser=proposal.idStudent inner join user supervisor on supervisor.idUser=proposal.idSupervisor left join user cosupervisor on cosupervisor.idUser=proposal.idCosupervisor WHERE proposal.idStudent = ? AND proposal.idDepartment=? AND proposal.semester = ? AND proposal.year = ?");
-			
-			stmt.setInt(1, idStudent);
-			stmt.setInt(2, idDepartment);
-			stmt.setInt(3, semester);
-			stmt.setInt(4, year);
+			stmt.setInt(1, id);
 			
 			ResultSet rs = stmt.executeQuery();
 			
@@ -72,121 +34,264 @@ public class ProposalDAO {
 				return this.loadObject(rs);
 			}else{
 				return null;
-			}	
-		}else{
-			return this.findById(project.getProposal().getIdProposal());
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public Proposal findByProject(int idProject) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT idProposal FROM project WHERE idProject=?");
+		
+			stmt.setInt(1, idProject);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.findById(rs.getInt("idProposal"));
+			}else{
+				return null;
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public Proposal findCurrentProposal(int idStudent, int idDepartment, int semester, int year) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			
+			ThesisDAO tdao = new ThesisDAO();
+			Thesis thesis = tdao.findCurrentThesis(idStudent, idDepartment, semester, year);
+			
+			ProjectDAO pdao = new ProjectDAO();
+			Project project;
+			
+			if(thesis == null){
+				project = pdao.findCurrentProject(idStudent, idDepartment, semester, year);
+			}else{
+				project = pdao.findById(thesis.getProject().getIdProject());	
+			}
+			
+			if(project == null){
+				stmt = conn.prepareStatement("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join user student on student.idUser=proposal.idStudent inner join user supervisor on supervisor.idUser=proposal.idSupervisor left join user cosupervisor on cosupervisor.idUser=proposal.idCosupervisor WHERE proposal.idStudent = ? AND proposal.idDepartment=? AND proposal.semester = ? AND proposal.year = ?");
+				
+				stmt.setInt(1, idStudent);
+				stmt.setInt(2, idDepartment);
+				stmt.setInt(3, semester);
+				stmt.setInt(4, year);
+				
+				ResultSet rs = stmt.executeQuery();
+				
+				if(rs.next()){
+					return this.loadObject(rs);
+				}else{
+					return null;
+				}	
+			}else{
+				return this.findById(project.getProposal().getIdProposal());
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
 	}
 	
 	public Proposal findLastProposal(int idStudent, int idDepartment) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join user student on student.idUser=proposal.idStudent inner join user supervisor on supervisor.idUser=proposal.idSupervisor left join user cosupervisor on cosupervisor.idUser=proposal.idCosupervisor WHERE proposal.idStudent = ? AND proposal.idDepartment=? ORDER BY year DESC, semester DESC");
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, idStudent);
-		stmt.setInt(2, idDepartment);
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join user student on student.idUser=proposal.idStudent inner join user supervisor on supervisor.idUser=proposal.idSupervisor left join user cosupervisor on cosupervisor.idUser=proposal.idCosupervisor WHERE proposal.idStudent = ? AND proposal.idDepartment=? ORDER BY year DESC, semester DESC");
 		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
+			stmt.setInt(1, idStudent);
+			stmt.setInt(2, idDepartment);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
 	}
 	
 	public List<Proposal> listBySemester(int idDepartment, int semester, int year) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement(
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement(
 				"SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName " +
 				"FROM proposal INNER JOIN user student ON student.idUser=proposal.idStudent " +
 				"INNER JOIN user supervisor ON supervisor.idUser=proposal.idSupervisor " +
 				"LEFT JOIN user cosupervisor ON cosupervisor.idUser=proposal.idCosupervisor " +
 				"WHERE proposal.idDepartment=? AND proposal.semester = ? AND proposal.year = ? ORDER BY proposal.title");
 		
-		stmt.setInt(1, idDepartment);
-		stmt.setInt(2, semester);
-		stmt.setInt(3, year);
-		
-		ResultSet rs = stmt.executeQuery();
-		List<Proposal> list = new ArrayList<Proposal>();
-		
-		while(rs.next()){
-			list.add(this.loadObject(rs));			
+			stmt.setInt(1, idDepartment);
+			stmt.setInt(2, semester);
+			stmt.setInt(3, year);
+			
+			ResultSet rs = stmt.executeQuery();
+			List<Proposal> list = new ArrayList<Proposal>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return list;
 	}
 	
 	public List<Proposal> listByAppraiser(int idAppraiser, int semester, int year) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join user student on student.idUser=proposal.idStudent inner join user supervisor on supervisor.idUser=proposal.idSupervisor inner join proposalappraiser appraiser on appraiser.idProposal=proposal.idProposal left join user cosupervisor on cosupervisor.idUser=proposal.idCosupervisor WHERE appraiser.idAppraiser = ? AND semester = ? AND year = ? ORDER BY title");
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, idAppraiser);
-		stmt.setInt(2, semester);
-		stmt.setInt(3, year);
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join user student on student.idUser=proposal.idStudent inner join user supervisor on supervisor.idUser=proposal.idSupervisor inner join proposalappraiser appraiser on appraiser.idProposal=proposal.idProposal left join user cosupervisor on cosupervisor.idUser=proposal.idCosupervisor WHERE appraiser.idAppraiser = ? AND semester = ? AND year = ? ORDER BY title");
 		
-		ResultSet rs = stmt.executeQuery();
-		List<Proposal> list = new ArrayList<Proposal>();
-		
-		while(rs.next()){
-			list.add(this.loadObject(rs));			
+			stmt.setInt(1, idAppraiser);
+			stmt.setInt(2, semester);
+			stmt.setInt(3, year);
+			
+			ResultSet rs = stmt.executeQuery();
+			List<Proposal> list = new ArrayList<Proposal>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return list;
 	}
 	
 	public List<Proposal> listByStudent(int idStudent) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join user student on student.idUser=proposal.idStudent inner join user supervisor on supervisor.idUser=proposal.idSupervisor left join user cosupervisor on cosupervisor.idUser=proposal.idCosupervisor WHERE idStudent = ? ORDER BY title");
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, idStudent);
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join user student on student.idUser=proposal.idStudent inner join user supervisor on supervisor.idUser=proposal.idSupervisor left join user cosupervisor on cosupervisor.idUser=proposal.idCosupervisor WHERE idStudent = ? ORDER BY title");
 		
-		ResultSet rs = stmt.executeQuery();
-		List<Proposal> list = new ArrayList<Proposal>();
-		
-		while(rs.next()){
-			list.add(this.loadObject(rs));			
+			stmt.setInt(1, idStudent);
+			
+			ResultSet rs = stmt.executeQuery();
+			List<Proposal> list = new ArrayList<Proposal>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return list;
 	}
 	
 	public int getProposalStage(int idProposal) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		ResultSet rs = stmt.executeQuery("SELECT idProject FROM project WHERE idProposal=" + String.valueOf(idProposal));
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
 		
-		if(rs.next()){
-			rs = stmt.executeQuery("SELECT idThesis FROM thesis WHERE idProject=" + String.valueOf(rs.getInt("idProject")));
+			ResultSet rs = stmt.executeQuery("SELECT idProject FROM project WHERE idProposal=" + String.valueOf(idProposal));
 			
 			if(rs.next()){
-				return 2;
+				rs = stmt.executeQuery("SELECT idThesis FROM thesis WHERE idProject=" + String.valueOf(rs.getInt("idProject")));
+				
+				if(rs.next()){
+					return 2;
+				}else{
+					return 1;
+				}
 			}else{
-				return 1;
+				return 0;
 			}
-		}else{
-			return 0;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
 	}
 	
 	public List<Proposal> listAll() throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join user student on student.idUser=proposal.idStudent inner join user supervisor on supervisor.idUser=proposal.idSupervisor left join user cosupervisor on cosupervisor.idUser=proposal.idCosupervisor ORDER BY year DESC, semester DESC, title");
-		List<Proposal> list = new ArrayList<Proposal>();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		while(rs.next()){
-			list.add(this.loadObject(rs));			
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join user student on student.idUser=proposal.idStudent inner join user supervisor on supervisor.idUser=proposal.idSupervisor left join user cosupervisor on cosupervisor.idUser=proposal.idCosupervisor ORDER BY year DESC, semester DESC, title");
+			List<Proposal> list = new ArrayList<Proposal>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return list;
 	}
 	
 	public int save(Proposal proposal) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
 		try{
-			ConnectionDAO.getInstance().getConnection().setAutoCommit(false);
+			conn = ConnectionDAO.getInstance().getConnection();
+			conn.setAutoCommit(false);
 			boolean insert = (proposal.getIdProposal() == 0);
-			PreparedStatement stmt;
 			
 			if(insert){
-				stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("INSERT INTO proposal(idDepartment, semester, year, title, subarea, idStudent, idSupervisor, idCosupervisor, file, fileType, submissionDate) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO proposal(idDepartment, semester, year, title, subarea, idStudent, idSupervisor, idCosupervisor, file, fileType, submissionDate) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("UPDATE proposal SET idDepartment=?, semester=?, year=?, title=?, subarea=?, idStudent=?, idSupervisor=?, idCosupervisor=?, file=?, fileType=?, submissionDate=? WHERE idProposal=?");
+				stmt = conn.prepareStatement("UPDATE proposal SET idDepartment=?, semester=?, year=?, title=?, subarea=?, idStudent=?, idSupervisor=?, idCosupervisor=?, file=?, fileType=?, submissionDate=? WHERE idProposal=?");
 			}
 			
 			stmt.setInt(1, proposal.getDepartment().getIdDepartment());
@@ -220,7 +325,7 @@ public class ProposalDAO {
 			}
 			
 			if(proposal.getAppraisers() != null){
-				ProposalAppraiserDAO dao = new ProposalAppraiserDAO();
+				ProposalAppraiserDAO dao = new ProposalAppraiserDAO(conn);
 				String ids = "";
 				
 				for(ProposalAppraiser pa : proposal.getAppraisers()){
@@ -230,19 +335,24 @@ public class ProposalDAO {
 				}
 				
 				if(!ids.isEmpty()){
-					Statement st = ConnectionDAO.getInstance().getConnection().createStatement();
+					Statement st = conn.createStatement();
 					st.execute("DELETE FROM proposalappraiser WHERE idProposal=" + String.valueOf(proposal.getIdProposal()) + " AND idProposalAppraiser NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")");
+					st.close();
 				}
 			}
 			
-			ConnectionDAO.getInstance().getConnection().commit();
+			conn.commit();
 			
 			return proposal.getIdProposal();
 		}catch(SQLException e){
-			ConnectionDAO.getInstance().getConnection().rollback();
+			conn.rollback();
 			throw e;
 		}finally{
-			ConnectionDAO.getInstance().getConnection().setAutoCommit(true);
+			conn.setAutoCommit(true);
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
 	}
 	

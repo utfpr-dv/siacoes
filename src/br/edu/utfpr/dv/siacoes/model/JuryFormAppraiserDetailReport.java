@@ -5,8 +5,10 @@ public class JuryFormAppraiserDetailReport {
 	private String evaluationItemType;
 	private int order;
 	private String evaluationItem;
-	private int ponderosity;
+	private double ponderosity;
 	private double score;
+	private double ponderositySum;
+	private double scoreSum;
 	
 	public JuryFormAppraiserDetailReport(){
 		this.setEvaluationItemType("");
@@ -14,6 +16,8 @@ public class JuryFormAppraiserDetailReport {
 		this.setEvaluationItemType("");
 		this.setPonderosity(0);
 		this.setScore(0);
+		this.setPonderositySum(0);
+		this.setScoreSum(0);
 	}
 	
 	public String getEvaluationItemType() {
@@ -34,10 +38,10 @@ public class JuryFormAppraiserDetailReport {
 	public void setEvaluationItem(String evaluationItem) {
 		this.evaluationItem = evaluationItem;
 	}
-	public int getPonderosity() {
+	public double getPonderosity() {
 		return ponderosity;
 	}
-	public void setPonderosity(int ponderosity) {
+	public void setPonderosity(double ponderosity) {
 		this.ponderosity = ponderosity;
 	}
 	public double getScore() {
@@ -45,6 +49,18 @@ public class JuryFormAppraiserDetailReport {
 	}
 	public void setScore(double score) {
 		this.score = score;
+	}
+	public double getPonderositySum() {
+		return ponderositySum;
+	}
+	public void setPonderositySum(double ponderositySum) {
+		this.ponderositySum = ponderositySum;
+	}
+	public double getScoreSum() {
+		return scoreSum;
+	}
+	public void setScoreSum(double scoreSum) {
+		this.scoreSum = scoreSum;
 	}
 
 }

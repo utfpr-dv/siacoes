@@ -57,6 +57,7 @@ public class ActivitySubmissionView extends ListView {
 	
 	@Override
 	protected void loadGrid() {
+		this.getGrid().addColumn("Aluno", String.class);
 		this.getGrid().addColumn("Semestre", Integer.class);
 		this.getGrid().addColumn("Ano", Integer.class);
 		this.getGrid().addColumn("Grupo", Integer.class);
@@ -64,11 +65,11 @@ public class ActivitySubmissionView extends ListView {
 		this.getGrid().addColumn("Parecer", String.class);
 		this.getGrid().addColumn("Pontuação", Double.class);
 		
-		this.getGrid().getColumns().get(0).setWidth(100);
 		this.getGrid().getColumns().get(1).setWidth(100);
 		this.getGrid().getColumns().get(2).setWidth(100);
-		this.getGrid().getColumns().get(4).setWidth(150);
-		this.getGrid().getColumns().get(5).setWidth(125);
+		this.getGrid().getColumns().get(3).setWidth(100);
+		this.getGrid().getColumns().get(5).setWidth(150);
+		this.getGrid().getColumns().get(6).setWidth(125);
 		
 		new ExtensionUtils().removeAllExtensions(this.buttonFinalReport);
 		this.buttonFinalReport.setEnabled(true);
@@ -96,7 +97,7 @@ public class ActivitySubmissionView extends ListView {
 			}
 			
 			for(ActivitySubmission submission : list){
-				Object itemId = this.getGrid().addRow(submission.getSemester(), submission.getYear(), submission.getActivity().getGroup().getSequence(), submission.getActivity().getDescription(), submission.getFeedback().toString(), submission.getScore());
+				Object itemId = this.getGrid().addRow(submission.getStudent().getName(), submission.getSemester(), submission.getYear(), submission.getActivity().getGroup().getSequence(), submission.getActivity().getDescription(), submission.getFeedback().toString(), submission.getScore());
 				this.addRowId(itemId, submission.getIdActivitySubmission());
 			}
 		}catch(Exception e){

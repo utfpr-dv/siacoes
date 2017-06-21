@@ -56,7 +56,7 @@ public class LibraryView extends ListView {
 		
 		try {
 			FinalDocumentBO bo = new FinalDocumentBO();
-	    	List<FinalDocument> list = bo.listByDepartment(Session.getUser().getDepartment().getIdDepartment());
+	    	List<FinalDocument> list = bo.listByDepartment(Session.getUser().getDepartment().getIdDepartment(), false);
 	    	
 	    	for(FinalDocument p : list){
 				Object itemId = this.getGrid().addRow(p.getThesis().getSemester(), p.getThesis().getYear(), p.getTitle(), p.getThesis().getStudent().getName());

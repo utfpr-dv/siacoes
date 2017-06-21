@@ -11,6 +11,7 @@ import br.edu.utfpr.dv.siacoes.dao.UserDAO;
 import br.edu.utfpr.dv.siacoes.ldap.LdapConfig;
 import br.edu.utfpr.dv.siacoes.ldap.LdapUtils;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.util.StringUtils;
 
@@ -88,6 +89,30 @@ public class UserBO {
 		}
 	}
 	
+	public List<User> listAllCompanySupervisors(boolean onlyActives) throws Exception{
+		try {
+			UserDAO dao = new UserDAO();
+			
+			return dao.listAllCompanySupervisors(onlyActives);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public List<User> listSupervisorsByCompany(int idCompany, boolean onlyActives) throws Exception{
+		try {
+			UserDAO dao = new UserDAO();
+			
+			return dao.listSupervisorsByCompany(idCompany, onlyActives);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public List<User> list(String name, int profile, boolean onlyActives, boolean onlyExternal) throws Exception {
 		try{
 			UserDAO dao = new UserDAO();
@@ -100,16 +125,43 @@ public class UserBO {
 		}
 	}
 	
+	public User findManager(int idDepartment, SystemModule module) throws Exception{
+		try{
+			UserDAO dao = new UserDAO();
+			
+			return dao.findManager(idDepartment, module);
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public User findDepartmentManager(int idDepartment) throws Exception{
+		try{
+			UserDAO dao = new UserDAO();
+			
+			return dao.findDepartmentManager(idDepartment);
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public int save(User user) throws Exception{
 		try {
-			if(user.getLogin().isEmpty()){
+			if((user.getProfile() != UserProfile.COMPANYSUPERVISOR) && (user.getLogin().isEmpty())){
 				throw new Exception("Informe o login.");
 			}
-			if(user.getPassword().isEmpty()){
+			if((user.getProfile() != UserProfile.COMPANYSUPERVISOR) && (user.getPassword().isEmpty())){
 				throw new Exception("Informe a senha.");
 			}
 			if(user.getName().isEmpty()){
 				throw new Exception("Informe o nome.");
+			}
+			if((user.getProfile() == UserProfile.COMPANYSUPERVISOR) && ((user.getCompany() == null) || (user.getCompany().getIdCompany() == 0))){
+				throw new Exception("Informe a empresa.");
 			}
 			
 			UserDAO dao = new UserDAO();
@@ -213,6 +265,8 @@ public class UserBO {
 			login = login.substring(0, login.indexOf("@"));
 		}
 		
+		login = login.toLowerCase().trim();
+		
 		User user = this.findByLogin(login);
 		
 		if(user == null){
@@ -236,7 +290,7 @@ public class UserBO {
 				Map<String, String> dataLdap = ldapUtils.getLdapProperties(login);
 
 				//String cnpjCpf = dataLdap.get(LdapConfig.getInstance().getCpfField());
-				String matricula = dataLdap.get(LdapConfig.getInstance().getRegisterField());
+				//String matricula = dataLdap.get(LdapConfig.getInstance().getRegisterField());
 				String name = this.formatName(dataLdap.get(LdapConfig.getInstance().getNameField()));
 				String email = dataLdap.get(LdapConfig.getInstance().getEmailField());
 				
@@ -245,12 +299,12 @@ public class UserBO {
 				if(user.getIdUser() == 0){
 					user.setName(name);
 					user.setEmail(email);
-					user.setLogin(login);
+					user.setLogin(login.toLowerCase());
 					user.setInstitution("UTFPR");
 					user.setExternal(false);
 					if(this.loginIsStudent(login)){
 						user.setProfile(UserProfile.STUDENT);
-						user.setStudentCode(login.replace("a", ""));
+						user.setStudentCode(login.toLowerCase().replace("a", ""));
 					}else{
 						user.setProfile(UserProfile.PROFESSOR);
 					}
@@ -272,11 +326,46 @@ public class UserBO {
 		List<String> list2 = new ArrayList<String>();
 		
 		for(String s : list){
-			s = s.charAt(0) + s.substring(1).toLowerCase();
+			if(s.length() > 2){
+				s = s.charAt(0) + s.substring(1).toLowerCase();	
+			}else{
+				s = s.toLowerCase();
+			}
+			
 			list2.add(s);
 		}
 		
 		return String.join(" ", list2);
+	}
+	
+	public String formatLoginFromStudentCode(String studentCode){
+		String login = "";
+		
+		studentCode = studentCode.trim();
+		
+		for(int i = 0; i < studentCode.length(); i++){
+			if(Character.isDigit(studentCode.charAt(i))){
+				login = login + studentCode.charAt(i);
+			}
+		}
+		
+		while((login.length() > 0) && (login.charAt(0) == '0')){
+			if(login.length() > 1){
+				login = login.substring(1);	
+			} else {
+				login = "";
+			}
+		}
+		
+		login = "a" + login;
+		
+		return login;
+	}
+	
+	public String[] findEmails(int[] ids) throws Exception{
+		UserDAO dao = new UserDAO();
+		
+		return dao.findEmails(ids);
 	}
 	
 }

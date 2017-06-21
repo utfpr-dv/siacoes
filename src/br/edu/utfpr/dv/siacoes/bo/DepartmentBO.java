@@ -52,12 +52,6 @@ public class DepartmentBO {
 		if(department.getName().isEmpty()){
 			throw new Exception("Informe o nome do departamento.");
 		}
-		if((department.getSigacMinimumScore() < 0) || (department.getSigacMinimumScore() > 100)){
-			throw new Exception("A pontuação mínima das atividades complementares deve estar entre 0 e 100.");
-		}
-		if((department.getSigetMinimumScore() < 0) || (department.getSigetMinimumScore() > 10)){
-			throw new Exception("A nota mínima para aprovação no TCC deve estar entre 0 e 10.");
-		}
 		
 		try{
 			DepartmentDAO dao = new DepartmentDAO();

@@ -5,7 +5,7 @@ import br.edu.utfpr.dv.siacoes.util.DateUtils;
 public class User {
 	
 	public enum UserProfile{
-		STUDENT(0), PROFESSOR(1), ADMINISTRATOR(2), MANAGER(3);
+		STUDENT(0), PROFESSOR(1), ADMINISTRATOR(2), MANAGER(3), COMPANYSUPERVISOR(4);
 		
 		private final int value; 
 		UserProfile(int value){ 
@@ -36,6 +36,8 @@ public class User {
 					return "Professor";
 				case STUDENT:
 					return "Aluno";
+				case COMPANYSUPERVISOR:
+					return "Supervisor";
 				default:
 					return "";
 			}
@@ -44,10 +46,12 @@ public class User {
 	
 	private int idUser;
 	private Department department;
+	private Company company;
 	private String name;
 	private String login;
 	private String password;
 	private String email;
+	private String phone;
 	private String institution;
 	private String research;
 	private String area;
@@ -58,6 +62,7 @@ public class User {
 	private boolean sigacManager;
 	private boolean sigesManager;
 	private boolean sigetManager;
+	private boolean departmentManager;
 	private String studentCode;
 	private int registerSemester;
 	private int registerYear;
@@ -65,10 +70,12 @@ public class User {
 	public User(){
 		this.setIdUser(0);
 		this.setDepartment(new Department());
+		this.setCompany(new Company());
 		this.setName("");
 		this.setLogin("");
 		this.setPassword("");
 		this.setEmail("");
+		this.setPhone("");
 		this.setInstitution("");
 		this.setResearch("");
 		this.setArea("");
@@ -79,6 +86,7 @@ public class User {
 		this.setSigacManager(false);
 		this.setSigesManager(false);
 		this.setSigetManager(false);
+		this.setDepartmentManager(false);
 		this.setStudentCode("");
 		this.setRegisterSemester(DateUtils.getSemester());
 		this.setRegisterYear(DateUtils.getYear());
@@ -113,6 +121,12 @@ public class User {
 	}
 	public void setEmail(String email){
 		this.email = email;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 	public UserProfile getProfile(){
 		return profile;
@@ -162,6 +176,12 @@ public class User {
 	public Department getDepartment(){
 		return department;
 	}
+	public Company getCompany() {
+		return company;
+	}
+	public void setCompany(Company company) {
+		this.company = company;
+	}
 	public void setSigacManager(boolean sigacManager){
 		this.sigacManager = sigacManager;
 	}
@@ -179,6 +199,12 @@ public class User {
 	}
 	public boolean isSigetManager(){
 		return this.sigetManager;
+	}
+	public boolean isDepartmentManager() {
+		return departmentManager;
+	}
+	public void setDepartmentManager(boolean departmentManager) {
+		this.departmentManager = departmentManager;
 	}
 	public void setStudentCode(String studentCode){
 		this.studentCode = studentCode;

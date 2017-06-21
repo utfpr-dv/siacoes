@@ -1,0 +1,256 @@
+package br.edu.utfpr.dv.siacoes.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
+
+import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
+import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
+
+public class InternshipFinalDocumentDAO {
+	
+	public InternshipFinalDocument findById(int id) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement(
+				"SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, " +
+				"s.name AS student, s2.name AS supervisor, c.name AS company " +
+				"FROM internshipfinaldocument INNER JOIN internship ON internship.idInternship=internshipfinaldocument.idInternship " +
+				"INNER JOIN user s ON s.idUser=internship.idStudent " +
+				"INNER JOIN user s2 ON s2.idUser=internship.idSupervisor " +
+				"INNER JOIN company c ON c.idCompany=internship.idCompany " +
+				"WHERE internshipfinaldocument.idinternshipfinaldocument=?");
+		
+			stmt.setInt(1, id);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public InternshipFinalDocument findByInternship(int idInternship) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement(
+				"SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, " +
+				"s.name AS student, s2.name AS supervisor, c.name AS company " +
+				"FROM internshipfinaldocument INNER JOIN internship ON internship.idInternship=internshipfinaldocument.idInternship " +
+				"INNER JOIN user s ON s.idUser=internship.idStudent " +
+				"INNER JOIN user s2 ON s2.idUser=internship.idSupervisor " +
+				"INNER JOIN company c ON c.idCompany=internship.idCompany " +
+				"WHERE internshipfinaldocument.idinternship=?");
+		
+			stmt.setInt(1, idInternship);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public List<InternshipFinalDocument> listAll() throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+		
+			ResultSet rs = stmt.executeQuery("SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, " +
+					"s.name AS student, s2.name AS supervisor, c.name AS company " +
+					"FROM internshipfinaldocument INNER JOIN internship ON internship.idInternship=internshipfinaldocument.idInternship " +
+					"INNER JOIN user s ON s.idUser=internship.idStudent " +
+					"INNER JOIN user s2 ON s2.idUser=internship.idSupervisor " +
+					"INNER JOIN company c ON c.idCompany=internship.idCompany " +
+					"ORDER BY internshipfinaldocument.submissionDate DESC, internshipfinaldocument.title");
+			
+			List<InternshipFinalDocument> list = new ArrayList<InternshipFinalDocument>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public List<InternshipFinalDocument> listByDepartment(int idDepartment, boolean includePrivate) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement(
+					"SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, " +
+					"s.name AS student, s2.name AS supervisor, c.name AS company " +
+					"FROM internshipfinaldocument INNER JOIN internship ON internship.idInternship=internshipfinaldocument.idInternship " +
+					"INNER JOIN user s ON s.idUser=internship.idStudent " +
+					"INNER JOIN user s2 ON s2.idUser=internship.idSupervisor " +
+					"INNER JOIN company c ON c.idCompany=internship.idCompany " +
+					"WHERE internshipfinaldocument.supervisorFeedback=1 AND internship.idDepartment=? " + (includePrivate ? "" : " AND internshipfinaldocument.private=0 ") +
+					"ORDER BY internshipfinaldocument.submissionDate DESC, internshipfinaldocument.title");
+		
+			stmt.setInt(1, idDepartment);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			List<InternshipFinalDocument> list = new ArrayList<InternshipFinalDocument>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public List<InternshipFinalDocument> listBySemester(int idDepartment, int semester, int year, boolean includePrivate) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement(
+					"SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, " +
+					"s.name AS student, s2.name AS supervisor, c.name AS company " +
+					"FROM internshipfinaldocument INNER JOIN internship ON internship.idInternship=internshipfinaldocument.idInternship " +
+					"INNER JOIN internshipjury ON internshipjury.idinternship=internship.idinternship " +
+					"INNER JOIN user s ON s.idUser=internship.idStudent " +
+					"INNER JOIN user s2 ON s2.idUser=internship.idSupervisor " +
+					"INNER JOIN company c ON c.idCompany=internship.idCompany " +
+					"WHERE internshipfinaldocument.supervisorFeedback=1 AND MONTH(internshipjury.date) " + (semester == 1 ? "<= 7" : "> 7") + " AND YEAR(internshipjury.date)=? AND internship.idDepartment=? " + (includePrivate ? "" : " AND internshipfinaldocument.private=0 ") +
+					"ORDER BY internshipfinaldocument.submissionDate DESC, internshipfinaldocument.title");
+		
+			stmt.setInt(1, year);
+			stmt.setInt(2, idDepartment);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			List<InternshipFinalDocument> list = new ArrayList<InternshipFinalDocument>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public int save(InternshipFinalDocument thesis) throws SQLException{
+		boolean insert = (thesis.getIdInternshipFinalDocument() == 0);
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			
+			if(insert){
+				stmt = conn.prepareStatement("INSERT INTO internshipfinaldocument(idInternship, title, file, submissionDate, private, supervisorFeedback, supervisorFeedbackDate, comments) VALUES(?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			}else{
+				stmt = conn.prepareStatement("UPDATE internshipfinaldocument SET idInternship=?, title=?, file=?, submissionDate=?, private=?, supervisorFeedback=?, supervisorFeedbackDate=?, comments=? WHERE idinternshipfinaldocument=?");
+			}
+			
+			stmt.setInt(1, thesis.getInternship().getIdInternship());
+			stmt.setString(2, thesis.getTitle());
+			stmt.setBytes(3, thesis.getFile());
+			stmt.setDate(4, new java.sql.Date(thesis.getSubmissionDate().getTime()));
+			stmt.setInt(5, (thesis.isPrivate() ? 1 : 0));
+			stmt.setInt(6, thesis.getSupervisorFeedback().getValue());
+			if(thesis.getSupervisorFeedbackDate() == null){
+				stmt.setNull(7, Types.DATE);
+			}else{
+				stmt.setDate(7, new java.sql.Date(thesis.getSupervisorFeedbackDate().getTime()));	
+			}
+			stmt.setString(8, thesis.getComments());
+			
+			if(!insert){
+				stmt.setInt(9, thesis.getIdInternshipFinalDocument());
+			}
+			
+			stmt.execute();
+			
+			if(insert){
+				ResultSet rs = stmt.getGeneratedKeys();
+				
+				if(rs.next()){
+					thesis.setIdInternshipFinalDocument(rs.getInt(1));
+				}
+			}
+			
+			return thesis.getIdInternshipFinalDocument();
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	private InternshipFinalDocument loadObject(ResultSet rs) throws SQLException{
+		InternshipFinalDocument ft = new InternshipFinalDocument();
+		
+		ft.setIdInternshipFinalDocument(rs.getInt("idinternshipfinaldocument"));
+		ft.getInternship().setIdInternship(rs.getInt("idinternship"));
+		ft.getInternship().getStudent().setIdUser(rs.getInt("idStudent"));
+		ft.getInternship().getStudent().setName(rs.getString("student"));
+		ft.getInternship().getSupervisor().setIdUser(rs.getInt("idSupervisor"));
+		ft.getInternship().getSupervisor().setName(rs.getString("supervisor"));
+		ft.getInternship().getCompany().setIdCompany(rs.getInt("idCompany"));
+		ft.getInternship().getCompany().setName(rs.getString("company"));
+		ft.setTitle(rs.getString("title"));
+		ft.setSubmissionDate(rs.getDate("submissionDate"));
+		ft.setFile(rs.getBytes("file"));
+		ft.setComments(rs.getString("comments"));
+		ft.setSupervisorFeedbackDate(rs.getDate("supervisorFeedbackDate"));
+		ft.setPrivate(rs.getInt("private") == 1);
+		ft.setSupervisorFeedback(DocumentFeedback.valueOf(rs.getInt("supervisorFeedback")));
+		
+		return ft;
+	}
+
+}

@@ -2,6 +2,7 @@ package br.edu.utfpr.dv.siacoes.bo;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,7 +57,35 @@ public class EmailMessageBO {
 		}
 	}
 	
-	public void sendEmail(String[] to, String subject, String message) throws Exception{
+	public void sendEmail(int[] users, EmailMessage.MessageType type, List<Map.Entry<String, String>> keys) throws Exception {
+		UserBO bo = new UserBO();
+		
+		this.sendEmail(bo.findEmails(users), type, keys);
+	}
+	
+	public void sendEmail(String[] to, EmailMessage.MessageType type, List<Map.Entry<String, String>> keys) throws Exception {
+		EmailMessage message = this.findByMessageType(type);
+		
+		this.sendEmail(to, message, keys);
+	}
+	
+	public void sendEmail(int[] users, EmailMessage message, List<Map.Entry<String, String>> keys) throws Exception {
+		UserBO bo = new UserBO();
+		
+		this.sendEmail(bo.findEmails(users), message, keys);
+	}
+	
+	public void sendEmail(String[] to, EmailMessage message, List<Map.Entry<String, String>> keys) throws Exception {
+		String msg = message.getMessage();
+		
+		for(Map.Entry<String, String> k : keys){
+			msg.replaceAll(k.getKey(), k.getValue());
+		}
+		
+		this.sendEmail(to, message.getSubject(), msg);
+	}
+	
+	private void sendEmail(String[] to, String subject, String message) throws Exception{
 		EmailConfigBO bo = new EmailConfigBO();
 		EmailConfig config = bo.loadConfiguration();
 		

@@ -36,11 +36,21 @@ public class EvaluationItem {
 			
 			return null;
 		}
+		
+		public static EvaluationItemType fromString(String value){
+			for(EvaluationItemType d : EvaluationItemType.values()){
+				if(d.toString().equals(value)){
+					return d;
+				}
+			}
+			
+			return null;
+		}
 	}
 
 	private int idEvaluationItem;
 	private String description;
-	private int ponderosity;
+	private double ponderosity;
 	private int stage;
 	private boolean active;
 	private int sequence;
@@ -70,10 +80,10 @@ public class EvaluationItem {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public int getPonderosity() {
+	public double getPonderosity() {
 		return ponderosity;
 	}
-	public void setPonderosity(int ponderosity) {
+	public void setPonderosity(double ponderosity) {
 		this.ponderosity = ponderosity;
 	}
 	public int getStage() {

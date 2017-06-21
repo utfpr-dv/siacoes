@@ -1,5 +1,6 @@
 package br.edu.utfpr.dv.siacoes.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,113 +14,182 @@ import br.edu.utfpr.dv.siacoes.model.EvaluationItem.EvaluationItemType;
 public class EvaluationItemDAO {
 	
 	public EvaluationItem findById(int id) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT * FROM evaluationitem WHERE idEvaluationItem = ?");
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, id);
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM evaluationitem WHERE idEvaluationItem = ?");
 		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
+			stmt.setInt(1, id);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
 	}
 	
 	public boolean hasScores(int idEvaluationItem) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT COUNT(*) as total FROM juryappraiserscore WHERE idEvaluationItem=?");
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, idEvaluationItem);
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT COUNT(*) as total FROM juryappraiserscore WHERE idEvaluationItem=?");
 		
-		ResultSet rs = stmt.executeQuery();
-		
-		rs.next();
-		return (rs.getInt("total") > 0);
+			stmt.setInt(1, idEvaluationItem);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			rs.next();
+			return (rs.getInt("total") > 0);
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
 	}
 	
 	public List<EvaluationItem> listAll(boolean onlyActives) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM evaluationitem " + (onlyActives ? " WHERE active = 1 " : "") + " ORDER BY stage, type, sequence");
-		List<EvaluationItem> list = new ArrayList<EvaluationItem>();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		while(rs.next()){
-			list.add(this.loadObject(rs));			
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("SELECT * FROM evaluationitem " + (onlyActives ? " WHERE active = 1 " : "") + " ORDER BY stage, type, sequence");
+			List<EvaluationItem> list = new ArrayList<EvaluationItem>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return list;
 	}
 	
 	public List<EvaluationItem> listByDepartment(int idDepartment, boolean onlyActives) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM evaluationitem WHERE idDepartment=" + String.valueOf(idDepartment) + (onlyActives ? " AND active = 1 " : "") + " ORDER BY stage, type, sequence");
-		List<EvaluationItem> list = new ArrayList<EvaluationItem>();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		while(rs.next()){
-			list.add(this.loadObject(rs));			
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("SELECT * FROM evaluationitem WHERE idDepartment=" + String.valueOf(idDepartment) + (onlyActives ? " AND active = 1 " : "") + " ORDER BY stage, type, sequence");
+			List<EvaluationItem> list = new ArrayList<EvaluationItem>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return list;
 	}
 	
 	public List<EvaluationItem> listByStage(int stage, int idDepartment, boolean onlyActives) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM evaluationitem WHERE idDepartment=" + String.valueOf(idDepartment) + " AND stage = " + String.valueOf(stage) + (onlyActives ? " AND active = 1 " : "") + " ORDER BY type, sequence");
-		List<EvaluationItem> list = new ArrayList<EvaluationItem>();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		while(rs.next()){
-			list.add(this.loadObject(rs));			
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("SELECT * FROM evaluationitem WHERE idDepartment=" + String.valueOf(idDepartment) + " AND stage = " + String.valueOf(stage) + (onlyActives ? " AND active = 1 " : "") + " ORDER BY type, sequence");
+			List<EvaluationItem> list = new ArrayList<EvaluationItem>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return list;
 	}
 	
 	public int save(EvaluationItem item) throws SQLException{
 		boolean insert = (item.getIdEvaluationItem() == 0);
-		PreparedStatement stmt;
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		if(!insert && this.hasScores(item.getIdEvaluationItem())){
-			stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("UPDATE evaluationitem SET active=? WHERE idEvaluationItem=?");
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
 			
-			stmt.setInt(1, (item.isActive() ? 1 : 0));
-			stmt.setInt(2, item.getIdEvaluationItem());
-			
-			stmt.execute();
-		}else{
-			if(insert){
-				stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("INSERT INTO evaluationitem(idDepartment, description, ponderosity, stage, active, sequence, type) VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			if(!insert && this.hasScores(item.getIdEvaluationItem())){
+				stmt = conn.prepareStatement("UPDATE evaluationitem SET active=? WHERE idEvaluationItem=?");
 				
-				Statement stmt2 = ConnectionDAO.getInstance().getConnection().createStatement();
-				ResultSet rs = stmt2.executeQuery("SELECT COUNT(*) as total FROM evaluationitem WHERE idDepartment=" + String.valueOf(item.getDepartment().getIdDepartment()) + " AND stage = " + String.valueOf(item.getStage()));
-				rs.next();
-				item.setSequence(rs.getInt("total") + 1);
+				stmt.setInt(1, (item.isActive() ? 1 : 0));
+				stmt.setInt(2, item.getIdEvaluationItem());
+				
+				stmt.execute();
 			}else{
-				stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("UPDATE evaluationitem SET idDepartment=?, description=?, ponderosity=?, stage=?, active=?, sequence=?, type=? WHERE idEvaluationItem=?");
-			}
-			
-			stmt.setInt(1, item.getDepartment().getIdDepartment());
-			stmt.setString(2, item.getDescription());
-			stmt.setInt(3, item.getPonderosity());
-			stmt.setInt(4, item.getStage());
-			stmt.setInt(5, (item.isActive() ? 1 : 0));
-			stmt.setInt(6, item.getSequence());
-			stmt.setInt(7, item.getType().getValue());
-			
-			if(!insert){
-				stmt.setInt(8, item.getIdEvaluationItem());
-			}
-			
-			stmt.execute();
-			
-			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				if(insert){
+					stmt = conn.prepareStatement("INSERT INTO evaluationitem(idDepartment, description, ponderosity, stage, active, sequence, type) VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+					
+					Statement stmt2 = conn.createStatement();
+					ResultSet rs = stmt2.executeQuery("SELECT COUNT(*) as total FROM evaluationitem WHERE idDepartment=" + String.valueOf(item.getDepartment().getIdDepartment()) + " AND stage = " + String.valueOf(item.getStage()));
+					rs.next();
+					item.setSequence(rs.getInt("total") + 1);
+					stmt2.close();
+				}else{
+					stmt = conn.prepareStatement("UPDATE evaluationitem SET idDepartment=?, description=?, ponderosity=?, stage=?, active=?, sequence=?, type=? WHERE idEvaluationItem=?");
+				}
 				
-				if(rs.next()){
-					item.setIdEvaluationItem(rs.getInt(1));
+				stmt.setInt(1, item.getDepartment().getIdDepartment());
+				stmt.setString(2, item.getDescription());
+				stmt.setDouble(3, item.getPonderosity());
+				stmt.setInt(4, item.getStage());
+				stmt.setInt(5, (item.isActive() ? 1 : 0));
+				stmt.setInt(6, item.getSequence());
+				stmt.setInt(7, item.getType().getValue());
+				
+				if(!insert){
+					stmt.setInt(8, item.getIdEvaluationItem());
+				}
+				
+				stmt.execute();
+				
+				if(insert){
+					ResultSet rs = stmt.getGeneratedKeys();
+					
+					if(rs.next()){
+						item.setIdEvaluationItem(rs.getInt(1));
+					}
 				}
 			}
+			
+			return item.getIdEvaluationItem();
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return item.getIdEvaluationItem();
 	}
 	
 	private EvaluationItem loadObject(ResultSet rs) throws SQLException{
@@ -127,7 +197,7 @@ public class EvaluationItemDAO {
 		
 		item.setIdEvaluationItem(rs.getInt("idEvaluationItem"));
 		item.setDescription(rs.getString("description"));
-		item.setPonderosity(rs.getInt("ponderosity"));
+		item.setPonderosity(rs.getDouble("ponderosity"));
 		item.setStage(rs.getInt("stage"));
 		item.setActive(rs.getInt("active") == 1);
 		item.setSequence(rs.getInt("sequence"));
@@ -138,100 +208,137 @@ public class EvaluationItemDAO {
 	}
 	
 	public boolean delete(int id) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		return stmt.execute("DELETE FROM evaluationitem WHERE idEvaluationItem = " + String.valueOf(id));
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+		
+			return stmt.execute("DELETE FROM evaluationitem WHERE idEvaluationItem = " + String.valueOf(id));
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
 	}
 	
 	public void moveUp(int idEvaluationItem) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT sequence, stage, type, idDepartment FROM evaluationitem WHERE idEvaluationItem=?");
-		stmt.setInt(1, idEvaluationItem);
-		ResultSet rs = stmt.executeQuery();
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		if(rs.next()){
-			int sequence = rs.getInt("sequence");
-			int stage = rs.getInt("stage");
-			int type = rs.getInt("type");
-			int idDepartment = rs.getInt("idDepartment");
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT sequence, stage, type, idDepartment FROM evaluationitem WHERE idEvaluationItem=?");
 			
-			stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT idEvaluationItem FROM evaluationitem WHERE idDepartment=? AND sequence < ? AND stage=? AND type=? ORDER BY sequence DESC");
-			stmt.setInt(1, idDepartment);
-			stmt.setInt(2, sequence);
-			stmt.setInt(3, stage);
-			stmt.setInt(4, type);
-			rs = stmt.executeQuery();
+			stmt.setInt(1, idEvaluationItem);
+			ResultSet rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				int idEvaluationItem2 = rs.getInt("idEvaluationItem");
+				int sequence = rs.getInt("sequence");
+				int stage = rs.getInt("stage");
+				int type = rs.getInt("type");
+				int idDepartment = rs.getInt("idDepartment");
 				
-				try{
-					ConnectionDAO.getInstance().getConnection().setAutoCommit(false);
+				stmt.close();
+				stmt = conn.prepareStatement("SELECT idEvaluationItem FROM evaluationitem WHERE idDepartment=? AND sequence < ? AND stage=? AND type=? ORDER BY sequence DESC");
+				stmt.setInt(1, idDepartment);
+				stmt.setInt(2, sequence);
+				stmt.setInt(3, stage);
+				stmt.setInt(4, type);
+				rs = stmt.executeQuery();
+				
+				if(rs.next()){
+					int idEvaluationItem2 = rs.getInt("idEvaluationItem");
 					
-					stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("UPDATE evaluationitem SET sequence=? WHERE idEvaluationItem=?");
-					stmt.setInt(1, sequence);
-					stmt.setInt(2, idEvaluationItem2);
-					stmt.execute();
-					
-					stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("UPDATE evaluationitem SET sequence=? WHERE idEvaluationItem=?");
-					stmt.setInt(1, sequence - 1);
-					stmt.setInt(2, idEvaluationItem);
-					stmt.execute();
-					
-					ConnectionDAO.getInstance().getConnection().commit();
-				}catch(SQLException e){
-					ConnectionDAO.getInstance().getConnection().rollback();
-					
-					throw e;
-				}finally{
-					ConnectionDAO.getInstance().getConnection().setAutoCommit(true);
+					try{
+						conn.setAutoCommit(false);
+						
+						stmt = conn.prepareStatement("UPDATE evaluationitem SET sequence=? WHERE idEvaluationItem=?");
+						stmt.setInt(1, sequence);
+						stmt.setInt(2, idEvaluationItem2);
+						stmt.execute();
+						
+						stmt = conn.prepareStatement("UPDATE evaluationitem SET sequence=? WHERE idEvaluationItem=?");
+						stmt.setInt(1, sequence - 1);
+						stmt.setInt(2, idEvaluationItem);
+						stmt.execute();
+						
+						conn.commit();
+					}catch(SQLException e){
+						conn.rollback();
+						
+						throw e;
+					}finally{
+						conn.setAutoCommit(true);
+					}
 				}
 			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
 	}
 	
 	public void moveDown(int idEvaluationItem) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT idDepartment, sequence, stage, type FROM evaluationitem WHERE idEvaluationItem=?");
-		stmt.setInt(1, idEvaluationItem);
-		ResultSet rs = stmt.executeQuery();
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		if(rs.next()){
-			int sequence = rs.getInt("sequence");
-			int stage = rs.getInt("stage");
-			int type = rs.getInt("type");
-			int idDepartment = rs.getInt("idDepartment");
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT idDepartment, sequence, stage, type FROM evaluationitem WHERE idEvaluationItem=?");
 			
-			stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT idEvaluationItem FROM evaluationitem WHERE idDepartment=? AND sequence > ? AND stage=? AND type=? ORDER BY sequence");
-			stmt.setInt(1, idDepartment);
-			stmt.setInt(2, sequence);
-			stmt.setInt(3, stage);
-			stmt.setInt(4, type);
-			rs = stmt.executeQuery();
+			stmt.setInt(1, idEvaluationItem);
+			ResultSet rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				int idEvaluationItem2 = rs.getInt("idEvaluationItem");
+				int sequence = rs.getInt("sequence");
+				int stage = rs.getInt("stage");
+				int type = rs.getInt("type");
+				int idDepartment = rs.getInt("idDepartment");
 				
-				try{
-					ConnectionDAO.getInstance().getConnection().setAutoCommit(false);
+				stmt.close();
+				stmt = conn.prepareStatement("SELECT idEvaluationItem FROM evaluationitem WHERE idDepartment=? AND sequence > ? AND stage=? AND type=? ORDER BY sequence");
+				stmt.setInt(1, idDepartment);
+				stmt.setInt(2, sequence);
+				stmt.setInt(3, stage);
+				stmt.setInt(4, type);
+				rs = stmt.executeQuery();
+				
+				if(rs.next()){
+					int idEvaluationItem2 = rs.getInt("idEvaluationItem");
 					
-					stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("UPDATE evaluationitem SET sequence=? WHERE idEvaluationItem=?");
-					stmt.setInt(1, sequence);
-					stmt.setInt(2, idEvaluationItem2);
-					stmt.execute();
-					
-					stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("UPDATE evaluationitem SET sequence=? WHERE idEvaluationItem=?");
-					stmt.setInt(1, sequence + 1);
-					stmt.setInt(2, idEvaluationItem);
-					stmt.execute();
-					
-					ConnectionDAO.getInstance().getConnection().commit();
-				}catch(SQLException e){
-					ConnectionDAO.getInstance().getConnection().rollback();
-					
-					throw e;
-				}finally{
-					ConnectionDAO.getInstance().getConnection().setAutoCommit(true);
+					try{
+						conn.setAutoCommit(false);
+						
+						stmt = conn.prepareStatement("UPDATE evaluationitem SET sequence=? WHERE idEvaluationItem=?");
+						stmt.setInt(1, sequence);
+						stmt.setInt(2, idEvaluationItem2);
+						stmt.execute();
+						
+						stmt = conn.prepareStatement("UPDATE evaluationitem SET sequence=? WHERE idEvaluationItem=?");
+						stmt.setInt(1, sequence + 1);
+						stmt.setInt(2, idEvaluationItem);
+						stmt.execute();
+						
+						conn.commit();
+					}catch(SQLException e){
+						conn.rollback();
+						
+						throw e;
+					}finally{
+						conn.setAutoCommit(true);
+					}
 				}
 			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
 	}
 

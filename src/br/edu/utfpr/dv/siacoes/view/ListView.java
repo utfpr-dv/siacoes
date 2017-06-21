@@ -11,12 +11,12 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.Page;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -42,10 +42,12 @@ public abstract class ListView extends CustomComponent implements View {
     private final VerticalLayout layoutFilter;
     private final Button buttonFilter;
     private final List<GridItem> gridItems;
+    private final Label labelGridRecords;
     
     private UserProfile profilePermissions;
     
     private SystemModule module;
+    private int gridRowCount;
     
     public ListView(SystemModule module){
     	this.setProfilePerimissions(UserProfile.STUDENT);
@@ -109,6 +111,8 @@ public abstract class ListView extends CustomComponent implements View {
         });
 		this.buttonFilter.setWidth("150px");
 		
+		this.labelGridRecords = new Label();
+		
 		this.layoutFields = new HorizontalLayout();
 		this.layoutFields.setSpacing(true);
 		
@@ -141,14 +145,23 @@ public abstract class ListView extends CustomComponent implements View {
     protected abstract void loadGrid();
     
     public void refreshGrid(){
+    	this.gridRowCount = 0;
     	this.grid = new Grid();
     	this.grid.setSizeFull();
     	this.loadGrid();
     	this.layoutGrid.removeAllComponents();
-    	this.layoutGrid.addComponent(this.grid);
+    	
+    	VerticalLayout v1 = new VerticalLayout(this.grid, this.labelGridRecords);
+    	v1.setExpandRatio(this.grid, 1);
+    	v1.setExpandRatio(this.labelGridRecords, 0);
+    	v1.setSizeFull();
+    	
+    	this.layoutGrid.addComponent(v1);
     	this.layoutGrid.addComponent(this.layoutButtons);
     	this.layoutGrid.setComponentAlignment(this.layoutButtons, Alignment.TOP_RIGHT);
-    	this.layoutGrid.setExpandRatio(this.grid, 1);
+    	this.layoutGrid.setExpandRatio(v1, 1);
+    	
+    	this.labelGridRecords.setCaption("Listando " + String.valueOf(this.gridRowCount) + " registro(s).");
     }
     
     public void setProfilePerimissions(UserProfile profile){
@@ -236,6 +249,7 @@ public abstract class ListView extends CustomComponent implements View {
     
     public void addRowId(Object itemId, Object value){
     	this.gridItems.add(new GridItem(itemId, value));
+    	this.gridRowCount++;
     }
     
     public Object getIdSelected(){

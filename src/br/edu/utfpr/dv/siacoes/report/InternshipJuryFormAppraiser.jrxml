@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
+<!-- 2017-05-27T23:00:04 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="JuryFormAppraiser" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="d066e92b-b4bc-457d-ba3e-cdcacb930d7f">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="cm"/>
+	<parameter name="campus" class="java.lang.String"/>
+	<parameter name="department" class="java.lang.String"/>
+	<parameter name="brasao_republica" class="Object"/>
+	<parameter name="logo_utfpr" class="Object"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="date" class="java.util.Date">
+		<fieldDescription><![CDATA[date]]></fieldDescription>
+	</field>
+	<field name="comments" class="java.lang.String">
+		<fieldDescription><![CDATA[comments]]></fieldDescription>
+	</field>
+	<field name="stage" class="java.lang.Integer">
+		<fieldDescription><![CDATA[stage]]></fieldDescription>
+	</field>
+	<field name="student" class="java.lang.String">
+		<fieldDescription><![CDATA[student]]></fieldDescription>
+	</field>
+	<field name="name" class="java.lang.String">
+		<fieldDescription><![CDATA[name]]></fieldDescription>
+	</field>
+	<field name="description" class="java.lang.String">
+		<fieldDescription><![CDATA[description]]></fieldDescription>
+	</field>
+	<field name="detail" class="java.util.List">
+		<fieldDescription><![CDATA[detail]]></fieldDescription>
+	</field>
+	<field name="title" class="java.lang.String">
+		<fieldDescription><![CDATA[title]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="119" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="30" width="110" height="20" uuid="5ff15536-705d-4d10-849e-ac2f0f21b65d"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[Título do Relatório:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="50" width="110" height="20" uuid="7e65c09a-a2db-4f17-844c-5e55e7ab46c1"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[Data da Defesa:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="70" width="110" height="20" uuid="a9155896-e50a-4198-a627-7ab73164f685"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[Acadêmico:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="110" y="30" width="370" height="20" uuid="01aab6f5-615e-4fd9-9741-de8d5183b5eb"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="110" y="50" width="370" height="20" uuid="5ddb9968-0864-4651-ade6-5748940d3c1e"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[DATEFORMAT($F{date}, "dd/MM/yyyy HH:mm")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="110" y="70" width="370" height="20" uuid="b24e3ad8-4d32-4465-bc0c-1da82ee47104"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{student}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="97" width="110" height="20" uuid="14110538-3840-4a86-a603-d5320fe932c5"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[Avaliador:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="110" y="97" width="370" height="20" uuid="4506e861-00c8-48e2-aa9e-e3f93c051d7e"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="5" width="480" height="20" uuid="a9f6c01f-ddc4-426e-8918-4954bde5f01d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ficha de Avaliação do Estágio Supervisionado Obrigatório]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="47" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="2" width="380" height="20" uuid="84f46fb3-5d14-4b90-9234-d5538b2fb155"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quesito]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="430" y="2" width="50" height="20" uuid="7af47b9f-6a22-4113-8480-0913d2820e47"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nota]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="2" width="50" height="20" uuid="b6592c2b-44d9-47c7-9c1c-04bb59973edb"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Peso]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="0" y="23" width="480" height="22" uuid="6b01c0a2-611c-476a-b0c4-7569d1359645"/>
+				<subreportParameter name="campus">
+					<subreportParameterExpression><![CDATA[$P{campus}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="department">
+					<subreportParameterExpression><![CDATA[$P{department}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="brasao_republica">
+					<subreportParameterExpression><![CDATA[$P{brasao_republica}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="logo_utfpr">
+					<subreportParameterExpression><![CDATA[$P{logo_utfpr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{detail})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["br/edu/utfpr/dv/siacoes/report/JuryFormAppraiserDetail.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="166" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="1" width="481" height="20" uuid="f46e9cd6-1a9c-47c1-965e-23a2cc4b020e"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Observações]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="21" width="481" height="54" uuid="d41fc3c5-6135-4e9a-9b1a-1e665a65eda2"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{comments}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="119" width="480" height="21" uuid="679e8ac2-b926-4215-9b37-9672067685c0"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="141" width="480" height="20" uuid="0e19f3de-48ff-4ebf-804d-5511da35511e"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[Avaliador]]></text>
+			</staticText>
+			<line>
+				<reportElement x="119" y="116" width="241" height="1" uuid="4c3b4b3b-4547-4668-83b8-45a2a344bd61">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</line>
+			<break>
+				<reportElement x="0" y="164" width="480" height="1" uuid="06a4f19b-17a7-4657-b8c8-aab641c95bdc"/>
+			</break>
+		</band>
+	</columnFooter>
+</jasperReport>

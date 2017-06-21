@@ -1,5 +1,6 @@
 package br.edu.utfpr.dv.siacoes.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,209 +10,479 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 
 public class UserDAO {
 	
 	public User findByLogin(String login) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT * FROM user WHERE login = ?");
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setString(1, login);
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement(
+					"SELECT user.*, company.name AS companyName " +
+					"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE user.login = ?");
 		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
+			stmt.setString(1, login);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
 	}
 	
 	public User findById(int id) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT * FROM user WHERE idUser = ?");
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, id);
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement(
+					"SELECT user.*, company.name AS companyName " +
+					"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE user.idUser = ?");
 		
-		ResultSet rs = stmt.executeQuery();
+			stmt.setInt(1, id);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public User findManager(int idDepartment, SystemModule module) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			
+			String sql = "SELECT user.*, company.name AS companyName " +
+					"FROM user LEFT JOIN company ON user.idcompany=company.idcompany " +
+					"WHERE user.iddepartment = ? ";
+			
+			switch(module){
+				case SIGAC:
+					sql += " AND user.sigacmanager=1 ";
+					break;
+				case SIGES:
+					sql += " AND user.sigesmanager=1 ";
+					break;
+				case SIGET:
+					sql += " AND user.sigetmanager=1 ";
+					break;
+				default:
+					sql += " AND 1=2 ";
+			}
+			
+			sql += " ORDER BY user.profile";
+			
+			stmt = conn.prepareStatement(sql);
+		
+			stmt.setInt(1, idDepartment);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public User findDepartmentManager(int idDepartment) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement(
+				"SELECT user.*, company.name AS companyName " +
+				"FROM user LEFT JOIN company ON user.idcompany=company.idcompany " +
+				"WHERE user.iddepartment = ? AND user.departmentmanager=1 ORDER BY user.profile");
+	
+			stmt.setInt(1, idDepartment);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
 	}
 	
 	public String findEmail(int idUser) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT email FROM user WHERE idUser = ?");
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, idUser);
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT email FROM user WHERE idUser = ?");
 		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return rs.getString("email");
-		}else{
-			return "";
+			stmt.setInt(1, idUser);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getString("email");
+			}else{
+				return "";
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
 	}
 	
 	public List<User> listAll(boolean onlyActives) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM user WHERE login <> 'admin' " + (onlyActives ? " AND active = 1 " : "") + " ORDER BY name");
-		List<User> list = new ArrayList<User>();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		while(rs.next()){
-			list.add(this.loadObject(rs));			
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("SELECT user.*, company.name AS companyName " +
+						"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE user.login <> 'admin' " + (onlyActives ? " AND user.active = 1 " : "") + " ORDER BY user.name");
+			List<User> list = new ArrayList<User>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return list;
 	}
 	
 	public List<User> listAllProfessors(boolean onlyActives) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM user WHERE login <> 'admin' AND profile IN (1, 2) " + (onlyActives ? " AND active = 1 " : "") + " ORDER BY name");
-		List<User> list = new ArrayList<User>();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		while(rs.next()){
-			list.add(this.loadObject(rs));			
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("SELECT user.*, company.name AS companyName " +
+						"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE user.login <> 'admin' AND user.profile IN (1, 2) " + (onlyActives ? " AND user.active = 1 " : "") + " ORDER BY user.name");
+			List<User> list = new ArrayList<User>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return list;
 	}
 	
 	public List<User> listProfessorsByDepartment(int idDepartment, boolean onlyActives) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM user WHERE login <> 'admin' AND idDepartment=" + String.valueOf(idDepartment) + " AND profile IN (1, 2) " + (onlyActives ? " AND active = 1 " : "") + " ORDER BY name");
-		List<User> list = new ArrayList<User>();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		while(rs.next()){
-			list.add(this.loadObject(rs));			
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("SELECT user.*, company.name AS companyName " +
+						"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE user.login <> 'admin' AND user.idDepartment=" + String.valueOf(idDepartment) + " AND user.profile IN (1, 2) " + (onlyActives ? " AND user.active = 1 " : "") + " ORDER BY user.name");
+			List<User> list = new ArrayList<User>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return list;
 	}
 	
 	public List<User> listProfessorsByCampus(int idCampus, boolean onlyActives) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM user INNER JOIN department ON department.idDepartment=user.idDepartment " + 
-				"WHERE login <> 'admin' AND idCampus=" + String.valueOf(idCampus) + " AND profile IN (1, 2) " + (onlyActives ? " AND active = 1 " : "") + " ORDER BY name");
-		List<User> list = new ArrayList<User>();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		while(rs.next()){
-			list.add(this.loadObject(rs));			
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("SELECT user.*, company.name AS companyName " +
+					"FROM user INNER JOIN department ON department.idDepartment=user.idDepartment " + 
+					"LEFT JOIN company ON user.idcompany=company.idcompany " +
+					"WHERE user.login <> 'admin' AND idCampus=" + String.valueOf(idCampus) + " AND user.profile IN (1, 2) " + (onlyActives ? " AND user.active = 1 " : "") + " ORDER BY user.name");
+			List<User> list = new ArrayList<User>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return list;
 	}
 	
 	public List<User> listAllStudents(boolean onlyActives) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM user WHERE login <> 'admin' AND profile = 0 " + (onlyActives ? " AND active = 1 " : "") + " ORDER BY name");
-		List<User> list = new ArrayList<User>();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		while(rs.next()){
-			list.add(this.loadObject(rs));			
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("SELECT user.*, company.name AS companyName " +
+						"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE user.login <> 'admin' AND user.profile = 0 " + (onlyActives ? " AND user.active = 1 " : "") + " ORDER BY user.name");
+			List<User> list = new ArrayList<User>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
+	}
+	
+	public List<User> listAllCompanySupervisors(boolean onlyActives) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
 		
-		return list;
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("SELECT user.*, company.name AS companyName " +
+						"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE user.login <> 'admin' AND user.profile = 4 " + (onlyActives ? " AND user.active = 1 " : "") + " ORDER BY user.name");
+			List<User> list = new ArrayList<User>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public List<User> listSupervisorsByCompany(int idCompany, boolean onlyActives) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("SELECT user.*, company.name AS companyName " +
+						"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE user.login <> 'admin' AND user.profile = 4 AND user.idcompany=" + String.valueOf(idCompany) + (onlyActives ? " AND user.active = 1 " : "") + " ORDER BY user.name");
+			List<User> list = new ArrayList<User>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
 	}
 	
 	public List<User> listStudentBySupervisor(int idSupervisor, int semester, int year) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT user.* FROM user INNER JOIN proposal ON proposal.idStudent=user.idUser " +
-				"WHERE user.profile=0 AND proposal.semester=" + String.valueOf(semester) + " AND proposal.year=" + String.valueOf(year) + " AND (proposal.idSupervisor=" + String.valueOf(idSupervisor) + " OR proposal.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
-				" UNION " +
-				"SELECT user.* FROM user INNER JOIN project ON project.idStudent=user.idUser " + 
-				"WHERE user.profile=0 AND project.semester=" + String.valueOf(semester) + " AND project.year=" + String.valueOf(year) + " AND (project.idSupervisor=" + String.valueOf(idSupervisor) + " OR project.idCosupervisor=" + String.valueOf(idSupervisor) + ") " + 
-				" UNION " +
-				"SELECT user.* FROM user INNER JOIN thesis ON thesis.idStudent=user.idUser " + 
-				"WHERE user.profile=0 AND thesis.semester=" + String.valueOf(semester) + " AND thesis.year=" + String.valueOf(year) + " AND (thesis.idSupervisor=" + String.valueOf(idSupervisor) + " OR thesis.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
-				"ORDER BY name");
-		List<User> list = new ArrayList<User>();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		while(rs.next()){
-			list.add(this.loadObject(rs));			
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("SELECT user.* FROM user INNER JOIN proposal ON proposal.idStudent=user.idUser " +
+					"WHERE user.profile=0 AND proposal.semester=" + String.valueOf(semester) + " AND proposal.year=" + String.valueOf(year) + " AND (proposal.idSupervisor=" + String.valueOf(idSupervisor) + " OR proposal.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
+					" UNION " +
+					"SELECT user.* FROM user INNER JOIN project ON project.idStudent=user.idUser " + 
+					"WHERE user.profile=0 AND project.semester=" + String.valueOf(semester) + " AND project.year=" + String.valueOf(year) + " AND (project.idSupervisor=" + String.valueOf(idSupervisor) + " OR project.idCosupervisor=" + String.valueOf(idSupervisor) + ") " + 
+					" UNION " +
+					"SELECT user.* FROM user INNER JOIN thesis ON thesis.idStudent=user.idUser " + 
+					"WHERE user.profile=0 AND thesis.semester=" + String.valueOf(semester) + " AND thesis.year=" + String.valueOf(year) + " AND (thesis.idSupervisor=" + String.valueOf(idSupervisor) + " OR thesis.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
+					"ORDER BY name");
+			List<User> list = new ArrayList<User>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return list;
 	}
 	
 	public List<User> list(String name, int profile, boolean onlyActives, boolean onlyExternal) throws SQLException {
-		String sql = "SELECT * FROM user WHERE login <> 'admin' " + 
-				(!name.isEmpty() ? " AND name LIKE ? " : "") +
-				(profile >= 0 ? " AND profile = ? " : "") +
-				(onlyActives ? " AND active = 1 " : "") +
-				(onlyExternal ? " AND external = 1 " : "") +
-				"ORDER BY name";
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement(sql);
-		int p = 1;
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		if(!name.isEmpty()){
-			stmt.setString(p, "%" + name + "%");
-			p++;
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			
+			String sql = "SELECT user.*, company.name AS companyName " +
+						"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE login <> 'admin' " + 
+					(!name.isEmpty() ? " AND user.name LIKE ? " : "") +
+					(profile >= 0 ? " AND user.profile = ? " : "") +
+					(onlyActives ? " AND user.active = 1 " : "") +
+					(onlyExternal ? " AND user.external = 1 " : "") +
+					"ORDER BY user.name";
+			stmt = conn.prepareStatement(sql);
+			int p = 1;
+			
+			if(!name.isEmpty()){
+				stmt.setString(p, "%" + name + "%");
+				p++;
+			}
+			if(profile >= 0){
+				stmt.setInt(p, profile);
+				p++;
+			}
+			
+			ResultSet rs = stmt.executeQuery();
+			List<User> list = new ArrayList<User>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		if(profile >= 0){
-			stmt.setInt(p, profile);
-			p++;
-		}
-		
-		ResultSet rs = stmt.executeQuery();
-		List<User> list = new ArrayList<User>();
-		
-		while(rs.next()){
-			list.add(this.loadObject(rs));
-		}
-		
-		return list;
 	}
 	
 	public int save(User user) throws SQLException{
 		boolean insert = (user.getIdUser() == 0);
-		PreparedStatement stmt;
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		if(insert){
-			stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("INSERT INTO user(name, login, password, email, profile, institution, research, lattes, external, active, area, idDepartment, sigacManager, sigesManager, sigetManager, studentCode, registerSemester, registerYear) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-		}else{
-			stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("UPDATE user SET name=?, login=?, password=?, email=?, profile=?, institution=?, research=?, lattes=?, external=?, active=?, area=?, idDepartment=?, sigacManager=?, sigesManager=?, sigetManager=?, studentCode=?, registerSemester=?, registerYear=? WHERE idUser=?");
-		}
-		
-		stmt.setString(1, user.getName());
-		stmt.setString(2, user.getLogin());
-		stmt.setString(3, user.getPassword());
-		stmt.setString(4, user.getEmail());
-		stmt.setInt(5, user.getProfile().getValue());
-		stmt.setString(6, user.getInstitution());
-		stmt.setString(7, user.getResearch());
-		stmt.setString(8, user.getLattes());
-		stmt.setInt(9, user.isExternal() ? 1 : 0);
-		stmt.setInt(10, user.isActive() ? 1 : 0);
-		stmt.setString(11, user.getArea());
-		if((user.getDepartment() == null) || (user.getDepartment().getIdDepartment() == 0)){
-			stmt.setNull(12, Types.INTEGER);
-		}else{
-			stmt.setInt(12, user.getDepartment().getIdDepartment());	
-		}
-		stmt.setInt(13, (user.isSigacManager() ? 1 : 0));
-		stmt.setInt(14, (user.isSigesManager() ? 1 : 0));
-		stmt.setInt(15, (user.isSigetManager() ? 1 : 0));
-		stmt.setString(16, user.getStudentCode());
-		stmt.setInt(17, user.getRegisterSemester());
-		stmt.setInt(18, user.getRegisterYear());
-		
-		if(!insert){
-			stmt.setInt(19, user.getIdUser());
-		}
-		
-		stmt.execute();
-		
-		if(insert){
-			ResultSet rs = stmt.getGeneratedKeys();
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
 			
-			if(rs.next()){
-				user.setIdUser(rs.getInt(1));
+			if(insert){
+				stmt = conn.prepareStatement("INSERT INTO user(name, login, password, email, profile, institution, research, lattes, external, active, area, idDepartment, sigacManager, sigesManager, sigetManager, departmentManager, studentCode, registerSemester, registerYear, phone, idcompany) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			}else{
+				stmt = conn.prepareStatement("UPDATE user SET name=?, login=?, password=?, email=?, profile=?, institution=?, research=?, lattes=?, external=?, active=?, area=?, idDepartment=?, sigacManager=?, sigesManager=?, sigetManager=?, departmentManager=?, studentCode=?, registerSemester=?, registerYear=?, phone=?, idcompany=? WHERE idUser=?");
 			}
+			
+			stmt.setString(1, user.getName());
+			stmt.setString(2, user.getLogin());
+			stmt.setString(3, user.getPassword());
+			stmt.setString(4, user.getEmail());
+			stmt.setInt(5, user.getProfile().getValue());
+			stmt.setString(6, user.getInstitution());
+			stmt.setString(7, user.getResearch());
+			stmt.setString(8, user.getLattes());
+			stmt.setInt(9, user.isExternal() ? 1 : 0);
+			stmt.setInt(10, user.isActive() ? 1 : 0);
+			stmt.setString(11, user.getArea());
+			if((user.getDepartment() == null) || (user.getDepartment().getIdDepartment() == 0)){
+				stmt.setNull(12, Types.INTEGER);
+			}else{
+				stmt.setInt(12, user.getDepartment().getIdDepartment());	
+			}
+			stmt.setInt(13, (user.isSigacManager() ? 1 : 0));
+			stmt.setInt(14, (user.isSigesManager() ? 1 : 0));
+			stmt.setInt(15, (user.isSigetManager() ? 1 : 0));
+			stmt.setInt(16, (user.isDepartmentManager() ? 1 : 0));
+			stmt.setString(17, user.getStudentCode());
+			stmt.setInt(18, user.getRegisterSemester());
+			stmt.setInt(19, user.getRegisterYear());
+			stmt.setString(20, user.getPhone());
+			if((user.getCompany() == null) || (user.getCompany().getIdCompany() == 0)){
+				stmt.setNull(21, Types.INTEGER);
+			}else{
+				stmt.setInt(21, user.getCompany().getIdCompany());	
+			}
+			
+			if(!insert){
+				stmt.setInt(22, user.getIdUser());
+			}
+			
+			stmt.execute();
+			
+			if(insert){
+				ResultSet rs = stmt.getGeneratedKeys();
+				
+				if(rs.next()){
+					user.setIdUser(rs.getInt(1));
+				}
+			}
+			
+			return user.getIdUser();
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return user.getIdUser();
 	}
 	
 	private User loadObject(ResultSet rs) throws SQLException{
@@ -222,6 +493,7 @@ public class UserDAO {
 		user.setLogin(rs.getString("login"));
 		user.setPassword(rs.getString("password"));
 		user.setEmail(rs.getString("email"));
+		user.setPhone(rs.getString("phone"));
 		user.setInstitution(rs.getString("institution"));
 		user.setResearch(rs.getString("research"));
 		user.setLattes(rs.getString("lattes"));
@@ -234,14 +506,57 @@ public class UserDAO {
 		}else{
 			user.getDepartment().setIdDepartment(rs.getInt("idDepartment"));	
 		}
+		if(rs.getInt("idcompany") == 0){
+			user.setCompany(null);
+		}else{
+			user.getCompany().setIdCompany(rs.getInt("idcompany"));
+			user.getCompany().setName(rs.getString("companyName"));
+		}
 		user.setSigacManager(rs.getInt("sigacManager") == 1);
 		user.setSigesManager(rs.getInt("sigesManager") == 1);
 		user.setSigetManager(rs.getInt("sigetManager") == 1);
+		user.setDepartmentManager(rs.getInt("departmentmanager") == 1);
 		user.setStudentCode(rs.getString("studentCode"));
 		user.setRegisterSemester(rs.getInt("registerSemester"));
 		user.setRegisterYear(rs.getInt("registerYear"));
 		
 		return user;
+	}
+	
+	public String[] findEmails(int[] ids) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			String sql = "";
+			
+			for(int id : ids){
+				if(sql == "")
+					sql = String.valueOf(id);
+				else
+					sql = sql + ", " + String.valueOf(id);
+			}
+			
+			if(sql != ""){
+				List<String> emails = new ArrayList<String>();
+				stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery("SELECT email FROM user WHERE idUser IN (" + sql + ")");
+				
+				while(rs.next()){
+					emails.add(rs.getString("email"));
+				}
+				
+				return (String[])emails.toArray();
+			}else
+				return null;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
 	}
 
 }

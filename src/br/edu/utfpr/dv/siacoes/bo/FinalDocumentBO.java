@@ -58,11 +58,11 @@ public class FinalDocumentBO {
 		}
 	}
 	
-	public List<FinalDocument> listBySemester(int idDepartment, int semester, int year) throws Exception{
+	public List<FinalDocument> listBySemester(int idDepartment, int semester, int year, boolean includePrivate) throws Exception{
 		try{
 			FinalDocumentDAO dao = new FinalDocumentDAO();
 			
-			return dao.listBySemester(idDepartment, semester, year);
+			return dao.listBySemester(idDepartment, semester, year, includePrivate);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -70,11 +70,23 @@ public class FinalDocumentBO {
 		}
 	}
 	
-	public List<FinalDocument> listByDepartment(int idDepartment) throws Exception{
+	public List<FinalDocument> listBySupervisor(int idSupervisor, int semester, int year) throws Exception{
 		try{
 			FinalDocumentDAO dao = new FinalDocumentDAO();
 			
-			return dao.listByDepartment(idDepartment);
+			return dao.listBySupervisor(idSupervisor, semester, year);
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public List<FinalDocument> listByDepartment(int idDepartment, boolean includePrivate) throws Exception{
+		try{
+			FinalDocumentDAO dao = new FinalDocumentDAO();
+			
+			return dao.listByDepartment(idDepartment, includePrivate);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

@@ -1,10 +1,15 @@
 package br.edu.utfpr.dv.siacoes.view;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
 
 import com.vaadin.event.EventRouter;
 import com.vaadin.event.SelectionEvent;
@@ -17,6 +22,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.renderers.DateRenderer;
 
 import br.edu.utfpr.dv.siacoes.Session;
+import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryStudentBO;
@@ -47,7 +53,6 @@ public class ThesisView extends ListView {
 	private final Button buttonSendFeedback;
 	
 	private Button.ClickListener listenerClickDownload;
-	private Button.ClickListener listenerClickStatement;
 	
 	public ThesisView(){
 		super(SystemModule.SIGET);
@@ -71,7 +76,12 @@ public class ThesisView extends ListView {
             }
         });
 		
-		this.buttonStatements = new Button("Declarações");
+		this.buttonStatements = new Button("Declarações", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadStatements();
+            }
+        });
 		
 		if(Session.isUserProfessor()){
 			this.addActionButton(this.buttonSendFeedback);
@@ -127,11 +137,54 @@ public class ThesisView extends ListView {
 		}
 	}
 	
+	private void downloadStatements(){
+		Object value = getIdSelected();
+		
+		if(value == null){
+			Notification.show("Gerar Declarações", "Selecione uma banca para gerar as declarações.", Notification.Type.WARNING_MESSAGE);
+		}else{
+			try{
+				ByteArrayOutputStream output = new ByteArrayOutputStream();
+				PDFMergerUtility pdfMerge = new PDFMergerUtility();
+				pdfMerge.setDestinationStream(output);
+				
+				CertificateBO bo = new CertificateBO();
+
+				byte[] reportProfessor = bo.getJuryProfessorStatementReportListByThesis((int)value);
+				
+				if(reportProfessor != null){
+					pdfMerge.addSource(new ByteArrayInputStream(reportProfessor));
+				}
+				
+				byte[] reportStudent = bo.getJuryStudentStatementReportListByThesis((int)value);
+				
+				if(reportStudent != null){
+					pdfMerge.addSource(new ByteArrayInputStream(reportStudent));
+				}
+				
+				if((reportProfessor != null) || (reportStudent != null)){
+					pdfMerge.mergeDocuments(null);
+					
+					byte[] report = output.toByteArray();
+					
+					Session.putReport(report);
+					
+					getUI().getPage().open("#!" + CertificateView.NAME + "/session/" + UUID.randomUUID().toString(), "_blank");
+				}else{
+					Notification.show("Gerar Declarações", "Não há declarações para serem geradas.", Notification.Type.WARNING_MESSAGE);
+				}
+			}catch(Exception e){
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+	        	
+	        	Notification.show("Gerar Declarações", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			}
+		}
+	}
+	
 	private void prepareDownload(){
 		Object value = getIdSelected();
 		
 		this.buttonDownloadThesis.removeClickListener(this.listenerClickDownload);
-		this.buttonStatements.removeClickListener(this.listenerClickStatement);
     	
     	if(value != null){
 			try {
@@ -151,33 +204,6 @@ public class ThesisView extends ListView {
 		        
         		this.buttonDownloadThesis.addClickListener(this.listenerClickDownload);
 			}
-			
-			try {
-				JuryStudentBO sbo = new JuryStudentBO();
-				List<StatementReport> listStudent = sbo.getStatementReportListByThesis((int)value);
-				
-				JuryAppraiserBO abo = new JuryAppraiserBO();
-				List<StatementReport> listAppraiser = abo.getStatementReportListByThesis((int)value);
-				
-				if(listStudent.size() > 0) {
-					new ReportUtils().prepareForPdfReport("StudentStatement", "Declaração Alunos", listStudent, this.buttonStatements);
-				}
-				
-				if(listAppraiser.size() > 0) {
-					new ReportUtils().prepareForPdfReport("ProfessorStatement", "Declaração Professores", listAppraiser, this.buttonStatements, false);
-				}
-			} catch (Exception e) {
-				this.listenerClickStatement = new Button.ClickListener() {
-		            @Override
-		            public void buttonClick(ClickEvent event) {
-		            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-		            	
-		            	Notification.show("Gerar Declarações", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-		            }
-		        };
-		        
-        		this.buttonStatements.addClickListener(this.listenerClickStatement);
-			}
     	}else{
     		new ExtensionUtils().removeAllExtensions(this.buttonDownloadThesis);
     		
@@ -189,17 +215,6 @@ public class ThesisView extends ListView {
 	        };
     		
     		this.buttonDownloadThesis.addClickListener(this.listenerClickDownload);
-    		
-    		new ExtensionUtils().removeAllExtensions(this.buttonStatements);
-    		
-    		this.listenerClickStatement = new Button.ClickListener() {
-	            @Override
-	            public void buttonClick(ClickEvent event) {
-	            	Notification.show("Gerar Declarações", "Selecione um registro para gerar as declarações.", Notification.Type.WARNING_MESSAGE);
-	            }
-	        };
-    		
-    		this.buttonStatements.addClickListener(this.listenerClickStatement);
     	}
 	}
 

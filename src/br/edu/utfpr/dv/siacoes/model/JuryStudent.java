@@ -7,6 +7,7 @@ public class JuryStudent {
 	private User student;
 	
 	public JuryStudent(){
+		this.setIdJuryStudent(0);
 		this.setJury(new Jury());
 		this.setStudent(new User());
 	}
@@ -14,11 +15,9 @@ public class JuryStudent {
 	public int getIdJuryStudent(){
 		return idJuryStudent;
 	}
-	
 	public void setIdJuryStudent(int idJuryStudent){
 		this.idJuryStudent = idJuryStudent;
 	}
-	
 	public Jury getJury() {
 		return jury;
 	}

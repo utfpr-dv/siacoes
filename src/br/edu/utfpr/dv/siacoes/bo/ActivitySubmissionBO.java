@@ -20,6 +20,7 @@ import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionDetailReport;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionFooterReport;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionReport;
 import br.edu.utfpr.dv.siacoes.model.Department;
+import br.edu.utfpr.dv.siacoes.model.SigacConfig;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
@@ -217,10 +218,10 @@ public class ActivitySubmissionBO {
 			}
 		}
 		
-		DepartmentBO dbo = new DepartmentBO();
-		Department department = dbo.findById(idDepartment);
+		SigacConfigBO dbo = new SigacConfigBO();
+		SigacConfig config = dbo.findByDepartment(idDepartment);
 		
-		if(report.getTotalScore() >= department.getSigacMinimumScore()){
+		if(report.getTotalScore() >= config.getMinimumScore()){
 			report.setSituation("Pontuação atingida");	
 		}else{
 			report.setSituation("Pontuação insuficiente");

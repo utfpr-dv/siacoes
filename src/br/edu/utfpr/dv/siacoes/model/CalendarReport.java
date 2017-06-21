@@ -10,6 +10,7 @@ public class CalendarReport {
 	private String student;
 	private String appraisers;
 	private int stage;
+	private String company;
 	
 	public CalendarReport(){
 		this.setDate(new Date());
@@ -17,6 +18,8 @@ public class CalendarReport {
 		this.setTitle("");
 		this.setStudent("");
 		this.setAppraisers("");
+		this.setStage(1);
+		this.setCompany("");
 	}
 	
 	public Date getDate() {
@@ -54,6 +57,12 @@ public class CalendarReport {
 	}
 	public void setStage(int stage){
 		this.stage = stage;
+	}
+	public String getCompany() {
+		return company;
+	}
+	public void setCompany(String company) {
+		this.company = company;
 	}
 
 }

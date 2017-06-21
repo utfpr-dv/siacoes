@@ -116,7 +116,7 @@ public class EditEvaluationItemWindow extends EditWindow {
 			
 			if(!bo.hasScores(this.item.getIdEvaluationItem())){
 				this.item.setDescription(this.textDescription.getValue());
-				this.item.setPonderosity(Integer.parseInt(this.textPonderosity.getValue()));
+				this.item.setPonderosity(Double.parseDouble(this.textPonderosity.getValue()));
 				this.item.setStage((int)this.comboStage.getValue());
 				this.item.setType((EvaluationItemType)this.comboType.getValue());
 			}

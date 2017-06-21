@@ -31,7 +31,7 @@ public class ThemeSuggestionView extends ListView {
 		
 		this.addFilterField(this.checkActive);
 		
-		if(!Session.isUserManager(this.getModule())){
+		if(!Session.isUserProfessor()){
 			this.setFiltersVisible(false);
 			this.setAddVisible(false);
 			this.setDeleteVisible(false);
@@ -85,6 +85,14 @@ public class ThemeSuggestionView extends ListView {
 	public void deleteClick(Object id) {
 		try {
 			ThemeSuggestionBO bo = new ThemeSuggestionBO();
+			
+			if(!Session.isUserManager(SystemModule.SIGET)){
+				ThemeSuggestion theme = bo.findById((int)id);
+				
+				if(theme.getUser().getIdUser() != Session.getUser().getIdUser()){
+					throw new Exception("Não é possível excluir sugestões de outros usuários.");
+				}
+			}
 
 			bo.delete((int)id);
 			

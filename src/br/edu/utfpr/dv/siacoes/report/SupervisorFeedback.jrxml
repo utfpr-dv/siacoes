@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-04-23T15:30:23 -->
+<!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
+<!-- 2017-04-29T12:43:32 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SupervisorFeedback" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="4d8936ee-60c3-42f5-ba3a-2f1519f0deb6">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -153,7 +153,7 @@
 				<textElement>
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Conforme exigências descritas no Regulamento de TCC do Curso de Engenharia de Software, sou de parecer:]]></text>
+				<text><![CDATA[Conforme exigências descritas no Regulamento de TCC do Curso de Engenharia de Software, sou de parecer]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="40" y="150" width="166" height="20" uuid="a17ed73c-3e39-466c-a0fa-66cf75676a64"/>

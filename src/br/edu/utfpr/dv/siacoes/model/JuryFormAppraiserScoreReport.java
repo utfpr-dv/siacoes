@@ -7,6 +7,7 @@ public class JuryFormAppraiserScoreReport {
 	private double scoreWriting;
 	private double scoreOral;
 	private double scoreArgumentation;
+	private double score;
 
 	public JuryFormAppraiserScoreReport(){
 		this.setDescription("");
@@ -14,6 +15,7 @@ public class JuryFormAppraiserScoreReport {
 		this.setScoreWriting(0);
 		this.setScoreOral(0);
 		this.setScoreArgumentation(0);
+		this.setScore(0);
 	}
 	
 	public String getDescription() {
@@ -47,7 +49,10 @@ public class JuryFormAppraiserScoreReport {
 		this.scoreArgumentation = scoreArgumentation;
 	}
 	public double getScore() {
-		return scoreWriting + scoreOral + scoreArgumentation;
+		return score;
+	}
+	public void setScore(double score) {
+		this.score = score;
 	}
 
 }

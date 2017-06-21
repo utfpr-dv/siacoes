@@ -4,12 +4,52 @@ import java.util.Date;
 
 public class FinalDocument {
 	
+	public enum DocumentFeedback{
+		NONE(0), APPROVED(1), DISAPPROVED(2);
+		
+		private final int value; 
+		DocumentFeedback(int value){ 
+			this.value = value; 
+		}
+		
+		public int getValue(){ 
+			return value;
+		}
+		
+		public static DocumentFeedback valueOf(int value){
+			for(DocumentFeedback p : DocumentFeedback.values()){
+				if(p.getValue() == value){
+					return p;
+				}
+			}
+			
+			return null;
+		}
+		
+		public String toString(){
+			switch(this){
+			case NONE:
+				return "Nenhum";
+			case APPROVED:
+				return "Aprovado";
+			case DISAPPROVED:
+				return "Reprovado";
+			default:
+				return "";
+			}
+		}
+	}
+	
 	private int idFinalDocument;
 	private Project project;
 	private Thesis thesis;
 	private String title;
 	private Date submissionDate;
 	private byte[] file;
+	private boolean _private;
+	private Date supervisorFeedbackDate;
+	private DocumentFeedback supervisorFeedback;
+	private String comments;
 	
 	public FinalDocument(){
 		this.setIdFinalDocument(0);
@@ -18,6 +58,10 @@ public class FinalDocument {
 		this.setTitle("");
 		this.setSubmissionDate(new Date());
 		this.setFile(null);
+		this.setPrivate(false);
+		this.setSupervisorFeedbackDate(null);
+		this.setSupervisorFeedback(DocumentFeedback.NONE);
+		this.setComments("");
 	}
 	
 	public int getIdFinalDocument() {
@@ -55,6 +99,30 @@ public class FinalDocument {
 	}
 	public void setFile(byte[] file) {
 		this.file = file;
+	}
+	public boolean isPrivate() {
+		return _private;
+	}
+	public void setPrivate(boolean _private) {
+		this._private = _private;
+	}
+	public Date getSupervisorFeedbackDate() {
+		return supervisorFeedbackDate;
+	}
+	public void setSupervisorFeedbackDate(Date supervisorFeedbackDate) {
+		this.supervisorFeedbackDate = supervisorFeedbackDate;
+	}
+	public DocumentFeedback getSupervisorFeedback() {
+		return supervisorFeedback;
+	}
+	public void setSupervisorFeedback(DocumentFeedback supervisorFeedback) {
+		this.supervisorFeedback = supervisorFeedback;
+	}
+	public String getComments() {
+		return comments;
+	}
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 	public int getStage(){
 		if((this.getThesis() != null) && (this.getThesis().getIdThesis() != 0))

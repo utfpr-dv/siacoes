@@ -57,6 +57,8 @@ public class ProposalAppraiserBO {
 			
 			ProposalAppraiserDAO dao = new ProposalAppraiserDAO();
 			
+			//Avaliação de proposta
+			
 			return dao.save(appraiser);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);

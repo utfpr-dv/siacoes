@@ -45,6 +45,7 @@ public class EditUserWindow extends EditWindow {
 	private final CheckBox checkSigacManager;
 	private final CheckBox checkSigesManager;
 	private final CheckBox checkSigetManager;
+	private final CheckBox checkDepartmentManager;
 	private final TextField textStudentCode;
 	private final SemesterComboBox comboSemester;
 	private final YearField textYear;
@@ -124,6 +125,8 @@ public class EditUserWindow extends EditWindow {
 		
 		this.checkSigetManager = new CheckBox("Responsável por TCC");
 		
+		this.checkDepartmentManager = new CheckBox("Responsável pelo Departamento");
+		
 		this.checkExternal = new CheckBox("Usuário externo");
 		this.checkExternal.addValueChangeListener(new ValueChangeListener() {
 			@Override
@@ -153,7 +156,7 @@ public class EditUserWindow extends EditWindow {
 		this.addField(new HorizontalLayout(this.comboCampus, this.comboDepartment));
 		this.addField(new HorizontalLayout(this.textStudentCode, this.comboSemester, this.textYear));
 		if(Session.isUserAdministrator()){
-			this.addField(new HorizontalLayout(this.comboProfile, new VerticalLayout(this.checkSigacManager, this.checkSigesManager, this.checkSigetManager)));
+			this.addField(new HorizontalLayout(this.comboProfile, new VerticalLayout(this.checkDepartmentManager, this.checkSigacManager, this.checkSigesManager, this.checkSigetManager)));
 		}
 		if(Session.isUserProfessor()){
 			this.addField(new HorizontalLayout(this.textInstitution, this.textLattes));
@@ -210,6 +213,7 @@ public class EditUserWindow extends EditWindow {
 			this.checkSigacManager.setValue(this.user.isSigacManager());
 			this.checkSigesManager.setValue(this.user.isSigesManager());
 			this.checkSigetManager.setValue(this.user.isSigetManager());
+			this.checkDepartmentManager.setValue(this.user.isDepartmentManager());
 		}
 		
 		this.configureExternal(this.user.isExternal());
@@ -263,6 +267,7 @@ public class EditUserWindow extends EditWindow {
 				this.user.setSigacManager(this.checkSigacManager.getValue());
 				this.user.setSigesManager(this.checkSigesManager.getValue());
 				this.user.setSigetManager(this.checkSigetManager.getValue());
+				this.user.setDepartmentManager(this.checkDepartmentManager.getValue());
 				
 				if(this.user.getPassword().isEmpty()){
 					this.user.setPassword(StringUtils.generateMD5Hash(this.user.getLogin()));

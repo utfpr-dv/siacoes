@@ -1,5 +1,6 @@
 package br.edu.utfpr.dv.siacoes.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,9 +12,23 @@ import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 
 public class ProposalAppraiserDAO {
+	
+	private Connection conn;
+	
+	public ProposalAppraiserDAO() throws SQLException{
+		this.conn = ConnectionDAO.getInstance().getConnection();
+	}
+	
+	public ProposalAppraiserDAO(Connection conn) throws SQLException{
+		if(conn == null){
+			this.conn = ConnectionDAO.getInstance().getConnection();	
+		}else{
+			this.conn = conn;
+		}
+	}
 
 	public List<ProposalAppraiser> listAppraisers(int idProposal) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
+		Statement stmt = this.conn.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join user appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposal = " + String.valueOf(idProposal));
 		List<ProposalAppraiser> list = new ArrayList<ProposalAppraiser>();
 		
@@ -25,7 +40,7 @@ public class ProposalAppraiserDAO {
 	}
 	
 	public ProposalAppraiser findById(int id) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join user appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposalAppraiser = ?");
+		PreparedStatement stmt = this.conn.prepareStatement("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join user appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposalAppraiser = ?");
 		
 		stmt.setInt(1, id);
 		
@@ -39,7 +54,7 @@ public class ProposalAppraiserDAO {
 	}
 	
 	public ProposalAppraiser findByAppraiser(int idProposal, int idAppraiser) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join user appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposal = ? AND idAppraiser = ?");
+		PreparedStatement stmt = this.conn.prepareStatement("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join user appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposal = ? AND idAppraiser = ?");
 		
 		stmt.setInt(1, idProposal);
 		stmt.setInt(2, idAppraiser);
@@ -58,9 +73,9 @@ public class ProposalAppraiserDAO {
 		PreparedStatement stmt;
 		
 		if(insert){
-			stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("INSERT INTO proposalappraiser(idProposal, idAppraiser, feedback, comments, allowEditing) VALUES(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			stmt = this.conn.prepareStatement("INSERT INTO proposalappraiser(idProposal, idAppraiser, feedback, comments, allowEditing) VALUES(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 		}else{
-			stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("UPDATE proposalappraiser SET idProposal=?, idAppraiser=?, feedback=?, comments=?, allowEditing=? WHERE idProposalAppraiser=?");
+			stmt = this.conn.prepareStatement("UPDATE proposalappraiser SET idProposal=?, idAppraiser=?, feedback=?, comments=?, allowEditing=? WHERE idProposalAppraiser=?");
 		}
 		
 		stmt.setInt(1, appraiser.getProposal().getIdProposal());

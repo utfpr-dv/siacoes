@@ -8,6 +8,9 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
@@ -33,6 +36,7 @@ public class EditDocumentWindow extends EditWindow {
 	private final DepartmentComboBox comboDepartment;
 	private final TextField textName;
 	private final Upload uploadFile;
+	private final Image imageFileUploaded;
 	
 	public EditDocumentWindow(Document document, ListView parentView){
 		super("Editar Documento", parentView);
@@ -55,14 +59,18 @@ public class EditDocumentWindow extends EditWindow {
 		this.textName.setMaxLength(100);
 		
 		DocumentUploader listener = new DocumentUploader();
-		this.uploadFile = new Upload("Enviar Arquivo", listener);
+		this.uploadFile = new Upload("", listener);
 		this.uploadFile.addSucceededListener(listener);
-		this.uploadFile.setButtonCaption("Enviar");
+		this.uploadFile.setButtonCaption("Enviar Arquivo");
+		this.uploadFile.setImmediate(true);
+		
+		this.imageFileUploaded = new Image("", new ThemeResource("images/ok.png"));
+		this.imageFileUploaded.setVisible(false);
 		
 		this.addField(this.comboCampus);
 		this.addField(this.comboDepartment);
 		this.addField(this.textName);
-		this.addField(this.uploadFile);
+		this.addField(new HorizontalLayout(this.uploadFile, this.imageFileUploaded));
 		
 		this.loadDocument();
 		this.textName.focus();
@@ -83,6 +91,10 @@ public class EditDocumentWindow extends EditWindow {
 		}
 		
 		this.textName.setValue(this.document.getName());
+		
+		if(this.document.getFile() != null){
+			this.imageFileUploaded.setVisible(true);
+		}
 	}
 
 	@Override
@@ -112,6 +124,7 @@ public class EditDocumentWindow extends EditWindow {
 		@Override
 		public OutputStream receiveUpload(String filename, String mimeType) {
 			try {
+				imageFileUploaded.setVisible(false);
 				document.setType(DocumentType.fromMimeType(mimeType));
 	            tempFile = File.createTempFile(filename, "tmp");
 	            tempFile.deleteOnExit();
@@ -134,6 +147,9 @@ public class EditDocumentWindow extends EditWindow {
 	            input.read(buffer);
 	            
 	            document.setFile(buffer);
+	            imageFileUploaded.setVisible(true);
+	            
+	            Notification.show("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.", Notification.Type.HUMANIZED_MESSAGE);
 	        } catch (IOException e) {
 	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	            

@@ -43,6 +43,7 @@ public class UserView extends ListView {
 		this.comboProfile.addItem(UserProfile.STUDENT);
 		this.comboProfile.addItem(UserProfile.PROFESSOR);
 		this.comboProfile.addItem(UserProfile.ADMINISTRATOR);
+		this.comboProfile.addItem(UserProfile.COMPANYSUPERVISOR);
 		this.comboProfile.addItem("Todos");
 		this.comboProfile.select("Todos");
 		

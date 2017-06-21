@@ -2,6 +2,7 @@ package br.edu.utfpr.dv.siacoes.bo;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -12,9 +13,19 @@ import br.edu.utfpr.dv.siacoes.model.JuryAppraiserScore;
 
 public class JuryAppraiserScoreBO {
 	
+	private Connection conn;
+	
+	public JuryAppraiserScoreBO(){
+		this.conn = null;
+	}
+	
+	public JuryAppraiserScoreBO(Connection conn){
+		this.conn = conn;
+	}
+	
 	public boolean hasScore(int idJury, int idUser) throws Exception{
 		try {
-			JuryAppraiserScoreDAO dao = new JuryAppraiserScoreDAO();
+			JuryAppraiserScoreDAO dao = new JuryAppraiserScoreDAO(this.conn);
 			
 			return dao.hasScore(idJury, idUser);
 		} catch (SQLException e) {
@@ -26,7 +37,7 @@ public class JuryAppraiserScoreBO {
 	
 	public List<JuryAppraiserScore> listScores(int idJuryAppraiser) throws Exception{
 		try {
-			JuryAppraiserScoreDAO dao = new JuryAppraiserScoreDAO();
+			JuryAppraiserScoreDAO dao = new JuryAppraiserScoreDAO(this.conn);
 			
 			return dao.listScores(idJuryAppraiser);
 		} catch (SQLException e) {
@@ -52,7 +63,7 @@ public class JuryAppraiserScoreBO {
 	    score.setScore(bd.doubleValue());
 		
 		try {
-			JuryAppraiserScoreDAO dao = new JuryAppraiserScoreDAO();
+			JuryAppraiserScoreDAO dao = new JuryAppraiserScoreDAO(this.conn);
 			
 			return dao.save(score);
 		} catch (SQLException e) {

@@ -1,5 +1,6 @@
 package br.edu.utfpr.dv.siacoes.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,79 +13,123 @@ import br.edu.utfpr.dv.siacoes.model.Deadline;
 public class DeadlineDAO {
 
 	public Deadline findById(int id) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT * FROM deadline WHERE idDeadline = ?");
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, id);
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM deadline WHERE idDeadline = ?");
 		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
+			stmt.setInt(1, id);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
 	}
 	
 	public Deadline findBySemester(int idDepartment, int semester, int year) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("SELECT * FROM deadline WHERE idDepartment = ? AND semester = ? AND year = ?");
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, idDepartment);
-		stmt.setInt(2, semester);
-		stmt.setInt(3, year);
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM deadline WHERE idDepartment = ? AND semester = ? AND year = ?");
 		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
+			stmt.setInt(1, idDepartment);
+			stmt.setInt(2, semester);
+			stmt.setInt(3, year);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
 	}
 	
 	public List<Deadline> listAll() throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM deadline ORDER BY year DESC, semester DESC");
-		List<Deadline> list = new ArrayList<Deadline>();
+		Connection conn = null;
+		Statement stmt = null;
 		
-		while(rs.next()){
-			list.add(this.loadObject(rs));			
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("SELECT * FROM deadline ORDER BY year DESC, semester DESC");
+			List<Deadline> list = new ArrayList<Deadline>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return list;
 	}
 	
 	public int save(Deadline deadline) throws SQLException{
 		boolean insert = (deadline.getIdDeadline() == 0);
-		PreparedStatement stmt;
+		Connection conn = null;
+		PreparedStatement stmt = null;
 		
-		if(insert){
-			stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("INSERT INTO deadline(idDepartment, semester, year, proposalDeadline, projectDeadline, thesisDeadline) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-		}else{
-			stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("UPDATE deadline SET idDepartment=?, semester=?, year=?, proposalDeadline=?, projectDeadline=?, thesisDeadline=? WHERE idDeadline=?");
-		}
-		
-		stmt.setInt(1, deadline.getDepartment().getIdDepartment());
-		stmt.setInt(2, deadline.getSemester());
-		stmt.setInt(3, deadline.getYear());
-		stmt.setDate(4, new java.sql.Date(deadline.getProposalDeadline().getTime()));
-		stmt.setDate(5, new java.sql.Date(deadline.getProjectDeadline().getTime()));
-		stmt.setDate(6, new java.sql.Date(deadline.getThesisDeadline().getTime()));
-		
-		if(!insert){
-			stmt.setInt(7, deadline.getIdDeadline());
-		}
-		
-		stmt.execute();
-		
-		if(insert){
-			ResultSet rs = stmt.getGeneratedKeys();
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
 			
-			if(rs.next()){
-				deadline.setIdDeadline(rs.getInt(1));
+			if(insert){
+				stmt = conn.prepareStatement("INSERT INTO deadline(idDepartment, semester, year, proposalDeadline, projectDeadline, thesisDeadline) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			}else{
+				stmt = conn.prepareStatement("UPDATE deadline SET idDepartment=?, semester=?, year=?, proposalDeadline=?, projectDeadline=?, thesisDeadline=? WHERE idDeadline=?");
 			}
+			
+			stmt.setInt(1, deadline.getDepartment().getIdDepartment());
+			stmt.setInt(2, deadline.getSemester());
+			stmt.setInt(3, deadline.getYear());
+			stmt.setDate(4, new java.sql.Date(deadline.getProposalDeadline().getTime()));
+			stmt.setDate(5, new java.sql.Date(deadline.getProjectDeadline().getTime()));
+			stmt.setDate(6, new java.sql.Date(deadline.getThesisDeadline().getTime()));
+			
+			if(!insert){
+				stmt.setInt(7, deadline.getIdDeadline());
+			}
+			
+			stmt.execute();
+			
+			if(insert){
+				ResultSet rs = stmt.getGeneratedKeys();
+				
+				if(rs.next()){
+					deadline.setIdDeadline(rs.getInt(1));
+				}
+			}
+			
+			return deadline.getIdDeadline();
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
-		
-		return deadline.getIdDeadline();
 	}
 	
 	private Deadline loadObject(ResultSet rs) throws SQLException{

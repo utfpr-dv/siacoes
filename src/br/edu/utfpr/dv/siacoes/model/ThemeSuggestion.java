@@ -6,6 +6,7 @@ public class ThemeSuggestion {
 	
 	private int idThemeSuggestion;
 	private Department department;
+	private User user;
 	private String title;
 	private String proponent;
 	private String objectives;
@@ -16,6 +17,7 @@ public class ThemeSuggestion {
 	public ThemeSuggestion(){
 		this.setIdThemeSuggestion(0);
 		this.setDepartment(new Department());
+		this.setUser(new User());
 		this.setTitle("");
 		this.setProponent("");
 		this.setObjectives("");
@@ -23,7 +25,6 @@ public class ThemeSuggestion {
 		this.setSubmissionDate(new Date());
 		this.setActive(true);
 	}
-	
 	public int getIdThemeSuggestion() {
 		return idThemeSuggestion;
 	}
@@ -35,6 +36,12 @@ public class ThemeSuggestion {
 	}
 	public void setDepartment(Department department){
 		this.department = department;
+	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
 	}
 	public String getTitle() {
 		return title;

@@ -1,5 +1,6 @@
 package br.edu.utfpr.dv.siacoes.window;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -99,12 +100,15 @@ public class EditJuryAppraiserScoreWindow extends EditWindow {
 
 	@Override
 	public void save() {
+		Connection conn = null;
+		
 		try{
-			JuryAppraiserScoreBO bo = new JuryAppraiserScoreBO();
+			conn = ConnectionDAO.getInstance().getConnection();
+			conn.setAutoCommit(false);
+			
+			JuryAppraiserScoreBO bo = new JuryAppraiserScoreBO(conn);
 			
 			this.appraiser.setComments(this.textComments.getValue());
-		
-			ConnectionDAO.getInstance().getConnection().setAutoCommit(false);
 			
 			for(int i = 0; i < this.appraiser.getScores().size(); i++){
 				double score = 0;
@@ -121,12 +125,12 @@ public class EditJuryAppraiserScoreWindow extends EditWindow {
 				bo.save(jas);
 			}
 			
-			ConnectionDAO.getInstance().getConnection().commit();
+			conn.commit();
 			
 			this.close();
 		} catch (Exception e) {
 			try {
-				ConnectionDAO.getInstance().getConnection().rollback();
+				conn.rollback();
 			} catch (SQLException e1) {
 				Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
 			}
@@ -136,7 +140,7 @@ public class EditJuryAppraiserScoreWindow extends EditWindow {
 			Notification.show("Salvar Notas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}finally{
 			try {
-				ConnectionDAO.getInstance().getConnection().setAutoCommit(true);
+				conn.setAutoCommit(true);
 			} catch (SQLException e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			}

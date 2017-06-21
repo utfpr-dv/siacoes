@@ -39,6 +39,7 @@ public class EditThemeSuggestionWindow extends EditWindow {
 		if(theme == null){
 			this.theme = new ThemeSuggestion();
 			this.theme.setDepartment(Session.getUser().getDepartment());
+			this.theme.setUser(Session.getUser());
 		}else{
 			this.theme = theme;
 		}
@@ -76,7 +77,7 @@ public class EditThemeSuggestionWindow extends EditWindow {
 		this.addField(this.textObjetives);
 		this.addField(new HorizontalLayout(this.textSubmissionDate, this.checkActive));
 		
-		if(!Session.isUserManager(SystemModule.SIGET)){
+		if(!Session.isUserProfessor() || (!Session.isUserManager(SystemModule.SIGET) && (Session.getUser().getIdUser() != this.theme.getUser().getIdUser()))){
 			this.checkActive.setVisible(false);
 			this.setSaveButtonEnabled(false);
 			this.setCaption("Visualizar Sugestão");

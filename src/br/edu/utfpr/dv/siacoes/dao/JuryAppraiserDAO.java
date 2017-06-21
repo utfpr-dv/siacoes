@@ -1,5 +1,6 @@
 package br.edu.utfpr.dv.siacoes.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,8 +16,22 @@ import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 
 public class JuryAppraiserDAO {
 	
+	private Connection conn;
+	
+	public JuryAppraiserDAO() throws SQLException{
+		this.conn = ConnectionDAO.getInstance().getConnection();
+	}
+	
+	public JuryAppraiserDAO(Connection conn) throws SQLException{
+		if(conn == null){
+			this.conn = ConnectionDAO.getInstance().getConnection();	
+		}else{
+			this.conn = conn;
+		}
+	}
+	
 	public JuryAppraiser findById(int id) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement(
+		PreparedStatement stmt = this.conn.prepareStatement(
 				"SELECT juryappraiser.*, appraiser.name as appraiserName, jury.date, jury.startTime, jury.endTime, " +
 				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
 				"FROM juryappraiser INNER JOIN user appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
@@ -39,7 +54,7 @@ public class JuryAppraiserDAO {
 	}
 	
 	public JuryAppraiser findByAppraiser(int idJury, int idUser) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement(
+		PreparedStatement stmt = this.conn.prepareStatement(
 				"SELECT juryappraiser.*, appraiser.name as appraiserName, jury.date, jury.startTime, jury.endTime, " +
 				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
 				"FROM juryappraiser INNER JOIN user appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
@@ -63,7 +78,7 @@ public class JuryAppraiserDAO {
 	}
 	
 	public List<JuryAppraiser> listAppraisers(int idJury) throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
+		Statement stmt = this.conn.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT juryappraiser.*, appraiser.name as appraiserName, jury.date, jury.startTime, jury.endTime, " +
 				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
 				"FROM juryappraiser INNER JOIN user appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
@@ -87,9 +102,9 @@ public class JuryAppraiserDAO {
 		PreparedStatement stmt;
 		
 		if(insert){
-			stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("INSERT INTO juryappraiser(idJury, idAppraiser, file, fileType, comments) VALUES(?, ?, NULL, 0, '')", Statement.RETURN_GENERATED_KEYS);
+			stmt = this.conn.prepareStatement("INSERT INTO juryappraiser(idJury, idAppraiser, file, fileType, comments) VALUES(?, ?, NULL, 0, '')", Statement.RETURN_GENERATED_KEYS);
 		}else{
-			stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("UPDATE juryappraiser SET idJury=?, idAppraiser=?, file=?, fileType=?, comments=? WHERE idJuryAppraiser=?");
+			stmt = this.conn.prepareStatement("UPDATE juryappraiser SET idJury=?, idAppraiser=?, file=?, fileType=?, comments=? WHERE idJuryAppraiser=?");
 		}
 		
 		stmt.setInt(1, appraiser.getJury().getIdJury());
@@ -120,6 +135,9 @@ public class JuryAppraiserDAO {
 		
 		p.setIdJuryAppraiser(rs.getInt("idJuryAppraiser"));
 		p.getJury().setIdJury(rs.getInt("idJury"));
+		p.getJury().setDate(rs.getDate("date"));
+		p.getJury().setStartTime(rs.getTime("startTime"));
+		p.getJury().setEndTime(rs.getTime("endTime"));
 		p.getAppraiser().setIdUser(rs.getInt("idAppraiser"));
 		p.getAppraiser().setName(rs.getString("appraiserName"));
 		p.setFile(rs.getBytes("file"));
@@ -142,14 +160,21 @@ public class JuryAppraiserDAO {
 	}
 	
 	public boolean appraiserHasJury(int idJury, int idUser, Date startDate, Date endDate) throws SQLException{
-		PreparedStatement stmt = ConnectionDAO.getInstance().getConnection().prepareStatement(
+		PreparedStatement stmt = this.conn.prepareStatement(
+				"SELECT SUM(total) AS total FROM (" +
 				"SELECT COUNT(*) AS total FROM jury INNER JOIN juryappraiser ON juryappraiser.idJury=jury.idJury " +
-				"WHERE jury.idJury <> ? AND juryappraiser.idAppraiser = ? AND jury.date BETWEEN ? AND ?");
+				"WHERE jury.idJury <> ? AND juryappraiser.idAppraiser = ? AND jury.date BETWEEN ? AND ? " +
+				" UNION ALL " +
+				"SELECT COUNT(*) AS total FROM internshipjury INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJury=internshipjury.idInternshipJury " +
+				"WHERE internshipjuryappraiser.idAppraiser = ? AND internshipjury.date BETWEEN ? AND ? ) AS teste");
 		
 		stmt.setInt(1, idJury);
 		stmt.setInt(2, idUser);
 		stmt.setTimestamp(3, new java.sql.Timestamp(startDate.getTime()));
 		stmt.setTimestamp(4, new java.sql.Timestamp(endDate.getTime()));
+		stmt.setInt(5, idUser);
+		stmt.setTimestamp(6, new java.sql.Timestamp(startDate.getTime()));
+		stmt.setTimestamp(7, new java.sql.Timestamp(endDate.getTime()));
 		
 		ResultSet rs = stmt.executeQuery();
 		rs.next();

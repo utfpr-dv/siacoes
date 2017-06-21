@@ -124,7 +124,12 @@ public class DocumentView extends ListView {
     
 	@Override
 	public void addClick() {
-		UI.getCurrent().addWindow(new EditDocumentWindow(null, this));
+		Document doc = new Document();
+		
+		doc.setDepartment(Session.getUser().getDepartment());
+		doc.setModule(this.getModule());
+		
+		UI.getCurrent().addWindow(new EditDocumentWindow(doc, this));
 	}
 
 	@Override
@@ -203,7 +208,7 @@ public class DocumentView extends ListView {
 	public void enter(ViewChangeEvent event){
 		super.enter(event);
 		
-		if(event.getParameters() != null){
+		if((event.getParameters() != null) && (!event.getParameters().isEmpty())){
 			try{
 				SystemModule module = SystemModule.valueOf(Integer.parseInt(event.getParameters()));
 				

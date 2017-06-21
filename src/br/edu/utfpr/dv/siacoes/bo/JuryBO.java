@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.JuryDAO;
 import br.edu.utfpr.dv.siacoes.model.CalendarReport;
-import br.edu.utfpr.dv.siacoes.model.EvaluationItem;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserScore;
@@ -22,6 +21,8 @@ import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.TermOfApprovalReport;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.EvaluationItem.EvaluationItemType;
+import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 
 public class JuryBO {
 	
@@ -42,6 +43,18 @@ public class JuryBO {
 			JuryDAO dao = new JuryDAO();
 			
 			return dao.listByAppraiser(idUser, semester, year);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public List<Jury> listByStudent(int idUser, int semester, int year) throws Exception{
+		try {
+			JuryDAO dao = new JuryDAO();
+			
+			return dao.listByStudent(idUser, semester, year);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -87,6 +100,8 @@ public class JuryBO {
 	
 	public int save(Jury jury) throws Exception{
 		try {
+			boolean insert = (jury.getIdJury() == 0);
+			
 			if(((jury.getProject() == null) || (jury.getProject().getIdProject() == 0)) && ((jury.getThesis() == null) || (jury.getThesis().getIdThesis() == 0))){
 				throw new Exception("Informe o projeto ou monografia a que a banca pertence.");
 			}
@@ -115,6 +130,12 @@ public class JuryBO {
 			}
 			
 			JuryDAO dao = new JuryDAO();
+			
+			if(insert){
+				//Banca marcada
+			}else{
+				//Reagendamento de banca
+			}
 			
 			return dao.save(jury);
 		} catch (SQLException e) {
@@ -195,6 +216,7 @@ public class JuryBO {
 				List<JuryAppraiserScore> list = bo.listScores(appraiser.getIdJuryAppraiser());
 				JuryFormAppraiserReport appraiserReport = new JuryFormAppraiserReport();
 				JuryFormAppraiserScoreReport scoreReport = new JuryFormAppraiserScoreReport();
+				double scoreSum = 0, scorePonderosity = 0, writingPonderosity = 0, oralPonderosity = 0, argumentationPonderosity = 0;
 				
 				appraiserReport.setName(appraiser.getAppraiser().getName());
 				appraiserReport.setComments(appraiser.getComments());
@@ -216,29 +238,69 @@ public class JuryBO {
 					
 					switch(score.getEvaluationItem().getType()){
 						case WRITING:
-							scoreReport.setScoreWriting(scoreReport.getScoreWriting() + score.getScore());
+							scoreReport.setScoreWriting(scoreReport.getScoreWriting() + (score.getScore() * score.getEvaluationItem().getPonderosity()));
+							writingPonderosity = writingPonderosity + score.getEvaluationItem().getPonderosity();
 							break;
 						case ORAL:
-							scoreReport.setScoreOral(scoreReport.getScoreOral() + score.getScore());
+							scoreReport.setScoreOral(scoreReport.getScoreOral() + (score.getScore() * score.getEvaluationItem().getPonderosity()));
+							oralPonderosity = oralPonderosity + score.getEvaluationItem().getPonderosity();
 							break;
 						case ARGUMENTATION:
-							scoreReport.setScoreArgumentation(scoreReport.getScoreArgumentation() + score.getScore());
+							scoreReport.setScoreArgumentation(scoreReport.getScoreArgumentation() + (score.getScore() * score.getEvaluationItem().getPonderosity()));
+							argumentationPonderosity = argumentationPonderosity + score.getEvaluationItem().getPonderosity();
 							break;
 					}
 				}
 				
+				if(writingPonderosity > 0){
+					scoreReport.setScoreWriting(this.round(scoreReport.getScoreWriting() / writingPonderosity));
+				}
+				if(oralPonderosity > 0){
+					scoreReport.setScoreOral(this.round(scoreReport.getScoreOral() / oralPonderosity));
+				}
+				if(argumentationPonderosity > 0){
+					scoreReport.setScoreArgumentation(this.round(scoreReport.getScoreArgumentation() / argumentationPonderosity));
+				}
+				
+				for(JuryFormAppraiserDetailReport appraiserDetail : appraiserReport.getDetail()){
+					switch(EvaluationItemType.fromString(appraiserDetail.getEvaluationItemType())){
+						case WRITING:
+							appraiserDetail.setPonderositySum(writingPonderosity);
+							appraiserDetail.setScoreSum(scoreReport.getScoreWriting());
+							break;
+						case ORAL:
+							appraiserDetail.setPonderositySum(oralPonderosity);
+							appraiserDetail.setScoreSum(scoreReport.getScoreOral());
+							break;
+						case ARGUMENTATION:
+							appraiserDetail.setPonderositySum(argumentationPonderosity);
+							appraiserDetail.setScoreSum(scoreReport.getScoreArgumentation());
+							break;
+					}
+				}
+				
+				scoreSum = (scoreReport.getScoreWriting() * writingPonderosity) + (scoreReport.getScoreOral() * oralPonderosity) + (scoreReport.getScoreArgumentation() * argumentationPonderosity);
+				scorePonderosity = writingPonderosity + oralPonderosity + argumentationPonderosity;
+				
+				scoreReport.setScore(this.round(scoreSum / scorePonderosity));
+					
 				if(appraiser.getAppraiser().getIdUser() != supervisor.getIdUser()){
 					appraiserReport.setDescription("Membro " + String.valueOf(member));
 					member = member + 1;
 				}else{
 					appraiserReport.setDescription("Orientador");
 				}
-				
+					
 				scoreReport.setName(appraiserReport.getName());
 				scoreReport.setDescription(appraiserReport.getDescription());
 				
-				report.getAppraisers().add(appraiserReport);
-				report.getScores().add(scoreReport);
+				if(appraiserReport.getDescription().equals("Orientador")){
+					report.getAppraisers().add(0, appraiserReport);
+					report.getScores().add(0, scoreReport);
+				}else{
+					report.getAppraisers().add(appraiserReport);
+					report.getScores().add(scoreReport);
+				}
 			}
 			
 			report.setScore(0);
@@ -315,14 +377,21 @@ public class JuryBO {
 		}
 	}
 	
-	public List<CalendarReport> getCalendarReport(int idDepartment, int idAppraiser, int semester, int year) throws Exception{
+	public List<CalendarReport> getCalendarReport(int idDepartment, int idUser, int semester, int year) throws Exception{
 		List<Jury> list;
 		List<CalendarReport> report = new ArrayList<CalendarReport>();
 		
-		if(idAppraiser == 0){
+		if(idUser == 0){
 			list = this.listBySemester(idDepartment, semester, year);
 		}else{
-			list = this.listByAppraiser(idAppraiser, semester, year);
+			UserBO bo = new UserBO();
+			User user = bo.findById(idUser);
+			
+			if((user.getProfile() == UserProfile.PROFESSOR) || (user.getProfile() == UserProfile.ADMINISTRATOR)){
+				list = this.listByAppraiser(idUser, semester, year);	
+			}else{
+				list = this.listByStudent(idUser, semester, year);
+			}
 		}
 		
 		for(Jury jury : list){

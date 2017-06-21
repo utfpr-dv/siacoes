@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2016-10-22T12:13:46 -->
+<!-- 2017-05-27T23:27:08 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="JuryFormAppraiserScore" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8c38133d-70ae-4ead-8df1-e7161321c448">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -59,10 +59,10 @@
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{scoreWriting} == 0, "", $F{scoreWriting})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{scoreWriting} == 0, "", TEXT($F{scoreWriting}, "0.0"))]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="210" y="0" width="90" height="20" uuid="7d861ebc-fd4e-4643-a279-6b21aa9a88cd"/>
@@ -72,10 +72,10 @@
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{scoreOral} == 0, "", $F{scoreOral})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{scoreOral} == 0, "", TEXT($F{scoreOral}, "0.0"))]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="300" y="0" width="90" height="20" uuid="6ab6a44e-c0e5-4932-b044-56b0ad7ad740"/>
@@ -85,10 +85,10 @@
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{scoreArgumentation} == 0, "", $F{scoreArgumentation})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{scoreArgumentation} == 0, "", TEXT($F{scoreArgumentation}, "0.0"))]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="390" y="0" width="90" height="20" uuid="89a89cf1-b25c-466a-90c8-5c822fd1067a"/>
@@ -98,10 +98,10 @@
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{score} == 0, "", $F{score})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{score} == 0, "", TEXT($F{score}, "0.0"))]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
