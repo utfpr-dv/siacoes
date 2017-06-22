@@ -270,10 +270,10 @@ CREATE  TABLE internshipjuryappraiserscore (
   idinternshipEvaluationItem INT NOT NULL ,
   score REAL NOT NULL ,
   PRIMARY KEY (idinternshipjuryappraiserscore) ,
-  CONSTRAINT fk_internshipjuryappraiserscore_idinternshipjury FOREIGN KEY (idinternshipJuryAppraiser) REFERENCES internshipjury (idinternshipjury) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT fk_internshipjuryappraiserscore_idinternshipjuryappraiser FOREIGN KEY (idinternshipJuryAppraiser) REFERENCES internshipjuryappraiser (idinternshipjuryappraiser) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_internshipjuryappraiserscore_idinternshipevaluationitem FOREIGN KEY (idinternshipEvaluationItem) REFERENCES internshipevaluationitem (idinternshipevaluationitem) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
-CREATE INDEX fk_internshipjuryappraiserscore_idinternshipjury_idx ON internshipjuryappraiserscore (idinternshipJuryAppraiser);
+CREATE INDEX fk_internshipjuryappraiserscore_idinternshipjuryappraiser_idx ON internshipjuryappraiserscore (idinternshipJuryAppraiser);
 CREATE INDEX fk_internshipjuryappraiserscore_idinternshipevaluationitem_idx ON internshipjuryappraiserscore (idinternshipEvaluationItem);
 
 CREATE  TABLE internshipjurystudent (
@@ -437,6 +437,7 @@ CREATE TABLE attendance (
   startTime time NOT NULL,
   endTime time NOT NULL,
   comments text NOT NULL,
+  nextMeeting text NOT NULL,
   stage INT NOT NULL,
   PRIMARY KEY (idattendance),
   CONSTRAINT fk_attendance_proposal FOREIGN KEY (idproposal) REFERENCES proposal (idproposal) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -529,6 +530,10 @@ CREATE TABLE finaldocument (
   title VARCHAR(255) NOT NULL,
   submissionDate date NOT NULL,
   file BYTEA NOT NULL,
+  private SMALLINT NOT NULL,
+  supervisorFeedbackDate DATE NULL,
+  supervisorFeedback SMALLINT NOT NULL,
+  comments TEXT NOT NULL,
   PRIMARY KEY (idfinaldocument),
   CONSTRAINT fk_finaldocument_idproject FOREIGN KEY (idProject) REFERENCES project (idproject) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_finaldocument_idthesis FOREIGN KEY (idThesis) REFERENCES thesis (idthesis) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -571,7 +576,7 @@ CREATE TABLE juryappraiser (
   idjuryappraiser SERIAL NOT NULL,
   idjury INT NOT NULL,
   idappraiser INT NOT NULL,
-  file BYTEA NOT NULL,
+  file BYTEA NULL,
   filetype SMALLINT NOT NULL,
   comments TEXT NOT NULL,
   PRIMARY KEY (idjuryappraiser),
@@ -619,3 +624,21 @@ CREATE  TABLE bugreport (
   CONSTRAINT fk_bugreport_user FOREIGN KEY (iduser) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 CREATE INDEX fk_bugreport_user_idx ON bugreport (iduser);
+
+CREATE OR REPLACE FUNCTION year(timestamp) RETURNS integer AS $$
+DECLARE
+   d ALIAS FOR $1;
+BEGIN
+   return date_part('year', d);
+END;
+
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION month(timestamp) RETURNS integer AS $$
+DECLARE
+   d ALIAS FOR $1;
+BEGIN
+   return date_part('month', d);
+END;
+
+$$ LANGUAGE plpgsql;

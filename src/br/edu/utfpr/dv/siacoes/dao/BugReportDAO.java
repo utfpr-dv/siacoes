@@ -22,8 +22,8 @@ public class BugReportDAO {
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT bugreport.*, user.name " + 
-				"FROM bugreport INNER JOIN user ON user.idUser=bugreport.idUser " +
+			stmt = conn.prepareStatement("SELECT bugreport.*, \"user\".name " + 
+				"FROM bugreport INNER JOIN \"user\" ON \"user\".idUser=bugreport.idUser " +
 				"WHERE idBugReport = ?");
 		
 			stmt.setInt(1, id);
@@ -51,8 +51,8 @@ public class BugReportDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT bugreport.*, user.name " +
-					"FROM bugreport INNER JOIN user ON user.idUser=bugreport.idUser " +
+			ResultSet rs = stmt.executeQuery("SELECT bugreport.*, \"user\".name " +
+					"FROM bugreport INNER JOIN \"user\" ON \"user\".idUser=bugreport.idUser " +
 					"ORDER BY status, reportdate");
 			List<BugReport> list = new ArrayList<BugReport>();
 			

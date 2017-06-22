@@ -33,10 +33,10 @@ public class InternshipJuryAppraiserDAO {
 		PreparedStatement stmt = this.conn.prepareStatement(
 				"SELECT internshipjuryappraiser.*, appraiser.name as appraiserName, internshipjury.date, internshipjury.startTime, internshipjury.endTime, " +
 				"internshipjury.idInternship, student.name AS studentName " +
-				"FROM internshipjuryappraiser INNER JOIN user appraiser ON appraiser.idUser=internshipjuryappraiser.idAppraiser " +
+				"FROM internshipjuryappraiser INNER JOIN \"user\" appraiser ON appraiser.idUser=internshipjuryappraiser.idAppraiser " +
 				"INNER JOIN internshipjury ON internshipjury.idInternshipJury=internshipjuryappraiser.idInternshipJury " +
 				"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " + 
-				"INNER JOIN user student ON student.idUser=internship.idStudent " +
+				"INNER JOIN \"user\" student ON student.idUser=internship.idStudent " +
 				"WHERE internshipjuryappraiser.idInternshipJuryAppraiser=?");
 		
 		stmt.setInt(1, id);
@@ -54,10 +54,10 @@ public class InternshipJuryAppraiserDAO {
 		PreparedStatement stmt = this.conn.prepareStatement(
 				"SELECT internshipjuryappraiser.*, appraiser.name as appraiserName, internshipjury.date, internshipjury.startTime, internshipjury.endTime, " +
 				"internshipjury.idInternship, student.name AS studentName " +
-				"FROM internshipjuryappraiser INNER JOIN user appraiser ON appraiser.idUser=internshipjuryappraiser.idAppraiser " +
+				"FROM internshipjuryappraiser INNER JOIN \"user\" appraiser ON appraiser.idUser=internshipjuryappraiser.idAppraiser " +
 				"INNER JOIN internshipjury ON internshipjury.idInternshipJury=internshipjuryappraiser.idInternshipJury " +
 				"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " + 
-				"INNER JOIN user student ON student.idUser=internship.idStudent " +
+				"INNER JOIN \"user\" student ON student.idUser=internship.idStudent " +
 				"WHERE internshipjuryappraiser.idInternshipJury=? AND internshipjuryappraiser.idAppraiser=?");
 		
 		stmt.setInt(1, idInternshipJury);
@@ -76,10 +76,10 @@ public class InternshipJuryAppraiserDAO {
 		Statement stmt = this.conn.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT internshipjuryappraiser.*, appraiser.name as appraiserName, internshipjury.date, internshipjury.startTime, internshipjury.endTime, " +
 				"internshipjury.idInternship, student.name AS studentName " +
-				"FROM internshipjuryappraiser INNER JOIN user appraiser ON appraiser.idUser=internshipjuryappraiser.idAppraiser " +
+				"FROM internshipjuryappraiser INNER JOIN \"user\" appraiser ON appraiser.idUser=internshipjuryappraiser.idAppraiser " +
 				"INNER JOIN internshipjury ON internshipjury.idInternshipJury=internshipjuryappraiser.idInternshipJury " +
 				"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " + 
-				"INNER JOIN user student ON student.idUser=internship.idStudent " +
+				"INNER JOIN \"user\" student ON student.idUser=internship.idStudent " +
 				"WHERE internshipjuryappraiser.idInternshipJury = " + String.valueOf(idInternshipJury));
 		List<InternshipJuryAppraiser> list = new ArrayList<InternshipJuryAppraiser>();
 		

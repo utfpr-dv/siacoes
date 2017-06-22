@@ -2,8 +2,6 @@ package br.edu.utfpr.dv.siacoes.bo;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +17,6 @@ import br.edu.utfpr.dv.siacoes.model.ActivitySubmission;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionDetailReport;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionFooterReport;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionReport;
-import br.edu.utfpr.dv.siacoes.model.Department;
 import br.edu.utfpr.dv.siacoes.model.SigacConfig;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
@@ -87,6 +84,9 @@ public class ActivitySubmissionBO {
 		}
 		if(submission.getFile() == null){
 			throw new Exception("É necessário enviar o comprovante.");
+		}
+		if((submission.getFeedback() == ActivityFeedback.APPROVED) && (submission.getValidatedAmount() <= 0)){
+			submission.setValidatedAmount(submission.getAmount());
 		}
 		
 		try{

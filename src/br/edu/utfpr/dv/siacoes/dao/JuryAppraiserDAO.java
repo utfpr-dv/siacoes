@@ -34,12 +34,12 @@ public class JuryAppraiserDAO {
 		PreparedStatement stmt = this.conn.prepareStatement(
 				"SELECT juryappraiser.*, appraiser.name as appraiserName, jury.date, jury.startTime, jury.endTime, " +
 				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
-				"FROM juryappraiser INNER JOIN user appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
+				"FROM juryappraiser INNER JOIN \"user\" appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
 				"INNER JOIN jury ON jury.idJury=juryappraiser.idJury " +
 				"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
 				"LEFT JOIN project ON project.idProject=jury.idProject " +
-				"LEFT JOIN user tstudent ON tstudent.idUser=thesis.idStudent " +
-				"LEFT JOIN user pstudent ON pstudent.idUser=project.idStudent " +
+				"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
+				"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
 				"WHERE juryappraiser.idJuryAppraiser=?");
 		
 		stmt.setInt(1, id);
@@ -57,12 +57,12 @@ public class JuryAppraiserDAO {
 		PreparedStatement stmt = this.conn.prepareStatement(
 				"SELECT juryappraiser.*, appraiser.name as appraiserName, jury.date, jury.startTime, jury.endTime, " +
 				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
-				"FROM juryappraiser INNER JOIN user appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
+				"FROM juryappraiser INNER JOIN \"user\" appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
 				"INNER JOIN jury ON jury.idJury=juryappraiser.idJury " +
 				"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
 				"LEFT JOIN project ON project.idProject=jury.idProject " +
-				"LEFT JOIN user tstudent ON tstudent.idUser=thesis.idStudent " +
-				"LEFT JOIN user pstudent ON pstudent.idUser=project.idStudent " +
+				"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
+				"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
 				"WHERE juryappraiser.idJury=? AND juryappraiser.idAppraiser=?");
 		
 		stmt.setInt(1, idJury);
@@ -81,12 +81,12 @@ public class JuryAppraiserDAO {
 		Statement stmt = this.conn.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT juryappraiser.*, appraiser.name as appraiserName, jury.date, jury.startTime, jury.endTime, " +
 				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
-				"FROM juryappraiser INNER JOIN user appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
+				"FROM juryappraiser INNER JOIN \"user\" appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
 				"INNER JOIN jury ON jury.idJury=juryappraiser.idJury " +
 				"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
 				"LEFT JOIN project ON project.idProject=jury.idProject " +
-				"LEFT JOIN user tstudent ON tstudent.idUser=thesis.idStudent " +
-				"LEFT JOIN user pstudent ON pstudent.idUser=project.idStudent " +
+				"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
+				"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
 				"WHERE juryappraiser.idJury = " + String.valueOf(idJury));
 		List<JuryAppraiser> list = new ArrayList<JuryAppraiser>();
 		

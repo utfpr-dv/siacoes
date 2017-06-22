@@ -98,7 +98,7 @@ public class JuryAppraiserScoreDAO {
 		if(insert){
 			stmt = this.conn.prepareStatement("INSERT INTO juryappraiserscore(idJuryAppraiser, idEvaluationItem, score) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 		}else{
-			stmt = this.conn.prepareStatement("UPDATE juryappraiser SET idJuryAppraiser=?, idEvaluationItem=?, score=? WHERE idJuryAppraiserScore=?");
+			stmt = this.conn.prepareStatement("UPDATE juryappraiserscore SET idJuryAppraiser=?, idEvaluationItem=?, score=? WHERE idJuryAppraiserScore=?");
 		}
 		
 		stmt.setInt(1, score.getJuryAppraiser().getIdJuryAppraiser());

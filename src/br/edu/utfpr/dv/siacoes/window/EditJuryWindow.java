@@ -377,7 +377,11 @@ public class EditJuryWindow extends EditWindow {
 		}else{
 			JuryAppraiser appraiser = this.jury.getAppraisers().get(index);
 			
-			UI.getCurrent().addWindow(new EditJuryAppraiserScoreWindow(appraiser));
+			if((appraiser == null) || (appraiser.getIdJuryAppraiser() == 0)){
+				Notification.show("Lançar Notas", "É necessário salvar a banca antes de lançar as notas.", Notification.Type.WARNING_MESSAGE);
+			}else{
+				UI.getCurrent().addWindow(new EditJuryAppraiserScoreWindow(appraiser));
+			}
 		}
 	}
 	

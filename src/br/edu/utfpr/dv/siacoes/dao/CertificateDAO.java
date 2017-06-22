@@ -18,9 +18,9 @@ public class CertificateDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-					"SELECT certificate.*, department.name AS departmentName, user.name AS userName " +
+					"SELECT certificate.*, department.name AS departmentName, \"user\".name AS userName " +
 					"FROM certificate INNER JOIN department ON department.iddepartment=certificate.iddepartment " +
-					"INNER JOIN user ON user.iduser=certificate.iduser " +
+					"INNER JOIN \"user\" ON \"user\".iduser=certificate.iduser " +
 					"WHERE certificate.idcertificate = ?");
 		
 			stmt.setInt(1, id);
@@ -47,9 +47,9 @@ public class CertificateDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-					"SELECT certificate.*, department.name AS departmentName, user.name AS userName " +
+					"SELECT certificate.*, department.name AS departmentName, \"user\".name AS userName " +
 					"FROM certificate INNER JOIN department ON department.iddepartment=certificate.iddepartment " +
-					"INNER JOIN user ON user.iduser=certificate.iduser " +
+					"INNER JOIN \"user\" ON \"user\".iduser=certificate.iduser " +
 					"WHERE certificate.guid = ?");
 		
 			stmt.setString(1, guid);

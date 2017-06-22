@@ -29,7 +29,7 @@ public class ProposalAppraiserDAO {
 
 	public List<ProposalAppraiser> listAppraisers(int idProposal) throws SQLException{
 		Statement stmt = this.conn.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join user appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposal = " + String.valueOf(idProposal));
+		ResultSet rs = stmt.executeQuery("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join \"user\" appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposal = " + String.valueOf(idProposal));
 		List<ProposalAppraiser> list = new ArrayList<ProposalAppraiser>();
 		
 		while(rs.next()){
@@ -40,7 +40,7 @@ public class ProposalAppraiserDAO {
 	}
 	
 	public ProposalAppraiser findById(int id) throws SQLException{
-		PreparedStatement stmt = this.conn.prepareStatement("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join user appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposalAppraiser = ?");
+		PreparedStatement stmt = this.conn.prepareStatement("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join \"user\" appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposalAppraiser = ?");
 		
 		stmt.setInt(1, id);
 		
@@ -54,7 +54,7 @@ public class ProposalAppraiserDAO {
 	}
 	
 	public ProposalAppraiser findByAppraiser(int idProposal, int idAppraiser) throws SQLException{
-		PreparedStatement stmt = this.conn.prepareStatement("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join user appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposal = ? AND idAppraiser = ?");
+		PreparedStatement stmt = this.conn.prepareStatement("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join \"user\" appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposal = ? AND idAppraiser = ?");
 		
 		stmt.setInt(1, idProposal);
 		stmt.setInt(2, idAppraiser);

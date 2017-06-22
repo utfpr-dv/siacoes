@@ -105,7 +105,7 @@ public class CampusDAO {
 			stmt.setString(1, campus.getName());
 			stmt.setString(2, campus.getAddress());
 			if(campus.getLogo() == null){
-				stmt.setNull(3, Types.BLOB);
+				stmt.setNull(3, Types.BINARY);
 			}else{
 				stmt.setBytes(3, campus.getLogo());	
 			}

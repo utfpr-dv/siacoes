@@ -24,8 +24,8 @@ public class InternshipFinalDocumentDAO {
 				"SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, " +
 				"s.name AS student, s2.name AS supervisor, c.name AS company " +
 				"FROM internshipfinaldocument INNER JOIN internship ON internship.idInternship=internshipfinaldocument.idInternship " +
-				"INNER JOIN user s ON s.idUser=internship.idStudent " +
-				"INNER JOIN user s2 ON s2.idUser=internship.idSupervisor " +
+				"INNER JOIN \"user\" s ON s.idUser=internship.idStudent " +
+				"INNER JOIN \"user\" s2 ON s2.idUser=internship.idSupervisor " +
 				"INNER JOIN company c ON c.idCompany=internship.idCompany " +
 				"WHERE internshipfinaldocument.idinternshipfinaldocument=?");
 		
@@ -56,8 +56,8 @@ public class InternshipFinalDocumentDAO {
 				"SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, " +
 				"s.name AS student, s2.name AS supervisor, c.name AS company " +
 				"FROM internshipfinaldocument INNER JOIN internship ON internship.idInternship=internshipfinaldocument.idInternship " +
-				"INNER JOIN user s ON s.idUser=internship.idStudent " +
-				"INNER JOIN user s2 ON s2.idUser=internship.idSupervisor " +
+				"INNER JOIN \"user\" s ON s.idUser=internship.idStudent " +
+				"INNER JOIN \"user\" s2 ON s2.idUser=internship.idSupervisor " +
 				"INNER JOIN company c ON c.idCompany=internship.idCompany " +
 				"WHERE internshipfinaldocument.idinternship=?");
 		
@@ -89,8 +89,8 @@ public class InternshipFinalDocumentDAO {
 			ResultSet rs = stmt.executeQuery("SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, " +
 					"s.name AS student, s2.name AS supervisor, c.name AS company " +
 					"FROM internshipfinaldocument INNER JOIN internship ON internship.idInternship=internshipfinaldocument.idInternship " +
-					"INNER JOIN user s ON s.idUser=internship.idStudent " +
-					"INNER JOIN user s2 ON s2.idUser=internship.idSupervisor " +
+					"INNER JOIN \"user\" s ON s.idUser=internship.idStudent " +
+					"INNER JOIN \"user\" s2 ON s2.idUser=internship.idSupervisor " +
 					"INNER JOIN company c ON c.idCompany=internship.idCompany " +
 					"ORDER BY internshipfinaldocument.submissionDate DESC, internshipfinaldocument.title");
 			
@@ -119,8 +119,8 @@ public class InternshipFinalDocumentDAO {
 					"SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, " +
 					"s.name AS student, s2.name AS supervisor, c.name AS company " +
 					"FROM internshipfinaldocument INNER JOIN internship ON internship.idInternship=internshipfinaldocument.idInternship " +
-					"INNER JOIN user s ON s.idUser=internship.idStudent " +
-					"INNER JOIN user s2 ON s2.idUser=internship.idSupervisor " +
+					"INNER JOIN \"user\" s ON s.idUser=internship.idStudent " +
+					"INNER JOIN \"user\" s2 ON s2.idUser=internship.idSupervisor " +
 					"INNER JOIN company c ON c.idCompany=internship.idCompany " +
 					"WHERE internshipfinaldocument.supervisorFeedback=1 AND internship.idDepartment=? " + (includePrivate ? "" : " AND internshipfinaldocument.private=0 ") +
 					"ORDER BY internshipfinaldocument.submissionDate DESC, internshipfinaldocument.title");
@@ -155,8 +155,8 @@ public class InternshipFinalDocumentDAO {
 					"s.name AS student, s2.name AS supervisor, c.name AS company " +
 					"FROM internshipfinaldocument INNER JOIN internship ON internship.idInternship=internshipfinaldocument.idInternship " +
 					"INNER JOIN internshipjury ON internshipjury.idinternship=internship.idinternship " +
-					"INNER JOIN user s ON s.idUser=internship.idStudent " +
-					"INNER JOIN user s2 ON s2.idUser=internship.idSupervisor " +
+					"INNER JOIN \"user\" s ON s.idUser=internship.idStudent " +
+					"INNER JOIN \"user\" s2 ON s2.idUser=internship.idSupervisor " +
 					"INNER JOIN company c ON c.idCompany=internship.idCompany " +
 					"WHERE internshipfinaldocument.supervisorFeedback=1 AND MONTH(internshipjury.date) " + (semester == 1 ? "<= 7" : "> 7") + " AND YEAR(internshipjury.date)=? AND internship.idDepartment=? " + (includePrivate ? "" : " AND internshipfinaldocument.private=0 ") +
 					"ORDER BY internshipfinaldocument.submissionDate DESC, internshipfinaldocument.title");

@@ -33,8 +33,8 @@ public class InternshipDAO {
 		
 		ResultSet rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
 				"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
-				"INNER JOIN user student ON student.iduser=internship.idstudent " +
-				"INNER JOIN user supervisor ON supervisor.iduser=internship.idsupervisor " + 
+				"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
+				"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " + 
 				"ORDER BY internship.startDate DESC");
 		
 		List<Internship> list = new ArrayList<Internship>();
@@ -51,8 +51,8 @@ public class InternshipDAO {
 		
 		ResultSet rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
 				"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
-				"INNER JOIN user student ON student.iduser=internship.idstudent " +
-				"INNER JOIN user supervisor ON supervisor.iduser=internship.idsupervisor " +
+				"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
+				"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " +
 				"WHERE 1=1 " +
 				(year > 0 ? " AND (YEAR(internship.startDate) >= " + String.valueOf(year) + " AND (YEAR(internship.endDate) <= " + String.valueOf(year) + " OR internship.endDate IS NULL)) " : "") +
 				(idStudent > 0 ? " AND internship.idstudent = " + String.valueOf(idStudent) : "") +
@@ -76,8 +76,8 @@ public class InternshipDAO {
 		
 		ResultSet rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
 				"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
-				"INNER JOIN user student ON student.iduser=internship.idstudent " +
-				"INNER JOIN user supervisor ON supervisor.iduser=internship.idsupervisor " + 
+				"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
+				"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " + 
 				"WHERE internship.idcompany=" + String.valueOf(idCompany) + " ORDER BY internship.startDate DESC");
 		
 		List<Internship> list = new ArrayList<Internship>();
@@ -94,8 +94,8 @@ public class InternshipDAO {
 		
 		ResultSet rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
 				"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
-				"INNER JOIN user student ON student.iduser=internship.idstudent " +
-				"INNER JOIN user supervisor ON supervisor.iduser=internship.idsupervisor " + 
+				"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
+				"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " + 
 				"WHERE internship.idcompanysupervisor=" + String.valueOf(idCompanySupervisor) + " ORDER BY internship.startDate DESC");
 		
 		List<Internship> list = new ArrayList<Internship>();
@@ -112,8 +112,8 @@ public class InternshipDAO {
 		
 		ResultSet rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
 				"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
-				"INNER JOIN user student ON student.iduser=internship.idstudent " +
-				"INNER JOIN user supervisor ON supervisor.iduser=internship.idsupervisor " +  
+				"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
+				"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " +  
 				"WHERE internship.idsupervisor=" + String.valueOf(idSupervisor) + " ORDER BY internship.startDate DESC");
 		
 		List<Internship> list = new ArrayList<Internship>();
@@ -130,8 +130,8 @@ public class InternshipDAO {
 		
 		ResultSet rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
 				"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
-				"INNER JOIN user student ON student.iduser=internship.idstudent " +
-				"INNER JOIN user supervisor ON supervisor.iduser=internship.idsupervisor " +  
+				"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
+				"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " +  
 				"WHERE internship.idstudent=" + String.valueOf(idStudent) + " ORDER BY internship.startDate DESC");
 		
 		List<Internship> list = new ArrayList<Internship>();
@@ -147,8 +147,8 @@ public class InternshipDAO {
 		PreparedStatement stmt = this.conn.prepareStatement(
 				"SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
 				"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
-				"INNER JOIN user student ON student.iduser=internship.idstudent " +
-				"INNER JOIN user supervisor ON supervisor.iduser=internship.idsupervisor " + 
+				"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
+				"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " + 
 				"WHERE internship.idinternship=?");
 		
 		stmt.setInt(1, id);
@@ -188,7 +188,7 @@ public class InternshipDAO {
 		stmt.setInt(10, internship.getTotalHours());
 		stmt.setBytes(11, internship.getInternshipPlan());
 		if(internship.getFinalReport() == null){
-			stmt.setNull(12, Types.BLOB);
+			stmt.setNull(12, Types.BINARY);
 		}else{
 			stmt.setBytes(12, internship.getFinalReport());
 		}

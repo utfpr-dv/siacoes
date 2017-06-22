@@ -437,6 +437,7 @@ CREATE TABLE `attendance` (
   `startTime` time NOT NULL,
   `endTime` time NOT NULL,
   `comments` text NOT NULL,
+  `nextMeeting` text NOT NULL,
   `stage` int(11) NOT NULL,
   PRIMARY KEY (`idattendance`),
   KEY `fk_attendance_proposal_idx` (`idproposal`),
@@ -575,7 +576,7 @@ CREATE TABLE `juryappraiser` (
   `idjuryappraiser` int(11) NOT NULL AUTO_INCREMENT,
   `idjury` int(11) NOT NULL,
   `idappraiser` int(11) NOT NULL,
-  `file` mediumblob NOT NULL,
+  `file` mediumblob NULL,
   `filetype` smallint(6) NOT NULL,
   `comments` TEXT NOT NULL,
   PRIMARY KEY (`idjuryappraiser`),
@@ -623,5 +624,3 @@ CREATE  TABLE `bugreport` (
   INDEX `fk_bugreport_user_idx` (`iduser` ASC),
   CONSTRAINT `fk_bugreport_user` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
-
-ALTER TABLE `internship` ADD COLUMN `reportTitle` VARCHAR(255) NOT NULL;

@@ -122,10 +122,10 @@ public class SupervisorChangeDAO {
 					"SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
 					"oldsupervisor.name AS oldSupervisorName, oldcosupervisor.name AS oldCosupervisorName, newsupervisor.name AS newSupervisorName " +
 					"FROM supervisorchange INNER JOIN proposal ON proposal.idProposal=supervisorchange.idProposal " +
-					"INNER JOIN user student ON student.idUser=proposal.idStudent " +
-					"LEFT JOIN user oldsupervisor ON oldsupervisor.idUser=supervisorchange.idOldSupervisor " +
-					"LEFT JOIN user oldcosupervisor ON oldcosupervisor.idUser=supervisorchange.idOldCosupervisor " +
-					"LEFT JOIN user newsupervisor ON newsupervisor.idUser=supervisorchange.idNewSupervisor " +
+					"INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
+					"LEFT JOIN \"user\" oldsupervisor ON oldsupervisor.idUser=supervisorchange.idOldSupervisor " +
+					"LEFT JOIN \"user\" oldcosupervisor ON oldcosupervisor.idUser=supervisorchange.idOldCosupervisor " +
+					"LEFT JOIN \"user\" newsupervisor ON newsupervisor.idUser=supervisorchange.idNewSupervisor " +
 					"WHERE proposal.idDepartment=? AND supervisorchange.date BETWEEN ? AND ? " + (onlyPending ? " AND supervisorchange.approved=0" : ""));
 			
 			stmt.setInt(1, idDepartment);
@@ -160,10 +160,10 @@ public class SupervisorChangeDAO {
 			ResultSet rs = stmt.executeQuery("SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
 					"oldSupervisor.name AS oldSupervisorName, oldcosupervisor.name AS oldCosupervisorName, newsupervisor.name AS newSupervisorName " +
 					"FROM supervisorchange INNER JOIN proposal ON proposal.idProposal=supervisorchange.idProposal " +
-					"INNER JOIN user student ON student.idUser=proposal.idStudent " +
-					"LEFT JOIN user oldsupervisor ON oldsupervisor.idUser=supervisorchange.idOldSupervisor " +
-					"LEFT JOIN user oldcosupervisor ON oldcosupervisor.idUser=supervisorchange.idOldCosupervisor " +
-					"LEFT JOIN user newsupervisor ON newsupervisor.idUser=supervisorchange.idNewSupervisor " +
+					"INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
+					"LEFT JOIN \"user\" oldsupervisor ON oldsupervisor.idUser=supervisorchange.idOldSupervisor " +
+					"LEFT JOIN \"user\" oldcosupervisor ON oldcosupervisor.idUser=supervisorchange.idOldCosupervisor " +
+					"LEFT JOIN \"user\" newsupervisor ON newsupervisor.idUser=supervisorchange.idNewSupervisor " +
 					"WHERE supervisorchange.idSupervisorChange=" + String.valueOf(id));
 			
 			if(rs.next()){
@@ -191,10 +191,10 @@ public class SupervisorChangeDAO {
 			ResultSet rs = stmt.executeQuery("SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
 					"oldSupervisor.name AS oldSupervisorName, oldcosupervisor.name AS oldCosupervisorName, newsupervisor.name AS newSupervisorName " +
 					"FROM supervisorchange INNER JOIN proposal ON proposal.idProposal=supervisorchange.idProposal " +
-					"INNER JOIN user student ON student.idUser=proposal.idStudent " +
-					"LEFT JOIN user oldsupervisor ON oldsupervisor.idUser=supervisorchange.idOldSupervisor " +
-					"LEFT JOIN user oldcosupervisor ON oldcosupervisor.idUser=supervisorchange.idOldCosupervisor " +
-					"LEFT JOIN user newsupervisor ON newsupervisor.idUser=supervisorchange.idNewSupervisor " +
+					"INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
+					"LEFT JOIN \"user\" oldsupervisor ON oldsupervisor.idUser=supervisorchange.idOldSupervisor " +
+					"LEFT JOIN \"user\" oldcosupervisor ON oldcosupervisor.idUser=supervisorchange.idOldCosupervisor " +
+					"LEFT JOIN \"user\" newsupervisor ON newsupervisor.idUser=supervisorchange.idNewSupervisor " +
 					"WHERE supervisorchange.approved=0 AND supervisorchange.idProposal=" + String.valueOf(idProposal));
 			
 			if(rs.next()){

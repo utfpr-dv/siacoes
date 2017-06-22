@@ -33,11 +33,11 @@ public class JuryStudentDAO {
 				"SELECT jurystudent.*, student.name, student.studentCode, jury.date, jury.startTime, jury.endTime, " +
 				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
 				"FROM jurystudent INNER JOIN jury ON jury.idJury=jurystudent.idJury " +
-				"INNER JOIN user student ON student.idUser=jurystudent.idStudent " +
+				"INNER JOIN \"user\" student ON student.idUser=jurystudent.idStudent " +
 				"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
 				"LEFT JOIN project ON project.idProject=jury.idProject " +
-				"LEFT JOIN user tstudent ON tstudent.idUser=thesis.idStudent " +
-				"LEFT JOIN user pstudent ON pstudent.idUser=project.idStudent " +
+				"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
+				"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
 				"WHERE idJuryStudent = ?");
 		
 		stmt.setInt(1, id);
@@ -56,11 +56,11 @@ public class JuryStudentDAO {
 				"SELECT jurystudent.*, student.name, student.studentCode, jury.date, jury.startTime, jury.endTime, " +
 				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
 				"FROM jurystudent INNER JOIN jury ON jury.idJury=jurystudent.idJury " +
-				"INNER JOIN user student ON student.idUser=jurystudent.idStudent " +
+				"INNER JOIN \"user\" student ON student.idUser=jurystudent.idStudent " +
 				"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
 				"LEFT JOIN project ON project.idProject=jury.idProject " +
-				"LEFT JOIN user tstudent ON tstudent.idUser=thesis.idStudent " +
-				"LEFT JOIN user pstudent ON pstudent.idUser=project.idStudent " +
+				"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
+				"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
 				"WHERE jurystudent.idJury = ? AND jurystudent.idStudent=?");
 		
 		stmt.setInt(1, idJury);
@@ -80,11 +80,11 @@ public class JuryStudentDAO {
 				"SELECT jurystudent.*, student.name, student.studentCode, jury.date, jury.startTime, jury.endTime, " +
 				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
 				"FROM jurystudent INNER JOIN jury ON jury.idJury=jurystudent.idJury " +
-				"INNER JOIN user student ON student.idUser=jurystudent.idStudent " +
+				"INNER JOIN \"user\" student ON student.idUser=jurystudent.idStudent " +
 				"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
 				"LEFT JOIN project ON project.idProject=jury.idProject " +
-				"LEFT JOIN user tstudent ON tstudent.idUser=thesis.idStudent " +
-				"LEFT JOIN user pstudent ON pstudent.idUser=project.idStudent " +
+				"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
+				"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
 				"WHERE jurystudent.idJury = ?");
 		
 		stmt.setInt(1, idJury);
@@ -105,11 +105,11 @@ public class JuryStudentDAO {
 				"SELECT jurystudent.*, student.name, student.studentCode, jury.date, jury.startTime, jury.endTime, " +
 				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
 				"FROM jurystudent INNER JOIN jury ON jury.idJury=jurystudent.idJury " +
-				"INNER JOIN user student ON student.idUser=jurystudent.idStudent " +
+				"INNER JOIN \"user\" student ON student.idUser=jurystudent.idStudent " +
 				"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
 				"LEFT JOIN project ON project.idProject=jury.idProject " +
-				"LEFT JOIN user tstudent ON tstudent.idUser=thesis.idStudent " +
-				"LEFT JOIN user pstudent ON pstudent.idUser=project.idStudent " +
+				"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
+				"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
 				"WHERE jurystudent.idStudent = ?");
 		
 		stmt.setInt(1, idStudent);

@@ -112,7 +112,7 @@ public class DepartmentDAO {
 			stmt.setInt(1, department.getCampus().getIdCampus());
 			stmt.setString(2, department.getName());
 			if(department.getLogo() == null){
-				stmt.setNull(3, Types.BLOB);
+				stmt.setNull(3, Types.BINARY);
 			}else{
 				stmt.setBytes(3, department.getLogo());	
 			}

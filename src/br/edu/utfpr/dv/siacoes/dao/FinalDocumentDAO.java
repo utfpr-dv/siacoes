@@ -24,16 +24,16 @@ public class FinalDocumentDAO {
 			stmt = conn.prepareStatement(
 				"SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
 			    "finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, " +
-				"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, NULL AS idProposal, user.name AS student " +
+				"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, NULL AS idProposal, \"user\".name AS student " +
 				"FROM finaldocument INNER JOIN thesis ON thesis.idThesis=finaldocument.idThesis " +
-				"INNER JOIN user ON user.idUser=thesis.idStudent " +
+				"INNER JOIN \"user\" ON \"user\".idUser=thesis.idStudent " +
 				"WHERE finaldocument.idfinaldocument=?" + 
 				" UNION ALL " +
 				"SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, " +
-				"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, user.name AS student " +
+				"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, \"user\".name AS student " +
 				"FROM finaldocument INNER JOIN project ON project.idProject=finaldocument.idProject " +
-				"INNER JOIN user ON user.idUser=project.idStudent " +
+				"INNER JOIN \"user\" ON \"user\".idUser=project.idStudent " +
 				"WHERE finaldocument.idfinaldocument=?");
 		
 			stmt.setInt(1, id);
@@ -63,11 +63,11 @@ public class FinalDocumentDAO {
 			stmt = conn.prepareStatement(
 				"SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, " +
-				"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, project.idProposal, user.name AS student " +
+				"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, project.idProposal, \"user\".name AS student " +
 				"FROM finaldocument INNER JOIN thesis ON thesis.idThesis=finaldocument.idThesis " +
 				"INNER JOIN project ON project.idProject=thesis.idProject " +
 				"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
-				"INNER JOIN user ON user.idUser=thesis.idStudent " +
+				"INNER JOIN \"user\" ON \"user\".idUser=thesis.idStudent " +
 				"WHERE thesis.idStudent=? AND proposal.idDepartment=? AND thesis.semester=? AND thesis.year=?");
 		
 			stmt.setInt(1, idStudent);
@@ -99,10 +99,10 @@ public class FinalDocumentDAO {
 			stmt = conn.prepareStatement(
 				"SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, " +
-				"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, user.name AS student " +
+				"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, \"user\".name AS student " +
 				"FROM finaldocument INNER JOIN project ON project.idProject=finaldocument.idProject " +
 				"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
-				"INNER JOIN user ON user.idUser=project.idStudent " +
+				"INNER JOIN \"user\" ON \"user\".idUser=project.idStudent " +
 				"WHERE project.idStudent=? AND proposal.idDepartment=? AND project.semester=? AND project.year=?");
 		
 			stmt.setInt(1, idStudent);
@@ -135,18 +135,18 @@ public class FinalDocumentDAO {
 		
 			ResultSet rs = stmt.executeQuery("SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
 					"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, " +
-					"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, project.idProposal, user.name AS student " +
+					"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, project.idProposal, \"user\".name AS student " +
 					"FROM finaldocument INNER JOIN thesis ON thesis.idThesis=finaldocument.idThesis " +
 					"INNER JOIN project ON project.idProject=thesis.idProject " +
 					"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
-					"INNER JOIN user ON user.idUser=thesis.idStudent " +
+					"INNER JOIN \"user\" ON \"user\".idUser=thesis.idStudent " +
 					" UNION ALL " + 
 					"SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
 					"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, " +
-					"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, user.name AS student " +
+					"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, \"user\".name AS student " +
 					"FROM finaldocument INNER JOIN project ON project.idProject=finaldocument.idProject " +
 					"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
-					"INNER JOIN user ON user.idUser=project.idStudent " +
+					"INNER JOIN \"user\" ON \"user\".idUser=project.idStudent " +
 					"ORDER BY year DESC, semester DESC, title");
 			
 			List<FinalDocument> list = new ArrayList<FinalDocument>();
@@ -173,19 +173,19 @@ public class FinalDocumentDAO {
 			stmt = conn.prepareStatement(
 				"SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, " +
-				"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, project.idProposal, user.name AS student " +
+				"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, project.idProposal, \"user\".name AS student " +
 				"FROM finaldocument INNER JOIN thesis ON thesis.idThesis=finaldocument.idThesis " +
 				"INNER JOIN project ON project.idProject=thesis.idProject " +
 				"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
-				"INNER JOIN user ON user.idUser=thesis.idStudent " +
+				"INNER JOIN \"user\" ON \"user\".idUser=thesis.idStudent " +
 				"WHERE finaldocument.supervisorFeedback=1 AND proposal.idDepartment=? " + (includePrivate ? "" : " AND finaldocument.private=0 ") +
 				" UNION ALL " +
 				"SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, " +
-				"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, user.name AS student " +
+				"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, \"user\".name AS student " +
 				"FROM finaldocument INNER JOIN project ON project.idProject=finaldocument.idProject " +
 				"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
-				"INNER JOIN user ON user.idUser=project.idStudent " +
+				"INNER JOIN \"user\" ON \"user\".idUser=project.idStudent " +
 				"WHERE finaldocument.supervisorFeedback=1 AND proposal.idDepartment=? " + (includePrivate ? "" : " AND finaldocument.private=0 ") +
 				"ORDER BY year DESC, semester DESC, title");
 		
@@ -218,19 +218,19 @@ public class FinalDocumentDAO {
 			stmt = conn.prepareStatement(
 				"SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, " +
-				"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, project.idProposal, user.name AS student " +
+				"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, project.idProposal, \"user\".name AS student " +
 				"FROM finaldocument INNER JOIN thesis ON thesis.idThesis=finaldocument.idThesis " +
 				"INNER JOIN project ON project.idProject=thesis.idProject " +
 				"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
-				"INNER JOIN user ON user.idUser=thesis.idStudent " +
+				"INNER JOIN \"user\" ON \"user\".idUser=thesis.idStudent " +
 				"WHERE finaldocument.supervisorFeedback=1 AND thesis.semester=? AND thesis.year=? AND proposal.idDepartment=? " + (includePrivate ? "" : " AND finaldocument.private=0 ") +
 				" UNION ALL " +
 				"SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, " +
-				"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, user.name AS student " +
+				"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, \"user\".name AS student " +
 				"FROM finaldocument INNER JOIN project ON project.idProject=finaldocument.idProject " +
 				"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
-				"INNER JOIN user ON user.idUser=project.idStudent " +
+				"INNER JOIN \"user\" ON \"user\".idUser=project.idStudent " +
 				"WHERE finaldocument.supervisorFeedback=1 AND project.semester=? AND project.year=? AND proposal.idDepartment=? " + (includePrivate ? "" : " AND finaldocument.private=0 ") +
 				"ORDER BY title");
 		
@@ -268,19 +268,19 @@ public class FinalDocumentDAO {
 			stmt = conn.prepareStatement(
 				"SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, " +
-				"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, project.idProposal, user.name AS student " +
+				"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, project.idProposal, \"user\".name AS student " +
 				"FROM finaldocument INNER JOIN thesis ON thesis.idThesis=finaldocument.idThesis " +
 				"INNER JOIN project ON project.idProject=thesis.idProject " +
 				"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
-				"INNER JOIN user ON user.idUser=thesis.idStudent " +
+				"INNER JOIN \"user\" ON \"user\".idUser=thesis.idStudent " +
 				"WHERE thesis.semester=? AND thesis.year=? AND thesis.idsupervisor=? " +
 				" UNION ALL " +
 				"SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, " +
-				"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, user.name AS student " +
+				"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, \"user\".name AS student " +
 				"FROM finaldocument INNER JOIN project ON project.idProject=finaldocument.idProject " +
 				"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
-				"INNER JOIN user ON user.idUser=project.idStudent " +
+				"INNER JOIN \"user\" ON \"user\".idUser=project.idStudent " +
 				"WHERE project.semester=? AND project.year=? AND project.idsupervisor=? " +
 				"ORDER BY title");
 		

@@ -52,9 +52,9 @@ public class EmailConfigDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO emailconfig(host, user, password, port, enableSsl, authenticate) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO emailconfig(host, \"user\", password, port, enableSsl, authenticate) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE emailconfig SET host=?, user=?, password=?, port=?, enableSsl=?, authenticate=? WHERE idEmailConfig=?");
+				stmt = conn.prepareStatement("UPDATE emailconfig SET host=?, \"user\"=?, password=?, port=?, enableSsl=?, authenticate=? WHERE idEmailConfig=?");
 			}
 			
 			stmt.setString(1, email.getHost());

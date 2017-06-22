@@ -35,7 +35,7 @@ public class ConnectionDAO {
 	}
 	
 	private void createDataSource() throws SQLException{
-		String user, password, server, database; 
+		String user, password, server, database, driver, type; 
 		
 		try{
 			Properties props = new Properties();
@@ -47,18 +47,20 @@ public class ConnectionDAO {
 	        database = props.getProperty("DB_NAME");
 	        user = props.getProperty("DB_USERNAME");
 	        password = props.getProperty("DB_PASSWORD");
+	        driver = props.getProperty("DB_DRIVER_CLASS");
+	        type = props.getProperty("DB_TYPE");
 	     }catch(Exception e){
 	    	 server = SERVER;
 	    	 database = DATABASE;
 	    	 user = USER;
 	    	 password = PASSWORD;
+	    	 driver = "com.mysql.jdbc.Driver";
+	    	 type = "mysql";
 		}
 		
 		PoolProperties p = new PoolProperties();
-		p.setUrl("jdbc:mysql://" + server + "/" + database);
-		p.setDriverClassName("com.mysql.jdbc.Driver");
-		//p.setUrl("jdbc:postgresql://" + server + "/" + database);
-		//p.setDriverClassName("org.postgresql.Driver");
+		p.setUrl("jdbc:" + type + "://" + server + "/" + database);
+		p.setDriverClassName(driver);
 		p.setUsername(user);
 		p.setPassword(password);
 		p.setJmxEnabled(true);
@@ -81,8 +83,10 @@ public class ConnectionDAO {
 		datasource = new DataSource();
 		datasource.setPoolProperties(p);
         
-		Statement stmt = this.datasource.getConnection().createStatement();
-		stmt.execute("SET GLOBAL max_allowed_packet=1024*1024*14;");
+		if(type.equals("mysql")){
+			Statement stmt = this.datasource.getConnection().createStatement();
+			stmt.execute("SET GLOBAL max_allowed_packet=1024*1024*14;");	
+		}
 	}
 	
 }

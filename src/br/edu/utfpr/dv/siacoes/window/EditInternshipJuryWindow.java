@@ -383,7 +383,11 @@ public class EditInternshipJuryWindow extends EditWindow {
 		}else{
 			InternshipJuryAppraiser appraiser = this.jury.getAppraisers().get(index);
 			
-			UI.getCurrent().addWindow(new EditInternshipJuryAppraiserScoreWindow(appraiser));
+			if((appraiser == null) || (appraiser.getIdInternshipJuryAppraiser() == 0)){
+				Notification.show("Lançar Notas", "É necessário salvar a banca antes de lançar as notas.", Notification.Type.WARNING_MESSAGE);
+			}else{
+				UI.getCurrent().addWindow(new EditInternshipJuryAppraiserScoreWindow(appraiser));	
+			}
 		}
 	}
 	

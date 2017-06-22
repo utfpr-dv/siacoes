@@ -23,14 +23,14 @@ public class ActivitySubmissionDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT activitysubmission.*, user.name AS studentName, feedbackUser.name AS feedbackUserName, " + 
+			ResultSet rs = stmt.executeQuery("SELECT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
 					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, " +
 					"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester " + 
-					"FROM activitysubmission INNER JOIN user ON user.idUser=activitysubmission.idStudent " +
+					"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
 					"INNER JOIN activity ON activity.idActivity=activitysubmission.idActivity " + 
 					"INNER JOIN activitygroup ON activitygroup.idActivityGroup=activity.idActivityGroup " +
 					"INNER JOIN activityunit ON activityunit.idActivityUnit=activity.idActivityUnit " +
-					"LEFT JOIN user feedbackUser ON feedbackUser.idUser=activitysubmission.idfeedbackuser " +
+					"LEFT JOIN \"user\" feedbackUser ON feedbackUser.idUser=activitysubmission.idfeedbackuser " +
 					"ORDER BY activitysubmission.year DESC, activitysubmission.semester DESC");
 			
 			List<ActivitySubmission> list = new ArrayList<ActivitySubmission>();
@@ -56,14 +56,14 @@ public class ActivitySubmissionDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT activitysubmission.*, user.name AS studentName, feedbackUser.name AS feedbackUserName, " + 
+			ResultSet rs = stmt.executeQuery("SELECT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
 					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, " +
 					"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester " + 
-					"FROM activitysubmission INNER JOIN user ON user.idUser=activitysubmission.idStudent " +
+					"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
 					"INNER JOIN activity ON activity.idActivity=activitysubmission.idActivity " + 
 					"INNER JOIN activitygroup ON activitygroup.idActivityGroup=activity.idActivityGroup " +
 					"INNER JOIN activityunit ON activityunit.idActivityUnit=activity.idActivityUnit " +
-					"LEFT JOIN user feedbackUser ON feedbackUser.idUser=activitysubmission.idfeedbackuser " +
+					"LEFT JOIN \"user\" feedbackUser ON feedbackUser.idUser=activitysubmission.idfeedbackuser " +
 					"WHERE activitysubmission.idDepartment=" + String.valueOf(idDepartment) + " AND activitysubmission.idStudent=" + String.valueOf(idStudent) + 
 					" ORDER BY activitysubmission.year DESC, activitysubmission.semester DESC");
 			
@@ -90,14 +90,14 @@ public class ActivitySubmissionDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT activitysubmission.*, user.name AS studentName, feedbackUser.name AS feedbackUserName, " + 
+			ResultSet rs = stmt.executeQuery("SELECT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
 					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, " +
 					"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester " + 
-					"FROM activitysubmission INNER JOIN user ON user.idUser=activitysubmission.idStudent " +
+					"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
 					"INNER JOIN activity ON activity.idActivity=activitysubmission.idActivity " + 
 					"INNER JOIN activitygroup ON activitygroup.idActivityGroup=activity.idActivityGroup " +
 					"INNER JOIN activityunit ON activityunit.idActivityUnit=activity.idActivityUnit " +
-					"LEFT JOIN user feedbackUser ON feedbackUser.idUser=activitysubmission.idfeedbackuser " +
+					"LEFT JOIN \"user\" feedbackUser ON feedbackUser.idUser=activitysubmission.idfeedbackuser " +
 					"WHERE activitysubmission.feedback=0 AND activitysubmission.idDepartment=" + String.valueOf(idDepartment) + 
 					" ORDER BY activitysubmission.year DESC, activitysubmission.semester DESC");
 			
@@ -123,14 +123,14 @@ public class ActivitySubmissionDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-				"SELECT activitysubmission.*, user.name AS studentName, feedbackUser.name AS feedbackUserName, " + 
+				"SELECT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
 				"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, " +
 				"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester " + 
-				"FROM activitysubmission INNER JOIN user ON user.idUser=activitysubmission.idStudent " +
+				"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
 				"INNER JOIN activity ON activity.idActivity=activitysubmission.idActivity " + 
 				"INNER JOIN activitygroup ON activitygroup.idActivityGroup=activity.idActivityGroup " +
 				"INNER JOIN activityunit ON activityunit.idActivityUnit=activity.idActivityUnit " +
-				"LEFT JOIN user feedbackUser ON feedbackUser.idUser=activitysubmission.idfeedbackuser " +
+				"LEFT JOIN \"user\" feedbackUser ON feedbackUser.idUser=activitysubmission.idfeedbackuser " +
 				"WHERE activitysubmission.idActivitySubmission=?");
 		
 			stmt.setInt(1, id);

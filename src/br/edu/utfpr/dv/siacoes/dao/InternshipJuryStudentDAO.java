@@ -32,9 +32,9 @@ public class InternshipJuryStudentDAO {
 				"SELECT internshipjurystudent.*, student.name, student.studentCode, internshipjury.date, internshipjury.startTime, internshipjury.endTime, " +
 				"internshipjury.idInternship, istudent.name AS internshipStudent " +
 				"FROM internshipjurystudent INNER JOIN internshipjury ON internshipjury.idInternshipJury=internshipjurystudent.idInternshipJury " +
-				"INNER JOIN user student ON student.idUser=internshipjurystudent.idStudent " +
+				"INNER JOIN \"user\" student ON student.idUser=internshipjurystudent.idStudent " +
 				"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " + 
-				"INNER JOIN user istudent ON istudent.idUser=internship.idStudent " +
+				"INNER JOIN \"user\" istudent ON istudent.idUser=internship.idStudent " +
 				"WHERE idInternshipJuryStudent = ?");
 		
 		stmt.setInt(1, id);
@@ -53,9 +53,9 @@ public class InternshipJuryStudentDAO {
 				"SELECT internshipjurystudent.*, student.name, student.studentCode, internshipjury.date, internshipjury.startTime, internshipjury.endTime, " +
 				"internshipjury.idInternship, istudent.name AS internshipStudent " +
 				"FROM internshipjurystudent INNER JOIN internshipjury ON internshipjury.idInternshipJury=internshipjurystudent.idInternshipJury " +
-				"INNER JOIN user student ON student.idUser=internshipjurystudent.idStudent " +
+				"INNER JOIN \"user\" student ON student.idUser=internshipjurystudent.idStudent " +
 				"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " + 
-				"INNER JOIN user istudent ON istudent.idUser=internship.idStudent " +
+				"INNER JOIN \"user\" istudent ON istudent.idUser=internship.idStudent " +
 				"WHERE internshipjurystudent.idInternshipJury = ? AND internshipjurystudent.idStudent=?");
 		
 		stmt.setInt(1, idInternshipJury);
@@ -75,9 +75,9 @@ public class InternshipJuryStudentDAO {
 				"SELECT internshipjurystudent.*, student.name, student.studentCode, internshipjury.date, internshipjury.startTime, internshipjury.endTime, " +
 				"internshipjury.idInternship, istudent.name AS internshipStudent " +
 				"FROM internshipjurystudent INNER JOIN internshipjury ON internshipjury.idInternshipJury=internshipjurystudent.idInternshipJury " +
-				"INNER JOIN user student ON student.idUser=internshipjurystudent.idStudent " +
+				"INNER JOIN \"user\" student ON student.idUser=internshipjurystudent.idStudent " +
 				"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " + 
-				"INNER JOIN user istudent ON istudent.idUser=internship.idStudent " +
+				"INNER JOIN \"user\" istudent ON istudent.idUser=internship.idStudent " +
 				"WHERE internshipjurystudent.idInternshipJury = ?");
 		
 		stmt.setInt(1, idInternshipJury);
@@ -98,9 +98,9 @@ public class InternshipJuryStudentDAO {
 				"SELECT internshipjurystudent.*, student.name, student.studentCode, internshipjury.date, internshipjury.startTime, internshipjury.endTime, " +
 				"internshipjury.idInternship, istudent.name AS internshipStudent " +
 				"FROM internshipjurystudent INNER JOIN internshipjury ON internshipjury.idInternshipJury=internshipjurystudent.idInternshipJury " +
-				"INNER JOIN user student ON student.idUser=internshipjurystudent.idStudent " +
+				"INNER JOIN \"user\" student ON student.idUser=internshipjurystudent.idStudent " +
 				"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " + 
-				"INNER JOIN user istudent ON istudent.idUser=internship.idStudent " +
+				"INNER JOIN \"user\" istudent ON istudent.idUser=internship.idStudent " +
 				"WHERE internshipjurystudent.idStudent = ?");
 		
 		stmt.setInt(1, idStudent);

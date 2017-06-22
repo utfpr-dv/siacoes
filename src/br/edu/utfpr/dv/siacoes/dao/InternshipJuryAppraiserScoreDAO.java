@@ -88,7 +88,7 @@ public class InternshipJuryAppraiserScoreDAO {
 		if(insert){
 			stmt = this.conn.prepareStatement("INSERT INTO internshipjuryappraiserscore(idInternshipJuryAppraiser, idInternshipEvaluationItem, score) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 		}else{
-			stmt = this.conn.prepareStatement("UPDATE internshipjuryappraiser SET idInternshipJuryAppraiser=?, idInternshipEvaluationItem=?, score=? WHERE idInternshipJuryAppraiserScore=?");
+			stmt = this.conn.prepareStatement("UPDATE internshipjuryappraiserscore SET idInternshipJuryAppraiser=?, idInternshipEvaluationItem=?, score=? WHERE idInternshipJuryAppraiserScore=?");
 		}
 		
 		stmt.setInt(1, score.getInternshipJuryAppraiser().getIdInternshipJuryAppraiser());

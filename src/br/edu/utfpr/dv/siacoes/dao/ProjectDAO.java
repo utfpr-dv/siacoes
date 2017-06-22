@@ -21,7 +21,7 @@ public class ProjectDAO {
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT project.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM project inner join user student on student.idUser=project.idStudent inner join user supervisor on supervisor.idUser=project.idSupervisor left join user cosupervisor on cosupervisor.idUser=project.idCosupervisor WHERE idProject = ?");
+			stmt = conn.prepareStatement("SELECT project.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM project inner join \"user\" student on student.idUser=project.idStudent inner join \"user\" supervisor on supervisor.idUser=project.idSupervisor left join \"user\" cosupervisor on cosupervisor.idUser=project.idCosupervisor WHERE idProject = ?");
 		
 			stmt.setInt(1, id);
 			
@@ -46,7 +46,7 @@ public class ProjectDAO {
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT project.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM project inner join user student on student.idUser=project.idStudent inner join user supervisor on supervisor.idUser=project.idSupervisor left join user cosupervisor on cosupervisor.idUser=project.idCosupervisor WHERE idProposal = ?");
+			stmt = conn.prepareStatement("SELECT project.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM project inner join \"user\" student on student.idUser=project.idStudent inner join \"user\" supervisor on supervisor.idUser=project.idSupervisor left join \"user\" cosupervisor on cosupervisor.idUser=project.idCosupervisor WHERE idProposal = ?");
 		
 			stmt.setInt(1, idProposal);
 			
@@ -99,9 +99,9 @@ public class ProjectDAO {
 			stmt = conn.prepareStatement(
 					"SELECT project.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName " +
 					"FROM project INNER JOIN proposal ON proposal.idProposal=project.idProject " + 
-					"INNER JOIN user student ON student.idUser=project.idStudent " +
-					"INNER JOIN user supervisor ON supervisor.idUser=project.idSupervisor " + 
-					"LEFT JOIN user cosupervisor ON cosupervisor.idUser=project.idCosupervisor " +
+					"INNER JOIN \"user\" student ON student.idUser=project.idStudent " +
+					"INNER JOIN \"user\" supervisor ON supervisor.idUser=project.idSupervisor " + 
+					"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=project.idCosupervisor " +
 					"WHERE project.idStudent = ? AND proposal.idDepartment=? AND project.semester = ? AND project.year = ?");
 		
 			stmt.setInt(1, idStudent);
@@ -137,10 +137,10 @@ public class ProjectDAO {
 				"INNER JOIN evaluationItem ON evaluationItem.idEvaluationItem = juryAppraiserScore.idEvaluationItem " +
 				"WHERE juryAppraiser.idJury = jury.idJury GROUP BY juryAppraiser.idJuryAppraiser)) AS score " +
 				"FROM project INNER JOIN proposal ON proposal.idProposal=project.idProposal " + 
-				"INNER JOIN user student ON student.idUser=project.idStudent " +
-				"INNER JOIN user supervisor ON supervisor.idUser=project.idSupervisor " +
+				"INNER JOIN \"user\" student ON student.idUser=project.idStudent " +
+				"INNER JOIN \"user\" supervisor ON supervisor.idUser=project.idSupervisor " +
 				"INNER JOIN jury ON jury.idProject = project.idProject " +
-				"LEFT JOIN user cosupervisor ON cosupervisor.idUser=project.idCosupervisor " +
+				"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=project.idCosupervisor " +
 				"WHERE project.idStudent = ? AND proposal.idDepartment = ? AND (project.year < " + String.valueOf(year) + " OR (project.year = " + String.valueOf(year) + " AND project.semester < " + String.valueOf(semester) + "))) AS p WHERE p.score >= p.minimumScore ORDER BY year DESC, semester DESC");
 		
 			stmt.setInt(1, idStudent);
@@ -170,9 +170,9 @@ public class ProjectDAO {
 			stmt = conn.prepareStatement(
 				"SELECT project.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName " +
 				"FROM project INNER JOIN proposal ON proposal.idProposal=project.idProposal " + 
-				"INNER JOIN user student ON student.idUser=project.idStudent " +
-				"INNER JOIN user supervisor ON supervisor.idUser=project.idSupervisor " +
-				"LEFT JOIN user cosupervisor ON cosupervisor.idUser=project.idCosupervisor " +
+				"INNER JOIN \"user\" student ON student.idUser=project.idStudent " +
+				"INNER JOIN \"user\" supervisor ON supervisor.idUser=project.idSupervisor " +
+				"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=project.idCosupervisor " +
 				"WHERE project.idStudent = ? AND proposal.idDepartment = ? AND (project.year < " + String.valueOf(year) + " OR (project.year = " + String.valueOf(year) + " AND project.semester < " + String.valueOf(semester) + ")) ORDER BY year DESC, semester DESC");
 		
 			stmt.setInt(1, idStudent);
@@ -201,7 +201,7 @@ public class ProjectDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT project.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM project inner join user student on student.idUser=project.idStudent inner join user supervisor on supervisor.idUser=project.idSupervisor left join user cosupervisor on cosupervisor.idUser=project.idCosupervisor ORDER BY year DESC, semester DESC, title");
+			ResultSet rs = stmt.executeQuery("SELECT project.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM project inner join \"user\" student on student.idUser=project.idStudent inner join \"user\" supervisor on supervisor.idUser=project.idSupervisor left join \"user\" cosupervisor on cosupervisor.idUser=project.idCosupervisor ORDER BY year DESC, semester DESC, title");
 			List<Project> list = new ArrayList<Project>();
 			
 			while(rs.next()){
@@ -226,9 +226,9 @@ public class ProjectDAO {
 			stmt = conn.prepareStatement(
 				"SELECT project.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName " +
 				"FROM project INNER JOIN proposal ON proposal.idProposal=project.idProject " +
-				"INNER JOIN user student ON student.idUser=project.idStudent " +
-				"INNER JOIN user supervisor ON supervisor.idUser=project.idSupervisor " +
-				"LEFT JOIN user cosupervisor on cosupervisor.idUser=project.idCosupervisor " +
+				"INNER JOIN \"user\" student ON student.idUser=project.idStudent " +
+				"INNER JOIN \"user\" supervisor ON supervisor.idUser=project.idSupervisor " +
+				"LEFT JOIN \"user\" cosupervisor on cosupervisor.idUser=project.idCosupervisor " +
 				"WHERE proposal.idDepartment=? AND project.semester=? AND project.year=? ORDER BY project.title");
 			stmt.setInt(1, idDepartment);
 			stmt.setInt(2, semester);

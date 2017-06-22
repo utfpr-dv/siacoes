@@ -21,8 +21,8 @@ public class UserDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-					"SELECT user.*, company.name AS companyName " +
-					"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE user.login = ?");
+					"SELECT \"user\".*, company.name AS companyName " +
+					"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany WHERE \"user\".login = ?");
 		
 			stmt.setString(1, login);
 			
@@ -48,8 +48,8 @@ public class UserDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-					"SELECT user.*, company.name AS companyName " +
-					"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE user.idUser = ?");
+					"SELECT \"user\".*, company.name AS companyName " +
+					"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany WHERE \"user\".idUser = ?");
 		
 			stmt.setInt(1, id);
 			
@@ -75,25 +75,25 @@ public class UserDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			
-			String sql = "SELECT user.*, company.name AS companyName " +
-					"FROM user LEFT JOIN company ON user.idcompany=company.idcompany " +
-					"WHERE user.iddepartment = ? ";
+			String sql = "SELECT \"user\".*, company.name AS companyName " +
+					"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
+					"WHERE \"user\".iddepartment = ? ";
 			
 			switch(module){
 				case SIGAC:
-					sql += " AND user.sigacmanager=1 ";
+					sql += " AND \"user\".sigacmanager=1 ";
 					break;
 				case SIGES:
-					sql += " AND user.sigesmanager=1 ";
+					sql += " AND \"user\".sigesmanager=1 ";
 					break;
 				case SIGET:
-					sql += " AND user.sigetmanager=1 ";
+					sql += " AND \"user\".sigetmanager=1 ";
 					break;
 				default:
 					sql += " AND 1=2 ";
 			}
 			
-			sql += " ORDER BY user.profile";
+			sql += " ORDER BY \"user\".profile";
 			
 			stmt = conn.prepareStatement(sql);
 		
@@ -121,9 +121,9 @@ public class UserDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-				"SELECT user.*, company.name AS companyName " +
-				"FROM user LEFT JOIN company ON user.idcompany=company.idcompany " +
-				"WHERE user.iddepartment = ? AND user.departmentmanager=1 ORDER BY user.profile");
+				"SELECT \"user\".*, company.name AS companyName " +
+				"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
+				"WHERE \"user\".iddepartment = ? AND \"user\".departmentmanager=1 ORDER BY \"user\".profile");
 	
 			stmt.setInt(1, idDepartment);
 			
@@ -148,7 +148,7 @@ public class UserDAO {
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT email FROM user WHERE idUser = ?");
+			stmt = conn.prepareStatement("SELECT email FROM \"user\" WHERE idUser = ?");
 		
 			stmt.setInt(1, idUser);
 			
@@ -175,8 +175,8 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT user.*, company.name AS companyName " +
-						"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE user.login <> 'admin' " + (onlyActives ? " AND user.active = 1 " : "") + " ORDER BY user.name");
+			ResultSet rs = stmt.executeQuery("SELECT \"user\".*, company.name AS companyName " +
+						"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany WHERE \"user\".login <> 'admin' " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -200,8 +200,8 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT user.*, company.name AS companyName " +
-						"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE user.login <> 'admin' AND user.profile IN (1, 2) " + (onlyActives ? " AND user.active = 1 " : "") + " ORDER BY user.name");
+			ResultSet rs = stmt.executeQuery("SELECT \"user\".*, company.name AS companyName " +
+						"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany WHERE \"user\".login <> 'admin' AND \"user\".profile IN (1, 2) " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -225,8 +225,8 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT user.*, company.name AS companyName " +
-						"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE user.login <> 'admin' AND user.idDepartment=" + String.valueOf(idDepartment) + " AND user.profile IN (1, 2) " + (onlyActives ? " AND user.active = 1 " : "") + " ORDER BY user.name");
+			ResultSet rs = stmt.executeQuery("SELECT \"user\".*, company.name AS companyName " +
+						"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany WHERE \"user\".login <> 'admin' AND \"user\".idDepartment=" + String.valueOf(idDepartment) + " AND \"user\".profile IN (1, 2) " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -250,10 +250,10 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT user.*, company.name AS companyName " +
-					"FROM user INNER JOIN department ON department.idDepartment=user.idDepartment " + 
-					"LEFT JOIN company ON user.idcompany=company.idcompany " +
-					"WHERE user.login <> 'admin' AND idCampus=" + String.valueOf(idCampus) + " AND user.profile IN (1, 2) " + (onlyActives ? " AND user.active = 1 " : "") + " ORDER BY user.name");
+			ResultSet rs = stmt.executeQuery("SELECT \"user\".*, company.name AS companyName " +
+					"FROM \"user\" INNER JOIN department ON department.idDepartment=\"user\".idDepartment " + 
+					"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
+					"WHERE \"user\".login <> 'admin' AND idCampus=" + String.valueOf(idCampus) + " AND \"user\".profile IN (1, 2) " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -277,8 +277,8 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT user.*, company.name AS companyName " +
-						"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE user.login <> 'admin' AND user.profile = 0 " + (onlyActives ? " AND user.active = 1 " : "") + " ORDER BY user.name");
+			ResultSet rs = stmt.executeQuery("SELECT \"user\".*, company.name AS companyName " +
+						"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany WHERE \"user\".login <> 'admin' AND \"user\".profile = 0 " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -302,8 +302,8 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT user.*, company.name AS companyName " +
-						"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE user.login <> 'admin' AND user.profile = 4 " + (onlyActives ? " AND user.active = 1 " : "") + " ORDER BY user.name");
+			ResultSet rs = stmt.executeQuery("SELECT \"user\".*, company.name AS companyName " +
+						"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany WHERE \"user\".login <> 'admin' AND \"user\".profile = 4 " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -327,8 +327,8 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT user.*, company.name AS companyName " +
-						"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE user.login <> 'admin' AND user.profile = 4 AND user.idcompany=" + String.valueOf(idCompany) + (onlyActives ? " AND user.active = 1 " : "") + " ORDER BY user.name");
+			ResultSet rs = stmt.executeQuery("SELECT \"user\".*, company.name AS companyName " +
+						"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany WHERE \"user\".login <> 'admin' AND \"user\".profile = 4 AND \"user\".idcompany=" + String.valueOf(idCompany) + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -352,15 +352,15 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT user.* FROM user INNER JOIN proposal ON proposal.idStudent=user.idUser " +
-					"WHERE user.profile=0 AND proposal.semester=" + String.valueOf(semester) + " AND proposal.year=" + String.valueOf(year) + " AND (proposal.idSupervisor=" + String.valueOf(idSupervisor) + " OR proposal.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
+			ResultSet rs = stmt.executeQuery("SELECT \"user\".* FROM \"user\" INNER JOIN proposal ON proposal.idStudent=\"user\".idUser " +
+					"WHERE \"user\".profile=0 AND proposal.semester=" + String.valueOf(semester) + " AND proposal.year=" + String.valueOf(year) + " AND (proposal.idSupervisor=" + String.valueOf(idSupervisor) + " OR proposal.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
 					" UNION " +
-					"SELECT user.* FROM user INNER JOIN project ON project.idStudent=user.idUser " + 
-					"WHERE user.profile=0 AND project.semester=" + String.valueOf(semester) + " AND project.year=" + String.valueOf(year) + " AND (project.idSupervisor=" + String.valueOf(idSupervisor) + " OR project.idCosupervisor=" + String.valueOf(idSupervisor) + ") " + 
+					"SELECT \"user\".* FROM \"user\" INNER JOIN project ON project.idStudent=\"user\".idUser " + 
+					"WHERE \"user\".profile=0 AND project.semester=" + String.valueOf(semester) + " AND project.year=" + String.valueOf(year) + " AND (project.idSupervisor=" + String.valueOf(idSupervisor) + " OR project.idCosupervisor=" + String.valueOf(idSupervisor) + ") " + 
 					" UNION " +
-					"SELECT user.* FROM user INNER JOIN thesis ON thesis.idStudent=user.idUser " + 
-					"WHERE user.profile=0 AND thesis.semester=" + String.valueOf(semester) + " AND thesis.year=" + String.valueOf(year) + " AND (thesis.idSupervisor=" + String.valueOf(idSupervisor) + " OR thesis.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
-					"ORDER BY name");
+					"SELECT \"user\".* FROM \"user\" INNER JOIN thesis ON thesis.idStudent=\"user\".idUser " + 
+					"WHERE \"user\".profile=0 AND thesis.semester=" + String.valueOf(semester) + " AND thesis.year=" + String.valueOf(year) + " AND (thesis.idSupervisor=" + String.valueOf(idSupervisor) + " OR thesis.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
+					"ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -383,13 +383,13 @@ public class UserDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			
-			String sql = "SELECT user.*, company.name AS companyName " +
-						"FROM user LEFT JOIN company ON user.idcompany=company.idcompany WHERE login <> 'admin' " + 
-					(!name.isEmpty() ? " AND user.name LIKE ? " : "") +
-					(profile >= 0 ? " AND user.profile = ? " : "") +
-					(onlyActives ? " AND user.active = 1 " : "") +
-					(onlyExternal ? " AND user.external = 1 " : "") +
-					"ORDER BY user.name";
+			String sql = "SELECT \"user\".*, company.name AS companyName " +
+						"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany WHERE login <> 'admin' " + 
+					(!name.isEmpty() ? " AND \"user\".name LIKE ? " : "") +
+					(profile >= 0 ? " AND \"user\".profile = ? " : "") +
+					(onlyActives ? " AND \"user\".active = 1 " : "") +
+					(onlyExternal ? " AND \"user\".external = 1 " : "") +
+					"ORDER BY \"user\".name";
 			stmt = conn.prepareStatement(sql);
 			int p = 1;
 			
@@ -427,9 +427,9 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO user(name, login, password, email, profile, institution, research, lattes, external, active, area, idDepartment, sigacManager, sigesManager, sigetManager, departmentManager, studentCode, registerSemester, registerYear, phone, idcompany) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO \"user\"(name, login, password, email, profile, institution, research, lattes, external, active, area, idDepartment, sigacManager, sigesManager, sigetManager, departmentManager, studentCode, registerSemester, registerYear, phone, idcompany) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE user SET name=?, login=?, password=?, email=?, profile=?, institution=?, research=?, lattes=?, external=?, active=?, area=?, idDepartment=?, sigacManager=?, sigesManager=?, sigetManager=?, departmentManager=?, studentCode=?, registerSemester=?, registerYear=?, phone=?, idcompany=? WHERE idUser=?");
+				stmt = conn.prepareStatement("UPDATE \"user\" SET name=?, login=?, password=?, email=?, profile=?, institution=?, research=?, lattes=?, external=?, active=?, area=?, idDepartment=?, sigacManager=?, sigesManager=?, sigetManager=?, departmentManager=?, studentCode=?, registerSemester=?, registerYear=?, phone=?, idcompany=? WHERE idUser=?");
 			}
 			
 			stmt.setString(1, user.getName());
@@ -542,7 +542,7 @@ public class UserDAO {
 			if(sql != ""){
 				List<String> emails = new ArrayList<String>();
 				stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery("SELECT email FROM user WHERE idUser IN (" + sql + ")");
+				ResultSet rs = stmt.executeQuery("SELECT email FROM \"user\" WHERE idUser IN (" + sql + ")");
 				
 				while(rs.next()){
 					emails.add(rs.getString("email"));
