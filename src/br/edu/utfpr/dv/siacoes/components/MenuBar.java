@@ -167,7 +167,7 @@ public class MenuBar extends CustomComponent {
 			
 			if(this.sigetConfig.isRegisterProposal()){
 				MenuItem proposal = register.addItem("Proposta de TCC 1", null);
-				if(Session.isUserManager(SystemModule.SIGET)){
+				if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
 					proposal.addItem("Listar Propostas", new Command(){
 		        	    @Override
 		        	    public void menuSelected(MenuItem selectedItem){
@@ -215,7 +215,7 @@ public class MenuBar extends CustomComponent {
 				register.addSeparator();
 			}
 	    	
-			if(Session.isUserStudent() || Session.isUserManager(SystemModule.SIGET)){
+			if(Session.isUserStudent() || Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
 		    	MenuItem project = register.addItem("Projeto de TCC 1", null);
 		    	if(Session.isUserStudent()){
 		    		if(!this.sigetConfig.isRegisterProposal()){
@@ -380,7 +380,7 @@ public class MenuBar extends CustomComponent {
 		        	this.prepareDownloadStage1(button);
 		    	}
 		    	
-		    	if(Session.isUserManager(SystemModule.SIGET)){
+		    	if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
 		    		project.addItem("Listar Projetos", new Command(){
 		        	    @Override
 		        	    public void menuSelected(MenuItem selectedItem){
@@ -522,7 +522,7 @@ public class MenuBar extends CustomComponent {
 			    	this.prepareDownloadStage2(button);
 		    	}
 		    	
-		    	if(Session.isUserManager(SystemModule.SIGET)){
+		    	if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
 		    		thesis.addItem("Listar Monografias", new Command(){
 		        	    @Override
 		        	    public void menuSelected(MenuItem selectedItem){
@@ -669,10 +669,10 @@ public class MenuBar extends CustomComponent {
 	    	    }
 	    	});
 		}else if(module == SystemModule.SIGAC){
-			if(Session.isUserManager(SystemModule.SIGAC) || Session.isUserStudent()){
+			if(Session.isUserManager(SystemModule.SIGAC) || Session.isUserStudent() || Session.isUserDepartmentManager()){
 				MenuItem activities = this.menu.addItem("Registro de Atividades", null);
-				if(Session.isUserManager(SystemModule.SIGAC)){
-					activities.addItem("Validar Atividades", new Command(){
+				if(Session.isUserManager(SystemModule.SIGAC) || Session.isUserDepartmentManager()){
+					activities.addItem((Session.isUserManager(SystemModule.SIGAC) ? "Validar Atividades" : "Atividades Submetidas"), new Command(){
 	    	    	    @Override
 	    	    	    public void menuSelected(MenuItem selectedItem){
 	    	    	        UI.getCurrent().getNavigator().navigateTo(ActivitySubmissionView.NAME);
@@ -784,7 +784,7 @@ public class MenuBar extends CustomComponent {
 			}
 			
 			MenuItem internship = this.menu.addItem("Estágio", null);
-			if(Session.isUserManager(SystemModule.SIGES)){
+			if(Session.isUserManager(SystemModule.SIGES) || Session.isUserDepartmentManager()){
 				internship.addItem("Registro de Estágio", new Command(){
 		    	    @Override
 		    	    public void menuSelected(MenuItem selectedItem){

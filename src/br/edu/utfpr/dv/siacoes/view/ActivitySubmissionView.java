@@ -16,10 +16,8 @@ import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ActivitySubmissionBO;
 import br.edu.utfpr.dv.siacoes.components.StudentComboBox;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission;
-import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionReport;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
-import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.window.EditActivitySubmissionWindow;
 
 public class ActivitySubmissionView extends ListView {
@@ -42,10 +40,15 @@ public class ActivitySubmissionView extends ListView {
 		
 		this.buttonFinalReport = new Button("Relatório Final");
 		
-		if(Session.isUserManager(this.getModule())){
+		if(Session.isUserManager(this.getModule()) || Session.isUserDepartmentManager()){
 			this.setAddVisible(false);
 			this.setDeleteVisible(false);
-			this.setEditCaption("Validar");
+			
+			if(Session.isUserManager(this.getModule())){
+				this.setEditCaption("Validar");
+			}else{
+				this.setEditCaption("Visualizar");
+			}
 			
 			this.addFilterField(new HorizontalLayout(this.optionFilterType, this.comboStudent));
 		}else{
@@ -79,7 +82,7 @@ public class ActivitySubmissionView extends ListView {
 			List<ActivitySubmission> list = new ArrayList<ActivitySubmission>();
 			ByteArrayOutputStream report = new ByteArrayOutputStream();
 			
-			if(Session.isUserManager(this.getModule())){
+			if(Session.isUserManager(this.getModule()) || Session.isUserDepartmentManager()){
 				if(this.optionFilterType.isSelected(this.optionFilterType.getItemIds().iterator().next())){
 					list = bo.listWithNoFeedback(Session.getUser().getDepartment().getIdDepartment());
 					this.buttonFinalReport.setEnabled(false);

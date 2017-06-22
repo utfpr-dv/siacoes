@@ -272,7 +272,7 @@ CREATE  TABLE `internshipjuryappraiserscore` (
   PRIMARY KEY (`idinternshipjuryappraiserscore`) ,
   INDEX `fk_internshipjuryappraiserscore_idinternshipjury_idx` (`idinternshipJuryAppraiser` ASC) ,
   INDEX `fk_internshipjuryappraiserscore_idinternshipevaluationitem_idx` (`idinternshipEvaluationItem` ASC) ,
-  CONSTRAINT `fk_internshipjuryappraiserscore_idinternshipjury` FOREIGN KEY (`idinternshipJuryAppraiser` ) REFERENCES `internshipjury` (`idinternshipjury` ) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_internshipjuryappraiserscore_idinternshipjuryappraiser` FOREIGN KEY (`idinternshipJuryAppraiser` ) REFERENCES `internshipjuryappraiser` (`idinternshipjuryappraiser` ) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_internshipjuryappraiserscore_idinternshipevaluationitem` FOREIGN KEY (`idinternshipEvaluationItem` ) REFERENCES `internshipevaluationitem` (`idinternshipevaluationitem` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 

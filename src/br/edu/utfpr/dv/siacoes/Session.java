@@ -4,7 +4,6 @@ import com.vaadin.server.VaadinSession;
 
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
-import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 
 public class Session {
 	
@@ -64,6 +63,14 @@ public class Session {
 		}else{
 			return false;
 		}
+	}
+	
+	public static boolean isUserDepartmentManager(){
+		if(!Session.isUserProfessor()){
+			return false;
+		}
+		
+		return Session.getUser().isDepartmentManager();
 	}
 	
 	public static void putReport(byte[] report){

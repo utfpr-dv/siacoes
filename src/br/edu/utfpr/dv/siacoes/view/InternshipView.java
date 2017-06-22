@@ -141,8 +141,8 @@ public class InternshipView extends ListView {
 	}
 	
 	private void configureProfile(){
-		if(this.profile != UserProfile.MANAGER){
-			this.setFiltersVisible(false);
+		if((this.profile != UserProfile.MANAGER) || !Session.isUserManager(this.getModule())){
+			this.setFiltersVisible(this.profile == UserProfile.MANAGER);
 			this.setAddVisible(false);
 			this.setDeleteVisible(false);
 			this.setEditCaption("Visualizar");
@@ -397,7 +397,7 @@ public class InternshipView extends ListView {
 			try{
 				int p = Integer.parseInt(event.getParameters());
 				
-				if((p == 1) && Session.isUserManager(SystemModule.SIGES)){
+				if((p == 1) && Session.isUserManager(SystemModule.SIGES) || Session.isUserDepartmentManager()){
 					this.profile = UserProfile.MANAGER;
 				}
 			}catch(Exception e){

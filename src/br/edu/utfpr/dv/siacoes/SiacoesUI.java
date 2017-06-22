@@ -144,7 +144,7 @@ public class SiacoesUI extends UI {
                 	
                 	if((view.getProfilePermissions() == UserProfile.ADMINISTRATOR) && (!Session.isUserAdministrator())){
                 		return false;
-                	} else if((view.getProfilePermissions() == UserProfile.MANAGER) && !Session.isUserManager(view.getModule())){
+                	} else if((view.getProfilePermissions() == UserProfile.MANAGER) && !Session.isUserManager(view.getModule()) && !Session.isUserDepartmentManager()){
                 		return false;
                 	} else if((view.getProfilePermissions() == UserProfile.PROFESSOR) && (!Session.isUserProfessor())) {
                 		return false;

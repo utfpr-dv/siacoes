@@ -50,12 +50,12 @@ public class ConnectionDAO {
 	        driver = props.getProperty("DB_DRIVER_CLASS");
 	        type = props.getProperty("DB_TYPE");
 	     }catch(Exception e){
-	    	 server = SERVER;
-	    	 database = DATABASE;
-	    	 user = USER;
-	    	 password = PASSWORD;
-	    	 driver = "com.mysql.jdbc.Driver";
-	    	 type = "mysql";
+	    	server = SERVER;
+	    	database = DATABASE;
+	    	user = USER;
+	    	password = PASSWORD;
+	    	driver = "com.mysql.jdbc.Driver";
+	    	type = "mysql";
 		}
 		
 		PoolProperties p = new PoolProperties();

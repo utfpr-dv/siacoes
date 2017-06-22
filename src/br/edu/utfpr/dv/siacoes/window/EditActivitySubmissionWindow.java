@@ -146,8 +146,16 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		this.textFeedbackUser.setEnabled(false);
 		this.textFeedbackUser.setWidth("250px");
 		
-		if(Session.isUserManager(SystemModule.SIGAC)){
-			this.uploadFile.setEnabled(false);
+		if(Session.isUserDepartmentManager() && !Session.isUserManager(SystemModule.SIGAC)){
+			this.setSaveButtonEnabled(false);
+			this.uploadFile.setVisible(false);
+			this.comboFeedback.setEnabled(false);
+			this.textValidatedAmount.setEnabled(false);
+			this.textAmount.setEnabled(false);
+			this.comboSemester.setEnabled(false);
+			this.textYear.setEnabled(false);
+		}else if(Session.isUserManager(SystemModule.SIGAC)){
+			this.uploadFile.setVisible(false);
 			this.textAmount.setEnabled(false);
 			this.comboSemester.setEnabled(false);
 			this.textYear.setEnabled(false);
