@@ -15,6 +15,33 @@ import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 
 public class ActivitySubmissionDAO {
 	
+	public ActivityFeedback getFeedback(int idActivitySubmission) throws SQLException{
+		if(idActivitySubmission == 0){
+			return ActivityFeedback.NONE;
+		}
+		
+		Connection conn = null;
+		Statement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+		
+			ResultSet rs = stmt.executeQuery("SELECT activitysubmission.feedback FROM activitysubmission WHERE idactivitysubmission=" + idActivitySubmission);
+			
+			if(rs.next()){
+				return ActivityFeedback.valueOf(rs.getInt("feedback"));
+			}else{
+				return ActivityFeedback.NONE;
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public List<ActivitySubmission> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;

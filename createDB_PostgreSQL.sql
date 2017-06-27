@@ -21,6 +21,7 @@ CREATE TABLE emailconfig (
   port INT NOT NULL,
   enableSsl SMALLINT NOT NULL,
   authenticate SMALLINT NOT NULL,
+  signature TEXT NOT NULL,
   PRIMARY KEY (idemailconfig)
 );
 
@@ -29,6 +30,7 @@ CREATE TABLE emailmessage (
   subject VARCHAR(255) NOT NULL,
   message text NOT NULL,
   datafields text NOT NULL,
+  module SMALLINT NOT NULL,
   PRIMARY KEY (idemailmessage)
 );
 
@@ -642,3 +644,8 @@ BEGIN
 END;
 
 $$ LANGUAGE plpgsql;
+
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(1, 2, '', '', '{student};{group};{activity};{semester};{year};{comments}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(2, 2, '', '', '{student};{group};{activity};{semester};{year};{comments};{feedbackUser};{feedback}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(3, 3, '', '', '{student};{company};{companySupervisor};{supervisor};{type};{startDate};{comments}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(4, 3, '', '', '{student};{company};{companySupervisor};{supervisor};{type};{startDate};{comments}');

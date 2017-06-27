@@ -3,16 +3,21 @@ package br.edu.utfpr.dv.siacoes.bo;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.ConnectionDAO;
 import br.edu.utfpr.dv.siacoes.dao.InternshipDAO;
+import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport;
+import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
+import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 
 public class InternshipBO {
 
@@ -32,7 +37,7 @@ public class InternshipBO {
 		try{
 			InternshipDAO dao = new InternshipDAO();
 			
-			if((year == 0) && (idStudent == 0) && (idSupervisor == 0) && (idCompany == 0)){
+			if((year == 0) && (idStudent == 0) && (idSupervisor == 0) && (idCompany == 0) && (type == -1) && (status == -1)){
 				return dao.listAll();
 			}else{
 				return dao.list(year, idStudent, idSupervisor, idCompany, type, status);	
@@ -143,13 +148,15 @@ public class InternshipBO {
 		}
 		
 		Connection conn = ConnectionDAO.getInstance().getConnection();
+		int ret = 0;
+		boolean isInsert = (internship.getIdInternship() == 0);
 		
 		try{
 			conn.setAutoCommit(false);
 			
 			InternshipDAO dao = new InternshipDAO(conn);
 			
-			int ret = dao.save(internship);
+			ret = dao.save(internship);
 			
 			if(internship.getReports() != null){
 				String ids = "";
@@ -176,8 +183,6 @@ public class InternshipBO {
 			}
 			
 			conn.commit();
-			
-			return ret;
 		}catch(SQLException e){
 			conn.rollback();
 			
@@ -187,6 +192,28 @@ public class InternshipBO {
 		}finally {
 			conn.setAutoCommit(true);
 		}
+		
+		try{
+			if(isInsert){
+				EmailMessageBO bo = new EmailMessageBO();
+				List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+				
+				keys.add(new EmailMessageEntry<String, String>("student", internship.getStudent().getName()));
+				keys.add(new EmailMessageEntry<String, String>("company", internship.getCompany().getName()));
+				keys.add(new EmailMessageEntry<String, String>("companySupervisor", internship.getCompanySupervisor().getName()));
+				keys.add(new EmailMessageEntry<String, String>("supervisor", internship.getSupervisor().getName()));
+				keys.add(new EmailMessageEntry<String, String>("type", internship.getType().toString()));
+				keys.add(new EmailMessageEntry<String, String>("startDate", new SimpleDateFormat("dd/MM/yyyy").format(internship.getStartDate())));
+				keys.add(new EmailMessageEntry<String, String>("comments", internship.getComments()));
+				
+				bo.sendEmail(internship.getStudent().getIdUser(), MessageType.INTERNSHIPINCLUDEDSTUDENT, keys);
+				bo.sendEmail(internship.getSupervisor().getIdUser(), MessageType.INTERNSHIPINCLUDEDSUPERVISOR, keys);
+			}
+		}catch(Exception e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+		}
+		
+		return ret;
 	}
 	
 	public boolean delete(int id) throws Exception{

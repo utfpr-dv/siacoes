@@ -10,6 +10,7 @@ import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.EmailMessage;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
+import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 
 public class EmailMessageDAO {
 	
@@ -22,6 +23,31 @@ public class EmailMessageDAO {
 			stmt = conn.createStatement();
 		
 			ResultSet rs = stmt.executeQuery("SELECT * FROM emailmessage");
+			
+			List<EmailMessage> list = new ArrayList<EmailMessage>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public List<EmailMessage> listByModule(SystemModule module) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+		
+			ResultSet rs = stmt.executeQuery("SELECT * FROM emailmessage WHERE module=" + String.valueOf(module.getValue()));
 			
 			List<EmailMessage> list = new ArrayList<EmailMessage>();
 			
@@ -91,6 +117,7 @@ public class EmailMessageDAO {
 		message.setDataFields(rs.getString("dataFields"));
 		message.setMessage(rs.getString("message"));
 		message.setSubject(rs.getString("subject"));
+		message.setModule(SystemModule.valueOf(rs.getInt("module")));
 		
 		return message;
 	}

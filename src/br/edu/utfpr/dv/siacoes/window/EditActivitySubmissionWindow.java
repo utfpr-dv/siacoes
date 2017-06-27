@@ -308,9 +308,10 @@ public class EditActivitySubmissionWindow extends EditWindow {
 				this.submission.setSemester(this.comboSemester.getSemester());
 				this.submission.setYear(this.textYear.getYear());
 				this.submission.setAmount(Double.parseDouble(this.textAmount.getValue()));
-				this.submission.setActivity((Activity)this.comboActivity.getValue());
 			}
 			
+			this.submission.setActivity((Activity)this.comboActivity.getValue());
+			this.submission.getActivity().setGroup((ActivityGroup)this.comboGroup.getValue());
 			this.submission.setComments(this.textComments.getValue());
 			
 			bo.save(this.submission);

@@ -21,6 +21,7 @@ CREATE TABLE `emailconfig` (
   `port` int(11) NOT NULL,
   `enableSsl` tinyint(4) NOT NULL,
   `authenticate` tinyint(4) NOT NULL,
+  `signature` TEXT NOT NULL,
   PRIMARY KEY (`idemailconfig`)
 );
 
@@ -29,6 +30,7 @@ CREATE TABLE `emailmessage` (
   `subject` varchar(255) NOT NULL,
   `message` text NOT NULL,
   `datafields` text NOT NULL,
+  `module` tinyint(4) NOT NULL,
   PRIMARY KEY (`idemailmessage`)
 );
 
@@ -624,3 +626,8 @@ CREATE  TABLE `bugreport` (
   INDEX `fk_bugreport_user_idx` (`iduser` ASC),
   CONSTRAINT `fk_bugreport_user` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
+
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(1, 2, '', '', '{student};{group};{activity};{semester};{year};{comments}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(2, 2, '', '', '{student};{group};{activity};{semester};{year};{comments};{feedbackUser};{feedback}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(3, 3, '', '', '{student};{company};{companySupervisor};{supervisor};{type};{startDate};{comments}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(4, 3, '', '', '{student};{company};{companySupervisor};{supervisor};{type};{startDate};{comments}');

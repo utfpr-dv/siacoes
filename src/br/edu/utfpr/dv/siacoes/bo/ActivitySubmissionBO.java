@@ -17,6 +17,8 @@ import br.edu.utfpr.dv.siacoes.model.ActivitySubmission;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionDetailReport;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionFooterReport;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionReport;
+import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
+import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.SigacConfig;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
@@ -73,6 +75,11 @@ public class ActivitySubmissionBO {
 	}
 	
 	public int save(ActivitySubmission submission) throws Exception{
+		int ret = 0;
+		boolean isInsert = (submission.getIdActivitySubmission() == 0);
+		ActivitySubmissionDAO dao = new ActivitySubmissionDAO();
+		ActivityFeedback feedback = dao.getFeedback(submission.getIdActivitySubmission());
+		
 		if((submission.getStudent() == null) || (submission.getStudent().getIdUser() == 0)){
 			throw new Exception("Informe o acadêmico.");
 		}
@@ -90,14 +97,44 @@ public class ActivitySubmissionBO {
 		}
 		
 		try{
-			ActivitySubmissionDAO dao = new ActivitySubmissionDAO();
-			
-			return dao.save(submission);
+			ret = dao.save(submission);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			throw new Exception(e);
 		}
+		
+		try{
+			EmailMessageBO bo = new EmailMessageBO();
+			List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+			
+			keys.add(new EmailMessageEntry<String, String>("student", submission.getStudent().getName()));
+			keys.add(new EmailMessageEntry<String, String>("group", submission.getActivity().getGroup().getDescription()));
+			keys.add(new EmailMessageEntry<String, String>("activity", submission.getActivity().getDescription()));
+			keys.add(new EmailMessageEntry<String, String>("semester", String.valueOf(submission.getSemester())));
+			keys.add(new EmailMessageEntry<String, String>("year", String.valueOf(submission.getYear())));
+			keys.add(new EmailMessageEntry<String, String>("comments", submission.getComments()));
+			
+			if(submission.getFeedback() != ActivityFeedback.NONE){
+				keys.add(new EmailMessageEntry<String, String>("feedbackUser", submission.getFeedbackUser().getName()));
+				
+				if(submission.getFeedback() == ActivityFeedback.APPROVED){
+					keys.add(new EmailMessageEntry<String, String>("feedback", "APROVADA"));
+				}else if(submission.getFeedback() == ActivityFeedback.DISAPPROVED){
+					keys.add(new EmailMessageEntry<String, String>("feedback", "REPROVADA"));
+				}
+			}
+			
+			if(isInsert){
+				bo.sendEmail(submission.getStudent().getIdUser(), MessageType.ACTIVITYSUBMITED, keys);
+			}else if(feedback != submission.getFeedback()){
+				bo.sendEmail(submission.getStudent().getIdUser(), MessageType.ACTIVITYFEEDBACK, keys);
+			}
+		}catch(Exception e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+		}
+		
+		return ret;
 	}
 	
 	public boolean delete(int id) throws Exception{

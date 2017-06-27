@@ -2,9 +2,12 @@ package br.edu.utfpr.dv.siacoes.util;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.security.GeneralSecurityException;
 import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
+
+import com.sun.mail.util.MailSSLSocketFactory;
 
 public class EmailUtils {
 	
@@ -71,52 +74,80 @@ public class EmailUtils {
 		this.setEnableSsl(enableSsl);
 		this.setAuthenticate(authenticate);
 	}
-
+	
 	public void sendEmail(String from, String[] to, String[] cc, String[] bcc, String subject, String body) {
-        Properties props = System.getProperties();
-        
-        //props.put("mail.smtp.starttls.enable", (this.isEnableTls() ? "true" : "false"));
-        props.put("mail.smtp.host", this.getHost());
-        props.put("mail.smtp.user", this.getUser());
-        props.put("mail.smtp.password", this.getPassword());
-        props.put("mail.smtp.port", String.valueOf(this.getPort()));
-        props.put("mail.smtp.auth", (this.isAuthenticate() ? "true" : "false"));
-        
-        if(this.isEnableSsl()){
-            props.put("mail.smtp.socketFactory.port", String.valueOf(this.getPort()));
-            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        }
+		Thread t = new Thread() {
+		    public void run() {
+		    	Session session;
+				Properties props = System.getProperties();
+		        
+		        props.put("mail.smtp.host", getHost());
+		        props.put("mail.smtp.user", getUser());
+		        props.put("mail.smtp.password", getPassword());
+		        props.put("mail.smtp.port", getPort());
+		        props.put("mail.smtp.auth", (isAuthenticate() ? "true" : "false"));
 
-        Session session = Session.getDefaultInstance(props);
-        MimeMessage message = new MimeMessage(session);
+		        if(isEnableSsl()){
+		        	props.put("mail.smtp.ssl.enable", "true");
+		            props.put("mail.smtp.socketFactory.port", getPort());
+		            props.put("mail.smtp.ssl.checkserveridentity", "true");
+		            
+					try {
+						MailSSLSocketFactory sf = new MailSSLSocketFactory();
+						
+						sf.setTrustedHosts(new String[] { getHost() });
+			            
+			            props.put("mail.smtp.ssl.socketFactory", sf);
+					} catch (GeneralSecurityException e) {
+						Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+					}
+		        }
+		        
+		        if(isAuthenticate()){
+		        	session = Session.getDefaultInstance(props, new javax.mail.Authenticator(){
+		                protected PasswordAuthentication getPasswordAuthentication() {
+		                    return new PasswordAuthentication(
+		                        getUser(), getPassword());
+		                }
+		            });
+		        }else{
+		        	session = Session.getDefaultInstance(props);	
+		        }
+		        
+		        MimeMessage message = new MimeMessage(session);
 
-        try {
-            message.setFrom(new InternetAddress(from));
-            
-            if(to != null){
-	            for(int i = 0; i < to.length; i++) {
-	                message.addRecipient(Message.RecipientType.TO, new InternetAddress(to[i]));
-	            }
-            }
-            
-            if(cc != null){
-	            for(int i = 0; i < cc.length; i++) {
-	                message.addRecipient(Message.RecipientType.CC, new InternetAddress(cc[i]));
-	            }
-            }
-            
-            if(bcc != null){
-	            for(int i = 0; i < bcc.length; i++) {
-	                message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc[i]));
-	            }
-            }
+		        try {
+		            message.setFrom(new InternetAddress(from));
+		            
+		            if(to != null){
+			            for(int i = 0; i < to.length; i++) {
+			                message.addRecipient(Message.RecipientType.TO, new InternetAddress(to[i]));
+			            }
+		            }
+		            
+		            if(cc != null){
+			            for(int i = 0; i < cc.length; i++) {
+			                message.addRecipient(Message.RecipientType.CC, new InternetAddress(cc[i]));
+			            }
+		            }
+		            
+		            if(bcc != null){
+			            for(int i = 0; i < bcc.length; i++) {
+			                message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc[i]));
+			            }
+		            }
 
-            message.setSubject(subject);
-            message.setText(body);
-            Transport.send(message, this.getUser(), this.getPassword());
-        } catch (Exception e) {
-        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-        }
+		            message.setSubject(subject);
+		            message.setText(body);
+		            
+		            Transport.send(message, getUser(), getPassword());
+		        } catch (Exception e) {
+		        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+		        }
+		    }
+		};
+		
+		t.start();
     }
 	
 }

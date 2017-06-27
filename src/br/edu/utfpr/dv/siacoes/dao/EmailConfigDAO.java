@@ -30,6 +30,7 @@ public class EmailConfigDAO {
 				email.setPort(rs.getInt("port"));
 				email.setEnableSsl(rs.getInt("enableSsl") == 1);
 				email.setAuthenticate(rs.getInt("authenticate") == 1);
+				email.setSignature(rs.getString("signature"));
 				
 				return email;
 			}else{
@@ -52,9 +53,9 @@ public class EmailConfigDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO emailconfig(host, \"user\", password, port, enableSsl, authenticate) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO emailconfig(host, \"user\", password, port, enableSsl, authenticate, signature) VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE emailconfig SET host=?, \"user\"=?, password=?, port=?, enableSsl=?, authenticate=? WHERE idEmailConfig=?");
+				stmt = conn.prepareStatement("UPDATE emailconfig SET host=?, \"user\"=?, password=?, port=?, enableSsl=?, authenticate=?, signature=? WHERE idEmailConfig=?");
 			}
 			
 			stmt.setString(1, email.getHost());
@@ -63,9 +64,10 @@ public class EmailConfigDAO {
 			stmt.setInt(4, email.getPort());
 			stmt.setInt(5, (email.isEnableSsl() ? 1 : 0));
 			stmt.setInt(6, (email.isAuthenticate() ? 1 : 0));
+			stmt.setString(7, email.getSignature());
 			
 			if(!insert){
-				stmt.setInt(7, email.getIdEmailConfig());
+				stmt.setInt(8, email.getIdEmailConfig());
 			}
 			
 			stmt.execute();

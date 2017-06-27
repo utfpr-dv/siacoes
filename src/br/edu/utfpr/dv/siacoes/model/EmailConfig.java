@@ -9,6 +9,7 @@ public class EmailConfig {
 	private int port;
 	private boolean enableSsl;
 	private boolean authenticate;
+	private String signature;
 	
 	public EmailConfig(){
 		this.setIdEmailConfig(0);
@@ -18,6 +19,7 @@ public class EmailConfig {
 		this.setPort(0);
 		this.setEnableSsl(false);
 		this.setAuthenticate(false);
+		this.setSignature("");
 	}
 	
 	public int getIdEmailConfig() {
@@ -61,6 +63,12 @@ public class EmailConfig {
 	}
 	public void setAuthenticate(boolean authenticate) {
 		this.authenticate = authenticate;
+	}
+	public String getSignature() {
+		return signature;
+	}
+	public void setSignature(String signature) {
+		this.signature = signature;
 	}
 	
 }

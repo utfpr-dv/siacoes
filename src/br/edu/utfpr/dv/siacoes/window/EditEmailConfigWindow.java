@@ -7,6 +7,7 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -23,6 +24,7 @@ public class EditEmailConfigWindow extends EditWindow {
 	private final TextField textPort;
 	private final CheckBox checkEnableSsl;
 	private final CheckBox checkAuthenticate;
+	private final TextArea textSignature;
 	
 	public EditEmailConfigWindow(){
 		super("Editar Configurações", null);
@@ -47,10 +49,15 @@ public class EditEmailConfigWindow extends EditWindow {
 		
 		this.checkAuthenticate = new CheckBox("Utilizar autenticação");
 		
+		this.textSignature = new TextArea("Assinatura do E-mail");
+		this.textSignature.setWidth("600px");
+		this.textSignature.setHeight("100px");
+		
 		this.addField(this.textHost);
 		this.addField(this.textUser);
 		this.addField(this.textPassword);
 		this.addField(new HorizontalLayout(this.textPort, new VerticalLayout(this.checkEnableSsl, this.checkAuthenticate)));
+		this.addField(this.textSignature);
 		
 		this.config = this.loadConfig();
 		
@@ -59,6 +66,7 @@ public class EditEmailConfigWindow extends EditWindow {
 		this.textPort.setValue(String.valueOf(this.config.getPort()));
 		this.checkEnableSsl.setValue(this.config.isEnableSsl());
 		this.checkAuthenticate.setValue(this.config.isAuthenticate());
+		this.textSignature.setValue(this.config.getSignature());
 		
 		this.textHost.focus();
 	}
@@ -96,6 +104,7 @@ public class EditEmailConfigWindow extends EditWindow {
 			this.config.setPort(Integer.parseInt(this.textPort.getValue()));
 			this.config.setEnableSsl(this.checkEnableSsl.getValue());
 			this.config.setAuthenticate(this.checkAuthenticate.getValue());
+			this.config.setSignature(this.textSignature.getValue());
 			
 			bo.save(this.config);
 			
