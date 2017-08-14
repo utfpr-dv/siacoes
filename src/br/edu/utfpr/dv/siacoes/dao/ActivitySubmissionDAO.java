@@ -258,6 +258,7 @@ public class ActivitySubmissionDAO {
 		submission.setFeedback(ActivityFeedback.valueOf(rs.getInt("feedback")));
 		submission.setFeedbackDate(rs.getDate("feedbackDate"));
 		submission.setValidatedAmount(rs.getDouble("validatedAmount"));
+		submission.setComments(rs.getString("comments"));
 		submission.getActivity().setDescription(rs.getString("activityDescription"));
 		submission.getActivity().getGroup().setSequence(rs.getInt("groupSequence"));
 		submission.getActivity().setScore(rs.getDouble("score"));

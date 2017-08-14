@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.EventRouter;
-import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
@@ -27,8 +26,6 @@ import br.edu.utfpr.dv.siacoes.model.Attendance;
 import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
-import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
-import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.window.EditAttendanceWindow;
 
@@ -49,7 +46,7 @@ public class AttendanceView extends ListView {
 		this.comboProposal.setNullSelectionAllowed(false);
 		
 		if(Session.isUserProfessor()){
-			this.comboStudent = new StudentComboBox("Acadêmico", Session.getUser().getIdUser(), DateUtils.getSemester(), DateUtils.getYear());
+			this.comboStudent = new StudentComboBox("Acadêmico", Session.getUser().getIdUser());
 			this.comboStudent.addValueChangeListener(new ValueChangeListener() {
 				@Override
 				public void valueChange(ValueChangeEvent event) {
@@ -98,7 +95,7 @@ public class AttendanceView extends ListView {
 		    	List<Attendance> list = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), Session.getUser().getIdUser(), ((Proposal)this.comboProposal.getValue()).getIdProposal(), this.comboStage.getStage());
 		    	
 		    	for(Attendance a : list){
-					Object itemId = this.getGrid().addRow(a.getDate(), a.getStartTime(), a.getEndTime(), a.getComments());
+					Object itemId = this.getGrid().addRow(a.getDate(), a.getStartTime(), a.getEndTime(), (a.getComments().length() > 100 ? a.getComments().substring(0, 99) + "..." : a.getComments()));
 					this.addRowId(itemId, a.getIdAttendance());
 				}
 			} catch (Exception e) {
@@ -122,7 +119,7 @@ public class AttendanceView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Propostas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			Notification.show("Listar Acompanhamentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
 
@@ -135,8 +132,8 @@ public class AttendanceView extends ListView {
 		}else{
 			Attendance attendance = new Attendance();
 	    	
-	    	attendance.setSupervisor(Session.getUser());
-	    	attendance.setStudent(this.comboStudent.getStudent());
+	    	attendance.setSupervisor(((Proposal)this.comboProposal.getValue()).getSupervisor());
+	    	attendance.setStudent(((Proposal)this.comboProposal.getValue()).getStudent());
 	    	attendance.setProposal((Proposal)this.comboProposal.getValue());
 	    	attendance.setStage(this.comboStage.getStage());
 	    	

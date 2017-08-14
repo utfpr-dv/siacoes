@@ -75,6 +75,7 @@ import br.edu.utfpr.dv.siacoes.view.SupervisorChangeView;
 import br.edu.utfpr.dv.siacoes.view.SupervisorView;
 import br.edu.utfpr.dv.siacoes.view.ThemeSuggestionView;
 import br.edu.utfpr.dv.siacoes.view.ThesisView;
+import br.edu.utfpr.dv.siacoes.view.TutoredView;
 import br.edu.utfpr.dv.siacoes.view.UserView;
 import br.edu.utfpr.dv.siacoes.window.AboutWindow;
 import br.edu.utfpr.dv.siacoes.window.DownloadFeedbackWindow;
@@ -195,7 +196,7 @@ public class MenuBar extends CustomComponent {
 									p = new Proposal(Session.getUser());
 								}
 								
-								UI.getCurrent().addWindow(new EditProposalWindow(p, null));
+								UI.getCurrent().addWindow(new EditProposalWindow(p, null, true));
 							} catch (Exception e) {
 								Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 								
@@ -212,41 +213,15 @@ public class MenuBar extends CustomComponent {
 		        	    }
 		        	});
 				}
-				register.addSeparator();
+				
+				if(Session.isUserStudent() || Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
+					register.addSeparator();
+				}
 			}
 	    	
 			if(Session.isUserStudent() || Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
 		    	MenuItem project = register.addItem("Projeto de TCC 1", null);
 		    	if(Session.isUserStudent()){
-		    		if(!this.sigetConfig.isRegisterProposal()){
-		    			project.addItem("Registrar Orientação", new Command(){
-			        	    @Override
-			        	    public void menuSelected(MenuItem selectedItem){
-			        	    	try {
-									ProposalBO bo = new ProposalBO();
-									Proposal p = bo.findCurrentProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
-									
-									if(p == null){
-										DeadlineBO dbo = new DeadlineBO();
-										Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
-										
-										if((d == null) || DateUtils.getToday().getTime().after(d.getProposalDeadline())){
-											throw new Exception("O registro de orientações já foi encerrado.");
-										}
-										
-										p = new Proposal(Session.getUser());
-									}
-									
-									UI.getCurrent().addWindow(new EditProposalWindow(p, null));
-								} catch (Exception e) {
-									Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-									
-									Notification.show("Registrar Orientação", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-								}
-			        	    }
-			        	});
-		    			project.addSeparator();
-		    		}
 		    		project.addItem("Submeter Projeto", new Command(){
 		        	    @Override
 		        	    public void menuSelected(MenuItem selectedItem){
@@ -542,8 +517,46 @@ public class MenuBar extends CustomComponent {
 	        	    }
 	        	});
 	    		supervision.addSeparator();
+	    		
+	    		supervision.addItem("Registrar Orientação", new Command(){
+	        	    @Override
+	        	    public void menuSelected(MenuItem selectedItem){
+	        	    	try {
+							ProposalBO bo = new ProposalBO();
+							Proposal p = bo.findCurrentProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+							
+							if(p == null){
+								DeadlineBO dbo = new DeadlineBO();
+								Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+								
+								if((d == null) || DateUtils.getToday().getTime().after(d.getProposalDeadline())){
+									throw new Exception("O registro de orientações já foi encerrado.");
+								}
+								
+								p = new Proposal(Session.getUser());
+							}
+							
+							UI.getCurrent().addWindow(new EditProposalWindow(p, null, false));
+						} catch (Exception e) {
+							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+							
+							Notification.show("Registrar Orientação", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+						}
+	        	    }
+	        	});
+		    	supervision.addSeparator();
 	    	}
     		
+	    	if(Session.isUserProfessor()){
+	    		supervision.addItem("Meus Orientados", new Command(){
+	        	    @Override
+	        	    public void menuSelected(MenuItem selectedItem){
+	        	    	UI.getCurrent().getNavigator().navigateTo(TutoredView.NAME);
+	        	    }
+	        	});
+	    		supervision.addSeparator();
+	    	}
+	    	
 	    	supervision.addItem("Registro de Reuniões", new Command(){
         	    @Override
         	    public void menuSelected(MenuItem selectedItem){
@@ -584,13 +597,13 @@ public class MenuBar extends CustomComponent {
 	        	    }
 	        	});
 	    	}else if(Session.isUserProfessor()){
-	    		supervision.addSeparator();
+	    		/*supervision.addSeparator();
     			supervision.addItem("Validar Versão Final", new Command(){
 	        	    @Override
 	        	    public void menuSelected(MenuItem selectedItem){
 	        	        UI.getCurrent().getNavigator().navigateTo(FinalDocumentView.NAME);
 	        	    }
-	        	});
+	        	});*/
 	    	}
 	    	
     		MenuItem calendar = this.menu.addItem("Bancas", null);

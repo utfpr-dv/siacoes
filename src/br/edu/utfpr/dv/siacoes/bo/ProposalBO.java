@@ -1,15 +1,21 @@
 package br.edu.utfpr.dv.siacoes.bo;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.ProposalDAO;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Department;
+import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 
 public class ProposalBO {
 
@@ -61,6 +67,18 @@ public class ProposalBO {
 		}
 	}
 	
+	public List<Proposal> listBySupervisor(int idSupervisor) throws Exception{
+		try {
+			ProposalDAO dao = new ProposalDAO();
+			
+			return dao.listBySupervisor(idSupervisor);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public int getProposalStage(int idProposal) throws Exception{
 		try {
 			ProposalDAO dao = new ProposalDAO();
@@ -89,32 +107,105 @@ public class ProposalBO {
 		if((proposal.getSemester() == 0) || (proposal.getYear() == 0)){
 			throw new Exception("Informe o ano e semestre da proposta.");
 		}
-		
-		SigetConfigBO bo = new SigetConfigBO();
-		SigetConfig config = bo.findByDepartment(proposal.getDepartment().getIdDepartment());
-		
-		if((config != null) && config.isRegisterProposal()){
-			if(proposal.getFile() == null){
-				throw new Exception("É necessário enviar o arquivo da proposta.");
-			}
-			if(proposal.getFileType() == DocumentType.UNDEFINED){
-				throw new Exception("O arquivo enviado não está no formato correto. Envie um arquivo PDF, DOC ou DOCX");
-			}
-		}
 	}
 	
 	public int save(Proposal proposal) throws Exception{
+		int ret = 0;
+		boolean isInsert = (proposal.getIdProposal() == 0);
+		byte[] oldFile = null;
+		List<Boolean> listEmail = new ArrayList<Boolean>();
+		
+		if(!isInsert){
+			try {
+				ProposalDAO dao = new ProposalDAO();
+				
+				oldFile = dao.findProposalFile(proposal.getIdProposal());
+			} catch (SQLException e) {
+				oldFile = null;
+			}
+		}
+		
+		if(proposal.getAppraisers() != null){
+			for(ProposalAppraiser appraiser : proposal.getAppraisers()){
+				listEmail.add(appraiser.getIdProposalAppraiser() == 0);
+			}
+		}
+		
 		try {
 			this.validate(proposal);
 			
 			ProposalDAO dao = new ProposalDAO();
 			
-			return dao.save(proposal);
+			ret = dao.save(proposal);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			throw new Exception(e.getMessage());
 		}
+		
+		try{
+			EmailMessageBO bo = new EmailMessageBO();
+			List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+			
+			keys.add(new EmailMessageEntry<String, String>("student", proposal.getStudent().getName()));
+			keys.add(new EmailMessageEntry<String, String>("supervisor", proposal.getSupervisor().getName()));
+			if(proposal.getCosupervisor() == null){
+				keys.add(new EmailMessageEntry<String, String>("cosupervisor", ""));
+			}else{
+				keys.add(new EmailMessageEntry<String, String>("cosupervisor", proposal.getCosupervisor().getName()));	
+			}
+			keys.add(new EmailMessageEntry<String, String>("title", proposal.getTitle()));
+			keys.add(new EmailMessageEntry<String, String>("subarea", proposal.getSubarea()));
+			
+			if(proposal.getFile() == null){
+				if(isInsert){
+					bo.sendEmail(proposal.getStudent().getIdUser(), MessageType.PROPOSALREGISTERSTUDENT, keys);
+					bo.sendEmail(proposal.getSupervisor().getIdUser(), MessageType.PROPOSALREGISTERSUPERVISOR, keys);
+					if((proposal.getCosupervisor() != null) && (proposal.getCosupervisor().getIdUser() != 0)){
+						bo.sendEmail(proposal.getCosupervisor().getIdUser(), MessageType.PROPOSALREGISTERSUPERVISOR, keys);
+					}
+				}
+			}else{
+				if(oldFile == null){
+					bo.sendEmail(proposal.getStudent().getIdUser(), MessageType.PROPOSALSUBMITEDSTUDENT, keys);
+					bo.sendEmail(proposal.getSupervisor().getIdUser(), MessageType.PROPOSALSUBMITEDSUPERVISOR, keys);
+					if((proposal.getCosupervisor() != null) && (proposal.getCosupervisor().getIdUser() != 0)){
+						bo.sendEmail(proposal.getCosupervisor().getIdUser(), MessageType.PROPOSALSUBMITEDSUPERVISOR, keys);
+					}
+				}else if(!Arrays.equals(proposal.getFile(), oldFile)){
+					bo.sendEmail(proposal.getStudent().getIdUser(), MessageType.PROPOSALCHANGESTUDENT, keys);
+					bo.sendEmail(proposal.getSupervisor().getIdUser(), MessageType.PROPOSALCHANGESUPERVISOR, keys);
+					if((proposal.getCosupervisor() != null) && (proposal.getCosupervisor().getIdUser() != 0)){
+						bo.sendEmail(proposal.getCosupervisor().getIdUser(), MessageType.PROPOSALCHANGESUPERVISOR, keys);
+					}
+				}
+			}
+			
+			if(proposal.getAppraisers() != null){
+				for(int i = 0; i < proposal.getAppraisers().size(); i++){
+					if(listEmail.get(i)){
+						keys = new ArrayList<EmailMessageEntry<String, String>>();
+						
+						keys.add(new EmailMessageEntry<String, String>("student", proposal.getStudent().getName()));
+						keys.add(new EmailMessageEntry<String, String>("supervisor", proposal.getSupervisor().getName()));
+						if(proposal.getCosupervisor() == null){
+							keys.add(new EmailMessageEntry<String, String>("cosupervisor", ""));
+						}else{
+							keys.add(new EmailMessageEntry<String, String>("cosupervisor", proposal.getCosupervisor().getName()));	
+						}
+						keys.add(new EmailMessageEntry<String, String>("title", proposal.getTitle()));
+						keys.add(new EmailMessageEntry<String, String>("subarea", proposal.getSubarea()));
+						keys.add(new EmailMessageEntry<String, String>("appraiser", proposal.getAppraisers().get(i).getAppraiser().getName()));
+						
+						bo.sendEmail(proposal.getAppraisers().get(i).getAppraiser().getIdUser(), MessageType.PROPOSALAPPRAISERREGISTER, keys);
+					}
+				}
+			}
+		}catch(Exception e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+		}
+		
+		return ret;
 	}
 	
 	public Proposal findById(int id) throws Exception{

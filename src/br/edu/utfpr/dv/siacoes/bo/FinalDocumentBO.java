@@ -22,6 +22,30 @@ public class FinalDocumentBO {
 		}
 	}
 	
+	public FinalDocument findByProject(int idProject) throws Exception{
+		try{
+			FinalDocumentDAO dao = new FinalDocumentDAO();
+			
+			return dao.findByProject(idProject);
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public FinalDocument findByThesis(int idThesis) throws Exception{
+		try{
+			FinalDocumentDAO dao = new FinalDocumentDAO();
+			
+			return dao.findByThesis(idThesis);
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public FinalDocument findCurrentThesis(int idStudent, int idDepartment, int semester, int year) throws Exception{
 		try{
 			FinalDocumentDAO dao = new FinalDocumentDAO();

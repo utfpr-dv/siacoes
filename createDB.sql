@@ -400,7 +400,7 @@ CREATE TABLE `proposal` (
   `idStudent` int(11) NOT NULL,
   `idSupervisor` int(11) NOT NULL,
   `idCoSupervisor` int(11) DEFAULT NULL,
-  `file` mediumblob NOT NULL,
+  `file` mediumblob DEFAULT NULL,
   `semester` tinyint(4) NOT NULL,
   `year` smallint(6) NOT NULL,
   `submissionDate` date NOT NULL,

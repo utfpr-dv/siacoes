@@ -24,7 +24,12 @@ public class ProposalDAO {
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join \"user\" student on student.idUser=proposal.idStudent inner join \"user\" supervisor on supervisor.idUser=proposal.idSupervisor left join \"user\" cosupervisor on cosupervisor.idUser=proposal.idCosupervisor WHERE idProposal = ?");
+			stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName " +
+					"FROM proposal INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
+					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
+					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
+					"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=proposal.idCosupervisor " +
+					"WHERE idProposal = ?");
 		
 			stmt.setInt(1, id);
 			
@@ -32,6 +37,31 @@ public class ProposalDAO {
 			
 			if(rs.next()){
 				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public byte[] findProposalFile(int id) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT file FROM proposal WHERE idProposal = ?");
+		
+			stmt.setInt(1, id);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getBytes("file");
 			}else{
 				return null;
 			}
@@ -88,7 +118,12 @@ public class ProposalDAO {
 			}
 			
 			if(project == null){
-				stmt = conn.prepareStatement("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join \"user\" student on student.idUser=proposal.idStudent inner join \"user\" supervisor on supervisor.idUser=proposal.idSupervisor left join \"user\" cosupervisor on cosupervisor.idUser=proposal.idCosupervisor WHERE proposal.idStudent = ? AND proposal.idDepartment=? AND proposal.semester = ? AND proposal.year = ?");
+				stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName " +
+						"FROM proposal INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
+						"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
+						"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
+						"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=proposal.idCosupervisor " +
+						"WHERE proposal.idStudent = ? AND proposal.idDepartment=? AND proposal.semester = ? AND proposal.year = ?");
 				
 				stmt.setInt(1, idStudent);
 				stmt.setInt(2, idDepartment);
@@ -119,7 +154,13 @@ public class ProposalDAO {
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join \"user\" student on student.idUser=proposal.idStudent inner join \"user\" supervisor on supervisor.idUser=proposal.idSupervisor left join \"user\" cosupervisor on cosupervisor.idUser=proposal.idCosupervisor WHERE proposal.idStudent = ? AND proposal.idDepartment=? ORDER BY year DESC, semester DESC");
+			stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName " +
+					"FROM proposal INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
+					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
+					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
+					"LEFT JOIN \"user\" cosupervisor on cosupervisor.idUser=proposal.idCosupervisor " +
+					"WHERE proposal.idStudent = ? AND proposal.idDepartment=? " +
+					"ORDER BY year DESC, semester DESC");
 		
 			stmt.setInt(1, idStudent);
 			stmt.setInt(2, idDepartment);
@@ -146,8 +187,9 @@ public class ProposalDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-				"SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName " +
+				"SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName, department.name AS departmentName " +
 				"FROM proposal INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
+				"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 				"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
 				"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=proposal.idCosupervisor " +
 				"WHERE proposal.idDepartment=? AND proposal.semester = ? AND proposal.year = ? ORDER BY proposal.title");
@@ -178,7 +220,14 @@ public class ProposalDAO {
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join \"user\" student on student.idUser=proposal.idStudent inner join \"user\" supervisor on supervisor.idUser=proposal.idSupervisor inner join proposalappraiser appraiser on appraiser.idProposal=proposal.idProposal left join \"user\" cosupervisor on cosupervisor.idUser=proposal.idCosupervisor WHERE appraiser.idAppraiser = ? AND semester = ? AND year = ? ORDER BY title");
+			stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName " +
+					"FROM proposal INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
+					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
+					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
+					"INNER JOIN proposalappraiser appraiser ON appraiser.idProposal=proposal.idProposal " +
+					"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=proposal.idCosupervisor " +
+					"WHERE appraiser.idAppraiser = ? AND semester = ? AND year = ? " +
+					"ORDER BY title");
 		
 			stmt.setInt(1, idAppraiser);
 			stmt.setInt(2, semester);
@@ -206,9 +255,45 @@ public class ProposalDAO {
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join \"user\" student on student.idUser=proposal.idStudent inner join \"user\" supervisor on supervisor.idUser=proposal.idSupervisor left join \"user\" cosupervisor on cosupervisor.idUser=proposal.idCosupervisor WHERE idStudent = ? ORDER BY title");
+			stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName " +
+					"FROM proposal inner join \"user\" student on student.idUser=proposal.idStudent " +
+					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
+					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
+					"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=proposal.idCosupervisor " +
+					"WHERE idStudent = ? ORDER BY title");
 		
 			stmt.setInt(1, idStudent);
+			
+			ResultSet rs = stmt.executeQuery();
+			List<Proposal> list = new ArrayList<Proposal>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public List<Proposal> listBySupervisor(int idSupervisor) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName " +
+					"FROM proposal INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
+					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
+					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
+					"LEFT JOIN \"user\" cosupervisor on cosupervisor.idUser=proposal.idCosupervisor " +
+					"WHERE idSupervisor = ? ORDER BY proposal.year DESC, proposal.semester DESC, proposal.title");
+		
+			stmt.setInt(1, idSupervisor);
 			
 			ResultSet rs = stmt.executeQuery();
 			List<Proposal> list = new ArrayList<Proposal>();
@@ -263,7 +348,12 @@ public class ProposalDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM proposal inner join \"user\" student on student.idUser=proposal.idStudent inner join \"user\" supervisor on supervisor.idUser=proposal.idSupervisor left join \"user\" cosupervisor on cosupervisor.idUser=proposal.idCosupervisor ORDER BY year DESC, semester DESC, title");
+			ResultSet rs = stmt.executeQuery("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName " +
+					"FROM proposal INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
+					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
+					"INNER JOIN \"user\" supervisor on supervisor.idUser=proposal.idSupervisor " +
+					"LEFT JOIN \"user\" cosupervisor on cosupervisor.idUser=proposal.idCosupervisor " +
+					"ORDER BY year DESC, semester DESC, title");
 			List<Proposal> list = new ArrayList<Proposal>();
 			
 			while(rs.next()){
@@ -306,8 +396,13 @@ public class ProposalDAO {
 			}else{
 				stmt.setInt(8, proposal.getCosupervisor().getIdUser());
 			}
-			stmt.setBytes(9, proposal.getFile());
-			stmt.setInt(10, proposal.getFileType().getValue());
+			if(proposal.getFile() == null){
+				stmt.setNull(9, Types.BINARY);
+				stmt.setInt(10, DocumentType.UNDEFINED.getValue());
+			}else{
+				stmt.setBytes(9, proposal.getFile());
+				stmt.setInt(10, proposal.getFileType().getValue());
+			}
 			stmt.setDate(11, new java.sql.Date(proposal.getSubmissionDate().getTime()));
 			
 			if(!insert){
@@ -371,10 +466,13 @@ public class ProposalDAO {
 		p.getSupervisor().setName(rs.getString("supervisorName"));
 		p.setCosupervisor(new User());
 		p.getCosupervisor().setIdUser(rs.getInt("idCosupervisor"));
-		p.getCosupervisor().setName(rs.getString("cosupervisorname"));
+		if(p.getCosupervisor().getIdUser() != 0){
+			p.getCosupervisor().setName(rs.getString("cosupervisorname"));
+		}
 		p.setSemester(rs.getInt("semester"));
 		p.setYear(rs.getInt("year"));
 		p.getDepartment().setIdDepartment(rs.getInt("idDepartment"));
+		p.getDepartment().setName(rs.getString("departmentName"));
 		
 		return p;
 	}

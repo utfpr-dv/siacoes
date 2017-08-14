@@ -53,6 +53,20 @@ public class ProposalAppraiserDAO {
 		}
 	}
 	
+	public ProposalFeedback findFeedback(int id) throws SQLException{
+		PreparedStatement stmt = this.conn.prepareStatement("SELECT proposalappraiser.feedback FROM proposalappraiser WHERE idProposalAppraiser = ?");
+		
+		stmt.setInt(1, id);
+		
+		ResultSet rs = stmt.executeQuery();
+		
+		if(rs.next()){
+			return ProposalFeedback.valueOf(rs.getInt("feedback"));
+		}else{
+			return ProposalFeedback.NONE;
+		}
+	}
+	
 	public ProposalAppraiser findByAppraiser(int idProposal, int idAppraiser) throws SQLException{
 		PreparedStatement stmt = this.conn.prepareStatement("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join \"user\" appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposal = ? AND idAppraiser = ?");
 		

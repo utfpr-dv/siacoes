@@ -30,6 +30,7 @@ public class CertificateView extends CustomComponent implements View {
 		
 		StreamResource r = new StreamResource(s, "document.pdf");
 		r.setMIMEType("application/pdf");
+		r.setCacheTime(0);
 		
 		BrowserFrame e = new BrowserFrame("PDF File", r);
 		e.setSizeFull();

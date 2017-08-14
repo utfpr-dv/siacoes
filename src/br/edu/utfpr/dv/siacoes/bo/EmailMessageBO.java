@@ -103,10 +103,22 @@ public class EmailMessageBO {
 			}
 		}
 		
-		this.sendEmail(to, message.getSubject(), msg);
+		this.sendEmail(to, message.getSubject(), msg, true);
 	}
 	
-	private void sendEmail(String[] to, String subject, String message) throws Exception{
+	public void sendEmailNoThread(String[] to, EmailMessage message, List<EmailMessageEntry<String, String>> keys) throws Exception {
+		String msg = message.getMessage();
+		
+		if(keys != null){
+			for(EmailMessageEntry<String, String> k : keys){
+				msg = msg.replaceAll("\\{" + k.getKey() + "\\}", k.getValue());
+			}
+		}
+		
+		this.sendEmail(to, message.getSubject(), msg, false);
+	}
+	
+	private void sendEmail(String[] to, String subject, String message, boolean useThread) throws Exception{
 		EmailConfigBO bo = new EmailConfigBO();
 		EmailConfig config = bo.loadConfiguration();
 		
@@ -120,7 +132,10 @@ public class EmailMessageBO {
 		
 		EmailUtils email = new EmailUtils(config.getHost(), config.getPort(), config.getUser(), config.getPassword(), config.isEnableSsl(), config.isAuthenticate());
 		
-		email.sendEmail(config.getUser(), to, null, null, subject, message);
+		if(useThread)
+			email.sendEmail(config.getUser(), to, null, null, subject, message);
+		else
+			email.sendEmailNoThread(config.getUser(), to, null, null, subject, message);
 	}
 
 }

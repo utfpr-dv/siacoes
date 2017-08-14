@@ -48,7 +48,7 @@ public class TestEmailSendWindow extends Window {
 		message.setMessage("Teste de envio de e-mail.");
 		
 		try {
-			bo.sendEmail(new String[] { this.textTo.getValue() }, message, null);
+			bo.sendEmailNoThread(new String[] { this.textTo.getValue() }, message, null);
 			
 			Notification.show("Enviar E-mail", "Envio realizado com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
 		} catch (Exception e) {

@@ -65,6 +65,36 @@ public class ThesisDAO {
 		}
 	}
 	
+	public Thesis findByProposal(int idProposal) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT thesis.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName " +
+					"FROM thesis INNER JOIN project ON project.idProject=thesis.idProject " +
+					"INNER JOIN \"user\" student ON student.idUser=thesis.idStudent " +
+					"INNER JOIN \"user\" supervisor ON supervisor.idUser=thesis.idSupervisor " +
+					"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=thesis.idCosupervisor " +
+					"WHERE project.idProposal = ?");
+		
+			stmt.setInt(1, idProposal);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public int findIdJury(int idThesis) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -254,6 +284,39 @@ public class ThesisDAO {
 		}
 	}
 	
+	public List<Thesis> listBySupervisor(int idSupervisor) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement(
+				"SELECT thesis.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName " +
+				"FROM thesis INNER JOIN project ON project.idProject=thesis.idProject " +
+				"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
+				"INNER JOIN \"user\" student ON student.idUser=thesis.idStudent " +
+				"INNER JOIN \"user\" supervisor ON supervisor.idUser=thesis.idSupervisor " +
+				"LEFT JOIN \"user\" cosupervisor on cosupervisor.idUser=thesis.idCosupervisor " +
+				"WHERE thesis.idSupervisor=? ORDER BY thesis.year DESC, thesis.semester DESC, thesis.title");
+			
+			stmt.setInt(1, idSupervisor);
+			
+			ResultSet rs = stmt.executeQuery();
+			List<Thesis> list = new ArrayList<Thesis>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public int save(Thesis thesis) throws SQLException{
 		boolean insert = (thesis.getIdThesis() == 0);
 		Connection conn = null;
@@ -321,7 +384,9 @@ public class ThesisDAO {
 		p.getSupervisor().setName(rs.getString("supervisorname"));
 		p.setCosupervisor(new User());
 		p.getCosupervisor().setIdUser(rs.getInt("idCosupervisor"));
-		p.getCosupervisor().setName(rs.getString("cosupervisorname"));
+		if(p.getCosupervisor().getIdUser() != 0){
+			p.getCosupervisor().setName(rs.getString("cosupervisorname"));
+		}
 		p.setFile(rs.getBytes("file"));
 		p.setFileType(DocumentType.valueOf(rs.getInt("fileType")));
 		p.setSemester(rs.getInt("semester"));

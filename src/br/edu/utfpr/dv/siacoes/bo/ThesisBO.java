@@ -48,6 +48,18 @@ public class ThesisBO {
 		}
 	}
 	
+	public List<Thesis> listBySupervisor(int idSupervisor) throws Exception{
+		try {
+			ThesisDAO dao = new ThesisDAO();
+			
+			return dao.listBySupervisor(idSupervisor);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public void validate(Thesis thesis) throws Exception{
 		if((thesis.getProject() == null) || (thesis.getProject().getIdProject() == 0)){
 			throw new Exception("Selecione o projeto relacionado à monografia.");
@@ -97,6 +109,18 @@ public class ThesisBO {
 			ThesisDAO dao = new ThesisDAO();
 			
 			return dao.findById(id);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public Thesis findByProposal(int idProposal) throws Exception{
+		try {
+			ThesisDAO dao = new ThesisDAO();
+			
+			return dao.findByProposal(idProposal);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

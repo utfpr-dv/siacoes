@@ -400,7 +400,7 @@ CREATE TABLE proposal (
   idStudent INT NOT NULL,
   idSupervisor INT NOT NULL,
   idCoSupervisor INT DEFAULT NULL,
-  file BYTEA NOT NULL,
+  file BYTEA DEFAULT NULL,
   semester SMALLINT NOT NULL,
   year SMALLINT NOT NULL,
   submissionDate date NOT NULL,

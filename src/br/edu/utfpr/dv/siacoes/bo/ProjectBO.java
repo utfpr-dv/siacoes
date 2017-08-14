@@ -24,6 +24,18 @@ public class ProjectBO {
 		}
 	}
 	
+	public Project findByProposal(int idProposal) throws Exception{
+		try {
+			ProjectDAO dao = new ProjectDAO();
+			
+			return dao.findByProposal(idProposal);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public List<Project> listAll() throws Exception{
 		try {
 			ProjectDAO dao = new ProjectDAO();
@@ -41,6 +53,18 @@ public class ProjectBO {
 			ProjectDAO dao = new ProjectDAO();
 			
 			return dao.listBySemester(idDepartment, semester, year);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public List<Project> listBySupervisor(int idSupervisor) throws Exception{
+		try {
+			ProjectDAO dao = new ProjectDAO();
+			
+			return dao.listBySupervisor(idSupervisor);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

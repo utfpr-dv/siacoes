@@ -279,6 +279,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		this.textValidatedAmount.setValue(String.valueOf(this.submission.getValidatedAmount()));
 		this.textFeedbackDate.setValue(this.submission.getFeedbackDate());
 		this.textFeedbackUser.setValue(this.submission.getFeedbackUser().getName());
+		this.textComments.setValue(this.submission.getComments());
 		
 		if(this.submission.getIdActivitySubmission() == 0){
 			this.buttonDownload.setVisible(false);

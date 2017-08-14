@@ -55,6 +55,14 @@ public abstract class EditWindow extends Window {
 		return this.buttonSave.isEnabled();
 	}
 	
+	public void setSaveButtonVisible(boolean visible){
+		this.buttonSave.setVisible(visible);
+	}
+	
+	public boolean isSaveButtonVisible(){
+		return this.buttonSave.isVisible();
+	}
+	
 	public void parentViewRefreshGrid(){
 		if(this.parentView != null){
 			this.parentView.refreshGrid();

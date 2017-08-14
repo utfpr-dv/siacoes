@@ -344,7 +344,7 @@ public class UserDAO {
 		}
 	}
 	
-	public List<User> listStudentBySupervisor(int idSupervisor, int semester, int year) throws SQLException{
+	public List<User> listStudentBySupervisor(int idSupervisor) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
 		
@@ -353,14 +353,14 @@ public class UserDAO {
 			stmt = conn.createStatement();
 			
 			ResultSet rs = stmt.executeQuery("SELECT \"user\".* FROM \"user\" INNER JOIN proposal ON proposal.idStudent=\"user\".idUser " +
-					"WHERE \"user\".profile=0 AND proposal.semester=" + String.valueOf(semester) + " AND proposal.year=" + String.valueOf(year) + " AND (proposal.idSupervisor=" + String.valueOf(idSupervisor) + " OR proposal.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
+					"WHERE \"user\".profile=0 AND (proposal.idSupervisor=" + String.valueOf(idSupervisor) + " OR proposal.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
 					" UNION " +
 					"SELECT \"user\".* FROM \"user\" INNER JOIN project ON project.idStudent=\"user\".idUser " + 
-					"WHERE \"user\".profile=0 AND project.semester=" + String.valueOf(semester) + " AND project.year=" + String.valueOf(year) + " AND (project.idSupervisor=" + String.valueOf(idSupervisor) + " OR project.idCosupervisor=" + String.valueOf(idSupervisor) + ") " + 
+					"WHERE \"user\".profile=0 AND (project.idSupervisor=" + String.valueOf(idSupervisor) + " OR project.idCosupervisor=" + String.valueOf(idSupervisor) + ") " + 
 					" UNION " +
 					"SELECT \"user\".* FROM \"user\" INNER JOIN thesis ON thesis.idStudent=\"user\".idUser " + 
-					"WHERE \"user\".profile=0 AND thesis.semester=" + String.valueOf(semester) + " AND thesis.year=" + String.valueOf(year) + " AND (thesis.idSupervisor=" + String.valueOf(idSupervisor) + " OR thesis.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
-					"ORDER BY \"user\".name");
+					"WHERE \"user\".profile=0 AND (thesis.idSupervisor=" + String.valueOf(idSupervisor) + " OR thesis.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
+					"ORDER BY name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){

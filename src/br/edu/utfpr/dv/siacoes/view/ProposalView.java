@@ -136,7 +136,7 @@ public class ProposalView extends ListView {
 			ProposalBO bo = new ProposalBO();
 			Proposal p = bo.findById((int)id);
 			
-			UI.getCurrent().addWindow(new EditProposalWindow(p, this));
+			UI.getCurrent().addWindow(new EditProposalWindow(p, this, true));
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

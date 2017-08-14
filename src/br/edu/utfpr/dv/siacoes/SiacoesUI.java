@@ -52,6 +52,7 @@ import br.edu.utfpr.dv.siacoes.view.SupervisorChangeView;
 import br.edu.utfpr.dv.siacoes.view.SupervisorView;
 import br.edu.utfpr.dv.siacoes.view.ThemeSuggestionView;
 import br.edu.utfpr.dv.siacoes.view.ThesisView;
+import br.edu.utfpr.dv.siacoes.view.TutoredView;
 import br.edu.utfpr.dv.siacoes.view.UserView;
 
 import com.vaadin.ui.UI;
@@ -113,6 +114,7 @@ public class SiacoesUI extends UI {
         getNavigator().addView(InternshipEvaluationItemView.NAME, InternshipEvaluationItemView.class);
         getNavigator().addView(FinalDocumentView.NAME, FinalDocumentView.class);
         getNavigator().addView(InternshipLibraryView.NAME, InternshipLibraryView.class);
+        getNavigator().addView(TutoredView.NAME, TutoredView.class);
         
         //
         // We use a view change handler to ensure the user is always redirected

@@ -21,12 +21,12 @@ public class StudentComboBox extends ComboBox {
 		this.loadComboStudent();
 	}
 	
-	public StudentComboBox(String caption, int idSupervisor, int semester, int year){
+	public StudentComboBox(String caption, int idSupervisor){
 		super(caption);
 		this.setInvalidAllowed(false);
 		this.setNullSelectionAllowed(false);
 		this.setWidth("400px");
-		this.loadComboStudent(idSupervisor, semester, year);
+		this.loadComboStudent(idSupervisor);
 	}
 	
 	public User getStudent(){
@@ -74,10 +74,10 @@ public class StudentComboBox extends ComboBox {
 		}
 	}
 	
-	private void loadComboStudent(int idSupervisor, int semester, int year){
+	private void loadComboStudent(int idSupervisor){
 		try {
 			UserBO bo = new UserBO();
-			this.list = bo.listStudentBySupervisor(idSupervisor, semester, year);
+			this.list = bo.listStudentBySupervisor(idSupervisor);
 			
 			this.removeAllItems();
 			this.addItems(this.list);

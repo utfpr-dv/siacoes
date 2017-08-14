@@ -8,7 +8,15 @@ public class EmailMessage {
 		NONE(0), ACTIVITYSUBMITED(1), 
 		ACTIVITYFEEDBACK(2),
 		INTERNSHIPINCLUDEDSTUDENT(3),
-		INTERNSHIPINCLUDEDSUPERVISOR(4);
+		INTERNSHIPINCLUDEDSUPERVISOR(4),
+		PROPOSALREGISTERSTUDENT(5),
+		PROPOSALREGISTERSUPERVISOR(6),
+		PROPOSALSUBMITEDSTUDENT(7),
+		PROPOSALSUBMITEDSUPERVISOR(8),
+		PROPOSALCHANGESTUDENT(9),
+		PROPOSALCHANGESUPERVISOR(10),
+		PROPOSALAPPRAISERREGISTER(11),
+		PROPOSALAPPRAISERFEEDBACK(12);
 		
 		private final int value; 
 		MessageType(int value){ 
@@ -39,6 +47,22 @@ public class EmailMessage {
 					return "Estágio Cadastrado (Estudante)";
 				case INTERNSHIPINCLUDEDSUPERVISOR:
 					return "Estágio Cadastrado (Orientador)";
+				case PROPOSALREGISTERSTUDENT:
+					return "Registro de Orientação (Estudante)";
+				case PROPOSALREGISTERSUPERVISOR:
+					return "Registro de Orientação (Orientador)";
+				case PROPOSALSUBMITEDSTUDENT:
+					return "Submissão de Proposta de TCC 1 (Estudante)";
+				case PROPOSALSUBMITEDSUPERVISOR:
+					return "Submissão de Proposta de TCC 1 (Orientador)";
+				case PROPOSALCHANGESTUDENT:
+					return "Ressubmissão de Proposta de TCC 1 (Estudante)";
+				case PROPOSALCHANGESUPERVISOR:
+					return "Ressubmissão de Proposta de TCC 1 (Orientador)";
+				case PROPOSALAPPRAISERREGISTER:
+					return "Cadastro de Avaliador da Proposta de TCC 1";
+				case PROPOSALAPPRAISERFEEDBACK:
+					return "Feedback da Proposta de TCC 1";
 				default:
 					return "";
 			}

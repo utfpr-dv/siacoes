@@ -54,6 +54,68 @@ public class FinalDocumentDAO {
 		}
 	}
 	
+	public FinalDocument findByProject(int idProject) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement(
+				"SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
+				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, " +
+				"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, \"user\".name AS student " +
+				"FROM finaldocument INNER JOIN project ON project.idProject=finaldocument.idProject " +
+				"INNER JOIN \"user\" ON \"user\".idUser=project.idStudent " +
+				"WHERE finaldocument.idproject=?");
+		
+			stmt.setInt(1, idProject);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public FinalDocument findByThesis(int idThesis) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement(
+				"SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
+			    "finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, " +
+				"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, 0 AS idProposal, \"user\".name AS student " +
+				"FROM finaldocument INNER JOIN thesis ON thesis.idThesis=finaldocument.idThesis " +
+				"INNER JOIN \"user\" ON \"user\".idUser=thesis.idStudent " +
+				"WHERE finaldocument.idfinaldocument=?");
+		
+			stmt.setInt(1, idThesis);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public FinalDocument findCurrentThesis(int idStudent, int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;

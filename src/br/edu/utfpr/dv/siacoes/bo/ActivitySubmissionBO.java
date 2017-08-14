@@ -2,6 +2,8 @@ package br.edu.utfpr.dv.siacoes.bo;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -179,7 +181,7 @@ public class ActivitySubmissionBO {
 				
 				detailReport.setActivity(submission.getActivity().getDescription());
 				detailReport.setGroup(submission.getActivity().getGroup().getSequence());
-				detailReport.setScore(submission.getActivity().getScore());
+				detailReport.setScore(this.round(submission.getActivity().getScore()));
 				detailReport.setUnit(submission.getActivity().getUnit().getDescription());
 				detailReport.setSemester(submission.getSemester());
 				detailReport.setYear(submission.getYear());
@@ -187,12 +189,11 @@ public class ActivitySubmissionBO {
 				documents.add(submission.getFile());
 				
 				if(submission.getActivity().getUnit().isFillAmount()){
-					detailReport.setAmount(submission.getValidatedAmount());
-					detailReport.setTotal(submission.getValidatedAmount() * submission.getScore());
+					detailReport.setAmount(this.round(submission.getValidatedAmount()));
 				}else{
 					detailReport.setAmount(1);
-					detailReport.setTotal(submission.getScore());
 				}
+				detailReport.setTotal(this.round(submission.getScore()));
 				
 				report.getDetails().add(detailReport);
 				
@@ -282,6 +283,12 @@ public class ActivitySubmissionBO {
 		pdfMerge.mergeDocuments(null);
 		
 		return output;
+	}
+	
+	private double round(double value){
+		BigDecimal bd = new BigDecimal(value);
+	    bd = bd.setScale(1, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
 	}
 	
 	private class ReportActivity{

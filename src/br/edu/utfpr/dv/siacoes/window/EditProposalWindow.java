@@ -17,6 +17,7 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
@@ -24,6 +25,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
+import com.vaadin.ui.VerticalLayout;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
@@ -38,6 +40,7 @@ import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
+import br.edu.utfpr.dv.siacoes.model.Document;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
@@ -45,12 +48,13 @@ import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
+import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditProposalWindow extends EditWindow {
 
 	private final Proposal proposal;
-	private SigetConfig sigetConfig;
+	private final boolean submitProposal;
 	
 	private final CampusComboBox comboCampus;
 	private final DepartmentComboBox comboDepartment;
@@ -69,19 +73,15 @@ public class EditProposalWindow extends EditWindow {
 	private final Button buttonAddAppraiser;
 	private final Button buttonViewAppraiser;
 	private final Button buttonDeleteAppraiser;
+	private final Button buttonDownloadProposal;
+	private final TabSheet tab;
 	
-	public EditProposalWindow(Proposal proposal, ListView parentView){
+	public EditProposalWindow(Proposal proposal, ListView parentView, boolean submitProposal){
 		super("Editar Proposta", parentView);
 		
-		SigetConfigBO bo = new SigetConfigBO();
-		this.sigetConfig = new SigetConfig();
-		try {
-			this.sigetConfig = bo.findByDepartment(Session.getUser().getDepartment().getIdDepartment());
-		} catch (Exception e1) {
-			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
-		}
+		this.submitProposal = submitProposal;
 		
-		if(!sigetConfig.isRegisterProposal()){
+		if(!this.submitProposal){
 			this.setCaption("Registrar Orientação");
 		}
 		
@@ -134,6 +134,32 @@ public class EditProposalWindow extends EditWindow {
 		this.imageFileUploaded = new Image("", new ThemeResource("images/ok.png"));
 		this.imageFileUploaded.setVisible(false);
 		
+		VerticalLayout tab1 = new VerticalLayout();
+		tab1.setSpacing(true);
+		
+		HorizontalLayout h1 = new HorizontalLayout(this.comboCampus, this.comboDepartment);
+		h1.setSpacing(true);
+		
+		HorizontalLayout h2 = new HorizontalLayout(this.textTitle, this.textSubarea);
+		h2.setSpacing(true);
+		
+		HorizontalLayout h3 = new HorizontalLayout(this.comboSupervisor, this.comboCosupervisor);
+		h3.setSpacing(true);
+		
+		HorizontalLayout h4;
+		if(this.submitProposal && Session.isUserStudent()){
+			h4 = new HorizontalLayout(this.uploadFile, this.imageFileUploaded, this.comboSemester, this.textYear, this.textSubmissionDate);
+		}else{
+			h4 = new HorizontalLayout(this.comboSemester, this.textYear, this.textSubmissionDate);
+		}
+		h4.setSpacing(true);
+		
+		tab1.addComponent(h1);
+		tab1.addComponent(this.textStudent);
+		tab1.addComponent(h2);
+		tab1.addComponent(h3);
+		tab1.addComponent(h4);
+		
 		this.layoutAppraisers = new HorizontalLayout();
 		
 		this.buttonAddAppraiser = new Button("Adicionar Avaliador", new Button.ClickListener() {
@@ -158,21 +184,17 @@ public class EditProposalWindow extends EditWindow {
         });
 		
 		HorizontalLayout layoutButtons = new HorizontalLayout(this.buttonAddAppraiser, this.buttonViewAppraiser, this.buttonDeleteAppraiser);
+		layoutButtons.setSpacing(true);
 		
-		this.addField(new HorizontalLayout(this.comboCampus, this.comboDepartment));
-		this.addField(this.textStudent);
-		this.addField(new HorizontalLayout(this.textTitle, this.textSubarea));
-		this.addField(new HorizontalLayout(this.comboSupervisor, this.comboCosupervisor));
+		VerticalLayout tab2 = new VerticalLayout(this.layoutAppraisers, layoutButtons);
+		tab2.setSpacing(true);
 		
-		if(sigetConfig.isRegisterProposal()){
-			this.addField(new HorizontalLayout(this.uploadFile, this.imageFileUploaded, this.comboSemester, this.textYear, this.textSubmissionDate));
-		}else{
-			this.addField(new HorizontalLayout(this.comboSemester, this.textYear, this.textSubmissionDate));
-		}
+		this.tab = new TabSheet();
+		this.tab.setWidth("820px");
+		this.tab.addTab(tab1, "Proposta");
 		
 		if(Session.isUserManager(SystemModule.SIGET)){
-			this.addField(this.layoutAppraisers);
-			this.addField(layoutButtons);
+			this.tab.addTab(tab2, "Avaliadores");
 			
 			this.loadGridAppraisers();
 		}else if(Session.isUserStudent()){
@@ -189,6 +211,12 @@ public class EditProposalWindow extends EditWindow {
 				Notification.show("Submeter Proposta", "Não foi possível determinar a data limite para entrega das propostas.", Notification.Type.ERROR_MESSAGE);
 			}
 		}
+		
+		this.addField(this.tab);
+		
+		this.buttonDownloadProposal = new Button("Download da Proposta");
+		this.addButton(this.buttonDownloadProposal);
+		this.buttonDownloadProposal.setWidth("250px");
 		
 		this.loadProposal();
 		this.textTitle.focus();
@@ -224,6 +252,16 @@ public class EditProposalWindow extends EditWindow {
 		this.textSubmissionDate.setValue(this.proposal.getSubmissionDate());
 		this.comboSupervisor.setProfessor(this.proposal.getSupervisor());
 		this.comboCosupervisor.setProfessor(this.proposal.getCosupervisor());
+		
+		if(this.proposal.getIdProposal() != 0){
+			this.comboSupervisor.setEnabled(false);
+			
+			if((this.proposal.getCosupervisor() != null) && (this.proposal.getCosupervisor().getIdUser() != 0)){
+				this.comboCosupervisor.setEnabled(false);
+			}
+		}
+		
+		this.prepareDownloadProposal();
 	}
 	
 	private void loadGridAppraisers(){
@@ -231,7 +269,7 @@ public class EditProposalWindow extends EditWindow {
 		this.gridAppraisers.addColumn("Avaliador", String.class);
 		this.gridAppraisers.addColumn("Parecer", String.class);
 		this.gridAppraisers.setWidth("800px");
-		this.gridAppraisers.setHeight("150px");
+		this.gridAppraisers.setHeight("300px");
 		
 		try {
 			if(this.proposal.getAppraisers() == null){
@@ -255,6 +293,17 @@ public class EditProposalWindow extends EditWindow {
 	@Override
 	public void save() {
 		if(Session.isUserStudent()){
+			if(this.submitProposal && (this.proposal.getFile() == null)){
+				if(this.proposal.getFile() == null){
+					Notification.show("Submeter Proposta", "É necessário enviar o arquivo da proposta.", Notification.Type.ERROR_MESSAGE);
+					return;	
+				}
+				if(proposal.getFileType() == DocumentType.UNDEFINED){
+					Notification.show("O arquivo enviado não está no formato correto. Envie um arquivo PDF.");
+					return;
+				}
+			}
+			
 			try {
 				DeadlineBO dbo = new DeadlineBO();
 				Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
@@ -279,9 +328,12 @@ public class EditProposalWindow extends EditWindow {
 			
 			this.proposal.setTitle(this.textTitle.getValue());
 			this.proposal.setSubarea(this.textSubarea.getValue());
-			this.proposal.setSupervisor(this.comboSupervisor.getProfessor());
-			this.proposal.setCosupervisor(this.comboCosupervisor.getProfessor());
-			this.proposal.setDepartment(this.comboDepartment.getDepartment());
+			
+			if(this.proposal.getIdProposal() == 0){
+				this.proposal.setSupervisor(this.comboSupervisor.getProfessor());
+				this.proposal.setCosupervisor(this.comboCosupervisor.getProfessor());
+				this.proposal.setDepartment(this.comboDepartment.getDepartment());
+			}
 			
 			bo.save(this.proposal);
 			
@@ -358,6 +410,18 @@ public class EditProposalWindow extends EditWindow {
 		}
 		
 		this.loadGridAppraisers();
+	}
+	
+	private void prepareDownloadProposal(){
+		new ExtensionUtils().removeAllExtensions(this.buttonDownloadProposal);
+		
+		if(this.proposal.getFile() != null){
+			this.buttonDownloadProposal.setVisible(true);
+			
+			new ExtensionUtils().extendToDownload("Proposta_TCC_" + this.proposal.getIdProposal() + Document.DocumentType.PDF.getExtension(), this.proposal.getFile(), this.buttonDownloadProposal);
+		}else{
+			this.buttonDownloadProposal.setVisible(false);
+		}
 	}
 	
 	@SuppressWarnings("serial")

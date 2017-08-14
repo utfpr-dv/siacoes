@@ -249,6 +249,37 @@ public class ProjectDAO {
 		}
 	}
 	
+	public List<Project> listBySupervisor(int idSupervisor) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement(
+				"SELECT project.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName " +
+				"FROM project INNER JOIN proposal ON proposal.idProposal=project.idProject " +
+				"INNER JOIN \"user\" student ON student.idUser=project.idStudent " +
+				"INNER JOIN \"user\" supervisor ON supervisor.idUser=project.idSupervisor " +
+				"LEFT JOIN \"user\" cosupervisor on cosupervisor.idUser=project.idCosupervisor " +
+				"WHERE project.idSupervisor=? ORDER BY project.year DESC, project.semester DESC, project.title");
+			stmt.setInt(1, idSupervisor);
+			
+			ResultSet rs = stmt.executeQuery();
+			List<Project> list = new ArrayList<Project>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public int save(Project project) throws SQLException{
 		boolean insert = (project.getIdProject() == 0);
 		Connection conn = null;
@@ -316,7 +347,9 @@ public class ProjectDAO {
 		p.getSupervisor().setName(rs.getString("supervisorname"));
 		p.setCosupervisor(new User());
 		p.getCosupervisor().setIdUser(rs.getInt("idCosupervisor"));
-		p.getCosupervisor().setName(rs.getString("cosupervisorname"));
+		if(p.getCosupervisor().getIdUser() != 0){
+			p.getCosupervisor().setName(rs.getString("cosupervisorname"));
+		}
 		p.setFile(rs.getBytes("file"));
 		p.setFileType(DocumentType.valueOf(rs.getInt("fileType")));
 		p.setSemester(rs.getInt("semester"));

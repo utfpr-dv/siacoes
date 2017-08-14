@@ -20,7 +20,11 @@ public class AttendanceDAO {
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM attendance WHERE idAttendance = ?");
+			stmt = conn.prepareStatement("SELECT attendance.*, student.name AS studentName, supervisor.name AS supervisorName, proposal.title AS proposalTitle " +
+					"FROM attendance INNER JOIN proposal ON proposal.idProposal=attendance.idProposal " +
+					"INNER JOIN \"user\" student ON student.idUser=attendance.idStudent " +
+					"INNER JOIN \"user\" supervisor ON supervisor.idUser=attendance.idSupervisor " +
+					"WHERE idAttendance = ?");
 		
 			stmt.setInt(1, id);
 			
@@ -47,7 +51,11 @@ public class AttendanceDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT * FROM attendance ORDER BY date DESC, startTime DESC");
+			ResultSet rs = stmt.executeQuery("SELECT attendance.*, student.name AS studentName, supervisor.name AS supervisorName, proposal.title AS proposalTitle " +
+					"FROM attendance INNER JOIN proposal ON proposal.idProposal=attendance.idProposal " +
+					"INNER JOIN \"user\" student ON student.idUser=attendance.idStudent " +
+					"INNER JOIN \"user\" supervisor ON supervisor.idUser=attendance.idSupervisor " +
+					"ORDER BY attendance.date DESC, attendance.startTime DESC");
 			List<Attendance> list = new ArrayList<Attendance>();
 			
 			while(rs.next()){
@@ -71,7 +79,11 @@ public class AttendanceDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT * FROM attendance WHERE idStudent = " + String.valueOf(idStudent) + " ORDER BY date DESC, startTime DESC");
+			ResultSet rs = stmt.executeQuery("SELECT attendance.*, student.name AS studentName, supervisor.name AS supervisorName, proposal.title AS proposalTitle " +
+					"FROM attendance INNER JOIN proposal ON proposal.idProposal=attendance.idProposal " +
+					"INNER JOIN \"user\" student ON student.idUser=attendance.idStudent " +
+					"INNER JOIN \"user\" supervisor ON supervisor.idUser=attendance.idSupervisor " +
+					"WHERE attendance.idStudent = " + String.valueOf(idStudent) + " ORDER BY attendance.date DESC, attendance.startTime DESC");
 			List<Attendance> list = new ArrayList<Attendance>();
 			
 			while(rs.next()){
@@ -95,7 +107,12 @@ public class AttendanceDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT * FROM attendance WHERE idStudent = " + String.valueOf(idStudent) + " AND idSupervisor = " + String.valueOf(idSupervisor) + " AND idProposal = " + String.valueOf(idProposal) + " ORDER BY date DESC, startTime DESC");
+			ResultSet rs = stmt.executeQuery("SELECT attendance.*, student.name AS studentName, supervisor.name AS supervisorName, proposal.title AS proposalTitle " +
+					"FROM attendance INNER JOIN proposal ON proposal.idProposal=attendance.idProposal " +
+					"INNER JOIN \"user\" student ON student.idUser=attendance.idStudent " +
+					"INNER JOIN \"user\" supervisor ON supervisor.idUser=attendance.idSupervisor " +
+					"WHERE attendance.idStudent = " + String.valueOf(idStudent) + " AND attendance.idSupervisor = " + String.valueOf(idSupervisor) + " AND attendance.idProposal = " + String.valueOf(idProposal) + 
+					" ORDER BY attendance.date DESC, attendance.startTime DESC");
 			List<Attendance> list = new ArrayList<Attendance>();
 			
 			while(rs.next()){
@@ -198,7 +215,12 @@ public class AttendanceDAO {
 			
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM attendance WHERE idStudent = " + String.valueOf(idStudent) + " AND idProposal = " + String.valueOf(idProposal) + " AND idSupervisor = " + String.valueOf(idSupervisor) + " AND stage = " + String.valueOf(stage) + " ORDER BY date, startTime");
+			ResultSet rs = stmt.executeQuery("SELECT attendance.*, student.name AS studentName, supervisor.name AS supervisorName, proposal.title AS proposalTitle " +
+					"FROM attendance INNER JOIN proposal ON proposal.idProposal=attendance.idProposal " +
+					"INNER JOIN \"user\" student ON student.idUser=attendance.idStudent " +
+					"INNER JOIN \"user\" supervisor ON supervisor.idUser=attendance.idSupervisor " +
+					"WHERE attendance.idStudent = " + String.valueOf(idStudent) + " AND attendance.idProposal = " + String.valueOf(idProposal) + " AND attendance.idSupervisor = " + String.valueOf(idSupervisor) + " AND attendance.stage = " + String.valueOf(stage) + 
+					" ORDER BY attendance.date, attendance.startTime");
 			
 			while(rs.next()){
 				report.getAttendances().add(this.loadObject(rs));
@@ -218,8 +240,11 @@ public class AttendanceDAO {
 		
 		a.setIdAttendance(rs.getInt("idAttendance"));
 		a.getProposal().setIdProposal(rs.getInt("idProposal"));
+		a.getProposal().setTitle(rs.getString("proposalTitle"));
 		a.getSupervisor().setIdUser(rs.getInt("idSupervisor"));
+		a.getSupervisor().setName(rs.getString("supervisorName"));
 		a.getStudent().setIdUser(rs.getInt("idStudent"));
+		a.getStudent().setName(rs.getString("studentName"));
 		a.setDate(rs.getDate("date"));
 		a.setStartTime(rs.getTime("startTime"));
 		a.setEndTime(rs.getTime("endTime"));

@@ -77,11 +77,11 @@ public class UserBO {
 		}
 	}
 	
-	public List<User> listStudentBySupervisor(int idSupervisor, int semester, int year) throws Exception{
+	public List<User> listStudentBySupervisor(int idSupervisor) throws Exception{
 		try {
 			UserDAO dao = new UserDAO();
 			
-			return dao.listStudentBySupervisor(idSupervisor, semester, year);
+			return dao.listStudentBySupervisor(idSupervisor);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
