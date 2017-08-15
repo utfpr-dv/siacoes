@@ -9,6 +9,7 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -49,6 +50,10 @@ public class EditUserWindow extends EditWindow {
 	private final TextField textStudentCode;
 	private final SemesterComboBox comboSemester;
 	private final YearField textYear;
+	
+	private final TabSheet tab;
+	private final VerticalLayout tab1;
+	private final VerticalLayout tab2;
 
 	public EditUserWindow(User user, ListView parentView){
 		super("Editar Usuário", parentView);
@@ -112,10 +117,11 @@ public class EditUserWindow extends EditWindow {
 		this.comboProfile.addItem(UserProfile.STUDENT);
 		this.comboProfile.addItem(UserProfile.PROFESSOR);
 		this.comboProfile.addItem(UserProfile.ADMINISTRATOR);
+		this.comboProfile.addItem(UserProfile.COMPANYSUPERVISOR);
 		this.comboProfile.addValueChangeListener(new ValueChangeListener() {
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				configureStudent(comboProfile.getValue() == UserProfile.STUDENT);
+				configureProfile((UserProfile) comboProfile.getValue());
 			}
 		});
 		
@@ -147,32 +153,73 @@ public class EditUserWindow extends EditWindow {
 		this.textYear = new YearField();
 		this.textYear.setCaption("Ano de Ingresso");
 		
+		this.tab1 = new VerticalLayout();
+		this.tab1.setSpacing(true);
+		
 		if(Session.isUserAdministrator()){
-			this.addField(new HorizontalLayout(this.textLogin, new VerticalLayout(this.checkActive, this.checkExternal)));	
+			HorizontalLayout h = new HorizontalLayout(this.textLogin, new VerticalLayout(this.checkActive, this.checkExternal));
+			h.setSpacing(true);
+			this.tab1.addComponent(h);
 		}else{
 			this.textName.setEnabled(false);
 		}
-		this.addField(new HorizontalLayout(this.textName, this.textEmail));
-		this.addField(new HorizontalLayout(this.comboCampus, this.comboDepartment));
-		this.addField(new HorizontalLayout(this.textStudentCode, this.comboSemester, this.textYear));
+		HorizontalLayout h1 = new HorizontalLayout(this.textName, this.textEmail);
+		h1.setSpacing(true);
+		this.tab1.addComponent(h1);
+		
+		HorizontalLayout h2 = new HorizontalLayout(this.comboCampus, this.comboDepartment);
+		h2.setSpacing(true);
+		this.tab1.addComponent(h2);
+		
+		HorizontalLayout h3 = new HorizontalLayout(this.textStudentCode, this.comboSemester, this.textYear);
+		h3.setSpacing(true);
+		this.tab1.addComponent(h3);
+		
 		if(Session.isUserAdministrator()){
-			this.addField(new HorizontalLayout(this.comboProfile, new VerticalLayout(this.checkDepartmentManager, this.checkSigacManager, this.checkSigesManager, this.checkSigetManager)));
+			HorizontalLayout h = new HorizontalLayout(this.comboProfile, new VerticalLayout(this.checkDepartmentManager, this.checkSigacManager, this.checkSigesManager, this.checkSigetManager));
+			h.setSpacing(true);
+			this.tab1.addComponent(h);
 		}
-		if(Session.isUserProfessor()){
-			this.addField(new HorizontalLayout(this.textInstitution, this.textLattes));
-			this.addField(this.textArea);
-			this.addField(this.textResearch);
-		}
+		
+		this.tab = new TabSheet();
+		this.tab.setWidth("820px");
+		this.tab.addTab(this.tab1, "Dados Gerais");
+				
+		this.tab2 = new VerticalLayout();
+		this.tab2.setSpacing(true);
+		
+		HorizontalLayout h = new HorizontalLayout(this.textInstitution, this.textLattes);
+		h.setSpacing(true);
+		this.tab2.addComponent(h);
+		
+		this.tab2.addComponent(this.textArea);
+		this.tab2.addComponent(this.textResearch);
+		
+		this.tab.addTab(this.tab2, "Profissional");
+		
+		this.addField(this.tab);
 		
 		this.loadUser();
 		this.textLogin.focus();
 	}
 	
-	private void configureStudent(boolean student){
-		if(!student){
-			this.textStudentCode.setVisible(false);
-			this.comboSemester.setVisible(false);
-			this.textYear.setVisible(false);
+	private void configureProfile(UserProfile profile){
+		this.textStudentCode.setVisible(profile == UserProfile.STUDENT);
+		this.comboSemester.setVisible(profile == UserProfile.STUDENT);
+		this.textYear.setVisible(profile == UserProfile.STUDENT);
+		
+		this.tab.getTab(1).setVisible((profile == UserProfile.PROFESSOR) || (profile == UserProfile.ADMINISTRATOR));
+		
+		this.checkDepartmentManager.setVisible((profile == UserProfile.PROFESSOR) || (profile == UserProfile.ADMINISTRATOR));
+		this.checkSigacManager.setVisible((profile == UserProfile.PROFESSOR) || (profile == UserProfile.ADMINISTRATOR));
+		this.checkSigesManager.setVisible((profile == UserProfile.PROFESSOR) || (profile == UserProfile.ADMINISTRATOR));
+		this.checkSigetManager.setVisible((profile == UserProfile.PROFESSOR) || (profile == UserProfile.ADMINISTRATOR));
+		
+		if((profile != UserProfile.PROFESSOR) && (profile != UserProfile.ADMINISTRATOR)){
+			this.checkDepartmentManager.setValue(false);
+			this.checkSigacManager.setValue(false);
+			this.checkSigesManager.setValue(false);
+			this.checkSigetManager.setValue(false);
 		}
 	}
 	
@@ -217,7 +264,7 @@ public class EditUserWindow extends EditWindow {
 		}
 		
 		this.configureExternal(this.user.isExternal());
-		this.configureStudent(this.user.getProfile() == UserProfile.STUDENT);
+		this.configureProfile(this.user.getProfile());
 	}
 	
 	private void configureExternal(boolean external){
