@@ -261,8 +261,10 @@ public class ProjectDAO {
 				"INNER JOIN \"user\" student ON student.idUser=project.idStudent " +
 				"INNER JOIN \"user\" supervisor ON supervisor.idUser=project.idSupervisor " +
 				"LEFT JOIN \"user\" cosupervisor on cosupervisor.idUser=project.idCosupervisor " +
-				"WHERE project.idSupervisor=? ORDER BY project.year DESC, project.semester DESC, project.title");
+				"WHERE project.idSupervisor=? OR project.idCosupervisor=? ORDER BY project.year DESC, project.semester DESC, project.title");
+			
 			stmt.setInt(1, idSupervisor);
+			stmt.setInt(2, idSupervisor);
 			
 			ResultSet rs = stmt.executeQuery();
 			List<Project> list = new ArrayList<Project>();

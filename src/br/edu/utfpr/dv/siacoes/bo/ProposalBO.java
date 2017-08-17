@@ -12,12 +12,25 @@ import br.edu.utfpr.dv.siacoes.dao.ProposalDAO;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
+import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Department;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 
 public class ProposalBO {
+	
+	public List<User> listSupervisors(int idProposal) throws Exception{
+		try {
+			ProposalDAO dao = new ProposalDAO();
+			
+			return dao.listSupervisors(idProposal);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
 
 	public List<Proposal> listAll() throws Exception{
 		try {

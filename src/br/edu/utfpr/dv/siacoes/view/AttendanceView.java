@@ -25,6 +25,7 @@ import br.edu.utfpr.dv.siacoes.components.StudentComboBox;
 import br.edu.utfpr.dv.siacoes.model.Attendance;
 import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.window.EditAttendanceWindow;
@@ -35,11 +36,16 @@ public class AttendanceView extends ListView {
 	
 	private final StudentComboBox comboStudent;
 	private final NativeSelect comboProposal;
+	private final NativeSelect comboSupervisor;
 	private final StageComboBox comboStage;
 	private final Button buttonPrint;
 	
 	public AttendanceView(){
 		super(SystemModule.SIGET);
+		
+		this.comboSupervisor = new NativeSelect("Orientador");
+		this.comboSupervisor.setWidth("400px");
+		this.comboSupervisor.setNullSelectionAllowed(false);
 		
 		this.comboProposal = new NativeSelect("Proposta");
 		this.comboProposal.setWidth("400px");
@@ -55,20 +61,35 @@ public class AttendanceView extends ListView {
 					}
 				}
 			});
+			
+			this.comboSupervisor.addItem(Session.getUser());
+			this.comboSupervisor.select(Session.getUser());
+			this.comboSupervisor.setVisible(false);
 		}else{
 			this.comboStudent = new StudentComboBox("Acadêmico");
 			this.comboStudent.addItem(Session.getUser());
 			this.comboStudent.setStudent(Session.getUser());
 			this.loadProposals();
+			this.loadSupervisors();
+			
+			this.comboStudent.setVisible(false);
 		}
 		
 		this.comboStage = new StageComboBox();
 		
-		if(Session.isUserProfessor()){
-			this.addFilterField(this.comboStudent);
-			this.addFilterField(this.comboProposal);
-		}
+		this.addFilterField(this.comboStudent);
+		this.addFilterField(this.comboProposal);
+		this.addFilterField(this.comboSupervisor);
 		this.addFilterField(this.comboStage);
+		
+		this.comboProposal.addValueChangeListener(new ValueChangeListener() {
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				if(comboSupervisor.isVisible() && (comboProposal.getValue() != null)) {
+					loadSupervisors();
+				}
+			}
+		});
 		
 		this.buttonPrint = new Button("Imprimir");
 		this.buttonPrint.setWidth("150px");
@@ -89,20 +110,22 @@ public class AttendanceView extends ListView {
 		
 		this.prepareDownload();
 		
-		if((this.comboStudent.getStudent() != null) && (this.comboProposal.getValue() != null)){
-			try {			
-				AttendanceBO bo = new AttendanceBO();
-		    	List<Attendance> list = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), Session.getUser().getIdUser(), ((Proposal)this.comboProposal.getValue()).getIdProposal(), this.comboStage.getStage());
-		    	
-		    	for(Attendance a : list){
-					Object itemId = this.getGrid().addRow(a.getDate(), a.getStartTime(), a.getEndTime(), (a.getComments().length() > 100 ? a.getComments().substring(0, 99) + "..." : a.getComments()));
-					this.addRowId(itemId, a.getIdAttendance());
-				}
-			} catch (Exception e) {
-				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-				
-				Notification.show("Listar Acompanhamentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		try {			
+			AttendanceBO bo = new AttendanceBO();
+	    	List<Attendance> list = new ArrayList<Attendance>();
+	    	
+	    	if((this.comboStudent.getStudent() != null) && (this.comboProposal.getValue() != null) && (this.comboSupervisor.getValue() != null)) {
+	    		list = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), ((User)this.comboSupervisor.getValue()).getIdUser(), ((Proposal)this.comboProposal.getValue()).getIdProposal(), this.comboStage.getStage());
+	    	}
+	    	
+	    	for(Attendance a : list){
+				Object itemId = this.getGrid().addRow(a.getDate(), a.getStartTime(), a.getEndTime(), (a.getComments().length() > 100 ? a.getComments().substring(0, 99) + "..." : a.getComments()));
+				this.addRowId(itemId, a.getIdAttendance());
 			}
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			Notification.show("Listar Acompanhamentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
 	
@@ -122,6 +145,23 @@ public class AttendanceView extends ListView {
 			Notification.show("Listar Acompanhamentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
+	
+	private void loadSupervisors(){
+		try {
+			ProposalBO bo = new ProposalBO();
+			List<User> list = bo.listSupervisors(((Proposal)this.comboProposal.getValue()).getIdProposal());
+			
+			this.comboSupervisor.clear();
+			this.comboSupervisor.addItems(list);
+			if(list.size() > 0){
+				this.comboSupervisor.select(list.get(0));	
+			}
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			Notification.show("Listar Acompanhamentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		}
+	}
 
 	@Override
 	public void addClick() {
@@ -129,12 +169,14 @@ public class AttendanceView extends ListView {
 			Notification.show("Incluir Reunião", "Selecione o acadêmico.", Notification.Type.ERROR_MESSAGE);
 		}else if(this.comboProposal.getValue() == null){
 			Notification.show("Incluir Reunião", "Selecione o projeto.", Notification.Type.ERROR_MESSAGE);
+		}else if(this.comboSupervisor.getValue() == null){
+			Notification.show("Incluir Reunião", "Selecione o orientador.", Notification.Type.ERROR_MESSAGE);
 		}else{
 			Attendance attendance = new Attendance();
 	    	
-	    	attendance.setSupervisor(((Proposal)this.comboProposal.getValue()).getSupervisor());
-	    	attendance.setStudent(((Proposal)this.comboProposal.getValue()).getStudent());
 	    	attendance.setProposal((Proposal)this.comboProposal.getValue());
+	    	attendance.setStudent(((Proposal)this.comboProposal.getValue()).getStudent());
+	    	attendance.setSupervisor((User)this.comboSupervisor.getValue());
 	    	attendance.setStage(this.comboStage.getStage());
 	    	
 	    	UI.getCurrent().addWindow(new EditAttendanceWindow(attendance, this));	
@@ -187,7 +229,7 @@ public class AttendanceView extends ListView {
 		if((this.comboStudent.getStudent() != null) && (this.comboProposal.getValue() != null)){
 			try {
 				AttendanceBO bo = new AttendanceBO();
-				AttendanceReport attendance = bo.getReport(this.comboStudent.getStudent().getIdUser(), ((Proposal)this.comboProposal.getValue()).getIdProposal(), Session.getUser().getIdUser(), this.comboStage.getStage());
+				AttendanceReport attendance = bo.getReport(this.comboStudent.getStudent().getIdUser(), ((Proposal)this.comboProposal.getValue()).getIdProposal(), ((User)this.comboSupervisor.getValue()).getIdUser(), this.comboStage.getStage());
 				
 				List<AttendanceReport> list = new ArrayList<AttendanceReport>();
 				list.add(attendance);
@@ -207,7 +249,11 @@ public class AttendanceView extends ListView {
 			this.buttonPrint.addClickListener(new Button.ClickListener() {
 	            @Override
 	            public void buttonClick(ClickEvent event) {
-	            	Notification.show("Imprimir Acompanhamentos", "É necessário selecionar o acadêmico e a proposta para imprimir os acompanhamentos.", Notification.Type.WARNING_MESSAGE);
+	            	if(Session.isUserStudent()) {
+	            		Notification.show("Imprimir Acompanhamentos", "É necessário selecionar o orientador e a proposta para imprimir os acompanhamentos.", Notification.Type.WARNING_MESSAGE);
+	            	} else {
+	            		Notification.show("Imprimir Acompanhamentos", "É necessário selecionar o acadêmico e a proposta para imprimir os acompanhamentos.", Notification.Type.WARNING_MESSAGE);	
+	            	}
 	            }
 	        });
 		}

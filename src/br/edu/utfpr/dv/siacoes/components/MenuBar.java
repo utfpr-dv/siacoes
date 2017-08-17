@@ -573,19 +573,19 @@ public class MenuBar extends CustomComponent {
 	        	        	ProposalBO bo = new ProposalBO();
 							Proposal proposal = bo.findCurrentProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
 							
-							DeadlineBO dbo = new DeadlineBO();
+							/*DeadlineBO dbo = new DeadlineBO();
 							Deadline d;
 							
 							if(proposal == null){
 								d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
 							}else{
 								d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), proposal.getSemester(), proposal.getYear());
-							}
+							}*/
 							
 							if(proposal == null){
 								Notification.show("Alterar Orientador", "É necessário efetuar a submissão da proposta.", Notification.Type.ERROR_MESSAGE);
-							}else if((d == null) || (!DateUtils.getToday().getTime().after(d.getProposalDeadline()))){
-								Notification.show("Alterar Orientador", "A submissão de propostas ainda não foi encerrada. Você pode fazer a alteração do orientador no menu Submeter Proposta.", Notification.Type.ERROR_MESSAGE);
+							//}else if((d == null) || (!DateUtils.getToday().getTime().after(d.getProposalDeadline()))){
+							//	Notification.show("Alterar Orientador", "A submissão de propostas ainda não foi encerrada. Você pode fazer a alteração do orientador no menu Submeter Proposta.", Notification.Type.ERROR_MESSAGE);
 							}else{
 								UI.getCurrent().addWindow(new EditSupervisorWindow(proposal, null));
 							}

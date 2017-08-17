@@ -335,6 +335,10 @@ public class EditProposalWindow extends EditWindow {
 				this.proposal.setDepartment(this.comboDepartment.getDepartment());
 			}
 			
+			if((this.proposal.getCosupervisor() == null) || (this.proposal.getCosupervisor().getIdUser() == 0)){
+				this.proposal.setCosupervisor(this.comboCosupervisor.getProfessor());
+			}
+			
 			bo.save(this.proposal);
 			
 			Notification.show("Salvar Proposta", "Proposta salva com sucesso.", Notification.Type.HUMANIZED_MESSAGE);

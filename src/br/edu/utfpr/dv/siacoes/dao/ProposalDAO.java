@@ -18,6 +18,50 @@ import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 
 public class ProposalDAO {
 	
+	public List<User> listSupervisors(int idProposal) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			List<User> list = new ArrayList<User>();
+			
+			ResultSet rs = stmt.executeQuery("SELECT \"user\".idUser, \"user\".name " +
+					"FROM \"user\" INNER JOIN proposal ON \"user\".idUser=proposal.idSupervisor " +
+					"WHERE proposal.idProposal=" + String.valueOf(idProposal) +
+					" UNION " +
+					"SELECT \"user\".idUser, \"user\".name " + 
+					"FROM \"user\" INNER JOIN proposal ON \"user\".idUser=proposal.idCosupervisor " +
+					"WHERE proposal.idProposal=" + String.valueOf(idProposal) +
+					" UNION " +
+					"SELECT \"user\".idUser, \"user\".name " + 
+					"FROM \"user\" INNER JOIN supervisorchange ON \"user\".idUser=supervisorchange.idNewSupervisor " +
+					"WHERE supervisorchange.idProposal=" + String.valueOf(idProposal) +
+					" UNION " +
+					"SELECT \"user\".idUser, \"user\".name " + 
+					"FROM \"user\" INNER JOIN supervisorchange ON \"user\".idUser=supervisorchange.idNewCosupervisor " +
+					"WHERE supervisorchange.idProposal=" + String.valueOf(idProposal) +
+					" ORDER BY name");
+			
+			while(rs.next()){
+				User user = new User();
+					
+				user.setIdUser(rs.getInt("idUser"));
+				user.setName(rs.getString("name"));
+				
+				list.add(user);
+			}
+			
+			return list;
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public Proposal findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -260,7 +304,7 @@ public class ProposalDAO {
 					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
 					"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=proposal.idCosupervisor " +
-					"WHERE idStudent = ? ORDER BY title");
+					"WHERE idStudent = ? ORDER BY proposal.year DESC, proposal.semester DESC");
 		
 			stmt.setInt(1, idStudent);
 			
@@ -291,9 +335,10 @@ public class ProposalDAO {
 					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
 					"LEFT JOIN \"user\" cosupervisor on cosupervisor.idUser=proposal.idCosupervisor " +
-					"WHERE idSupervisor = ? ORDER BY proposal.year DESC, proposal.semester DESC, proposal.title");
+					"WHERE proposal.idSupervisor = ? OR proposal.idCosupervisor = ? ORDER BY proposal.year DESC, proposal.semester DESC, proposal.title");
 		
 			stmt.setInt(1, idSupervisor);
+			stmt.setInt(2, idSupervisor);
 			
 			ResultSet rs = stmt.executeQuery();
 			List<Proposal> list = new ArrayList<Proposal>();

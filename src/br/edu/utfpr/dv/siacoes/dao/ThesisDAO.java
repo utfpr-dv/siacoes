@@ -297,9 +297,10 @@ public class ThesisDAO {
 				"INNER JOIN \"user\" student ON student.idUser=thesis.idStudent " +
 				"INNER JOIN \"user\" supervisor ON supervisor.idUser=thesis.idSupervisor " +
 				"LEFT JOIN \"user\" cosupervisor on cosupervisor.idUser=thesis.idCosupervisor " +
-				"WHERE thesis.idSupervisor=? ORDER BY thesis.year DESC, thesis.semester DESC, thesis.title");
+				"WHERE thesis.idSupervisor=? OR thesis.idCosupervisor=? ORDER BY thesis.year DESC, thesis.semester DESC, thesis.title");
 			
 			stmt.setInt(1, idSupervisor);
+			stmt.setInt(2, idSupervisor);
 			
 			ResultSet rs = stmt.executeQuery();
 			List<Thesis> list = new ArrayList<Thesis>();

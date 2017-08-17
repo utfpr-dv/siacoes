@@ -21,6 +21,7 @@ public class EditAttendanceWindow extends EditWindow {
 	private final Attendance attendance;
 	
 	private final TextField textStudent;
+	private final TextField textSupervisor;
 	private final TextField textProposal;
 	private final DateField textDate;
 	private final TimeField textStartTime;
@@ -42,9 +43,13 @@ public class EditAttendanceWindow extends EditWindow {
 		this.textStudent.setEnabled(false);
 		this.textStudent.setWidth("400px");
 		
+		this.textSupervisor = new TextField("Orientador");
+		this.textSupervisor.setEnabled(false);
+		this.textSupervisor.setWidth("400px");
+		
 		this.textProposal = new TextField("Proposta");
 		this.textProposal.setEnabled(false);
-		this.textProposal.setWidth("400px");
+		this.textProposal.setWidth("810px");
 		
 		this.comboStage = new StageComboBox();
 		
@@ -63,13 +68,14 @@ public class EditAttendanceWindow extends EditWindow {
 		this.textNextMeeting = new TextArea("Atividades previstas para a próxima reunião");
 		this.textNextMeeting.setWidth("810px");
 		
-		HorizontalLayout h1 = new HorizontalLayout(this.textStudent, this.textProposal);
+		HorizontalLayout h1 = new HorizontalLayout(this.textStudent, this.textSupervisor);
 		h1.setSpacing(true);
 		
 		HorizontalLayout layoutDate = new HorizontalLayout(this.comboStage, this.textDate, this.textStartTime, this.textEndTime);
 		layoutDate.setSpacing(true);
 		
 		this.addField(h1);
+		this.addField(this.textProposal);
 		this.addField(layoutDate);
 		this.addField(this.textComments);
 		this.addField(this.textNextMeeting);
@@ -80,6 +86,7 @@ public class EditAttendanceWindow extends EditWindow {
 	
 	private void loadAttendance(){
 		this.textStudent.setValue(this.attendance.getStudent().getName());
+		this.textSupervisor.setValue(this.attendance.getSupervisor().getName());
 		this.textProposal.setValue(this.attendance.getProposal().getTitle());
 		this.comboStage.setStage(this.attendance.getStage());
 		this.textDate.setValue(this.attendance.getDate());
