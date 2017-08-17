@@ -51,6 +51,8 @@ public class ThesisView extends ListView {
 	private final Button buttonDownloadThesis;
 	private final Button buttonStatements;
 	private final Button buttonSendFeedback;
+	private final Button buttonSupervisorStatement;
+	private final Button buttonCosupervisorStatement;
 	
 	private Button.ClickListener listenerClickDownload;
 	
@@ -83,12 +85,28 @@ public class ThesisView extends ListView {
             }
         });
 		
+		this.buttonSupervisorStatement = new Button("Dec. Orientação", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadSupervisorStatement();
+            }
+        });
+		
+		this.buttonCosupervisorStatement = new Button("Dec. Coorientação", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadCosupervisorStatement();
+            }
+        });
+		
 		if(Session.isUserProfessor()){
 			this.addActionButton(this.buttonSendFeedback);
 		}
 		if(Session.isUserManager(this.getModule())){
 			this.addActionButton(this.buttonJury);	
 			this.addActionButton(this.buttonStatements);
+			this.addActionButton(this.buttonSupervisorStatement);
+			this.addActionButton(this.buttonCosupervisorStatement);
 		}
 		
 		this.setAddVisible(false);
@@ -134,6 +152,60 @@ public class ThesisView extends ListView {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			Notification.show("Listar Monografias", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		}
+	}
+	
+	private void downloadSupervisorStatement(){
+		Object value = getIdSelected();
+		
+		if(value == null){
+			Notification.show("Gerar Declaração", "Selecione um registro para gerar a declaração.", Notification.Type.WARNING_MESSAGE);
+		}else{
+			try{
+				ThesisBO tbo = new ThesisBO();
+				CertificateBO bo = new CertificateBO();
+				
+				Thesis thesis = tbo.findById((int)value);
+
+				byte[] report = bo.getThesisProfessorStatement(thesis.getSupervisor(), thesis);
+				
+				Session.putReport(report);
+				
+				getUI().getPage().open("#!" + CertificateView.NAME + "/session/" + UUID.randomUUID().toString(), "_blank");
+			}catch(Exception e){
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+	        	
+	        	Notification.show("Gerar Declaração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			}
+		}
+	}
+	
+	private void downloadCosupervisorStatement(){
+		Object value = getIdSelected();
+		
+		if(value == null){
+			Notification.show("Gerar Declaração", "Selecione um registro para gerar a declaração.", Notification.Type.WARNING_MESSAGE);
+		}else{
+			try{
+				ThesisBO tbo = new ThesisBO();
+				CertificateBO bo = new CertificateBO();
+				
+				Thesis thesis = tbo.findById((int)value);
+
+				if(thesis.getCosupervisor() == null){
+					Notification.show("Gerar Declaração", "Não foi indicado um coorientador para a monografia.", Notification.Type.WARNING_MESSAGE);
+				}else{
+					byte[] report = bo.getThesisProfessorStatement(thesis.getCosupervisor(), thesis);
+					
+					Session.putReport(report);
+					
+					getUI().getPage().open("#!" + CertificateView.NAME + "/session/" + UUID.randomUUID().toString(), "_blank");
+				}
+			}catch(Exception e){
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+	        	
+	        	Notification.show("Gerar Declaração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			}
 		}
 	}
 	

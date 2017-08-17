@@ -33,11 +33,151 @@ import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportType;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryStudent;
 import br.edu.utfpr.dv.siacoes.model.StatementReport;
+import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class CertificateBO {
+	
+	public byte[] getThesisProfessorStatement(int idSupervisor, int idProposal, int stage) throws Exception{
+		UserBO ubo = new UserBO();
+		User supervisor = ubo.findById(idSupervisor);
+		
+		if(stage == 1){
+			ProjectBO bo = new ProjectBO();
+			Project project = bo.findByProposal(idProposal);
+			
+			return this.getThesisProfessorStatement(supervisor, project);
+		}else{
+			ThesisBO bo = new ThesisBO();
+			Thesis thesis = bo.findByProposal(idProposal);
+			
+			return this.getThesisProfessorStatement(supervisor, thesis);
+		}
+	}
+	
+	public byte[] getThesisProfessorStatement(User supervisor, Project project) throws Exception{
+		if((project == null) || (project.getIdProject() == 0)){
+			throw new Exception("A declaração só pode ser emitida após o acadêmico enviar o projeto.");
+		}
+		
+		if(project.getCosupervisor() == null){
+			project.setCosupervisor(new User());
+		}
+		
+		if((project.getSupervisor().getIdUser() != supervisor.getIdUser()) && (project.getCosupervisor().getIdUser() != supervisor.getIdUser())){
+			throw new Exception("A declaração só pode ser emitida para o professor que atuou como orientador ou coorientador do trabalho.");
+		}
+		
+		return this.getThesisProfessorStatement(supervisor, project, null);
+	}
+	
+	public byte[] getThesisProfessorStatement(User supervisor, Thesis thesis) throws Exception{
+		if((thesis == null) || (thesis.getIdThesis() == 0)){
+			throw new Exception("A declaração só pode ser emitida após o acadêmico enviar a monografia.");
+		}
+		
+		if(thesis.getCosupervisor() == null){
+			thesis.setCosupervisor(new User());
+		}
+		
+		if((thesis.getSupervisor().getIdUser() != supervisor.getIdUser()) && (thesis.getCosupervisor().getIdUser() != supervisor.getIdUser())){
+			throw new Exception("A declaração só pode ser emitida para o professor que atuou como orientador ou coorientador do trabalho.");
+		}
+		
+		return this.getThesisProfessorStatement(supervisor, null, thesis);
+	}
+	
+	private byte[] getThesisProfessorStatement(User supervisor, Project project, Thesis thesis) throws Exception{
+		StatementReport report = this.loadThesisProfessorStatement(supervisor, project, thesis);
+		List<StatementReport> list = new ArrayList<StatementReport>();
+		list.add(report);
+		
+		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "ProfessorThesisStatement");
+		byte[] finalReport = rep.toByteArray();
+		
+		Certificate certificate = new Certificate();
+		certificate.setDate(report.getGeneratedDate());
+		certificate.setDepartment(Session.getUser().getDepartment());
+		certificate.setFile(finalReport);
+		certificate.setGuid(report.getGuid());
+		certificate.setModule(SystemModule.SIGET);
+		certificate.setUser(supervisor);
+		
+		this.save(certificate);
+		
+		return finalReport;
+	}
+	
+	private StatementReport loadThesisProfessorStatement(User supervisor, Project project, Thesis thesis) {
+		StatementReport statement = new StatementReport();
+		
+		statement.setName(supervisor.getName());
+		statement.setGuid(this.generateGuid());
+		statement.setLink(this.getLink(statement.getGuid()));
+		
+		if(thesis == null){
+			statement.setEvent("Trabalho de Conclusão de Curso 1");
+			statement.setStudent(project.getStudent().getName());
+			statement.setTitle(project.getTitle());
+			statement.setSemester(project.getSemester());
+			statement.setYear(project.getYear());
+			
+			if(project.getSupervisor().getIdUser() == supervisor.getIdUser()){
+				statement.setType("orientador(a)");
+			}else if((project.getCosupervisor() != null) && (project.getCosupervisor().getIdUser() == supervisor.getIdUser())){
+				statement.setType("coorientador(a)");
+			}else{
+				statement.setType("ASPONE");
+			}
+		}else{
+			statement.setEvent("Trabalho de Conclusão de Curso 2");
+			statement.setStudent(thesis.getStudent().getName());
+			statement.setTitle(thesis.getTitle());
+			statement.setSemester(thesis.getSemester());
+			statement.setYear(thesis.getYear());
+			
+			if(thesis.getSupervisor().getIdUser() == supervisor.getIdUser()){
+				statement.setType("orientador(a)");
+			} else if((thesis.getCosupervisor() != null) && (thesis.getCosupervisor().getIdUser() == supervisor.getIdUser())){
+				statement.setType("coorientador(a)");
+			}else{
+				statement.setType("ASPONE");
+			}
+		}
+		
+		try {
+			statement.setQrCode(new ByteArrayInputStream(this.createQRCode(statement.getLink(), 100, 100)));
+		} catch (WriterException | IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			UserBO bo = new UserBO();
+			User user = bo.findManager(Session.getUser().getDepartment().getIdDepartment(), SystemModule.SIGET);
+			
+			statement.setManagerName(user.getName());
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			statement.setManagerName("");
+		}
+		
+		try {
+			UserBO bo = new UserBO();
+			User manager = bo.findDepartmentManager(Session.getUser().getDepartment().getIdDepartment());
+			
+			statement.setDepartmentManager(manager.getName());
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			statement.setDepartmentManager("");
+		}
+		
+		return statement;
+	}
 	
 	public byte[] getInternshipProfessorStatement(int idInternship) throws Exception{
 		InternshipBO bo = new InternshipBO();

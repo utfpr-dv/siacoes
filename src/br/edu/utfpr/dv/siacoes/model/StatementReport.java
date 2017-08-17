@@ -21,6 +21,9 @@ public class StatementReport {
 	private String departmentManager;
 	private String guid;
 	private String link;
+	private String type;
+	private int semester;
+	private int year;
 	private InputStream qrCode;
 	private Date generatedDate;
 	
@@ -41,6 +44,9 @@ public class StatementReport {
 		this.setGuid("");
 		this.setLink("");
 		this.setQrCode(null);
+		this.setType("");
+		this.setSemester(DateUtils.getSemester());
+		this.setYear(DateUtils.getYear());
 	}
 	
 	public String getStudentCode(){
@@ -140,6 +146,24 @@ public class StatementReport {
 	}
 	public void setGeneratedDate(Date generatedDate) {
 		this.generatedDate = generatedDate;
+	}
+	public String getType(){
+		return this.type;
+	}
+	public void setType(String type){
+		this.type = type;
+	}
+	public int getSemester() {
+		return semester;
+	}
+	public void setSemester(int semester) {
+		this.semester = semester;
+	}
+	public int getYear() {
+		return year;
+	}
+	public void setYear(int year) {
+		this.year = year;
 	}
 
 }
