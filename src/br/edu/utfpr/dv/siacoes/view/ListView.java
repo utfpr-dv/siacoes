@@ -18,6 +18,7 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
@@ -185,6 +186,11 @@ public abstract class ListView extends CustomComponent implements View {
     public void addActionButton(Button button){
     	button.setWidth("150px");
     	layoutButtons.addComponent(button);
+    }
+    
+    public void addActionPanel(Panel panel){
+    	panel.setWidth("150px");
+    	layoutButtons.addComponent(panel);
     }
     
     public Grid getGrid(){

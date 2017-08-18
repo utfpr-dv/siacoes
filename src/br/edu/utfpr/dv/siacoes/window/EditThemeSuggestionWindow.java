@@ -7,8 +7,10 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
@@ -33,6 +35,8 @@ public class EditThemeSuggestionWindow extends EditWindow {
 	private final CheckBox checkActive;
 	private final DateField textSubmissionDate;
 	
+	private final TabSheet tab;
+	
 	public EditThemeSuggestionWindow(ThemeSuggestion theme, ListView parentView){
 		super("Editar Sugestão", parentView);
 		
@@ -51,18 +55,20 @@ public class EditThemeSuggestionWindow extends EditWindow {
 		this.comboDepartment.setEnabled(false);
 		
 		this.textTitle = new TextField("Título");
-		this.textTitle.setWidth("800px");
+		this.textTitle.setWidth("810px");
 		this.textTitle.setMaxLength(255);
 		
 		this.textProponent = new TextField("Proponente");
-		this.textProponent.setWidth("800px");
+		this.textProponent.setWidth("810px");
 		this.textProponent.setMaxLength(255);
 		
-		this.textObjetives = new TextArea("Objetivos");
-		this.textObjetives.setWidth("800px");
+		this.textObjetives = new TextArea();
+		this.textObjetives.setWidth("810px");
+		this.textObjetives.setHeight("280px");
 		
-		this.textProposal = new TextArea("Descrição da Proposta (Caracterização do problema e justificativa)");
-		this.textProposal.setWidth("800px");
+		this.textProposal = new TextArea();
+		this.textProposal.setWidth("810px");
+		this.textProposal.setHeight("280px");
 		
 		this.checkActive = new CheckBox("Ativo");
 		
@@ -70,18 +76,32 @@ public class EditThemeSuggestionWindow extends EditWindow {
 		this.textSubmissionDate.setDateFormat("dd/MM/yyyy");
 		this.textSubmissionDate.setEnabled(false);
 		
-		this.addField(new HorizontalLayout(this.comboCampus, this.comboDepartment));
-		this.addField(this.textTitle);
-		this.addField(this.textProponent);
-		this.addField(this.textProposal);
-		this.addField(this.textObjetives);
-		this.addField(new HorizontalLayout(this.textSubmissionDate, this.checkActive));
+		HorizontalLayout h1 = new HorizontalLayout(this.comboCampus, this.comboDepartment);
+		h1.setSpacing(true);
+		
+		HorizontalLayout h2 = new HorizontalLayout(this.textSubmissionDate, this.checkActive);
+		h2.setSpacing(true);
+		
+		VerticalLayout tab1 = new VerticalLayout();
+		tab1.setSpacing(true);
+		tab1.addComponent(h1);
+		tab1.addComponent(this.textTitle);
+		tab1.addComponent(this.textProponent);
+		tab1.addComponent(h2);
+		
+		this.tab = new TabSheet();
+		this.tab.setWidth("820px");
+		this.tab.addTab(tab1, "Descrição");
+		this.tab.addTab(this.textProposal, "Proposta");
+		this.tab.addTab(this.textObjetives, "Objetivos");
 		
 		if(!Session.isUserProfessor() || (!Session.isUserManager(SystemModule.SIGET) && (Session.getUser().getIdUser() != this.theme.getUser().getIdUser()))){
 			this.checkActive.setVisible(false);
 			this.setSaveButtonEnabled(false);
 			this.setCaption("Visualizar Sugestão");
 		}
+		
+		this.addField(this.tab);
 		
 		this.loadTheme();
 	}

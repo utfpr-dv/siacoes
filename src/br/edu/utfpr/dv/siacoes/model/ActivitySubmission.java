@@ -58,6 +58,7 @@ public class ActivitySubmission {
 	private Date feedbackDate;
 	private double validatedAmount;
 	private String comments;
+	private String description;
 	
 	public ActivitySubmission(){
 		this.setIdActivitySubmission(0);
@@ -75,6 +76,7 @@ public class ActivitySubmission {
 		this.setFeedbackDate(null);
 		this.setValidatedAmount(0);
 		this.setComments("");
+		this.setDescription("");
 	}
 	
 	public int getIdActivitySubmission() {
@@ -166,6 +168,12 @@ public class ActivitySubmission {
 	}
 	public void setComments(String comments) {
 		this.comments = comments;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	public double getScore(){
 		if(this.getFeedback() == ActivityFeedback.APPROVED){

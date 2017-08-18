@@ -355,6 +355,7 @@ CREATE TABLE `activitysubmission` (
   `feedbackDate` date DEFAULT NULL,
   `validatedAmount` double NOT NULL,
   `comments` TEXT NOT NULL,
+  `description` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`idactivitysubmission`),
   KEY `fk_activitysubmission_student_idx` (`idStudent`),
   KEY `fk_activitysubmission_department_idx` (`iddepartment`),

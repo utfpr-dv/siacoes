@@ -355,6 +355,7 @@ CREATE TABLE activitysubmission (
   feedbackDate date DEFAULT NULL,
   validatedAmount REAL NOT NULL,
   comments TEXT NOT NULL,
+  description VARCHAR(100) NOT NULL,
   PRIMARY KEY (idactivitysubmission),
   CONSTRAINT fk_activitysubmission_activity FOREIGN KEY (idActivity) REFERENCES activity (idactivity) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_activitysubmission_department FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION,

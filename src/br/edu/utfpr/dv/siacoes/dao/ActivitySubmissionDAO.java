@@ -186,9 +186,9 @@ public class ActivitySubmissionDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO activitysubmission(idStudent, idDepartment, idActivity, semester, year, submissionDate, file, fileType, amount, feedback, feedbackDate, validatedAmount, idfeedbackuser, comments) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO activitysubmission(idStudent, idDepartment, idActivity, semester, year, submissionDate, file, fileType, amount, feedback, feedbackDate, validatedAmount, idfeedbackuser, comments, description) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE activitysubmission SET idStudent=?, idDepartment=?, idActivity=?, semester=?, year=?, submissionDate=?, file=?, fileType=?, amount=?, feedback=?, feedbackDate=?, validatedAmount=?, idfeedbackuser=?, comments=? WHERE idActivitySubmission=?");
+				stmt = conn.prepareStatement("UPDATE activitysubmission SET idStudent=?, idDepartment=?, idActivity=?, semester=?, year=?, submissionDate=?, file=?, fileType=?, amount=?, feedback=?, feedbackDate=?, validatedAmount=?, idfeedbackuser=?, comments=?, description=? WHERE idActivitySubmission=?");
 			}
 	
 			stmt.setInt(1, submission.getStudent().getIdUser());
@@ -213,9 +213,10 @@ public class ActivitySubmissionDAO {
 				stmt.setInt(13, submission.getFeedbackUser().getIdUser());
 			}
 			stmt.setString(14, submission.getComments());
+			stmt.setString(15, submission.getDescription());
 			
 			if(!insert){
-				stmt.setInt(15, submission.getIdActivitySubmission());
+				stmt.setInt(16, submission.getIdActivitySubmission());
 			}
 			
 			stmt.execute();
@@ -241,6 +242,7 @@ public class ActivitySubmissionDAO {
 		ActivitySubmission submission = new ActivitySubmission();
 		
 		submission.setIdActivitySubmission(rs.getInt("idActivitySubmission"));
+		submission.setDescription(rs.getString("description"));
 		submission.getStudent().setIdUser(rs.getInt("idStudent"));
 		submission.getStudent().setName(rs.getString("studentName"));
 		submission.getFeedbackUser().setIdUser(rs.getInt("idFeedbackUser"));

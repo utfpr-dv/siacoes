@@ -7,6 +7,7 @@ public class ActivitySubmissionFooterReport {
 	private int minimum;
 	private int maximum;
 	private String situation;
+	private int sequence;
 	
 	public ActivitySubmissionFooterReport(){
 		this.setGroup("");
@@ -14,6 +15,7 @@ public class ActivitySubmissionFooterReport {
 		this.setMinimum(0);
 		this.setMaximum(0);
 		this.setSituation("");
+		this.setSequence(0);
 	}
 	
 	public String getGroup() {
@@ -45,6 +47,12 @@ public class ActivitySubmissionFooterReport {
 	}
 	public void setSituation(String situation) {
 		this.situation = situation;
+	}
+	public int getSequence() {
+		return sequence;
+	}
+	public void setSequence(int sequence) {
+		this.sequence = sequence;
 	}
 
 }

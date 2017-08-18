@@ -94,6 +94,9 @@ public class ActivitySubmissionBO {
 		if(submission.getFile() == null){
 			throw new Exception("É necessário enviar o comprovante.");
 		}
+		if(submission.getDescription().trim().isEmpty()){
+			throw new Exception("Informe a descrição da atividade.");
+		}
 		if((submission.getFeedback() == ActivityFeedback.APPROVED) && (submission.getValidatedAmount() <= 0)){
 			submission.setValidatedAmount(submission.getAmount());
 		}
@@ -116,6 +119,7 @@ public class ActivitySubmissionBO {
 			keys.add(new EmailMessageEntry<String, String>("semester", String.valueOf(submission.getSemester())));
 			keys.add(new EmailMessageEntry<String, String>("year", String.valueOf(submission.getYear())));
 			keys.add(new EmailMessageEntry<String, String>("comments", submission.getComments()));
+			keys.add(new EmailMessageEntry<String, String>("description", submission.getDescription()));
 			
 			if(submission.getFeedback() != ActivityFeedback.NONE){
 				keys.add(new EmailMessageEntry<String, String>("feedbackUser", submission.getFeedbackUser().getName()));
@@ -161,99 +165,48 @@ public class ActivitySubmissionBO {
 		}
 	}
 	
-	public ByteArrayOutputStream getReport(int idStudent, int idDepartment) throws Exception{
-		ActivitySubmissionReport report = new ActivitySubmissionReport();
+	public List<ActivitySubmissionFooterReport> getFooterReport(int idStudent, int idDepartment) throws Exception{
 		List<ActivitySubmission> list = this.listByStudent(idStudent, idDepartment);
-		List<ReportActivity> activities = new ArrayList<ReportActivity>();
-		List<byte[]> documents = new ArrayList<byte[]>();
 		
+		return this.getFooterReport(list);
+	}
+	
+	public List<ActivitySubmissionFooterReport> getFooterReport(List<ActivitySubmission> list) throws Exception{
+		List<ReportActivity> activities = new ArrayList<ReportActivity>();
+		
+		activities = this.loadActivities(list);
+		
+		return this.buildFooter(activities);
+	}
+	
+	public ByteArrayOutputStream getReport(int idStudent, int idDepartment) throws Exception{
+		List<ActivitySubmission> list = this.listByStudent(idStudent, idDepartment);
 		UserBO bo = new UserBO();
 		User student = bo.findById(idStudent);
+		
+		return this.getReport(list, student, idDepartment);
+	}
+	
+	public ByteArrayOutputStream getReport(List<ActivitySubmission> list, User student, int idDepartment) throws Exception{
+		ActivitySubmissionReport report = new ActivitySubmissionReport();
+		List<ReportActivity> activities = new ArrayList<ReportActivity>();
+		List<byte[]> documents = new ArrayList<byte[]>();
 		
 		report.setStudent(student.getName());
 		report.setRegisterSemester(student.getRegisterSemester());
 		report.setRegisterYear(student.getRegisterYear());
 		report.setStudentCode(student.getStudentCode());
 		
-		for(ActivitySubmission submission : list){
-			if(submission.getFeedback() == ActivityFeedback.APPROVED){
-				ActivitySubmissionDetailReport detailReport = new ActivitySubmissionDetailReport();
-				
-				detailReport.setActivity(submission.getActivity().getDescription());
-				detailReport.setGroup(submission.getActivity().getGroup().getSequence());
-				detailReport.setScore(this.round(submission.getActivity().getScore()));
-				detailReport.setUnit(submission.getActivity().getUnit().getDescription());
-				detailReport.setSemester(submission.getSemester());
-				detailReport.setYear(submission.getYear());
-
-				documents.add(submission.getFile());
-				
-				if(submission.getActivity().getUnit().isFillAmount()){
-					detailReport.setAmount(this.round(submission.getValidatedAmount()));
-				}else{
-					detailReport.setAmount(1);
-				}
-				detailReport.setTotal(this.round(submission.getScore()));
-				
-				report.getDetails().add(detailReport);
-				
-				boolean find = false;
-				for(ReportActivity ra : activities){
-					if((ra.getIdActivity() == submission.getActivity().getIdActivity()) && (ra.getSemester() == submission.getSemester()) && (ra.getYear() == submission.getYear())){
-						ra.setScore(ra.getScore() + detailReport.getTotal());
-						find = true;
-						break;
-					}
-				}
-				if(!find){
-					ReportActivity ra = new ReportActivity();
-					ra.setIdActivity(submission.getActivity().getIdActivity());
-					ra.setGroup(submission.getActivity().getGroup().getSequence());
-					ra.setSemester(submission.getSemester());
-					ra.setYear(submission.getYear());
-					ra.setScore(detailReport.getTotal());
-					ra.setMaximumScore(submission.getActivity().getMaximumInSemester());
-					activities.add(ra);
-				}
-			}
-		}
+		report.setDetails(this.loadSubmissionDetailReport(list));
 		
-		ActivityGroupDAO groupDao = new ActivityGroupDAO();
-		List<ActivityGroup> listGroup = groupDao.listAll();
+		documents = this.loadDocuments(list);
 		
-		for(ActivityGroup group : listGroup){
-			ActivitySubmissionFooterReport footer = new ActivitySubmissionFooterReport();
-			
-			footer.setGroup(group.getDescription());
-			footer.setMinimum(group.getMinimumScore());
-			footer.setMaximum(group.getMaximumScore());
-			
-			for(ReportActivity ra : activities){
-				if(ra.getGroup() == group.getSequence()){
-					if((ra.getMaximumScore() > 0) && (ra.getScore() > ra.getMaximumScore())){
-						footer.setTotal(footer.getTotal() + ra.getMaximumScore());
-					}else{
-						footer.setTotal(footer.getTotal() + ra.getScore());
-					}
-				}
-			}
-			
-			if(footer.getTotal() < footer.getMinimum()){
-				footer.setSituation("Não atingiu a pontuação mínima");
-			}else{
-				footer.setSituation("Pontuação mínima atingida");
-			}
-			
-			report.getFooter().add(footer);
-		}
+		activities = this.loadActivities(list);
+		
+		report.setFooter(this.buildFooter(activities));
 		
 		for(ActivitySubmissionFooterReport footer : report.getFooter()){
-			if(footer.getTotal() > footer.getMaximum()){
-				footer.setTotal(footer.getMaximum());
-				report.setTotalScore(report.getTotalScore() + footer.getMaximum());
-			}else{
-				report.setTotalScore(report.getTotalScore() + footer.getTotal());
-			}
+			report.setTotalScore(report.getTotalScore() + footer.getTotal());
 		}
 		
 		SigacConfigBO dbo = new SigacConfigBO();
@@ -283,6 +236,114 @@ public class ActivitySubmissionBO {
 		pdfMerge.mergeDocuments(null);
 		
 		return output;
+	}
+	
+	private List<byte[]> loadDocuments(List<ActivitySubmission> submissions){
+		List<byte[]> documents = new ArrayList<byte[]>();
+		
+		for(ActivitySubmission submission : submissions){
+			if(submission.getFeedback() == ActivityFeedback.APPROVED){
+				documents.add(submission.getFile());
+			}
+		}
+		
+		return documents;
+	}
+	
+	private List<ActivitySubmissionDetailReport> loadSubmissionDetailReport(List<ActivitySubmission> submissions){
+		List<ActivitySubmissionDetailReport> detail = new ArrayList<ActivitySubmissionDetailReport>();
+		
+		for(ActivitySubmission submission : submissions){
+			if(submission.getFeedback() == ActivityFeedback.APPROVED){
+				ActivitySubmissionDetailReport detailReport = new ActivitySubmissionDetailReport();
+				
+				detailReport.setActivity(submission.getActivity().getDescription());
+				detailReport.setGroup(submission.getActivity().getGroup().getSequence());
+				detailReport.setScore(this.round(submission.getActivity().getScore()));
+				detailReport.setUnit(submission.getActivity().getUnit().getDescription());
+				detailReport.setSemester(submission.getSemester());
+				detailReport.setYear(submission.getYear());
+				
+				if(submission.getActivity().getUnit().isFillAmount()){
+					detailReport.setAmount(this.round(submission.getValidatedAmount()));
+				}else{
+					detailReport.setAmount(1);
+				}
+				detailReport.setTotal(this.round(submission.getScore()));
+				
+				detail.add(detailReport);
+			}
+		}
+		
+		return detail;
+	}
+	
+	private List<ReportActivity> loadActivities(List<ActivitySubmission> submissions){
+		List<ReportActivity> activities = new ArrayList<ReportActivity>();
+		
+		for(ActivitySubmission submission : submissions){
+			if(submission.getFeedback() == ActivityFeedback.APPROVED){
+				boolean find = false;
+				for(ReportActivity ra : activities){
+					if((ra.getIdActivity() == submission.getActivity().getIdActivity()) && (ra.getSemester() == submission.getSemester()) && (ra.getYear() == submission.getYear())){
+						ra.setScore(ra.getScore() + this.round(submission.getScore()));
+						find = true;
+						break;
+					}
+				}
+				if(!find){
+					ReportActivity ra = new ReportActivity();
+					ra.setIdActivity(submission.getActivity().getIdActivity());
+					ra.setGroup(submission.getActivity().getGroup().getSequence());
+					ra.setSemester(submission.getSemester());
+					ra.setYear(submission.getYear());
+					ra.setScore(this.round(submission.getScore()));
+					ra.setMaximumScore(submission.getActivity().getMaximumInSemester());
+					activities.add(ra);
+				}
+			}
+		}
+		
+		return activities;
+	}
+	
+	private List<ActivitySubmissionFooterReport> buildFooter(List<ReportActivity> activities) throws SQLException{
+		List<ActivitySubmissionFooterReport> ret = new ArrayList<ActivitySubmissionFooterReport>();
+		ActivityGroupDAO groupDao = new ActivityGroupDAO();
+		List<ActivityGroup> listGroup = groupDao.listAll();
+		
+		for(ActivityGroup group : listGroup){
+			ActivitySubmissionFooterReport footer = new ActivitySubmissionFooterReport();
+			
+			footer.setSequence(group.getSequence());
+			footer.setGroup(group.getDescription());
+			footer.setMinimum(group.getMinimumScore());
+			footer.setMaximum(group.getMaximumScore());
+			
+			for(ReportActivity ra : activities){
+				if(ra.getGroup() == group.getSequence()){
+					if((ra.getMaximumScore() > 0) && (ra.getScore() > ra.getMaximumScore())){
+						footer.setTotal(footer.getTotal() + ra.getMaximumScore());
+					}else{
+						footer.setTotal(footer.getTotal() + ra.getScore());
+					}
+				}
+			}
+			
+			if(footer.getTotal() < footer.getMinimum()){
+				footer.setSituation("Não atingiu a pontuação mínima");
+			}else{
+				footer.setSituation("Pontuação mínima atingida");
+			}
+			
+			if(footer.getTotal() > footer.getMaximum()){
+				footer.setTotal(footer.getMaximum());
+			}
+			
+			ret.add(footer);
+		}
+		
+		return ret;
 	}
 	
 	private double round(double value){

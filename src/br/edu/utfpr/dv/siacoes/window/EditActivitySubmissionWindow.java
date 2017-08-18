@@ -68,6 +68,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 	private final Button buttonDownload;
 	private final TextArea textComments;
 	private final TextField textFeedbackUser;
+	private final TextField textDescription;
 	private final TabSheet tabContainer;
 	
 	public EditActivitySubmissionWindow(ActivitySubmission submission, ListView parentView){
@@ -88,8 +89,12 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		this.comboDepartment.setEnabled(false);
 		
 		this.textStudent = new TextField("Acadêmico");
-		this.textStudent.setWidth("810px");
+		this.textStudent.setWidth("400px");
 		this.textStudent.setEnabled(false);
+		
+		this.textDescription = new TextField("Descrição da Atividade");
+		this.textDescription.setWidth("400px");
+		this.textDescription.setMaxLength(100);
 		
 		this.comboSemester = new SemesterComboBox();
 		
@@ -174,6 +179,9 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		HorizontalLayout h1 = new HorizontalLayout(this.comboCampus, this.comboDepartment);
 		h1.setSpacing(true);
 		
+		HorizontalLayout h4 = new HorizontalLayout(this.textStudent, this.textDescription);
+		h4.setSpacing(true);
+		
 		HorizontalLayout h2 = new HorizontalLayout(this.comboSemester, this.textYear, this.textAmount, this.textSubmissionDate);
 		if(!Session.isUserManager(SystemModule.SIGAC)){
 			h2.addComponent(this.uploadFile);
@@ -184,7 +192,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		HorizontalLayout h3 = new HorizontalLayout(this.comboFeedback, this.textValidatedAmount, this.textFeedbackDate, this.textFeedbackUser);
 		h3.setSpacing(true);
 		
-		VerticalLayout tab1 = new VerticalLayout(h1, this.textStudent, this.comboGroup, this.comboActivity, h2, h3);
+		VerticalLayout tab1 = new VerticalLayout(h1, h4, this.comboGroup, this.comboActivity, h2, h3);
 		tab1.setSpacing(true);
 		
 		this.textComments = new TextArea();
@@ -202,7 +210,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		this.prepareDownload();
 		
 		this.loadSubmission();
-		this.comboSemester.focus();
+		this.textDescription.focus();
 	}
 	
 	private void loadGroups(){
@@ -271,6 +279,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		}
 		
 		this.textStudent.setValue(this.submission.getStudent().getName());
+		this.textDescription.setValue(this.submission.getDescription());
 		this.comboSemester.setSemester(this.submission.getSemester());
 		this.textYear.setYear(this.submission.getYear());
 		this.textSubmissionDate.setValue(this.submission.getSubmissionDate());
@@ -312,6 +321,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			}
 			
 			this.submission.setActivity((Activity)this.comboActivity.getValue());
+			this.submission.setDescription(this.textDescription.getValue());
 			this.submission.getActivity().setGroup((ActivityGroup)this.comboGroup.getValue());
 			this.submission.setComments(this.textComments.getValue());
 			
