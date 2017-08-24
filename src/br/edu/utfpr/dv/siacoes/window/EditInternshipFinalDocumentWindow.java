@@ -28,6 +28,7 @@ import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipFinalDocumentBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
+import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
@@ -38,6 +39,7 @@ import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
@@ -155,8 +157,10 @@ public class EditInternshipFinalDocumentWindow extends EditWindow {
 			
 			this.comboDepartment.setDepartment(internship.getDepartment());
 			
-			this.comboSemester.setSemester(DateUtils.getSemester(jury.getDate()));
-			this.textYear.setYear(DateUtils.getYear(jury.getDate()));
+			Semester semester = new SemesterBO().findByDate(campus.getIdCampus(), jury.getDate());
+			
+			this.comboSemester.setSemester(semester.getSemester());
+			this.textYear.setYear(semester.getYear());
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 		}

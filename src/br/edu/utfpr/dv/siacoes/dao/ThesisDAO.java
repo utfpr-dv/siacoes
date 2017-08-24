@@ -18,6 +18,7 @@ public class ThesisDAO {
 	public Thesis findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -25,7 +26,7 @@ public class ThesisDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -33,6 +34,8 @@ public class ThesisDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -43,6 +46,7 @@ public class ThesisDAO {
 	public Thesis findByProject(int idProject) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -50,7 +54,7 @@ public class ThesisDAO {
 		
 			stmt.setInt(1, idProject);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -58,6 +62,8 @@ public class ThesisDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -68,6 +74,7 @@ public class ThesisDAO {
 	public Thesis findByProposal(int idProposal) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -80,7 +87,7 @@ public class ThesisDAO {
 		
 			stmt.setInt(1, idProposal);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -88,6 +95,8 @@ public class ThesisDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -98,6 +107,7 @@ public class ThesisDAO {
 	public int findIdJury(int idThesis) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -105,7 +115,7 @@ public class ThesisDAO {
 		
 			stmt.setInt(1, idThesis);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return rs.getInt("idJury");
@@ -113,6 +123,8 @@ public class ThesisDAO {
 				return 0;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -123,6 +135,7 @@ public class ThesisDAO {
 	public Thesis findCurrentThesis(int idStudent, int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -140,7 +153,7 @@ public class ThesisDAO {
 			stmt.setInt(3, semester);
 			stmt.setInt(4, year);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -148,6 +161,8 @@ public class ThesisDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -158,6 +173,7 @@ public class ThesisDAO {
 	public Thesis findApprovedThesis(int idStudent, int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -178,7 +194,7 @@ public class ThesisDAO {
 			stmt.setInt(1, idStudent);
 			stmt.setInt(2, idDepartment);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -186,6 +202,8 @@ public class ThesisDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -196,6 +214,7 @@ public class ThesisDAO {
 	public Thesis findLastThesis(int idStudent, int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -211,7 +230,7 @@ public class ThesisDAO {
 			stmt.setInt(1, idStudent);
 			stmt.setInt(2, idDepartment);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -219,6 +238,8 @@ public class ThesisDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -229,12 +250,13 @@ public class ThesisDAO {
 	public List<Thesis> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT thesis.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM thesis inner join \"user\" student on student.idUser=thesis.idStudent inner join \"user\" supervisor on supervisor.idUser=thesis.idSupervisor left join \"user\" cosupervisor on cosupervisor.idUser=thesis.idCosupervisor ORDER BY year DESC, semester DESC, title");
+			rs = stmt.executeQuery("SELECT thesis.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM thesis inner join \"user\" student on student.idUser=thesis.idStudent inner join \"user\" supervisor on supervisor.idUser=thesis.idSupervisor left join \"user\" cosupervisor on cosupervisor.idUser=thesis.idCosupervisor ORDER BY year DESC, semester DESC, title");
 			List<Thesis> list = new ArrayList<Thesis>();
 			
 			while(rs.next()){
@@ -243,6 +265,8 @@ public class ThesisDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -253,6 +277,7 @@ public class ThesisDAO {
 	public List<Thesis> listBySemester(int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -268,7 +293,8 @@ public class ThesisDAO {
 			stmt.setInt(1, idDepartment);
 			stmt.setInt(2, semester);
 			stmt.setInt(3, year);
-			ResultSet rs = stmt.executeQuery();
+			
+			rs = stmt.executeQuery();
 			List<Thesis> list = new ArrayList<Thesis>();
 			
 			while(rs.next()){
@@ -277,6 +303,8 @@ public class ThesisDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -287,6 +315,7 @@ public class ThesisDAO {
 	public List<Thesis> listBySupervisor(int idSupervisor) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -302,7 +331,7 @@ public class ThesisDAO {
 			stmt.setInt(1, idSupervisor);
 			stmt.setInt(2, idSupervisor);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			List<Thesis> list = new ArrayList<Thesis>();
 			
 			while(rs.next()){
@@ -311,6 +340,8 @@ public class ThesisDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -322,6 +353,7 @@ public class ThesisDAO {
 		boolean insert = (thesis.getIdThesis() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -356,7 +388,7 @@ public class ThesisDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					thesis.setIdThesis(rs.getInt(1));
@@ -365,6 +397,8 @@ public class ThesisDAO {
 			
 			return thesis.getIdThesis();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

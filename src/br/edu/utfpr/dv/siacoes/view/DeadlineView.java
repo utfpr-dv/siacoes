@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.renderers.DateRenderer;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.DeadlineBO;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
@@ -45,7 +45,7 @@ public class DeadlineView extends ListView {
 		
 		try {
 			DeadlineBO bo = new DeadlineBO();
-	    	List<Deadline> list = bo.listAll();
+	    	List<Deadline> list = bo.listByDepartment(Session.getUser().getDepartment().getIdDepartment());
 	    	
 	    	for(Deadline d : list){
 				Object itemId = this.getGrid().addRow(d.getSemester(), d.getYear(), d.getProposalDeadline(), d.getProjectDeadline(), d.getThesisDeadline());

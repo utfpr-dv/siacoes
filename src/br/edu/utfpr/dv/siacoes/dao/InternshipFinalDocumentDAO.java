@@ -17,6 +17,7 @@ public class InternshipFinalDocumentDAO {
 	public InternshipFinalDocument findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -31,7 +32,7 @@ public class InternshipFinalDocumentDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -39,6 +40,8 @@ public class InternshipFinalDocumentDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -49,6 +52,7 @@ public class InternshipFinalDocumentDAO {
 	public InternshipFinalDocument findByInternship(int idInternship) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -63,7 +67,7 @@ public class InternshipFinalDocumentDAO {
 		
 			stmt.setInt(1, idInternship);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -71,6 +75,8 @@ public class InternshipFinalDocumentDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -81,12 +87,13 @@ public class InternshipFinalDocumentDAO {
 	public List<InternshipFinalDocument> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, " +
+			rs = stmt.executeQuery("SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, " +
 					"s.name AS student, s2.name AS supervisor, c.name AS company " +
 					"FROM internshipfinaldocument INNER JOIN internship ON internship.idInternship=internshipfinaldocument.idInternship " +
 					"INNER JOIN \"user\" s ON s.idUser=internship.idStudent " +
@@ -102,6 +109,8 @@ public class InternshipFinalDocumentDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -112,6 +121,7 @@ public class InternshipFinalDocumentDAO {
 	public List<InternshipFinalDocument> listByDepartment(int idDepartment, boolean includePrivate) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -127,7 +137,7 @@ public class InternshipFinalDocumentDAO {
 		
 			stmt.setInt(1, idDepartment);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			List<InternshipFinalDocument> list = new ArrayList<InternshipFinalDocument>();
 			
@@ -137,6 +147,8 @@ public class InternshipFinalDocumentDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -147,6 +159,7 @@ public class InternshipFinalDocumentDAO {
 	public List<InternshipFinalDocument> listBySemester(int idDepartment, int semester, int year, boolean includePrivate) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -164,7 +177,7 @@ public class InternshipFinalDocumentDAO {
 			stmt.setInt(1, year);
 			stmt.setInt(2, idDepartment);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			List<InternshipFinalDocument> list = new ArrayList<InternshipFinalDocument>();
 			
@@ -174,6 +187,8 @@ public class InternshipFinalDocumentDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -185,6 +200,7 @@ public class InternshipFinalDocumentDAO {
 		boolean insert = (thesis.getIdInternshipFinalDocument() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -215,7 +231,7 @@ public class InternshipFinalDocumentDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					thesis.setIdInternshipFinalDocument(rs.getInt(1));
@@ -224,6 +240,8 @@ public class InternshipFinalDocumentDAO {
 			
 			return thesis.getIdInternshipFinalDocument();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

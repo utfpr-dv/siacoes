@@ -15,12 +15,13 @@ public class ActivityUnitDAO {
 	public List<ActivityUnit> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT * FROM activityunit ORDER BY description");
+			rs = stmt.executeQuery("SELECT * FROM activityunit ORDER BY description");
 			
 			List<ActivityUnit> list = new ArrayList<ActivityUnit>();
 			
@@ -30,6 +31,8 @@ public class ActivityUnitDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -40,6 +43,7 @@ public class ActivityUnitDAO {
 	public ActivityUnit findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -47,7 +51,7 @@ public class ActivityUnitDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -55,6 +59,8 @@ public class ActivityUnitDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -66,6 +72,7 @@ public class ActivityUnitDAO {
 		boolean insert = (unit.getIdActivityUnit() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -86,7 +93,7 @@ public class ActivityUnitDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					unit.setIdActivityUnit(rs.getInt(1));
@@ -95,6 +102,8 @@ public class ActivityUnitDAO {
 			
 			return unit.getIdActivityUnit();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

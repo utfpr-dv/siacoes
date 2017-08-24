@@ -29,136 +29,191 @@ public class JuryStudentDAO {
 	}
 	
 	public JuryStudent findById(int id) throws SQLException{
-		PreparedStatement stmt = this.conn.prepareStatement(
-				"SELECT jurystudent.*, student.name, student.studentCode, jury.date, jury.startTime, jury.endTime, " +
-				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
-				"FROM jurystudent INNER JOIN jury ON jury.idJury=jurystudent.idJury " +
-				"INNER JOIN \"user\" student ON student.idUser=jurystudent.idStudent " +
-				"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
-				"LEFT JOIN project ON project.idProject=jury.idProject " +
-				"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
-				"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
-				"WHERE idJuryStudent = ?");
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, id);
-		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
+		try{
+			stmt = this.conn.prepareStatement(
+					"SELECT jurystudent.*, student.name, student.studentCode, jury.date, jury.startTime, jury.endTime, " +
+					"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
+					"FROM jurystudent INNER JOIN jury ON jury.idJury=jurystudent.idJury " +
+					"INNER JOIN \"user\" student ON student.idUser=jurystudent.idStudent " +
+					"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
+					"LEFT JOIN project ON project.idProject=jury.idProject " +
+					"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
+					"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
+					"WHERE idJuryStudent = ?");
+			
+			stmt.setInt(1, id);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
 	}
 	
 	public JuryStudent findByStudent(int idJury, int idStudent) throws SQLException{
-		PreparedStatement stmt = this.conn.prepareStatement(
-				"SELECT jurystudent.*, student.name, student.studentCode, jury.date, jury.startTime, jury.endTime, " +
-				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
-				"FROM jurystudent INNER JOIN jury ON jury.idJury=jurystudent.idJury " +
-				"INNER JOIN \"user\" student ON student.idUser=jurystudent.idStudent " +
-				"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
-				"LEFT JOIN project ON project.idProject=jury.idProject " +
-				"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
-				"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
-				"WHERE jurystudent.idJury = ? AND jurystudent.idStudent=?");
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, idJury);
-		stmt.setInt(2, idStudent);
-		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
+		try{
+			stmt = this.conn.prepareStatement(
+					"SELECT jurystudent.*, student.name, student.studentCode, jury.date, jury.startTime, jury.endTime, " +
+					"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
+					"FROM jurystudent INNER JOIN jury ON jury.idJury=jurystudent.idJury " +
+					"INNER JOIN \"user\" student ON student.idUser=jurystudent.idStudent " +
+					"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
+					"LEFT JOIN project ON project.idProject=jury.idProject " +
+					"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
+					"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
+					"WHERE jurystudent.idJury = ? AND jurystudent.idStudent=?");
+			
+			stmt.setInt(1, idJury);
+			stmt.setInt(2, idStudent);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
 	}
 	
 	public List<JuryStudent> listByJury(int idJury) throws SQLException{
-		PreparedStatement stmt = this.conn.prepareStatement(
-				"SELECT jurystudent.*, student.name, student.studentCode, jury.date, jury.startTime, jury.endTime, " +
-				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
-				"FROM jurystudent INNER JOIN jury ON jury.idJury=jurystudent.idJury " +
-				"INNER JOIN \"user\" student ON student.idUser=jurystudent.idStudent " +
-				"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
-				"LEFT JOIN project ON project.idProject=jury.idProject " +
-				"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
-				"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
-				"WHERE jurystudent.idJury = ?");
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, idJury);
-		
-		List<JuryStudent> list = new ArrayList<JuryStudent>();
-		
-		ResultSet rs = stmt.executeQuery();
-		
-		while(rs.next()){
-			list.add(this.loadObject(rs));
+		try{
+			stmt = this.conn.prepareStatement(
+					"SELECT jurystudent.*, student.name, student.studentCode, jury.date, jury.startTime, jury.endTime, " +
+					"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
+					"FROM jurystudent INNER JOIN jury ON jury.idJury=jurystudent.idJury " +
+					"INNER JOIN \"user\" student ON student.idUser=jurystudent.idStudent " +
+					"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
+					"LEFT JOIN project ON project.idProject=jury.idProject " +
+					"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
+					"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
+					"WHERE jurystudent.idJury = ?");
+			
+			stmt.setInt(1, idJury);
+			
+			List<JuryStudent> list = new ArrayList<JuryStudent>();
+			
+			rs = stmt.executeQuery();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
-		
-		return list;
 	}
 	
 	public List<JuryStudent> listByStudent(int idStudent) throws SQLException{
-		PreparedStatement stmt = this.conn.prepareStatement(
-				"SELECT jurystudent.*, student.name, student.studentCode, jury.date, jury.startTime, jury.endTime, " +
-				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
-				"FROM jurystudent INNER JOIN jury ON jury.idJury=jurystudent.idJury " +
-				"INNER JOIN \"user\" student ON student.idUser=jurystudent.idStudent " +
-				"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
-				"LEFT JOIN project ON project.idProject=jury.idProject " +
-				"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
-				"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
-				"WHERE jurystudent.idStudent = ?");
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, idStudent);
-		
-		List<JuryStudent> list = new ArrayList<JuryStudent>();
-		
-		ResultSet rs = stmt.executeQuery();
-		
-		while(rs.next()){
-			list.add(this.loadObject(rs));
+		try{
+			stmt = this.conn.prepareStatement(
+					"SELECT jurystudent.*, student.name, student.studentCode, jury.date, jury.startTime, jury.endTime, " +
+					"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
+					"FROM jurystudent INNER JOIN jury ON jury.idJury=jurystudent.idJury " +
+					"INNER JOIN \"user\" student ON student.idUser=jurystudent.idStudent " +
+					"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
+					"LEFT JOIN project ON project.idProject=jury.idProject " +
+					"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
+					"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
+					"WHERE jurystudent.idStudent = ?");
+			
+			stmt.setInt(1, idStudent);
+			
+			List<JuryStudent> list = new ArrayList<JuryStudent>();
+			
+			rs = stmt.executeQuery();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
-		
-		return list;
 	}
 	
 	public int save(JuryStudent student) throws SQLException{
 		boolean insert = (student.getIdJuryStudent() == 0);
-		PreparedStatement stmt;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
-		if(insert){
-			stmt = this.conn.prepareStatement("INSERT INTO jurystudent(idJury, idStudent) VALUES(?, ?)", Statement.RETURN_GENERATED_KEYS);
-		}else{
-			stmt = this.conn.prepareStatement("UPDATE jurystudent SET idJury=?, idStudent=? WHERE idJuryStudent=?");
-		}
-		
-		stmt.setInt(1, student.getJury().getIdJury());
-		stmt.setInt(2, student.getStudent().getIdUser());
-		
-		if(!insert){
-			stmt.setInt(3, student.getIdJuryStudent());
-		}
-		
-		stmt.execute();
-		
-		if(insert){
-			ResultSet rs = stmt.getGeneratedKeys();
-			
-			if(rs.next()){
-				student.setIdJuryStudent(rs.getInt(1));
+		try{
+			if(insert){
+				stmt = this.conn.prepareStatement("INSERT INTO jurystudent(idJury, idStudent) VALUES(?, ?)", Statement.RETURN_GENERATED_KEYS);
+			}else{
+				stmt = this.conn.prepareStatement("UPDATE jurystudent SET idJury=?, idStudent=? WHERE idJuryStudent=?");
 			}
+			
+			stmt.setInt(1, student.getJury().getIdJury());
+			stmt.setInt(2, student.getStudent().getIdUser());
+			
+			if(!insert){
+				stmt.setInt(3, student.getIdJuryStudent());
+			}
+			
+			stmt.execute();
+			
+			if(insert){
+				rs = stmt.getGeneratedKeys();
+				
+				if(rs.next()){
+					student.setIdJuryStudent(rs.getInt(1));
+				}
+			}
+			
+			return student.getIdJuryStudent();
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
-		
-		return student.getIdJuryStudent();
 	}
 	
 	public boolean delete(int id) throws SQLException{
-		Statement stmt = this.conn.createStatement();
+		Statement stmt = null;
 		
-		return stmt.execute("DELETE FROM jurystudent WHERE idJuryStudent = " + String.valueOf(id));
+		try{
+			stmt = this.conn.createStatement();
+			
+			return stmt.execute("DELETE FROM jurystudent WHERE idJuryStudent = " + String.valueOf(id));
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
 	}
 	
 	private JuryStudent loadObject(ResultSet rs) throws SQLException{

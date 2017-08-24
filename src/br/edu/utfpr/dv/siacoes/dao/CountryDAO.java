@@ -15,12 +15,13 @@ public class CountryDAO {
 	public List<Country> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT * FROM country ORDER BY name");
+			rs = stmt.executeQuery("SELECT * FROM country ORDER BY name");
 			
 			List<Country> list = new ArrayList<Country>();
 			
@@ -30,6 +31,8 @@ public class CountryDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -40,6 +43,7 @@ public class CountryDAO {
 	public Country findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -47,7 +51,7 @@ public class CountryDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -55,6 +59,8 @@ public class CountryDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -66,6 +72,7 @@ public class CountryDAO {
 		boolean insert = (country.getIdCountry() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -85,7 +92,7 @@ public class CountryDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					country.setIdCountry(rs.getInt(1));
@@ -94,6 +101,8 @@ public class CountryDAO {
 			
 			return country.getIdCountry();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

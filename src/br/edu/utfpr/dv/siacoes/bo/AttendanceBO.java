@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import br.edu.utfpr.dv.siacoes.dao.AttendanceDAO;
 import br.edu.utfpr.dv.siacoes.model.Attendance;
 import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
@@ -63,7 +64,9 @@ public class AttendanceBO {
 				
 				ProposalBO bo = new ProposalBO();
 				
-				attendance.setProposal(bo.findCurrentProposal(user.getIdUser(), user.getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear()));
+				Semester semester = new SemesterBO().findByDate(new CampusBO().findByDepartment(user.getDepartment().getIdDepartment()).getIdCampus(), DateUtils.getToday().getTime());
+				
+				attendance.setProposal(bo.findCurrentProposal(user.getIdUser(), user.getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear()));
 			}
 			
 			return dao.save(attendance);

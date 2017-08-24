@@ -20,6 +20,7 @@ public class InternshipJuryDAO {
 	public InternshipJury findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -27,7 +28,7 @@ public class InternshipJuryDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -35,6 +36,8 @@ public class InternshipJuryDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -45,6 +48,7 @@ public class InternshipJuryDAO {
 	public InternshipJury findByInternship(int idInternship) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -52,7 +56,7 @@ public class InternshipJuryDAO {
 		
 			stmt.setInt(1, idInternship);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -65,6 +69,8 @@ public class InternshipJuryDAO {
 				return jury;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -75,12 +81,13 @@ public class InternshipJuryDAO {
 	public List<InternshipJury> listBySemester(int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT internshipjury.* " + 
+			rs = stmt.executeQuery("SELECT internshipjury.* " + 
 					"FROM internshipjury INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " +
 					"WHERE internship.idDepartment=" + String.valueOf(idDepartment) + " AND MONTH(internshipjury.date) " + (semester == 1 ? "<= 7 " : " > 7") + " AND YEAR(internshipjury.date)=" + String.valueOf(year) + " ORDER BY internshipjury.date");
 			
@@ -92,6 +99,8 @@ public class InternshipJuryDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -102,12 +111,13 @@ public class InternshipJuryDAO {
 	public List<InternshipJury> listByAppraiser(int idUser, int semester, int year) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT internshipjury.* " +
+			rs = stmt.executeQuery("SELECT internshipjury.* " +
 					"FROM internshipjury INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJury=internshipjury.idInternshipJury " +
 					"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " +
 					"WHERE internshipjuryappraiser.idAppraiser=" + String.valueOf(idUser) + " AND MONTH(internshipjury.date) " + (semester == 1 ? "<= 7 " : " > 7") + " AND YEAR(internshipjury.date)=" + String.valueOf(year) + " ORDER BY internshipjury.date");
@@ -120,6 +130,8 @@ public class InternshipJuryDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -130,12 +142,13 @@ public class InternshipJuryDAO {
 	public List<InternshipJury> listByStudent(int idUser, int semester, int year) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT internshipjury.* " +
+			rs = stmt.executeQuery("SELECT internshipjury.* " +
 					"FROM internshipjury INNER JOIN internshipjurystudent ON internshipjurystudent.idInternshipJury=internshipjury.idInternshipJury " +
 					"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " +
 					"WHERE internshipjurystudent.idStudent=" + String.valueOf(idUser) + " AND MONTH(internshipjury.date) " + (semester == 1 ? "<= 7 " : " > 7") + " AND YEAR(internshipjury.date)=" + String.valueOf(year) + " ORDER BY internshipjury.date");
@@ -148,6 +161,8 @@ public class InternshipJuryDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -158,6 +173,7 @@ public class InternshipJuryDAO {
 	public int save(InternshipJury jury) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -170,12 +186,14 @@ public class InternshipJuryDAO {
 				jury.setMinimumScore(10);
 				
 				Statement stmt2 = conn.createStatement();
-				ResultSet rs;
 				
 				rs = stmt2.executeQuery("SELECT idDepartment FROM internship WHERE internship.idInternship=" + String.valueOf(jury.getInternship().getIdInternship()));
 				
 				if(rs.next()){
-					rs = stmt2.executeQuery("SELECT minimumScore, supervisorPonderosity, companySupervisorPonderosity FROM sigesconfig WHERE idDepartment=" + String.valueOf(rs.getInt("idDepartment")));
+					int idDepartment = rs.getInt("idDepartment");
+					
+					rs.close();
+					rs = stmt2.executeQuery("SELECT minimumScore, supervisorPonderosity, companySupervisorPonderosity FROM sigesconfig WHERE idDepartment=" + String.valueOf(idDepartment));
 					
 					if(rs.next()){
 						jury.setMinimumScore(rs.getDouble("minimumScore"));
@@ -205,7 +223,7 @@ public class InternshipJuryDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					jury.setIdInternshipJury(rs.getInt(1));
@@ -254,6 +272,8 @@ public class InternshipJuryDAO {
 			throw e;
 		}finally{
 			conn.setAutoCommit(true);
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -283,15 +303,17 @@ public class InternshipJuryDAO {
 	public boolean hasAllScores(int idInternshipJury) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement("SELECT COUNT(*) AS total FROM internshipjuryappraiser WHERE idInternshipJury=?");
 			stmt.setInt(1, idInternshipJury);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			rs.next();
 			int numAppraisers = rs.getInt("total");
+			rs.close();
 			
 			stmt.close();
 			stmt = conn.prepareStatement("SELECT COUNT(DISTINCT internshipjuryappraiser.idInternshipJuryAppraiser) AS total FROM internshipjuryappraiserscore INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJuryAppraiser=internshipjuryappraiserscore.idInternshipJuryAppraiser WHERE idInternshipJury=?");
@@ -303,6 +325,8 @@ public class InternshipJuryDAO {
 			
 			return (numScores >= numAppraisers);
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -313,6 +337,7 @@ public class InternshipJuryDAO {
 	public boolean isApproved(int idInternshipJury) throws Exception{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -328,13 +353,14 @@ public class InternshipJuryDAO {
 					"WHERE internshipjuryappraiser.idInternshipJury=? GROUP BY internshipjuryappraiser.idInternshipJuryAppraiser");
 			stmt.setInt(1, idInternshipJury);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			double sumScore=0;
 			int countScore=0;
 			while(rs.next()){
 				sumScore = sumScore + this.round(rs.getDouble("score"));
 				countScore++;
 			}
+			rs.close();
 			
 			sumScore = this.round(sumScore / countScore);
 			
@@ -350,6 +376,8 @@ public class InternshipJuryDAO {
 			
 			return (sumScore >= minimumScore);
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

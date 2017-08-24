@@ -15,12 +15,13 @@ public class StateDAO {
 	public List<State> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT state.*, country.name AS countryName " +
+			rs = stmt.executeQuery("SELECT state.*, country.name AS countryName " +
 					"FROM state INNER JOIN country ON country.idcountry=state.idcountry ORDER BY state.name");
 			
 			List<State> list = new ArrayList<State>();
@@ -31,6 +32,8 @@ public class StateDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -41,12 +44,13 @@ public class StateDAO {
 	public List<State> listByCountry(int idCountry) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT state.*, country.name AS countryName " +
+			rs = stmt.executeQuery("SELECT state.*, country.name AS countryName " +
 					"FROM state INNER JOIN country ON country.idcountry=state.idcountry " +
 					"WHERE state.idcountry=" + String.valueOf(idCountry) + " ORDER BY state.name");
 			
@@ -58,6 +62,8 @@ public class StateDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -68,6 +74,7 @@ public class StateDAO {
 	public State findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -78,7 +85,7 @@ public class StateDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -86,6 +93,8 @@ public class StateDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -97,6 +106,7 @@ public class StateDAO {
 		boolean insert = (state.getIdState() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -118,7 +128,7 @@ public class StateDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					state.setIdState(rs.getInt(1));
@@ -127,6 +137,8 @@ public class StateDAO {
 			
 			return state.getIdState();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

@@ -17,12 +17,13 @@ public class DocumentDAO {
 	public List<Document> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT * FROM document ORDER BY sequence");
+			rs = stmt.executeQuery("SELECT * FROM document ORDER BY sequence");
 			
 			List<Document> list = new ArrayList<Document>();
 			
@@ -32,6 +33,8 @@ public class DocumentDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -42,12 +45,13 @@ public class DocumentDAO {
 	public List<Document> listByModule(int idDepartment, SystemModule module) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT * FROM document WHERE idDepartment=" + String.valueOf(idDepartment) + " AND module IN (0, " + String.valueOf(module.getValue()) + ") ORDER BY sequence");
+			rs = stmt.executeQuery("SELECT * FROM document WHERE idDepartment=" + String.valueOf(idDepartment) + " AND module IN (0, " + String.valueOf(module.getValue()) + ") ORDER BY sequence");
 			
 			List<Document> list = new ArrayList<Document>();
 			
@@ -57,6 +61,8 @@ public class DocumentDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -67,6 +73,7 @@ public class DocumentDAO {
 	public Document findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -74,7 +81,7 @@ public class DocumentDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -82,6 +89,8 @@ public class DocumentDAO {
 				return null;	
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -93,6 +102,7 @@ public class DocumentDAO {
 		boolean insert = (document.getIdDocument() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -101,9 +111,10 @@ public class DocumentDAO {
 				stmt = conn.prepareStatement("INSERT INTO document(idDepartment, name, type, sequence, file, module) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 				
 				Statement stmt2 = conn.createStatement();
-				ResultSet rs = stmt2.executeQuery("SELECT COUNT(*) as total FROM document WHERE idDepartment=" + String.valueOf(document.getDepartment().getIdDepartment()) + " AND module=" + String.valueOf(document.getModule().getValue()));
+				rs = stmt2.executeQuery("SELECT COUNT(*) as total FROM document WHERE idDepartment=" + String.valueOf(document.getDepartment().getIdDepartment()) + " AND module=" + String.valueOf(document.getModule().getValue()));
 				rs.next();
 				document.setSequence(rs.getInt("total") + 1);
+				rs.close();
 				stmt2.close();
 			}else{
 				stmt = conn.prepareStatement("UPDATE document SET idDepartment=?, name=?, type=?, sequence=?, file=?, module=? WHERE idDocument=?");
@@ -123,7 +134,7 @@ public class DocumentDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					document.setIdDocument(rs.getInt(1));
@@ -132,6 +143,8 @@ public class DocumentDAO {
 			
 			return document.getIdDocument();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -173,19 +186,21 @@ public class DocumentDAO {
 	public void moveUp(int idDocument) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement("SELECT sequence, idDepartment, module FROM document WHERE idDocument=?");
 			
 			stmt.setInt(1, idDocument);
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				int sequence = rs.getInt("sequence");
 				int idDepartment = rs.getInt("idDepartment");
 				int module = rs.getInt("module");
 				
+				rs.close();
 				stmt.close();
 				stmt = conn.prepareStatement("SELECT idDocument FROM document WHERE idDepartment=? AND module=? AND sequence < ? ORDER BY sequence DESC");
 				stmt.setInt(1, idDepartment);
@@ -220,6 +235,8 @@ public class DocumentDAO {
 				}
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -230,19 +247,21 @@ public class DocumentDAO {
 	public void moveDown(int idDocument) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement("SELECT sequence, idDepartment, module FROM document WHERE idDocument=?");
 			
 			stmt.setInt(1, idDocument);
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				int sequence = rs.getInt("sequence");
 				int idDepartment = rs.getInt("idDepartment");
 				int module = rs.getInt("module");
 				
+				rs.close();
 				stmt.close();
 				stmt = conn.prepareStatement("SELECT idDocument FROM document WHERE idDepartment=? AND module=? AND sequence > ? ORDER BY sequence");
 				stmt.setInt(1, idDepartment);
@@ -277,6 +296,8 @@ public class DocumentDAO {
 				}
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

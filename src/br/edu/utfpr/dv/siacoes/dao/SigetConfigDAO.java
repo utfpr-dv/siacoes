@@ -12,6 +12,7 @@ public class SigetConfigDAO {
 	public SigetConfig findByDepartment(int idDepartment) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -19,7 +20,7 @@ public class SigetConfigDAO {
 		
 			stmt.setInt(1, idDepartment);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -27,6 +28,8 @@ public class SigetConfigDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

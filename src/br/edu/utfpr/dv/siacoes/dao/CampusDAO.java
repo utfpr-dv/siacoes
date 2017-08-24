@@ -16,6 +16,7 @@ public class CampusDAO {
 	public Campus findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -23,7 +24,7 @@ public class CampusDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -31,6 +32,8 @@ public class CampusDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -41,6 +44,7 @@ public class CampusDAO {
 	public Campus findByDepartment(int idDepartment) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -48,7 +52,7 @@ public class CampusDAO {
 		
 			stmt.setInt(1, idDepartment);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.findById(rs.getInt("idCampus"));
@@ -56,6 +60,8 @@ public class CampusDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -66,12 +72,13 @@ public class CampusDAO {
 	public List<Campus> listAll(boolean onlyActive) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT * FROM campus " + (onlyActive ? " WHERE active=1" : "") + " ORDER BY name");
+			rs = stmt.executeQuery("SELECT * FROM campus " + (onlyActive ? " WHERE active=1" : "") + " ORDER BY name");
 			
 			List<Campus> list = new ArrayList<Campus>();
 			
@@ -81,6 +88,8 @@ public class CampusDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -92,6 +101,7 @@ public class CampusDAO {
 		boolean insert = (campus.getIdCampus() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -119,7 +129,7 @@ public class CampusDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					campus.setIdCampus(rs.getInt(1));
@@ -128,6 +138,8 @@ public class CampusDAO {
 			
 			return campus.getIdCampus();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

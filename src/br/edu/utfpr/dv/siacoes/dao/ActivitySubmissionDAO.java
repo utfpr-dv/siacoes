@@ -22,12 +22,13 @@ public class ActivitySubmissionDAO {
 		
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT activitysubmission.feedback FROM activitysubmission WHERE idactivitysubmission=" + idActivitySubmission);
+			rs = stmt.executeQuery("SELECT activitysubmission.feedback FROM activitysubmission WHERE idactivitysubmission=" + idActivitySubmission);
 			
 			if(rs.next()){
 				return ActivityFeedback.valueOf(rs.getInt("feedback"));
@@ -35,6 +36,8 @@ public class ActivitySubmissionDAO {
 				return ActivityFeedback.NONE;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -45,12 +48,13 @@ public class ActivitySubmissionDAO {
 	public List<ActivitySubmission> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
+			rs = stmt.executeQuery("SELECT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
 					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, " +
 					"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester " + 
 					"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
@@ -68,6 +72,8 @@ public class ActivitySubmissionDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -78,12 +84,13 @@ public class ActivitySubmissionDAO {
 	public List<ActivitySubmission> listByStudent(int idStudent, int idDepartment) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
+			rs = stmt.executeQuery("SELECT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
 					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, " +
 					"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester " + 
 					"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
@@ -102,6 +109,8 @@ public class ActivitySubmissionDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -112,12 +121,13 @@ public class ActivitySubmissionDAO {
 	public List<ActivitySubmission> listWithNoFeedback(int idDepartment) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
+			rs = stmt.executeQuery("SELECT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
 					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, " +
 					"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester " + 
 					"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
@@ -136,6 +146,8 @@ public class ActivitySubmissionDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -146,6 +158,7 @@ public class ActivitySubmissionDAO {
 	public ActivitySubmission findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -162,7 +175,7 @@ public class ActivitySubmissionDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -170,6 +183,8 @@ public class ActivitySubmissionDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -181,6 +196,7 @@ public class ActivitySubmissionDAO {
 		boolean insert = (submission.getIdActivitySubmission() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -222,7 +238,7 @@ public class ActivitySubmissionDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					submission.setIdActivitySubmission(rs.getInt(1));
@@ -231,6 +247,8 @@ public class ActivitySubmissionDAO {
 			
 			return submission.getIdActivitySubmission();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

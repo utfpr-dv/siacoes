@@ -17,12 +17,13 @@ public class EmailMessageDAO {
 	public List<EmailMessage> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT * FROM emailmessage");
+			rs = stmt.executeQuery("SELECT * FROM emailmessage");
 			
 			List<EmailMessage> list = new ArrayList<EmailMessage>();
 			
@@ -32,6 +33,8 @@ public class EmailMessageDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -42,12 +45,13 @@ public class EmailMessageDAO {
 	public List<EmailMessage> listByModule(SystemModule module) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT * FROM emailmessage WHERE module=" + String.valueOf(module.getValue()));
+			rs = stmt.executeQuery("SELECT * FROM emailmessage WHERE module=" + String.valueOf(module.getValue()));
 			
 			List<EmailMessage> list = new ArrayList<EmailMessage>();
 			
@@ -57,6 +61,8 @@ public class EmailMessageDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -67,12 +73,13 @@ public class EmailMessageDAO {
 	public EmailMessage findByMessageType(MessageType type) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT * FROM emailmessage WHERE idEmailMessage=" + String.valueOf(type.getValue()));
+			rs = stmt.executeQuery("SELECT * FROM emailmessage WHERE idEmailMessage=" + String.valueOf(type.getValue()));
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -80,6 +87,8 @@ public class EmailMessageDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

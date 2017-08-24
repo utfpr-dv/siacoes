@@ -28,88 +28,136 @@ public class InternshipReportDAO {
 	}
 	
 	public List<InternshipReport> listAll() throws SQLException{
-		Statement stmt = this.conn.createStatement();
+		ResultSet rs = null;
+		Statement stmt = null;
 		
-		ResultSet rs = stmt.executeQuery("SELECT * FROM internshipreport ORDER BY date DESC");
-		
-		List<InternshipReport> list = new ArrayList<InternshipReport>();
-		
-		while(rs.next()){
-			list.add(this.loadObject(rs));
+		try{
+			stmt = this.conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT * FROM internshipreport ORDER BY date DESC");
+			
+			List<InternshipReport> list = new ArrayList<InternshipReport>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
-		
-		return list;
 	}
 	
 	public List<InternshipReport> listByInternship(int idInternship) throws SQLException{
-		Statement stmt = this.conn.createStatement();
+		ResultSet rs = null;
+		Statement stmt = null;
 		
-		ResultSet rs = stmt.executeQuery("SELECT * FROM internshipreport WHERE idinternship=" + String.valueOf(idInternship) + " ORDER BY date DESC");
-		
-		List<InternshipReport> list = new ArrayList<InternshipReport>();
-		
-		while(rs.next()){
-			list.add(this.loadObject(rs));
+		try{
+			stmt = this.conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT * FROM internshipreport WHERE idinternship=" + String.valueOf(idInternship) + " ORDER BY date DESC");
+			
+			List<InternshipReport> list = new ArrayList<InternshipReport>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
-		
-		return list;
 	}
 	
 	public InternshipReport findById(int id) throws SQLException{
-		PreparedStatement stmt = this.conn.prepareStatement("SELECT * FROM internshipreport WHERE idinternshipreport=?");
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, id);
-		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
+		try{
+			stmt = this.conn.prepareStatement("SELECT * FROM internshipreport WHERE idinternshipreport=?");
+			
+			stmt.setInt(1, id);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
 	}
 	
 	public boolean hasReport(int idInternship, ReportType type) throws SQLException{
-		PreparedStatement stmt = this.conn.prepareStatement("SELECT * FROM internshipreport WHERE idinternship=? AND type=?");
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, idInternship);
-		stmt.setInt(2, type.getValue());
-		
-		ResultSet rs = stmt.executeQuery();
-		
-		return rs.next();
+		try{
+			stmt = this.conn.prepareStatement("SELECT * FROM internshipreport WHERE idinternship=? AND type=?");
+			
+			stmt.setInt(1, idInternship);
+			stmt.setInt(2, type.getValue());
+			
+			rs = stmt.executeQuery();
+			
+			return rs.next();
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
 	}
 	
 	public int save(InternshipReport report) throws SQLException{
 		boolean insert = (report.getIdInternshipReport() == 0);
-		PreparedStatement stmt;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
-		if(insert){
-			stmt = this.conn.prepareStatement("INSERT INTO internshipreport(idinternship, report, type, date) VALUES(?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-		}else{
-			stmt = this.conn.prepareStatement("UPDATE internshipreport SET idinternship=?, report=?, type=?, date=? WHERE idinternshipreport=?");
-		}
-		
-		stmt.setInt(1, report.getInternship().getIdInternship());
-		stmt.setBytes(2, report.getReport());
-		stmt.setInt(3, report.getType().getValue());
-		stmt.setDate(4, new java.sql.Date(report.getDate().getTime()));
-		
-		if(!insert){
-			stmt.setInt(5, report.getIdInternshipReport());
-		}
-		
-		stmt.execute();
-		
-		if(insert){
-			ResultSet rs = stmt.getGeneratedKeys();
-			
-			if(rs.next()){
-				report.setIdInternshipReport(rs.getInt(1));
+		try{
+			if(insert){
+				stmt = this.conn.prepareStatement("INSERT INTO internshipreport(idinternship, report, type, date) VALUES(?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			}else{
+				stmt = this.conn.prepareStatement("UPDATE internshipreport SET idinternship=?, report=?, type=?, date=? WHERE idinternshipreport=?");
 			}
+			
+			stmt.setInt(1, report.getInternship().getIdInternship());
+			stmt.setBytes(2, report.getReport());
+			stmt.setInt(3, report.getType().getValue());
+			stmt.setDate(4, new java.sql.Date(report.getDate().getTime()));
+			
+			if(!insert){
+				stmt.setInt(5, report.getIdInternshipReport());
+			}
+			
+			stmt.execute();
+			
+			if(insert){
+				rs = stmt.getGeneratedKeys();
+				
+				if(rs.next()){
+					report.setIdInternshipReport(rs.getInt(1));
+				}
+			}
+			
+			return report.getIdInternshipReport();
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
-		
-		return report.getIdInternshipReport();
 	}
 	
 	private InternshipReport loadObject(ResultSet rs) throws SQLException{

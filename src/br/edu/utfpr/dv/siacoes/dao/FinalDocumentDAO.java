@@ -18,6 +18,7 @@ public class FinalDocumentDAO {
 	public FinalDocument findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -39,7 +40,7 @@ public class FinalDocumentDAO {
 			stmt.setInt(1, id);
 			stmt.setInt(2, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -47,6 +48,8 @@ public class FinalDocumentDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -57,6 +60,7 @@ public class FinalDocumentDAO {
 	public FinalDocument findByProject(int idProject) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -70,7 +74,7 @@ public class FinalDocumentDAO {
 		
 			stmt.setInt(1, idProject);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -78,6 +82,8 @@ public class FinalDocumentDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -88,6 +94,7 @@ public class FinalDocumentDAO {
 	public FinalDocument findByThesis(int idThesis) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -101,7 +108,7 @@ public class FinalDocumentDAO {
 		
 			stmt.setInt(1, idThesis);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -109,6 +116,8 @@ public class FinalDocumentDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -119,6 +128,7 @@ public class FinalDocumentDAO {
 	public FinalDocument findCurrentThesis(int idStudent, int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -137,7 +147,7 @@ public class FinalDocumentDAO {
 			stmt.setInt(3, semester);
 			stmt.setInt(4, year);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -145,6 +155,8 @@ public class FinalDocumentDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -155,6 +167,7 @@ public class FinalDocumentDAO {
 	public FinalDocument findCurrentProject(int idStudent, int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -172,7 +185,7 @@ public class FinalDocumentDAO {
 			stmt.setInt(3, semester);
 			stmt.setInt(4, year);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -180,6 +193,8 @@ public class FinalDocumentDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -190,12 +205,13 @@ public class FinalDocumentDAO {
 	public List<FinalDocument> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
+			rs = stmt.executeQuery("SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
 					"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, " +
 					"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, project.idProposal, \"user\".name AS student " +
 					"FROM finaldocument INNER JOIN thesis ON thesis.idThesis=finaldocument.idThesis " +
@@ -219,6 +235,8 @@ public class FinalDocumentDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -229,6 +247,7 @@ public class FinalDocumentDAO {
 	public List<FinalDocument> listByDepartment(int idDepartment, boolean includePrivate) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -254,7 +273,7 @@ public class FinalDocumentDAO {
 			stmt.setInt(1, idDepartment);
 			stmt.setInt(2, idDepartment);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			List<FinalDocument> list = new ArrayList<FinalDocument>();
 			
@@ -264,6 +283,8 @@ public class FinalDocumentDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -274,6 +295,7 @@ public class FinalDocumentDAO {
 	public List<FinalDocument> listBySemester(int idDepartment, int semester, int year, boolean includePrivate) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -304,7 +326,7 @@ public class FinalDocumentDAO {
 			stmt.setInt(5, year);
 			stmt.setInt(6, idDepartment);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			List<FinalDocument> list = new ArrayList<FinalDocument>();
 			
@@ -314,6 +336,8 @@ public class FinalDocumentDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -324,6 +348,7 @@ public class FinalDocumentDAO {
 	public List<FinalDocument> listBySupervisor(int idSupervisor, int semester, int year) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -354,7 +379,7 @@ public class FinalDocumentDAO {
 			stmt.setInt(5, year);
 			stmt.setInt(6, idSupervisor);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			List<FinalDocument> list = new ArrayList<FinalDocument>();
 			
@@ -364,6 +389,8 @@ public class FinalDocumentDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -375,6 +402,7 @@ public class FinalDocumentDAO {
 		boolean insert = (thesis.getIdFinalDocument() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -414,7 +442,7 @@ public class FinalDocumentDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					thesis.setIdFinalDocument(rs.getInt(1));
@@ -423,6 +451,8 @@ public class FinalDocumentDAO {
 			
 			return thesis.getIdFinalDocument();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

@@ -12,6 +12,7 @@ import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.SupervisorChange;
 import br.edu.utfpr.dv.siacoes.model.SupervisorChange.ChangeFeedback;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
@@ -23,6 +24,7 @@ public class SupervisorChangeDAO {
 	public int save(SupervisorChange change) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -67,7 +69,7 @@ public class SupervisorChangeDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					change.setIdSupervisorChange(rs.getInt(1));
@@ -77,13 +79,14 @@ public class SupervisorChangeDAO {
 			if(change.getApproved() == ChangeFeedback.APPROVED){
 				ProposalDAO pdao = new ProposalDAO();
 				Proposal proposal = pdao.findById(change.getProposal().getIdProposal());
+				Semester semester = new SemesterDAO().findByDate(proposal.getDepartment().getCampus().getIdCampus(), change.getApprovalDate());
 				
 				ThesisDAO tdao = new ThesisDAO();
-				Thesis thesis = tdao.findCurrentThesis(proposal.getStudent().getIdUser(), proposal.getDepartment().getIdDepartment(), DateUtils.getSemester(change.getApprovalDate()), DateUtils.getYear(change.getApprovalDate()));
+				Thesis thesis = tdao.findCurrentThesis(proposal.getStudent().getIdUser(), proposal.getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 				
 				if(thesis == null){
 					ProjectDAO pdao2 = new ProjectDAO();
-					Project project = pdao2.findCurrentProject(proposal.getStudent().getIdUser(), proposal.getDepartment().getIdDepartment(), DateUtils.getSemester(change.getApprovalDate()), DateUtils.getYear(change.getApprovalDate()));
+					Project project = pdao2.findCurrentProject(proposal.getStudent().getIdUser(), proposal.getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 					
 					if(project != null){
 						stmt.execute("UPDATE project SET idSupervisor = " + String.valueOf(change.getNewSupervisor().getIdUser()) + ", idCosupervisor = " + ((change.getNewCosupervisor() == null) || (change.getNewCosupervisor().getIdUser() == 0) ? "NULL" : String.valueOf(change.getNewCosupervisor().getIdUser())) + " WHERE idProject = " + String.valueOf(project.getIdProject()));
@@ -101,6 +104,8 @@ public class SupervisorChangeDAO {
 			throw e;
 		}finally{
 			conn.setAutoCommit(true);
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -111,12 +116,14 @@ public class SupervisorChangeDAO {
 	public List<SupervisorChange> list(int idDepartment, int semester, int year, boolean onlyPending) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
+			Semester sem = new SemesterDAO().findBySemester(new CampusDAO().findByDepartment(idDepartment).getIdCampus(), semester, year);
 		
-			Date initialDate = DateUtils.getStartDate(semester, year);
-			Date finalDate = DateUtils.getEndDate(semester, year);
+			Date initialDate = sem.getStartDate();
+			Date finalDate = sem.getEndDate();
 			
 			stmt = conn.prepareStatement(
 					"SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
@@ -132,7 +139,7 @@ public class SupervisorChangeDAO {
 			stmt.setTimestamp(2, new java.sql.Timestamp(initialDate.getTime()));
 			stmt.setTimestamp(3, new java.sql.Timestamp(finalDate.getTime()));
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			List<SupervisorChange> list = new ArrayList<SupervisorChange>();
 			
@@ -142,6 +149,8 @@ public class SupervisorChangeDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -152,12 +161,13 @@ public class SupervisorChangeDAO {
 	public SupervisorChange findById(int id) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
+			rs = stmt.executeQuery("SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
 					"oldSupervisor.name AS oldSupervisorName, oldcosupervisor.name AS oldCosupervisorName, newsupervisor.name AS newSupervisorName " +
 					"FROM supervisorchange INNER JOIN proposal ON proposal.idProposal=supervisorchange.idProposal " +
 					"INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
@@ -172,7 +182,8 @@ public class SupervisorChangeDAO {
 				return null;
 			}
 		}finally{
-			conn.setAutoCommit(true);
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -183,12 +194,13 @@ public class SupervisorChangeDAO {
 	public SupervisorChange findPendingChange(int idProposal) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
+			rs = stmt.executeQuery("SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
 					"oldSupervisor.name AS oldSupervisorName, oldcosupervisor.name AS oldCosupervisorName, newsupervisor.name AS newSupervisorName " +
 					"FROM supervisorchange INNER JOIN proposal ON proposal.idProposal=supervisorchange.idProposal " +
 					"INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
@@ -203,7 +215,8 @@ public class SupervisorChangeDAO {
 				return null;
 			}
 		}finally{
-			conn.setAutoCommit(true);
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -215,12 +228,13 @@ public class SupervisorChangeDAO {
 		int idUser = 0;
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT idNewSupervisor FROM SupervisorChange WHERE approved=1 AND idProposal = " + String.valueOf(idProposal) + " ORDER BY date DESC");
+			rs = stmt.executeQuery("SELECT idNewSupervisor FROM SupervisorChange WHERE approved=1 AND idProposal = " + String.valueOf(idProposal) + " ORDER BY date DESC");
 			
 			if(rs.next()){
 				idUser = rs.getInt("idNewSupervisor");
@@ -248,7 +262,8 @@ public class SupervisorChangeDAO {
 			UserDAO dao = new UserDAO();
 			return dao.findById(idUser);
 		}finally{
-			conn.setAutoCommit(true);
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -260,12 +275,13 @@ public class SupervisorChangeDAO {
 		int idUser = 0;
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT idNewCosupervisor FROM SupervisorChange WHERE approved=1 AND idProposal = " + String.valueOf(idProposal) + " ORDER BY date DESC");
+			rs = stmt.executeQuery("SELECT idNewCosupervisor FROM SupervisorChange WHERE approved=1 AND idProposal = " + String.valueOf(idProposal) + " ORDER BY date DESC");
 			
 			if(rs.next()){
 				idUser = rs.getInt("idNewCosupervisor");
@@ -293,7 +309,8 @@ public class SupervisorChangeDAO {
 			UserDAO dao = new UserDAO();
 			return dao.findById(idUser);
 		}finally{
-			conn.setAutoCommit(true);
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

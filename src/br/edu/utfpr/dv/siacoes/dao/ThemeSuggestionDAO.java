@@ -16,6 +16,7 @@ public class ThemeSuggestionDAO {
 	public ThemeSuggestion findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -23,7 +24,7 @@ public class ThemeSuggestionDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -31,6 +32,8 @@ public class ThemeSuggestionDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -41,12 +44,13 @@ public class ThemeSuggestionDAO {
 	public List<ThemeSuggestion> listAll(boolean onlyActives) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT * FROM themesuggestion " + (onlyActives ? " WHERE active=1 " : "") + " ORDER BY submissionDate DESC, title");
+			rs = stmt.executeQuery("SELECT * FROM themesuggestion " + (onlyActives ? " WHERE active=1 " : "") + " ORDER BY submissionDate DESC, title");
 			
 			List<ThemeSuggestion> list = new ArrayList<ThemeSuggestion>();
 			
@@ -56,6 +60,8 @@ public class ThemeSuggestionDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -66,12 +72,13 @@ public class ThemeSuggestionDAO {
 	public List<ThemeSuggestion> listByDepartment(int idDepartment, boolean onlyActives) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT * FROM themesuggestion WHERE idDepartment=" + String.valueOf(idDepartment) + (onlyActives ? " AND active=1 " : "") + " ORDER BY submissionDate DESC, title");
+			rs = stmt.executeQuery("SELECT * FROM themesuggestion WHERE idDepartment=" + String.valueOf(idDepartment) + (onlyActives ? " AND active=1 " : "") + " ORDER BY submissionDate DESC, title");
 			
 			List<ThemeSuggestion> list = new ArrayList<ThemeSuggestion>();
 			
@@ -81,6 +88,8 @@ public class ThemeSuggestionDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -92,6 +101,7 @@ public class ThemeSuggestionDAO {
 		boolean insert = (theme.getIdThemeSuggestion() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -122,7 +132,7 @@ public class ThemeSuggestionDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					theme.setIdThemeSuggestion(rs.getInt(1));
@@ -131,6 +141,8 @@ public class ThemeSuggestionDAO {
 			
 			return theme.getIdThemeSuggestion();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

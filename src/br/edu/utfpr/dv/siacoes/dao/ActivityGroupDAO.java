@@ -15,12 +15,13 @@ public class ActivityGroupDAO {
 	public List<ActivityGroup> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT * FROM activitygroup ORDER BY sequence");
+			rs = stmt.executeQuery("SELECT * FROM activitygroup ORDER BY sequence");
 			
 			List<ActivityGroup> list = new ArrayList<ActivityGroup>();
 			
@@ -30,6 +31,8 @@ public class ActivityGroupDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -40,6 +43,7 @@ public class ActivityGroupDAO {
 	public ActivityGroup findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -47,7 +51,7 @@ public class ActivityGroupDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -55,6 +59,8 @@ public class ActivityGroupDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -65,6 +71,7 @@ public class ActivityGroupDAO {
 	public ActivityGroup findByActivity(int idActivity) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -72,7 +79,7 @@ public class ActivityGroupDAO {
 		
 			stmt.setInt(1, idActivity);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.findById(rs.getInt("idActivityGroup"));
@@ -80,6 +87,8 @@ public class ActivityGroupDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -91,6 +100,7 @@ public class ActivityGroupDAO {
 		boolean insert = (group.getIdActivityGroup() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -99,9 +109,10 @@ public class ActivityGroupDAO {
 				stmt = conn.prepareStatement("INSERT INTO activitygroup(description, sequence, minimumScore, maximumScore) VALUES(?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 				
 				Statement stmt2 = conn.createStatement();
-				ResultSet rs = stmt2.executeQuery("SELECT COUNT(*) as total FROM activitygroup");
+				rs = stmt2.executeQuery("SELECT COUNT(*) as total FROM activitygroup");
 				rs.next();
 				group.setSequence(rs.getInt("total") + 1);
+				rs.close();
 				stmt2.close();
 			}else{
 				stmt = conn.prepareStatement("UPDATE activitygroup SET description=?, sequence=?, minimumScore=?, maximumScore=? WHERE idActivityGroup=?");
@@ -119,7 +130,7 @@ public class ActivityGroupDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					group.setIdActivityGroup(rs.getInt(1));
@@ -128,6 +139,8 @@ public class ActivityGroupDAO {
 			
 			return group.getIdActivityGroup();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -150,16 +163,18 @@ public class ActivityGroupDAO {
 	public void moveUp(int idActivityGroup) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement("SELECT sequence FROM activitygroup WHERE idActivityGroup=?");
 			stmt.setInt(1, idActivityGroup);
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				int sequence = rs.getInt("sequence");
 				
+				rs.close();
 				stmt.close();
 				stmt = conn.prepareStatement("SELECT idActivityGroup FROM activitygroup WHERE sequence < ? ORDER BY sequence DESC");
 				stmt.setInt(1, sequence);
@@ -192,6 +207,8 @@ public class ActivityGroupDAO {
 				}
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -202,16 +219,18 @@ public class ActivityGroupDAO {
 	public void moveDown(int idActivityGroup) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement("SELECT sequence FROM activitygroup WHERE idActivityGroup=?");
 			stmt.setInt(1, idActivityGroup);
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				int sequence = rs.getInt("sequence");
 				
+				rs.close();
 				stmt.close();
 				stmt = conn.prepareStatement("SELECT idActivityGroup FROM activitygroup WHERE sequence > ? ORDER BY sequence");
 				stmt.setInt(1, sequence);
@@ -244,6 +263,8 @@ public class ActivityGroupDAO {
 				}
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

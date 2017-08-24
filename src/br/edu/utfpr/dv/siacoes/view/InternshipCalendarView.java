@@ -28,6 +28,7 @@ import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryStudentBO;
+import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.CalendarReport;
@@ -36,6 +37,7 @@ import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryStudent;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
@@ -64,11 +66,18 @@ public class InternshipCalendarView extends ListView {
 	public InternshipCalendarView(){
 		super(SystemModule.SIGES);
 		
+		Semester semester;
+		try {
+			semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+		} catch (Exception e) {
+			semester = new Semester();
+		}
+		
 		this.comboSemester = new SemesterComboBox();
-		this.comboSemester.select(DateUtils.getSemester());
+		this.comboSemester.select(semester.getSemester());
 		
 		this.textYear = new YearField();
-		this.textYear.setValue(String.valueOf(DateUtils.getYear()));
+		this.textYear.setYear(semester.getYear());
 		
 		this.addFilterField(new HorizontalLayout(this.comboSemester, this.textYear));
 		

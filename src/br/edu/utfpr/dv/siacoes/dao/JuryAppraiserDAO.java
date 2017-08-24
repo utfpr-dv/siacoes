@@ -31,103 +31,142 @@ public class JuryAppraiserDAO {
 	}
 	
 	public JuryAppraiser findById(int id) throws SQLException{
-		PreparedStatement stmt = this.conn.prepareStatement(
-				"SELECT juryappraiser.*, appraiser.name as appraiserName, jury.date, jury.startTime, jury.endTime, " +
-				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
-				"FROM juryappraiser INNER JOIN \"user\" appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
-				"INNER JOIN jury ON jury.idJury=juryappraiser.idJury " +
-				"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
-				"LEFT JOIN project ON project.idProject=jury.idProject " +
-				"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
-				"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
-				"WHERE juryappraiser.idJuryAppraiser=?");
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, id);
-		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
+		try{
+			stmt = this.conn.prepareStatement(
+					"SELECT juryappraiser.*, appraiser.name as appraiserName, jury.date, jury.startTime, jury.endTime, " +
+					"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
+					"FROM juryappraiser INNER JOIN \"user\" appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
+					"INNER JOIN jury ON jury.idJury=juryappraiser.idJury " +
+					"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
+					"LEFT JOIN project ON project.idProject=jury.idProject " +
+					"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
+					"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
+					"WHERE juryappraiser.idJuryAppraiser=?");
+			
+			stmt.setInt(1, id);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
 	}
 	
 	public JuryAppraiser findByAppraiser(int idJury, int idUser) throws SQLException{
-		PreparedStatement stmt = this.conn.prepareStatement(
-				"SELECT juryappraiser.*, appraiser.name as appraiserName, jury.date, jury.startTime, jury.endTime, " +
-				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
-				"FROM juryappraiser INNER JOIN \"user\" appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
-				"INNER JOIN jury ON jury.idJury=juryappraiser.idJury " +
-				"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
-				"LEFT JOIN project ON project.idProject=jury.idProject " +
-				"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
-				"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
-				"WHERE juryappraiser.idJury=? AND juryappraiser.idAppraiser=?");
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, idJury);
-		stmt.setInt(2, idUser);
-		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
+		try{
+			stmt = this.conn.prepareStatement(
+					"SELECT juryappraiser.*, appraiser.name as appraiserName, jury.date, jury.startTime, jury.endTime, " +
+					"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
+					"FROM juryappraiser INNER JOIN \"user\" appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
+					"INNER JOIN jury ON jury.idJury=juryappraiser.idJury " +
+					"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
+					"LEFT JOIN project ON project.idProject=jury.idProject " +
+					"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
+					"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
+					"WHERE juryappraiser.idJury=? AND juryappraiser.idAppraiser=?");
+			
+			stmt.setInt(1, idJury);
+			stmt.setInt(2, idUser);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
 	}
 	
 	public List<JuryAppraiser> listAppraisers(int idJury) throws SQLException{
-		Statement stmt = this.conn.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT juryappraiser.*, appraiser.name as appraiserName, jury.date, jury.startTime, jury.endTime, " +
-				"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
-				"FROM juryappraiser INNER JOIN \"user\" appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
-				"INNER JOIN jury ON jury.idJury=juryappraiser.idJury " +
-				"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
-				"LEFT JOIN project ON project.idProject=jury.idProject " +
-				"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
-				"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
-				"WHERE juryappraiser.idJury = " + String.valueOf(idJury));
-		List<JuryAppraiser> list = new ArrayList<JuryAppraiser>();
+		ResultSet rs = null;
+		Statement stmt = null;
 		
-		while(rs.next()){
-			list.add(this.loadObject(rs));
+		try{
+			stmt = this.conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT juryappraiser.*, appraiser.name as appraiserName, jury.date, jury.startTime, jury.endTime, " +
+					"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
+					"FROM juryappraiser INNER JOIN \"user\" appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
+					"INNER JOIN jury ON jury.idJury=juryappraiser.idJury " +
+					"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
+					"LEFT JOIN project ON project.idProject=jury.idProject " +
+					"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
+					"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
+					"WHERE juryappraiser.idJury = " + String.valueOf(idJury));
+			List<JuryAppraiser> list = new ArrayList<JuryAppraiser>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
-		
-		return list;
 	}
 	
 	public int save(JuryAppraiser appraiser) throws SQLException{
 		boolean insert = (appraiser.getIdJuryAppraiser() == 0);
-		PreparedStatement stmt;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
-		if(insert){
-			stmt = this.conn.prepareStatement("INSERT INTO juryappraiser(idJury, idAppraiser, file, fileType, comments) VALUES(?, ?, NULL, 0, '')", Statement.RETURN_GENERATED_KEYS);
-		}else{
-			stmt = this.conn.prepareStatement("UPDATE juryappraiser SET idJury=?, idAppraiser=?, file=?, fileType=?, comments=? WHERE idJuryAppraiser=?");
-		}
-		
-		stmt.setInt(1, appraiser.getJury().getIdJury());
-		stmt.setInt(2, appraiser.getAppraiser().getIdUser());
-		
-		if(!insert){
-			stmt.setBytes(3, appraiser.getFile());
-			stmt.setInt(4, appraiser.getFileType().getValue());
-			stmt.setString(5, appraiser.getComments());
-			stmt.setInt(6, appraiser.getIdJuryAppraiser());
-		}
-		
-		stmt.execute();
-		
-		if(insert){
-			ResultSet rs = stmt.getGeneratedKeys();
-			
-			if(rs.next()){
-				appraiser.setIdJuryAppraiser(rs.getInt(1));
+		try{
+			if(insert){
+				stmt = this.conn.prepareStatement("INSERT INTO juryappraiser(idJury, idAppraiser, file, fileType, comments) VALUES(?, ?, NULL, 0, '')", Statement.RETURN_GENERATED_KEYS);
+			}else{
+				stmt = this.conn.prepareStatement("UPDATE juryappraiser SET idJury=?, idAppraiser=?, file=?, fileType=?, comments=? WHERE idJuryAppraiser=?");
 			}
+			
+			stmt.setInt(1, appraiser.getJury().getIdJury());
+			stmt.setInt(2, appraiser.getAppraiser().getIdUser());
+			
+			if(!insert){
+				stmt.setBytes(3, appraiser.getFile());
+				stmt.setInt(4, appraiser.getFileType().getValue());
+				stmt.setString(5, appraiser.getComments());
+				stmt.setInt(6, appraiser.getIdJuryAppraiser());
+			}
+			
+			stmt.execute();
+			
+			if(insert){
+				rs = stmt.getGeneratedKeys();
+				
+				if(rs.next()){
+					appraiser.setIdJuryAppraiser(rs.getInt(1));
+				}
+			}
+			
+			return appraiser.getIdJuryAppraiser();
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
-		
-		return appraiser.getIdJuryAppraiser();
 	}
 	
 	private JuryAppraiser loadObject(ResultSet rs) throws SQLException{
@@ -160,26 +199,36 @@ public class JuryAppraiserDAO {
 	}
 	
 	public boolean appraiserHasJury(int idJury, int idUser, Date startDate, Date endDate) throws SQLException{
-		PreparedStatement stmt = this.conn.prepareStatement(
-				"SELECT SUM(total) AS total FROM (" +
-				"SELECT COUNT(*) AS total FROM jury INNER JOIN juryappraiser ON juryappraiser.idJury=jury.idJury " +
-				"WHERE jury.idJury <> ? AND juryappraiser.idAppraiser = ? AND jury.date BETWEEN ? AND ? " +
-				" UNION ALL " +
-				"SELECT COUNT(*) AS total FROM internshipjury INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJury=internshipjury.idInternshipJury " +
-				"WHERE internshipjuryappraiser.idAppraiser = ? AND internshipjury.date BETWEEN ? AND ? ) AS teste");
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, idJury);
-		stmt.setInt(2, idUser);
-		stmt.setTimestamp(3, new java.sql.Timestamp(startDate.getTime()));
-		stmt.setTimestamp(4, new java.sql.Timestamp(endDate.getTime()));
-		stmt.setInt(5, idUser);
-		stmt.setTimestamp(6, new java.sql.Timestamp(startDate.getTime()));
-		stmt.setTimestamp(7, new java.sql.Timestamp(endDate.getTime()));
-		
-		ResultSet rs = stmt.executeQuery();
-		rs.next();
-		
-		return (rs.getInt("total") > 0);
+		try{
+			stmt = this.conn.prepareStatement(
+					"SELECT SUM(total) AS total FROM (" +
+					"SELECT COUNT(*) AS total FROM jury INNER JOIN juryappraiser ON juryappraiser.idJury=jury.idJury " +
+					"WHERE jury.idJury <> ? AND juryappraiser.idAppraiser = ? AND jury.date BETWEEN ? AND ? " +
+					" UNION ALL " +
+					"SELECT COUNT(*) AS total FROM internshipjury INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJury=internshipjury.idInternshipJury " +
+					"WHERE internshipjuryappraiser.idAppraiser = ? AND internshipjury.date BETWEEN ? AND ? ) AS teste");
+			
+			stmt.setInt(1, idJury);
+			stmt.setInt(2, idUser);
+			stmt.setTimestamp(3, new java.sql.Timestamp(startDate.getTime()));
+			stmt.setTimestamp(4, new java.sql.Timestamp(endDate.getTime()));
+			stmt.setInt(5, idUser);
+			stmt.setTimestamp(6, new java.sql.Timestamp(startDate.getTime()));
+			stmt.setTimestamp(7, new java.sql.Timestamp(endDate.getTime()));
+			
+			rs = stmt.executeQuery();
+			rs.next();
+			
+			return (rs.getInt("total") > 0);
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
 	}
 
 }

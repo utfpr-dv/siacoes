@@ -14,9 +14,11 @@ import com.vaadin.ui.renderers.DateRenderer;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.FinalDocumentBO;
+import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
@@ -35,11 +37,18 @@ public class FinalDocumentView extends ListView {
 		
 		this.setProfilePerimissions(UserProfile.PROFESSOR);
 		
+		Semester semester;
+		try {
+			semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+		} catch (Exception e) {
+			semester = new Semester();
+		}
+		
 		this.comboSemester = new SemesterComboBox();
-		this.comboSemester.select(DateUtils.getSemester());
+		this.comboSemester.select(semester.getSemester());
 		
 		this.textYear = new YearField();
-		this.textYear.setValue(String.valueOf(DateUtils.getYear()));
+		this.textYear.setYear(semester.getYear());
 		
 		this.checkListAll = new CheckBox("Listar Todos");
 		

@@ -15,6 +15,7 @@ public class DeadlineDAO {
 	public Deadline findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -22,7 +23,7 @@ public class DeadlineDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -30,6 +31,8 @@ public class DeadlineDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -40,6 +43,7 @@ public class DeadlineDAO {
 	public Deadline findBySemester(int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -49,7 +53,7 @@ public class DeadlineDAO {
 			stmt.setInt(2, semester);
 			stmt.setInt(3, year);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -57,6 +61,8 @@ public class DeadlineDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -67,12 +73,13 @@ public class DeadlineDAO {
 	public List<Deadline> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT * FROM deadline ORDER BY year DESC, semester DESC");
+			rs = stmt.executeQuery("SELECT * FROM deadline ORDER BY year DESC, semester DESC");
 			List<Deadline> list = new ArrayList<Deadline>();
 			
 			while(rs.next()){
@@ -81,6 +88,35 @@ public class DeadlineDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public List<Deadline> listByDepartment(int idDepartment) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT * FROM deadline WHERE idDepartment=" + String.valueOf(idDepartment) + " ORDER BY year DESC, semester DESC");
+			List<Deadline> list = new ArrayList<Deadline>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -92,6 +128,7 @@ public class DeadlineDAO {
 		boolean insert = (deadline.getIdDeadline() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -116,7 +153,7 @@ public class DeadlineDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					deadline.setIdDeadline(rs.getInt(1));
@@ -125,6 +162,8 @@ public class DeadlineDAO {
 			
 			return deadline.getIdDeadline();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

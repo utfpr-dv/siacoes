@@ -60,6 +60,16 @@ CREATE TABLE department (
 );
 CREATE INDEX fk_department_campus_idx ON department (idcampus);
 
+CREATE TABLE semester (
+    idcampus INT NOT NULL,
+    semester SMALLINT NOT NULL,
+    year INT NOT NULL,
+    startDate DATE NOT NULL,
+    endDate DATE NOT NULL,
+    CONSTRAINT semester_pkey PRIMARY KEY (idcampus, semester, year),
+    CONSTRAINT fk_semester_idcampus FOREIGN KEY (idcampus) REFERENCES campus (idcampus) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
 CREATE  TABLE sigacconfig (
   iddepartment INT NOT NULL ,
   minimumScore REAL NOT NULL ,

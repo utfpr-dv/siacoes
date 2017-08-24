@@ -17,6 +17,7 @@ public class AttendanceDAO {
 	public Attendance findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -28,7 +29,7 @@ public class AttendanceDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -36,6 +37,8 @@ public class AttendanceDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -46,12 +49,13 @@ public class AttendanceDAO {
 	public List<Attendance> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT attendance.*, student.name AS studentName, supervisor.name AS supervisorName, proposal.title AS proposalTitle " +
+			rs = stmt.executeQuery("SELECT attendance.*, student.name AS studentName, supervisor.name AS supervisorName, proposal.title AS proposalTitle " +
 					"FROM attendance INNER JOIN proposal ON proposal.idProposal=attendance.idProposal " +
 					"INNER JOIN \"user\" student ON student.idUser=attendance.idStudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=attendance.idSupervisor " +
@@ -64,6 +68,8 @@ public class AttendanceDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -74,12 +80,13 @@ public class AttendanceDAO {
 	public List<Attendance> listByStudent(int idStudent) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT attendance.*, student.name AS studentName, supervisor.name AS supervisorName, proposal.title AS proposalTitle " +
+			rs = stmt.executeQuery("SELECT attendance.*, student.name AS studentName, supervisor.name AS supervisorName, proposal.title AS proposalTitle " +
 					"FROM attendance INNER JOIN proposal ON proposal.idProposal=attendance.idProposal " +
 					"INNER JOIN \"user\" student ON student.idUser=attendance.idStudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=attendance.idSupervisor " +
@@ -92,6 +99,8 @@ public class AttendanceDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -102,12 +111,13 @@ public class AttendanceDAO {
 	public List<Attendance> listByStudent(int idStudent, int idSupervisor, int idProposal, int stage) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT attendance.*, student.name AS studentName, supervisor.name AS supervisorName, proposal.title AS proposalTitle " +
+			rs = stmt.executeQuery("SELECT attendance.*, student.name AS studentName, supervisor.name AS supervisorName, proposal.title AS proposalTitle " +
 					"FROM attendance INNER JOIN proposal ON proposal.idProposal=attendance.idProposal " +
 					"INNER JOIN \"user\" student ON student.idUser=attendance.idStudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=attendance.idSupervisor " +
@@ -121,6 +131,8 @@ public class AttendanceDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -132,6 +144,7 @@ public class AttendanceDAO {
 		boolean insert = (attendance.getIdAttendance() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -159,7 +172,7 @@ public class AttendanceDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					attendance.setIdAttendance(rs.getInt(1));
@@ -168,6 +181,8 @@ public class AttendanceDAO {
 			
 			return attendance.getIdAttendance();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -195,6 +210,7 @@ public class AttendanceDAO {
 	public AttendanceReport getReport(int idStudent, int idProposal, int idSupervisor, int stage) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			ProposalDAO dao = new ProposalDAO();
@@ -215,7 +231,7 @@ public class AttendanceDAO {
 			
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT attendance.*, student.name AS studentName, supervisor.name AS supervisorName, proposal.title AS proposalTitle " +
+			rs = stmt.executeQuery("SELECT attendance.*, student.name AS studentName, supervisor.name AS supervisorName, proposal.title AS proposalTitle " +
 					"FROM attendance INNER JOIN proposal ON proposal.idProposal=attendance.idProposal " +
 					"INNER JOIN \"user\" student ON student.idUser=attendance.idStudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=attendance.idSupervisor " +
@@ -228,6 +244,8 @@ public class AttendanceDAO {
 			
 			return report;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

@@ -24,6 +24,18 @@ public class ProjectBO {
 		}
 	}
 	
+	public int findIdCampus(int idProject) throws Exception{
+		try {
+			ProjectDAO dao = new ProjectDAO();
+			
+			return dao.findIdCampus(idProject);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public Project findByProposal(int idProposal) throws Exception{
 		try {
 			ProjectDAO dao = new ProjectDAO();

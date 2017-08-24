@@ -22,6 +22,7 @@ public class JuryDAO {
 	public Jury findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -29,7 +30,7 @@ public class JuryDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -37,6 +38,8 @@ public class JuryDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -47,6 +50,7 @@ public class JuryDAO {
 	public Jury findByProject(int idProject) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -54,7 +58,7 @@ public class JuryDAO {
 		
 			stmt.setInt(1, idProject);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -67,6 +71,8 @@ public class JuryDAO {
 				return jury;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -77,6 +83,7 @@ public class JuryDAO {
 	public Jury findByThesis(int idThesis) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -84,7 +91,7 @@ public class JuryDAO {
 		
 			stmt.setInt(1, idThesis);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -97,6 +104,8 @@ public class JuryDAO {
 				return jury;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -107,12 +116,13 @@ public class JuryDAO {
 	public List<Jury> listBySemester(int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT jury.* " + 
+			rs = stmt.executeQuery("SELECT jury.* " + 
 					"FROM jury LEFT JOIN project ON project.idProject=jury.idProject " +
 					"LEFT JOIN proposal proposal1 ON proposal1.idProposal=project.idProposal " +
 					"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
@@ -128,6 +138,8 @@ public class JuryDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -138,12 +150,13 @@ public class JuryDAO {
 	public List<Jury> listByAppraiser(int idUser, int semester, int year) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT jury.* FROM jury INNER JOIN juryappraiser ON juryappraiser.idJury=jury.idJury LEFT JOIN project ON project.idProject=jury.idProject LEFT JOIN thesis ON thesis.idThesis=jury.idThesis WHERE juryappraiser.idAppraiser=" + String.valueOf(idUser) + " AND (project.semester=" + String.valueOf(semester) + " OR thesis.semester=" + String.valueOf(semester) + ") AND (project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + ") ORDER BY jury.date");
+			rs = stmt.executeQuery("SELECT jury.* FROM jury INNER JOIN juryappraiser ON juryappraiser.idJury=jury.idJury LEFT JOIN project ON project.idProject=jury.idProject LEFT JOIN thesis ON thesis.idThesis=jury.idThesis WHERE juryappraiser.idAppraiser=" + String.valueOf(idUser) + " AND (project.semester=" + String.valueOf(semester) + " OR thesis.semester=" + String.valueOf(semester) + ") AND (project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + ") ORDER BY jury.date");
 			
 			List<Jury> list = new ArrayList<Jury>();
 			
@@ -153,6 +166,8 @@ public class JuryDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -163,12 +178,13 @@ public class JuryDAO {
 	public List<Jury> listByStudent(int idUser, int semester, int year) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT jury.* FROM jury INNER JOIN jurystudent ON jurystudent.idJury=jury.idJury LEFT JOIN project ON project.idProject=jury.idProject LEFT JOIN thesis ON thesis.idThesis=jury.idThesis WHERE jurystudent.idStudent=" + String.valueOf(idUser) + " AND (project.semester=" + String.valueOf(semester) + " OR thesis.semester=" + String.valueOf(semester) + ") AND (project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + ") ORDER BY jury.date");
+			rs = stmt.executeQuery("SELECT jury.* FROM jury INNER JOIN jurystudent ON jurystudent.idJury=jury.idJury LEFT JOIN project ON project.idProject=jury.idProject LEFT JOIN thesis ON thesis.idThesis=jury.idThesis WHERE jurystudent.idStudent=" + String.valueOf(idUser) + " AND (project.semester=" + String.valueOf(semester) + " OR thesis.semester=" + String.valueOf(semester) + ") AND (project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + ") ORDER BY jury.date");
 			
 			List<Jury> list = new ArrayList<Jury>();
 			
@@ -178,6 +194,8 @@ public class JuryDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -188,6 +206,7 @@ public class JuryDAO {
 	public int save(Jury jury) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -200,7 +219,6 @@ public class JuryDAO {
 				jury.setMinimumScore(10);
 				
 				Statement stmt2 = conn.createStatement();
-				ResultSet rs;
 				
 				if(jury.getStage() == 2){
 					rs = stmt2.executeQuery("SELECT idDepartment FROM thesis INNER JOIN project ON project.idProject=thesis.idProject " + 
@@ -212,12 +230,17 @@ public class JuryDAO {
 				}
 				
 				if(rs.next()){
-					rs = stmt2.executeQuery("SELECT minimumScore FROM sigetconfig WHERE idDepartment=" + String.valueOf(rs.getInt("idDepartment")));
+					int idDepartment = rs.getInt("idDepartment");
+					
+					rs.close();
+					rs = stmt2.executeQuery("SELECT minimumScore FROM sigetconfig WHERE idDepartment=" + String.valueOf(idDepartment));
 					
 					if(rs.next()){
 						jury.setMinimumScore(rs.getDouble("minimumScore"));
 					}
 				}
+				
+				rs.close();
 			}else{
 				stmt = conn.prepareStatement("UPDATE jury SET date=?, local=?, idProject=?, idThesis=?, comments=?, startTime=?, endTime=?, minimumScore=? WHERE idJury=?");
 			}
@@ -246,7 +269,7 @@ public class JuryDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					jury.setIdJury(rs.getInt(1));
@@ -295,6 +318,8 @@ public class JuryDAO {
 			throw e;
 		}finally{
 			conn.setAutoCommit(true);
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -331,15 +356,17 @@ public class JuryDAO {
 	public boolean hasAllScores(int idJury) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement("SELECT COUNT(*) AS total FROM juryappraiser WHERE idJury=?");
 			stmt.setInt(1, idJury);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			rs.next();
 			int numAppraisers = rs.getInt("total");
+			rs.close();
 			
 			stmt.close();
 			stmt = conn.prepareStatement("SELECT COUNT(DISTINCT juryappraiser.idJuryAppraiser) AS total FROM juryappraiserscore INNER JOIN juryappraiser ON juryappraiser.idJuryAppraiser=juryappraiserscore.idJuryAppraiser WHERE idJury=?");
@@ -351,6 +378,8 @@ public class JuryDAO {
 			
 			return (numScores >= numAppraisers);
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -361,6 +390,7 @@ public class JuryDAO {
 	public boolean isApproved(int idJury) throws Exception{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -376,13 +406,14 @@ public class JuryDAO {
 					"WHERE juryappraiser.idJury=? GROUP BY juryappraiser.idJuryAppraiser");
 			stmt.setInt(1, idJury);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			double sumScore=0;
 			int countScore=0;
 			while(rs.next()){
 				sumScore = sumScore + this.round(rs.getDouble("score"));
 				countScore++;
 			}
+			rs.close();
 			
 			sumScore = this.round(sumScore / countScore);
 			
@@ -398,6 +429,8 @@ public class JuryDAO {
 			
 			return (sumScore >= minimumScore);
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

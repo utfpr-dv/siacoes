@@ -22,6 +22,18 @@ public class DeadlineBO {
 		}
 	}
 	
+	public List<Deadline> listByDepartment(int idDepartment) throws Exception{
+		try {
+			DeadlineDAO dao = new DeadlineDAO();
+			
+			return dao.listByDepartment(idDepartment);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public int save(Deadline deadline) throws Exception{
 		try {
 			if((deadline.getSemester() < 1) || (deadline.getSemester() > 2)){

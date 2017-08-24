@@ -18,6 +18,7 @@ public class ProjectDAO {
 	public Project findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -25,7 +26,7 @@ public class ProjectDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -33,6 +34,8 @@ public class ProjectDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -43,6 +46,7 @@ public class ProjectDAO {
 	public Project findByProposal(int idProposal) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -50,7 +54,7 @@ public class ProjectDAO {
 		
 			stmt.setInt(1, idProposal);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -58,6 +62,8 @@ public class ProjectDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -68,6 +74,7 @@ public class ProjectDAO {
 	public int findIdJury(int idProject) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -75,7 +82,7 @@ public class ProjectDAO {
 		
 			stmt.setInt(1, idProject);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return rs.getInt("idJury");
@@ -83,6 +90,40 @@ public class ProjectDAO {
 				return 0;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public int findIdCampus(int idProject) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT campus.idCampus FROM campus " +
+					"INNER JOIN department ON department.idCampus=campus.idCampus " +
+					"INNER JOIN proposal ON proposal.idDepartment=department.idDepartment " +
+					"INNER JOIN project ON project.idProposal=proposal.idProposal " +
+					"WHERE project.idProject=?");
+		
+			stmt.setInt(1, idProject);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getInt("idJury");
+			}else{
+				return 0;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -93,6 +134,7 @@ public class ProjectDAO {
 	public Project findCurrentProject(int idStudent, int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -109,7 +151,7 @@ public class ProjectDAO {
 			stmt.setInt(3, semester);
 			stmt.setInt(4, year);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -117,6 +159,8 @@ public class ProjectDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -127,6 +171,7 @@ public class ProjectDAO {
 	public Project findApprovedProject(int idStudent, int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -146,7 +191,7 @@ public class ProjectDAO {
 			stmt.setInt(1, idStudent);
 			stmt.setInt(2, idDepartment);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -154,6 +199,8 @@ public class ProjectDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -164,6 +211,7 @@ public class ProjectDAO {
 	public Project findLastProject(int idStudent, int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -178,7 +226,7 @@ public class ProjectDAO {
 			stmt.setInt(1, idStudent);
 			stmt.setInt(2, idDepartment);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -186,6 +234,8 @@ public class ProjectDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -196,12 +246,13 @@ public class ProjectDAO {
 	public List<Project> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT project.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM project inner join \"user\" student on student.idUser=project.idStudent inner join \"user\" supervisor on supervisor.idUser=project.idSupervisor left join \"user\" cosupervisor on cosupervisor.idUser=project.idCosupervisor ORDER BY year DESC, semester DESC, title");
+			rs = stmt.executeQuery("SELECT project.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName FROM project inner join \"user\" student on student.idUser=project.idStudent inner join \"user\" supervisor on supervisor.idUser=project.idSupervisor left join \"user\" cosupervisor on cosupervisor.idUser=project.idCosupervisor ORDER BY year DESC, semester DESC, title");
 			List<Project> list = new ArrayList<Project>();
 			
 			while(rs.next()){
@@ -210,6 +261,8 @@ public class ProjectDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -220,6 +273,7 @@ public class ProjectDAO {
 	public List<Project> listBySemester(int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -233,7 +287,8 @@ public class ProjectDAO {
 			stmt.setInt(1, idDepartment);
 			stmt.setInt(2, semester);
 			stmt.setInt(3, year);
-			ResultSet rs = stmt.executeQuery();
+			
+			rs = stmt.executeQuery();
 			List<Project> list = new ArrayList<Project>();
 			
 			while(rs.next()){
@@ -242,6 +297,8 @@ public class ProjectDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -252,6 +309,7 @@ public class ProjectDAO {
 	public List<Project> listBySupervisor(int idSupervisor) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -266,7 +324,7 @@ public class ProjectDAO {
 			stmt.setInt(1, idSupervisor);
 			stmt.setInt(2, idSupervisor);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			List<Project> list = new ArrayList<Project>();
 			
 			while(rs.next()){
@@ -275,6 +333,8 @@ public class ProjectDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -286,6 +346,7 @@ public class ProjectDAO {
 		boolean insert = (project.getIdProject() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -320,7 +381,7 @@ public class ProjectDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					project.setIdProject(rs.getInt(1));
@@ -329,6 +390,8 @@ public class ProjectDAO {
 			
 			return project.getIdProject();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

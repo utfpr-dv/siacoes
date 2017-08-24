@@ -5,6 +5,7 @@ import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.Tutored;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
@@ -49,7 +50,9 @@ public class TutoredBO {
 					t.setSemester(p.getSemester());
 					t.setYear(p.getYear());
 					
-					if((p.getYear() < DateUtils.getYear()) || ((p.getYear() == DateUtils.getYear()) && (p.getSemester() < DateUtils.getSemester()))){
+					Semester semester = new SemesterBO().findByDate(new ProjectBO().findIdCampus(p.getIdProject()), DateUtils.getToday().getTime());
+					
+					if((p.getYear() < semester.getYear()) || ((p.getYear() == semester.getYear()) && (p.getSemester() < semester.getSemester()))){
 						t.setStage(2);
 					}
 				}

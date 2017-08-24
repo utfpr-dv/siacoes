@@ -20,6 +20,7 @@ import br.edu.utfpr.dv.siacoes.bo.FinalDocumentBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
+import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.bo.SigacConfigBO;
 import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
@@ -30,6 +31,7 @@ import br.edu.utfpr.dv.siacoes.model.FinalDocument;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.SigacConfig;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
@@ -55,7 +57,6 @@ import br.edu.utfpr.dv.siacoes.view.DepartmentView;
 import br.edu.utfpr.dv.siacoes.view.DocumentView;
 import br.edu.utfpr.dv.siacoes.view.EmailMessageView;
 import br.edu.utfpr.dv.siacoes.view.EvaluationItemView;
-import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCalendarView;
 import br.edu.utfpr.dv.siacoes.view.InternshipEvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
@@ -66,6 +67,7 @@ import br.edu.utfpr.dv.siacoes.view.MainView;
 import br.edu.utfpr.dv.siacoes.view.ProjectView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackView;
 import br.edu.utfpr.dv.siacoes.view.ProposalView;
+import br.edu.utfpr.dv.siacoes.view.SemesterView;
 import br.edu.utfpr.dv.siacoes.view.SigacView;
 import br.edu.utfpr.dv.siacoes.view.SigesView;
 import br.edu.utfpr.dv.siacoes.view.SigetView;
@@ -99,9 +101,18 @@ public class MenuBar extends CustomComponent {
 	private SigetConfig sigetConfig;
 	private SigacConfig sigacConfig;
 	private SigesConfig sigesConfig;
+	private Semester semester;
 	
 	public MenuBar(SystemModule module){
 		this.menu = new com.vaadin.ui.MenuBar();
+		
+		this.semester = new Semester();
+		try {
+			this.semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+		} catch (Exception e1) {
+			Notification.show("Semestre", e1.getMessage(), Notification.Type.ERROR_MESSAGE);
+			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
+		}
 		
 		SigetConfigBO bo = new SigetConfigBO();
 		this.sigetConfig = new SigetConfig();
@@ -183,11 +194,11 @@ public class MenuBar extends CustomComponent {
 		        	    public void menuSelected(MenuItem selectedItem){
 							try {
 								ProposalBO bo = new ProposalBO();
-								Proposal p = bo.findCurrentProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+								Proposal p = bo.findCurrentProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								
 								if(p == null){
 									DeadlineBO dbo = new DeadlineBO();
-									Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+									Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 									
 									if((d == null) || DateUtils.getToday().getTime().after(d.getProposalDeadline())){
 										throw new Exception("A submissão de propostas já foi encerrada.");
@@ -227,18 +238,18 @@ public class MenuBar extends CustomComponent {
 		        	    public void menuSelected(MenuItem selectedItem){
 		        	    	try {
 								ProjectBO bo = new ProjectBO();
-								Project p = bo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+								Project p = bo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								
 								if(p == null){
 									DeadlineBO dbo = new DeadlineBO();
-									Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+									Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 									
 									if((d == null) || DateUtils.getToday().getTime().after(d.getProjectDeadline())){
 										throw new Exception("A submissão de projetos já foi encerrada.");
 									}
 									
 									ProposalBO pbo = new ProposalBO();
-									Proposal proposal = pbo.findCurrentProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+									Proposal proposal = pbo.findCurrentProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 									
 									if(proposal == null){
 										if(sigetConfig.isRegisterProposal()){
@@ -265,10 +276,10 @@ public class MenuBar extends CustomComponent {
 		        	    public void menuSelected(MenuItem selectedItem){
 		        	    	try {
 								ProjectBO bo = new ProjectBO();
-								Project p = bo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+								Project p = bo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								
 								if(p == null){
-									p = bo.findLastProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+									p = bo.findLastProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								}
 								
 								if(p == null){
@@ -289,10 +300,10 @@ public class MenuBar extends CustomComponent {
 		        	    public void menuSelected(MenuItem selectedItem){
 		        	    	try {
 								ProjectBO bo = new ProjectBO();
-								Project p = bo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+								Project p = bo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								
 								if(p == null){
-									p = bo.findLastProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+									p = bo.findLastProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								}
 								
 								if(p == null){
@@ -320,11 +331,11 @@ public class MenuBar extends CustomComponent {
 		        	    public void menuSelected(MenuItem selectedItem){
 							try {
 								FinalDocumentBO fbo = new FinalDocumentBO();
-								FinalDocument ft = fbo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+								FinalDocument ft = fbo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								
 								if(ft == null){
 									ProjectBO bo = new ProjectBO();
-									Project project = bo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+									Project project = bo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								
 									/*if(project == null){
 										project = bo.findApprovedProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
@@ -373,18 +384,18 @@ public class MenuBar extends CustomComponent {
 		        	    public void menuSelected(MenuItem selectedItem){
 		        	    	try {
 								ThesisBO bo = new ThesisBO();
-								Thesis thesis = bo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+								Thesis thesis = bo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								
 								if(thesis == null){
 									DeadlineBO dbo = new DeadlineBO();
-									Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+									Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 									
 									if((d == null) || DateUtils.getToday().getTime().after(d.getThesisDeadline())){
 										throw new Exception("A submissão de monografias já foi encerrada.");
 									}
 									
 									ProjectBO pbo = new ProjectBO();
-									Project project = pbo.findApprovedProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+									Project project = pbo.findApprovedProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 									
 									if(project == null){
 										throw new Exception("Não foi encontrada a submissão do projeto. É necessário submeter primeiramente o projeto.");
@@ -407,10 +418,10 @@ public class MenuBar extends CustomComponent {
 		        	    public void menuSelected(MenuItem selectedItem){
 							try {
 								ThesisBO bo = new ThesisBO();
-								Thesis thesis = bo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+								Thesis thesis = bo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								
 								if(thesis == null){
-									thesis = bo.findLastThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+									thesis = bo.findLastThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								}
 								
 								if(thesis == null){
@@ -431,10 +442,10 @@ public class MenuBar extends CustomComponent {
 		        	    public void menuSelected(MenuItem selectedItem){
 		        	    	try {
 		        	    		ThesisBO bo = new ThesisBO();
-								Thesis thesis = bo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+								Thesis thesis = bo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								
 								if(thesis == null){
-									thesis = bo.findLastThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+									thesis = bo.findLastThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								}
 								
 								if(thesis == null){
@@ -462,11 +473,11 @@ public class MenuBar extends CustomComponent {
 		        	    public void menuSelected(MenuItem selectedItem){
 							try {
 								FinalDocumentBO fbo = new FinalDocumentBO();
-								FinalDocument ft = fbo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+								FinalDocument ft = fbo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								
 								if(ft == null){
 									ThesisBO bo = new ThesisBO();
-									Thesis thesis = bo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+									Thesis thesis = bo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								
 									/*if(thesis == null){
 										thesis = bo.findApprovedThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
@@ -523,11 +534,11 @@ public class MenuBar extends CustomComponent {
 	        	    public void menuSelected(MenuItem selectedItem){
 	        	    	try {
 							ProposalBO bo = new ProposalBO();
-							Proposal p = bo.findCurrentProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+							Proposal p = bo.findCurrentProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 							
 							if(p == null){
 								DeadlineBO dbo = new DeadlineBO();
-								Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+								Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								
 								if((d == null) || DateUtils.getToday().getTime().after(d.getProposalDeadline())){
 									throw new Exception("O registro de orientações já foi encerrado.");
@@ -571,7 +582,7 @@ public class MenuBar extends CustomComponent {
 	        	    public void menuSelected(MenuItem selectedItem){
 	        	        try {
 	        	        	ProposalBO bo = new ProposalBO();
-							Proposal proposal = bo.findCurrentProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+							Proposal proposal = bo.findCurrentProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 							
 							/*DeadlineBO dbo = new DeadlineBO();
 							Deadline d;
@@ -893,6 +904,13 @@ public class MenuBar extends CustomComponent {
     	    	    }
     	    	});
 				administration.addSeparator();
+				administration.addItem("Semestres", new Command(){
+    	    	    @Override
+    	    	    public void menuSelected(MenuItem selectedItem){
+    	    	        UI.getCurrent().getNavigator().navigateTo(SemesterView.NAME);
+    	    	    }
+    	    	});
+				administration.addSeparator();
 				administration.addItem("Envio de E-mails", new Command(){
     	    	    @Override
     	    	    public void menuSelected(MenuItem selectedItem){
@@ -962,10 +980,10 @@ public class MenuBar extends CustomComponent {
 	private void prepareDownloadStage1(Button buttonToExtend){
 		try {
 			ProjectBO pbo = new ProjectBO();
-			Project project = pbo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+			Project project = pbo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), this.semester.getSemester(), this.semester.getYear());
 			
 			if(project == null){
-				project = pbo.findLastProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+				project = pbo.findLastProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), this.semester.getSemester(), this.semester.getYear());
 			}
 			
 			if(project != null){
@@ -992,10 +1010,10 @@ public class MenuBar extends CustomComponent {
 	private void prepareDownloadStage2(Button buttonToExtend){
 		try {
 			ThesisBO tbo = new ThesisBO();
-			Thesis thesis = tbo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+			Thesis thesis = tbo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), this.semester.getSemester(), this.semester.getYear());
 			
 			if(thesis == null){
-				thesis = tbo.findLastThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+				thesis = tbo.findLastThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), this.semester.getSemester(), this.semester.getYear());
 			}
 			
 			if(thesis != null){

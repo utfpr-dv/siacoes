@@ -29,186 +29,264 @@ public class InternshipDAO {
 	}
 	
 	public List<Internship> listAll() throws SQLException{
-		Statement stmt = this.conn.createStatement();
+		ResultSet rs = null;
+		Statement stmt = null;
 		
-		ResultSet rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
-				"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
-				"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
-				"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " + 
-				"ORDER BY internship.startDate DESC");
-		
-		List<Internship> list = new ArrayList<Internship>();
-		
-		while(rs.next()){
-			list.add(this.loadObject(rs));
+		try{
+			stmt = this.conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
+					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
+					"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " + 
+					"ORDER BY internship.startDate DESC");
+			
+			List<Internship> list = new ArrayList<Internship>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
-		
-		return list;
 	}
 	
 	public List<Internship> list(int year, int idStudent, int idSupervisor, int idCompany, int type, int status) throws SQLException{
-		Statement stmt = this.conn.createStatement();
+		ResultSet rs = null;
+		Statement stmt = null;
 		
-		ResultSet rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
-				"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
-				"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
-				"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " +
-				"WHERE 1=1 " +
-				(year > 0 ? " AND (YEAR(internship.startDate) >= " + String.valueOf(year) + " AND (YEAR(internship.endDate) <= " + String.valueOf(year) + " OR internship.endDate IS NULL)) " : "") +
-				(idStudent > 0 ? " AND internship.idstudent = " + String.valueOf(idStudent) : "") +
-				(idSupervisor > 0 ? " AND internship.idsupervisor = " + String.valueOf(idSupervisor) : "") +
-				(idCompany > 0 ? " AND internship.idcompany = " + String.valueOf(idCompany) : "") +
-				(type >= 0 ? " AND internship.type = " + String.valueOf(type) : "") +
-				(status == 0 ? " AND (internship.endDate IS NULL OR internship.endDate >= CURDATE())" : (status == 1 ? " AND internship.endDate < CURDATE()" : "")) +
-				" ORDER BY internship.startDate DESC");
-		
-		List<Internship> list = new ArrayList<Internship>();
-		
-		while(rs.next()){
-			list.add(this.loadObject(rs));
+		try{
+			stmt = this.conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
+					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
+					"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " +
+					"WHERE 1=1 " +
+					(year > 0 ? " AND (YEAR(internship.startDate) >= " + String.valueOf(year) + " AND (YEAR(internship.endDate) <= " + String.valueOf(year) + " OR internship.endDate IS NULL)) " : "") +
+					(idStudent > 0 ? " AND internship.idstudent = " + String.valueOf(idStudent) : "") +
+					(idSupervisor > 0 ? " AND internship.idsupervisor = " + String.valueOf(idSupervisor) : "") +
+					(idCompany > 0 ? " AND internship.idcompany = " + String.valueOf(idCompany) : "") +
+					(type >= 0 ? " AND internship.type = " + String.valueOf(type) : "") +
+					(status == 0 ? " AND (internship.endDate IS NULL OR internship.endDate >= CURDATE())" : (status == 1 ? " AND internship.endDate < CURDATE()" : "")) +
+					" ORDER BY internship.startDate DESC");
+			
+			List<Internship> list = new ArrayList<Internship>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
-		
-		return list;
 	}
 	
 	public List<Internship> listByCompany(int idCompany) throws SQLException{
-		Statement stmt = this.conn.createStatement();
+		ResultSet rs = null;
+		Statement stmt = null;
 		
-		ResultSet rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
-				"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
-				"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
-				"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " + 
-				"WHERE internship.idcompany=" + String.valueOf(idCompany) + " ORDER BY internship.startDate DESC");
-		
-		List<Internship> list = new ArrayList<Internship>();
-		
-		while(rs.next()){
-			list.add(this.loadObject(rs));
+		try{
+			stmt = this.conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
+					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
+					"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " + 
+					"WHERE internship.idcompany=" + String.valueOf(idCompany) + " ORDER BY internship.startDate DESC");
+			
+			List<Internship> list = new ArrayList<Internship>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
-		
-		return list;
 	}
 	
 	public List<Internship> listByCompanySupervisor(int idCompanySupervisor) throws SQLException{
-		Statement stmt = this.conn.createStatement();
+		ResultSet rs = null;
+		Statement stmt = null;
 		
-		ResultSet rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
-				"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
-				"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
-				"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " + 
-				"WHERE internship.idcompanysupervisor=" + String.valueOf(idCompanySupervisor) + " ORDER BY internship.startDate DESC");
-		
-		List<Internship> list = new ArrayList<Internship>();
-		
-		while(rs.next()){
-			list.add(this.loadObject(rs));
+		try{
+			stmt = this.conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
+					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
+					"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " + 
+					"WHERE internship.idcompanysupervisor=" + String.valueOf(idCompanySupervisor) + " ORDER BY internship.startDate DESC");
+			
+			List<Internship> list = new ArrayList<Internship>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
-		
-		return list;
 	}
 	
 	public List<Internship> listBySupervisor(int idSupervisor) throws SQLException{
-		Statement stmt = this.conn.createStatement();
+		ResultSet rs = null;
+		Statement stmt = null;
 		
-		ResultSet rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
-				"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
-				"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
-				"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " +  
-				"WHERE internship.idsupervisor=" + String.valueOf(idSupervisor) + " ORDER BY internship.startDate DESC");
-		
-		List<Internship> list = new ArrayList<Internship>();
-		
-		while(rs.next()){
-			list.add(this.loadObject(rs));
+		try{
+			stmt = this.conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
+					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
+					"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " +  
+					"WHERE internship.idsupervisor=" + String.valueOf(idSupervisor) + " ORDER BY internship.startDate DESC");
+			
+			List<Internship> list = new ArrayList<Internship>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
-		
-		return list;
 	}
 	
 	public List<Internship> listByStudent(int idStudent) throws SQLException{
-		Statement stmt = this.conn.createStatement();
+		ResultSet rs = null;
+		Statement stmt = null;
 		
-		ResultSet rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
-				"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
-				"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
-				"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " +  
-				"WHERE internship.idstudent=" + String.valueOf(idStudent) + " ORDER BY internship.startDate DESC");
-		
-		List<Internship> list = new ArrayList<Internship>();
-		
-		while(rs.next()){
-			list.add(this.loadObject(rs));
+		try{
+			stmt = this.conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
+					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
+					"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " +  
+					"WHERE internship.idstudent=" + String.valueOf(idStudent) + " ORDER BY internship.startDate DESC");
+			
+			List<Internship> list = new ArrayList<Internship>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
-		
-		return list;
 	}
 	
 	public Internship findById(int id) throws SQLException{
-		PreparedStatement stmt = this.conn.prepareStatement(
-				"SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
-				"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
-				"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
-				"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " + 
-				"WHERE internship.idinternship=?");
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, id);
-		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
+		try{
+			stmt = this.conn.prepareStatement(
+					"SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
+					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
+					"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " + 
+					"WHERE internship.idinternship=?");
+			
+			stmt.setInt(1, id);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
 	}
 	
 	public int save(Internship internship) throws SQLException{
 		boolean insert = (internship.getIdInternship() == 0);
-		PreparedStatement stmt;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
-		if(insert){
-			stmt = this.conn.prepareStatement("INSERT INTO internship(iddepartment, idcompany, idcompanysupervisor, idsupervisor, idstudent, type, comments, startDate, endDate, totalHours, internshipPlan, finalReport, reportTitle) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-		}else{
-			stmt = this.conn.prepareStatement("UPDATE internship SET iddepartment=?, idcompany=?, idcompanysupervisor=?, idsupervisor=?, idstudent=?, type=?, comments=?, startDate=?, endDate=?, totalHours=?, internshipPlan=?, finalReport=?, reportTitle=? WHERE idinternship=?");
-		}
-		
-		stmt.setInt(1, internship.getDepartment().getIdDepartment());
-		stmt.setInt(2, internship.getCompany().getIdCompany());
-		stmt.setInt(3, internship.getCompanySupervisor().getIdUser());
-		stmt.setInt(4, internship.getSupervisor().getIdUser());
-		stmt.setInt(5, internship.getStudent().getIdUser());
-		stmt.setInt(6, internship.getType().getValue());
-		stmt.setString(7, internship.getComments());
-		stmt.setDate(8, new java.sql.Date(internship.getStartDate().getTime()));
-		if(internship.getEndDate() == null){
-			stmt.setNull(9, Types.DATE);
-		}else{
-			stmt.setDate(9, new java.sql.Date(internship.getEndDate().getTime()));
-		}
-		stmt.setInt(10, internship.getTotalHours());
-		stmt.setBytes(11, internship.getInternshipPlan());
-		if(internship.getFinalReport() == null){
-			stmt.setNull(12, Types.BINARY);
-		}else{
-			stmt.setBytes(12, internship.getFinalReport());
-		}
-		stmt.setString(13, internship.getReportTitle());
-		
-		if(!insert){
-			stmt.setInt(14, internship.getIdInternship());
-		}
-		
-		stmt.execute();
-		
-		if(insert){
-			ResultSet rs = stmt.getGeneratedKeys();
-			
-			if(rs.next()){
-				internship.setIdInternship(rs.getInt(1));
+		try{
+			if(insert){
+				stmt = this.conn.prepareStatement("INSERT INTO internship(iddepartment, idcompany, idcompanysupervisor, idsupervisor, idstudent, type, comments, startDate, endDate, totalHours, internshipPlan, finalReport, reportTitle) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			}else{
+				stmt = this.conn.prepareStatement("UPDATE internship SET iddepartment=?, idcompany=?, idcompanysupervisor=?, idsupervisor=?, idstudent=?, type=?, comments=?, startDate=?, endDate=?, totalHours=?, internshipPlan=?, finalReport=?, reportTitle=? WHERE idinternship=?");
 			}
+			
+			stmt.setInt(1, internship.getDepartment().getIdDepartment());
+			stmt.setInt(2, internship.getCompany().getIdCompany());
+			stmt.setInt(3, internship.getCompanySupervisor().getIdUser());
+			stmt.setInt(4, internship.getSupervisor().getIdUser());
+			stmt.setInt(5, internship.getStudent().getIdUser());
+			stmt.setInt(6, internship.getType().getValue());
+			stmt.setString(7, internship.getComments());
+			stmt.setDate(8, new java.sql.Date(internship.getStartDate().getTime()));
+			if(internship.getEndDate() == null){
+				stmt.setNull(9, Types.DATE);
+			}else{
+				stmt.setDate(9, new java.sql.Date(internship.getEndDate().getTime()));
+			}
+			stmt.setInt(10, internship.getTotalHours());
+			stmt.setBytes(11, internship.getInternshipPlan());
+			if(internship.getFinalReport() == null){
+				stmt.setNull(12, Types.BINARY);
+			}else{
+				stmt.setBytes(12, internship.getFinalReport());
+			}
+			stmt.setString(13, internship.getReportTitle());
+			
+			if(!insert){
+				stmt.setInt(14, internship.getIdInternship());
+			}
+			
+			stmt.execute();
+			
+			if(insert){
+				rs = stmt.getGeneratedKeys();
+				
+				if(rs.next()){
+					internship.setIdInternship(rs.getInt(1));
+				}
+			}
+			
+			return internship.getIdInternship();
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
-		
-		return internship.getIdInternship();
 	}
 	
 	private Internship loadObject(ResultSet rs) throws SQLException{

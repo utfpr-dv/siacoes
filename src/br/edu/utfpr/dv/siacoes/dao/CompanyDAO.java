@@ -15,12 +15,13 @@ public class CompanyDAO {
 	public List<Company> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT company.*, city.name AS cityName " +
+			rs = stmt.executeQuery("SELECT company.*, city.name AS cityName " +
 					"FROM company INNER JOIN city ON city.idcity=company.idcity ORDER BY name");
 			
 			List<Company> list = new ArrayList<Company>();
@@ -31,6 +32,8 @@ public class CompanyDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -41,6 +44,7 @@ public class CompanyDAO {
 	public Company findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -50,7 +54,7 @@ public class CompanyDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -58,6 +62,8 @@ public class CompanyDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -69,6 +75,7 @@ public class CompanyDAO {
 		boolean insert = (company.getIdCompany() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -92,7 +99,7 @@ public class CompanyDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					company.setIdCompany(rs.getInt(1));
@@ -101,6 +108,8 @@ public class CompanyDAO {
 			
 			return company.getIdCompany();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

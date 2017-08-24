@@ -15,12 +15,13 @@ public class CityDAO {
 	public List<City> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT city.*, state.name AS stateName, state.initials AS stateInitials, country.idcountry, country.name AS countryName " +
+			rs = stmt.executeQuery("SELECT city.*, state.name AS stateName, state.initials AS stateInitials, country.idcountry, country.name AS countryName " +
 					"FROM city INNER JOIN state ON state.idstate=city.idstate " +
 					"INNER JOIN country ON country.idcountry=state.idcountry ORDER BY city.name");
 			
@@ -32,6 +33,8 @@ public class CityDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -42,12 +45,13 @@ public class CityDAO {
 	public List<City> listByState(int idState) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT city.*, state.name AS stateName, state.initials AS stateInitials, country.idcountry, country.name AS countryName " +
+			rs = stmt.executeQuery("SELECT city.*, state.name AS stateName, state.initials AS stateInitials, country.idcountry, country.name AS countryName " +
 					"FROM city INNER JOIN state ON state.idstate=city.idstate " +
 					"INNER JOIN country ON country.idcountry=state.idcountry WHERE city.idstate=" + String.valueOf(idState) + " ORDER BY city.name");
 			
@@ -59,6 +63,8 @@ public class CityDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -69,6 +75,7 @@ public class CityDAO {
 	public City findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -79,7 +86,7 @@ public class CityDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -87,6 +94,8 @@ public class CityDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -98,6 +107,7 @@ public class CityDAO {
 		boolean insert = (city.getIdCity() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -105,7 +115,7 @@ public class CityDAO {
 			if(insert){
 				stmt = conn.prepareStatement("INSERT INTO city(idstate, name) VALUES(?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE state SET idstate=?, name=? WHERE idcity=?");
+				stmt = conn.prepareStatement("UPDATE city SET idstate=?, name=? WHERE idcity=?");
 			}
 			
 			stmt.setInt(1, city.getState().getIdState());
@@ -118,7 +128,7 @@ public class CityDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					city.setIdCity(rs.getInt(1));
@@ -127,6 +137,8 @@ public class CityDAO {
 			
 			return city.getIdCity();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

@@ -16,6 +16,7 @@ public class InternshipEvaluationItemDAO {
 	public InternshipEvaluationItem findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -23,7 +24,7 @@ public class InternshipEvaluationItemDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -31,6 +32,8 @@ public class InternshipEvaluationItemDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -41,6 +44,7 @@ public class InternshipEvaluationItemDAO {
 	public boolean hasScores(int idInternshipEvaluationItem) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -48,11 +52,13 @@ public class InternshipEvaluationItemDAO {
 		
 			stmt.setInt(1, idInternshipEvaluationItem);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			rs.next();
 			return (rs.getInt("total") > 0);
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -63,12 +69,13 @@ public class InternshipEvaluationItemDAO {
 	public List<InternshipEvaluationItem> listAll(boolean onlyActives) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT * FROM internshipevaluationitem " + (onlyActives ? " WHERE active = 1 " : "") + " ORDER BY type, sequence");
+			rs = stmt.executeQuery("SELECT * FROM internshipevaluationitem " + (onlyActives ? " WHERE active = 1 " : "") + " ORDER BY type, sequence");
 			List<InternshipEvaluationItem> list = new ArrayList<InternshipEvaluationItem>();
 			
 			while(rs.next()){
@@ -77,6 +84,8 @@ public class InternshipEvaluationItemDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -87,12 +96,13 @@ public class InternshipEvaluationItemDAO {
 	public List<InternshipEvaluationItem> listByDepartment(int idDepartment, boolean onlyActives) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT * FROM internshipevaluationitem WHERE idDepartment=" + String.valueOf(idDepartment) + (onlyActives ? " AND active = 1 " : "") + " ORDER BY type, sequence");
+			rs = stmt.executeQuery("SELECT * FROM internshipevaluationitem WHERE idDepartment=" + String.valueOf(idDepartment) + (onlyActives ? " AND active = 1 " : "") + " ORDER BY type, sequence");
 			List<InternshipEvaluationItem> list = new ArrayList<InternshipEvaluationItem>();
 			
 			while(rs.next()){
@@ -101,6 +111,8 @@ public class InternshipEvaluationItemDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -112,6 +124,7 @@ public class InternshipEvaluationItemDAO {
 		boolean insert = (item.getIdInternshipEvaluationItem() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -128,9 +141,10 @@ public class InternshipEvaluationItemDAO {
 					stmt = conn.prepareStatement("INSERT INTO internshipevaluationitem(idDepartment, description, ponderosity, active, sequence, type) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 					
 					Statement stmt2 = conn.createStatement();
-					ResultSet rs = stmt2.executeQuery("SELECT COUNT(*) as total FROM internshipevaluationitem WHERE idDepartment=" + String.valueOf(item.getDepartment().getIdDepartment()));
+					rs = stmt2.executeQuery("SELECT COUNT(*) as total FROM internshipevaluationitem WHERE idDepartment=" + String.valueOf(item.getDepartment().getIdDepartment()));
 					rs.next();
 					item.setSequence(rs.getInt("total") + 1);
+					rs.close();
 					stmt2.close();
 				}else{
 					stmt = ConnectionDAO.getInstance().getConnection().prepareStatement("UPDATE internshipevaluationitem SET idDepartment=?, description=?, ponderosity=?, active=?, sequence=?, type=? WHERE idInternshipEvaluationItem=?");
@@ -150,7 +164,7 @@ public class InternshipEvaluationItemDAO {
 				stmt.execute();
 				
 				if(insert){
-					ResultSet rs = stmt.getGeneratedKeys();
+					rs = stmt.getGeneratedKeys();
 					
 					if(rs.next()){
 						item.setIdInternshipEvaluationItem(rs.getInt(1));
@@ -160,6 +174,8 @@ public class InternshipEvaluationItemDAO {
 			
 			return item.getIdInternshipEvaluationItem();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -201,18 +217,20 @@ public class InternshipEvaluationItemDAO {
 	public void moveUp(int idInternshipEvaluationItem) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement("SELECT sequence, type, idDepartment FROM internshipevaluationitem WHERE idInternshipEvaluationItem=?");
 			stmt.setInt(1, idInternshipEvaluationItem);
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				int sequence = rs.getInt("sequence");
 				int type = rs.getInt("type");
 				int idDepartment = rs.getInt("idDepartment");
 				
+				rs.close();
 				stmt.close();
 				stmt = conn.prepareStatement("SELECT idInternshipEvaluationItem FROM internshipevaluationitem WHERE idDepartment=? AND sequence < ? AND type=? ORDER BY sequence DESC");
 				stmt.setInt(1, idDepartment);
@@ -247,6 +265,8 @@ public class InternshipEvaluationItemDAO {
 				}
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -257,18 +277,20 @@ public class InternshipEvaluationItemDAO {
 	public void moveDown(int idInternshipEvaluationItem) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement("SELECT idDepartment, sequence, type FROM internshipevaluationitem WHERE idInternshipEvaluationItem=?");
 			stmt.setInt(1, idInternshipEvaluationItem);
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				int sequence = rs.getInt("sequence");
 				int type = rs.getInt("type");
 				int idDepartment = rs.getInt("idDepartment");
 				
+				rs.close();
 				stmt.close();
 				stmt = conn.prepareStatement("SELECT idInternshipEvaluationItem FROM internshipevaluationitem WHERE idDepartment=? AND sequence > ? AND type=? ORDER BY sequence");
 				stmt.setInt(1, idDepartment);
@@ -303,6 +325,8 @@ public class InternshipEvaluationItemDAO {
 				}
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

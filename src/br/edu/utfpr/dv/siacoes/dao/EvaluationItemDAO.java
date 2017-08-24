@@ -16,6 +16,7 @@ public class EvaluationItemDAO {
 	public EvaluationItem findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -23,7 +24,7 @@ public class EvaluationItemDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -31,6 +32,8 @@ public class EvaluationItemDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -41,6 +44,7 @@ public class EvaluationItemDAO {
 	public boolean hasScores(int idEvaluationItem) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -48,11 +52,13 @@ public class EvaluationItemDAO {
 		
 			stmt.setInt(1, idEvaluationItem);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			rs.next();
 			return (rs.getInt("total") > 0);
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -63,12 +69,13 @@ public class EvaluationItemDAO {
 	public List<EvaluationItem> listAll(boolean onlyActives) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT * FROM evaluationitem " + (onlyActives ? " WHERE active = 1 " : "") + " ORDER BY stage, type, sequence");
+			rs = stmt.executeQuery("SELECT * FROM evaluationitem " + (onlyActives ? " WHERE active = 1 " : "") + " ORDER BY stage, type, sequence");
 			List<EvaluationItem> list = new ArrayList<EvaluationItem>();
 			
 			while(rs.next()){
@@ -77,6 +84,8 @@ public class EvaluationItemDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -87,12 +96,13 @@ public class EvaluationItemDAO {
 	public List<EvaluationItem> listByDepartment(int idDepartment, boolean onlyActives) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT * FROM evaluationitem WHERE idDepartment=" + String.valueOf(idDepartment) + (onlyActives ? " AND active = 1 " : "") + " ORDER BY stage, type, sequence");
+			rs = stmt.executeQuery("SELECT * FROM evaluationitem WHERE idDepartment=" + String.valueOf(idDepartment) + (onlyActives ? " AND active = 1 " : "") + " ORDER BY stage, type, sequence");
 			List<EvaluationItem> list = new ArrayList<EvaluationItem>();
 			
 			while(rs.next()){
@@ -101,6 +111,8 @@ public class EvaluationItemDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -111,12 +123,13 @@ public class EvaluationItemDAO {
 	public List<EvaluationItem> listByStage(int stage, int idDepartment, boolean onlyActives) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT * FROM evaluationitem WHERE idDepartment=" + String.valueOf(idDepartment) + " AND stage = " + String.valueOf(stage) + (onlyActives ? " AND active = 1 " : "") + " ORDER BY type, sequence");
+			rs = stmt.executeQuery("SELECT * FROM evaluationitem WHERE idDepartment=" + String.valueOf(idDepartment) + " AND stage = " + String.valueOf(stage) + (onlyActives ? " AND active = 1 " : "") + " ORDER BY type, sequence");
 			List<EvaluationItem> list = new ArrayList<EvaluationItem>();
 			
 			while(rs.next()){
@@ -125,6 +138,8 @@ public class EvaluationItemDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -136,6 +151,7 @@ public class EvaluationItemDAO {
 		boolean insert = (item.getIdEvaluationItem() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -152,9 +168,10 @@ public class EvaluationItemDAO {
 					stmt = conn.prepareStatement("INSERT INTO evaluationitem(idDepartment, description, ponderosity, stage, active, sequence, type) VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 					
 					Statement stmt2 = conn.createStatement();
-					ResultSet rs = stmt2.executeQuery("SELECT COUNT(*) as total FROM evaluationitem WHERE idDepartment=" + String.valueOf(item.getDepartment().getIdDepartment()) + " AND stage = " + String.valueOf(item.getStage()));
+					rs = stmt2.executeQuery("SELECT COUNT(*) as total FROM evaluationitem WHERE idDepartment=" + String.valueOf(item.getDepartment().getIdDepartment()) + " AND stage = " + String.valueOf(item.getStage()));
 					rs.next();
 					item.setSequence(rs.getInt("total") + 1);
+					rs.close();
 					stmt2.close();
 				}else{
 					stmt = conn.prepareStatement("UPDATE evaluationitem SET idDepartment=?, description=?, ponderosity=?, stage=?, active=?, sequence=?, type=? WHERE idEvaluationItem=?");
@@ -175,7 +192,7 @@ public class EvaluationItemDAO {
 				stmt.execute();
 				
 				if(insert){
-					ResultSet rs = stmt.getGeneratedKeys();
+					rs = stmt.getGeneratedKeys();
 					
 					if(rs.next()){
 						item.setIdEvaluationItem(rs.getInt(1));
@@ -185,6 +202,8 @@ public class EvaluationItemDAO {
 			
 			return item.getIdEvaluationItem();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -227,13 +246,14 @@ public class EvaluationItemDAO {
 	public void moveUp(int idEvaluationItem) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement("SELECT sequence, stage, type, idDepartment FROM evaluationitem WHERE idEvaluationItem=?");
 			
 			stmt.setInt(1, idEvaluationItem);
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				int sequence = rs.getInt("sequence");
@@ -241,6 +261,7 @@ public class EvaluationItemDAO {
 				int type = rs.getInt("type");
 				int idDepartment = rs.getInt("idDepartment");
 				
+				rs.close();
 				stmt.close();
 				stmt = conn.prepareStatement("SELECT idEvaluationItem FROM evaluationitem WHERE idDepartment=? AND sequence < ? AND stage=? AND type=? ORDER BY sequence DESC");
 				stmt.setInt(1, idDepartment);
@@ -276,6 +297,8 @@ public class EvaluationItemDAO {
 				}
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -286,13 +309,14 @@ public class EvaluationItemDAO {
 	public void moveDown(int idEvaluationItem) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement("SELECT idDepartment, sequence, stage, type FROM evaluationitem WHERE idEvaluationItem=?");
 			
 			stmt.setInt(1, idEvaluationItem);
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				int sequence = rs.getInt("sequence");
@@ -300,6 +324,7 @@ public class EvaluationItemDAO {
 				int type = rs.getInt("type");
 				int idDepartment = rs.getInt("idDepartment");
 				
+				rs.close();
 				stmt.close();
 				stmt = conn.prepareStatement("SELECT idEvaluationItem FROM evaluationitem WHERE idDepartment=? AND sequence > ? AND stage=? AND type=? ORDER BY sequence");
 				stmt.setInt(1, idDepartment);
@@ -335,6 +360,8 @@ public class EvaluationItemDAO {
 				}
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

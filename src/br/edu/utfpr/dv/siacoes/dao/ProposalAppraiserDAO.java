@@ -28,91 +28,139 @@ public class ProposalAppraiserDAO {
 	}
 
 	public List<ProposalAppraiser> listAppraisers(int idProposal) throws SQLException{
-		Statement stmt = this.conn.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join \"user\" appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposal = " + String.valueOf(idProposal));
-		List<ProposalAppraiser> list = new ArrayList<ProposalAppraiser>();
+		ResultSet rs = null;
+		Statement stmt = null;
 		
-		while(rs.next()){
-			list.add(this.loadObject(rs));
+		try{
+			stmt = this.conn.createStatement();
+			rs = stmt.executeQuery("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join \"user\" appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposal = " + String.valueOf(idProposal));
+			List<ProposalAppraiser> list = new ArrayList<ProposalAppraiser>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
-		
-		return list;
 	}
 	
 	public ProposalAppraiser findById(int id) throws SQLException{
-		PreparedStatement stmt = this.conn.prepareStatement("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join \"user\" appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposalAppraiser = ?");
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, id);
-		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
+		try{
+			stmt = this.conn.prepareStatement("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join \"user\" appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposalAppraiser = ?");
+			
+			stmt.setInt(1, id);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
 	}
 	
 	public ProposalFeedback findFeedback(int id) throws SQLException{
-		PreparedStatement stmt = this.conn.prepareStatement("SELECT proposalappraiser.feedback FROM proposalappraiser WHERE idProposalAppraiser = ?");
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, id);
-		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return ProposalFeedback.valueOf(rs.getInt("feedback"));
-		}else{
-			return ProposalFeedback.NONE;
+		try{
+			stmt = this.conn.prepareStatement("SELECT proposalappraiser.feedback FROM proposalappraiser WHERE idProposalAppraiser = ?");
+			
+			stmt.setInt(1, id);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return ProposalFeedback.valueOf(rs.getInt("feedback"));
+			}else{
+				return ProposalFeedback.NONE;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
 	}
 	
 	public ProposalAppraiser findByAppraiser(int idProposal, int idAppraiser) throws SQLException{
-		PreparedStatement stmt = this.conn.prepareStatement("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join \"user\" appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposal = ? AND idAppraiser = ?");
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
 		
-		stmt.setInt(1, idProposal);
-		stmt.setInt(2, idAppraiser);
-		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()){
-			return this.loadObject(rs);
-		}else{
-			return null;
+		try{
+			stmt = this.conn.prepareStatement("SELECT proposalappraiser.*, appraiser.name as appraiserName FROM proposalappraiser inner join \"user\" appraiser on appraiser.idUser=proposalappraiser.idAppraiser WHERE idProposal = ? AND idAppraiser = ?");
+			
+			stmt.setInt(1, idProposal);
+			stmt.setInt(2, idAppraiser);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
 	}
 	
 	public int save(ProposalAppraiser appraiser) throws SQLException{
 		boolean insert = (appraiser.getIdProposalAppraiser() == 0);
-		PreparedStatement stmt;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
-		if(insert){
-			stmt = this.conn.prepareStatement("INSERT INTO proposalappraiser(idProposal, idAppraiser, feedback, comments, allowEditing) VALUES(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-		}else{
-			stmt = this.conn.prepareStatement("UPDATE proposalappraiser SET idProposal=?, idAppraiser=?, feedback=?, comments=?, allowEditing=? WHERE idProposalAppraiser=?");
-		}
-		
-		stmt.setInt(1, appraiser.getProposal().getIdProposal());
-		stmt.setInt(2, appraiser.getAppraiser().getIdUser());
-		stmt.setInt(3, appraiser.getFeedback().getValue());
-		stmt.setString(4, appraiser.getComments());
-		stmt.setInt(5, (appraiser.isAllowEditing() ? 1 : 0));
-		
-		if(!insert){
-			stmt.setInt(6, appraiser.getIdProposalAppraiser());
-		}
-		
-		stmt.execute();
-		
-		if(insert){
-			ResultSet rs = stmt.getGeneratedKeys();
-			
-			if(rs.next()){
-				appraiser.setIdProposalAppraiser(rs.getInt(1));
+		try{
+			if(insert){
+				stmt = this.conn.prepareStatement("INSERT INTO proposalappraiser(idProposal, idAppraiser, feedback, comments, allowEditing) VALUES(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			}else{
+				stmt = this.conn.prepareStatement("UPDATE proposalappraiser SET idProposal=?, idAppraiser=?, feedback=?, comments=?, allowEditing=? WHERE idProposalAppraiser=?");
 			}
+			
+			stmt.setInt(1, appraiser.getProposal().getIdProposal());
+			stmt.setInt(2, appraiser.getAppraiser().getIdUser());
+			stmt.setInt(3, appraiser.getFeedback().getValue());
+			stmt.setString(4, appraiser.getComments());
+			stmt.setInt(5, (appraiser.isAllowEditing() ? 1 : 0));
+			
+			if(!insert){
+				stmt.setInt(6, appraiser.getIdProposalAppraiser());
+			}
+			
+			stmt.execute();
+			
+			if(insert){
+				rs = stmt.getGeneratedKeys();
+				
+				if(rs.next()){
+					appraiser.setIdProposalAppraiser(rs.getInt(1));
+				}
+			}
+			
+			return appraiser.getIdProposalAppraiser();
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
-		
-		return appraiser.getIdProposalAppraiser();
 	}
 	
 	private ProposalAppraiser loadObject(ResultSet rs) throws SQLException{

@@ -28,6 +28,7 @@ import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryStudentBO;
 import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
+import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.bo.ThesisBO;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
@@ -37,6 +38,7 @@ import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.JuryStudent;
 import br.edu.utfpr.dv.siacoes.model.Project;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.TermOfApprovalReport;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
@@ -69,11 +71,18 @@ public class CalendarView extends ListView {
 	public CalendarView(){
 		super(SystemModule.SIGET);
 		
+		Semester semester;
+		try {
+			semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+		} catch (Exception e) {
+			semester = new Semester();
+		}
+		
 		this.comboSemester = new SemesterComboBox();
-		this.comboSemester.select(DateUtils.getSemester());
+		this.comboSemester.select(semester.getSemester());
 		
 		this.textYear = new YearField();
-		this.textYear.setValue(String.valueOf(DateUtils.getYear()));
+		this.textYear.setYear(semester.getYear());
 		
 		this.addFilterField(new HorizontalLayout(this.comboSemester, this.textYear));
 		

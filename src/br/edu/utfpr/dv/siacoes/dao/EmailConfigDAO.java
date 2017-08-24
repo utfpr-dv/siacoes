@@ -13,12 +13,13 @@ public class EmailConfigDAO {
 	public EmailConfig loadConfiguration() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT * FROM emailconfig");
+			rs = stmt.executeQuery("SELECT * FROM emailconfig");
 			
 			if(rs.next()){
 				EmailConfig email = new EmailConfig();
@@ -37,6 +38,8 @@ public class EmailConfigDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -48,6 +51,7 @@ public class EmailConfigDAO {
 		boolean insert = (email.getIdEmailConfig() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -73,7 +77,7 @@ public class EmailConfigDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					email.setIdEmailConfig(rs.getInt(1));
@@ -82,6 +86,8 @@ public class EmailConfigDAO {
 			
 			return email.getIdEmailConfig();
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())

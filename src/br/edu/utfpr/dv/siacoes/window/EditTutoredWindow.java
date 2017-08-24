@@ -11,14 +11,17 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.FinalDocumentBO;
 import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
+import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.bo.ThesisBO;
 import br.edu.utfpr.dv.siacoes.model.Document;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
@@ -75,6 +78,7 @@ public class EditTutoredWindow extends EditWindow {
 		Thesis thesis = new Thesis();
 		FinalDocument projectFinalDocument = new FinalDocument();
 		FinalDocument thesisFinalDocument = new FinalDocument();
+		Semester semester = new Semester();
 		
 		try {
 			ProposalBO bo = new ProposalBO();
@@ -113,6 +117,12 @@ public class EditTutoredWindow extends EditWindow {
 			} catch (Exception e) {
 				Notification.show("Carregar Orientado", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
+		}
+		
+		try {
+			semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+		} catch (Exception e) {
+			Notification.show("Carregar Orientado", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 		
 		this.proposal = proposal;
@@ -207,7 +217,7 @@ public class EditTutoredWindow extends EditWindow {
             	UI.getCurrent().addWindow(new EditFinalDocumentWindow(EditTutoredWindow.this.projectFinalDocument, null));
             }
         });
-		this.buttonProjectFinalDocument.setVisible((this.projectFinalDocument != null) && (this.projectFinalDocument.getIdFinalDocument() != 0) && (this.projectFinalDocument.getProject().getSemester() == DateUtils.getSemester()) && (this.projectFinalDocument.getProject().getYear() == DateUtils.getYear()));
+		this.buttonProjectFinalDocument.setVisible((this.projectFinalDocument != null) && (this.projectFinalDocument.getIdFinalDocument() != 0) && (this.projectFinalDocument.getProject().getSemester() == semester.getSemester()) && (this.projectFinalDocument.getProject().getYear() == semester.getYear()));
 		
 		HorizontalLayout h6 = new HorizontalLayout(this.textProjectSemester, this.textProjectSubmissionDate, this.buttonProjectDownloadFile, this.buttonProjectFinalDocument);
 		h6.setSpacing(true);
@@ -258,7 +268,7 @@ public class EditTutoredWindow extends EditWindow {
             	UI.getCurrent().addWindow(new EditFinalDocumentWindow(EditTutoredWindow.this.thesisFinalDocument, null));
             }
         });
-		this.buttonThesisFinalDocument.setVisible((this.thesisFinalDocument != null) && (this.thesisFinalDocument.getIdFinalDocument() != 0) && (this.thesisFinalDocument.getThesis().getSemester() == DateUtils.getSemester()) && (this.thesisFinalDocument.getThesis().getYear() == DateUtils.getYear()));
+		this.buttonThesisFinalDocument.setVisible((this.thesisFinalDocument != null) && (this.thesisFinalDocument.getIdFinalDocument() != 0) && (this.thesisFinalDocument.getThesis().getSemester() == semester.getSemester()) && (this.thesisFinalDocument.getThesis().getYear() == semester.getYear()));
 		
 		HorizontalLayout h9 = new HorizontalLayout(this.textThesisSemester, this.textThesisSubmissionDate, this.buttonThesisDownloadFile, this.buttonThesisFinalDocument);
 		h9.setSpacing(true);

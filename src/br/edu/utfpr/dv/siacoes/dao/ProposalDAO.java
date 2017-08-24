@@ -21,13 +21,14 @@ public class ProposalDAO {
 	public List<User> listSupervisors(int idProposal) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			List<User> list = new ArrayList<User>();
 			
-			ResultSet rs = stmt.executeQuery("SELECT \"user\".idUser, \"user\".name " +
+			rs = stmt.executeQuery("SELECT \"user\".idUser, \"user\".name " +
 					"FROM \"user\" INNER JOIN proposal ON \"user\".idUser=proposal.idSupervisor " +
 					"WHERE proposal.idProposal=" + String.valueOf(idProposal) +
 					" UNION " +
@@ -55,6 +56,8 @@ public class ProposalDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -65,10 +68,11 @@ public class ProposalDAO {
 	public Proposal findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName " +
+			stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName, department.idCampus " +
 					"FROM proposal INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
 					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
@@ -77,7 +81,7 @@ public class ProposalDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -85,6 +89,8 @@ public class ProposalDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -95,6 +101,7 @@ public class ProposalDAO {
 	public byte[] findProposalFile(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -102,7 +109,7 @@ public class ProposalDAO {
 		
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return rs.getBytes("file");
@@ -110,6 +117,8 @@ public class ProposalDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -120,6 +129,7 @@ public class ProposalDAO {
 	public Proposal findByProject(int idProject) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -127,7 +137,7 @@ public class ProposalDAO {
 		
 			stmt.setInt(1, idProject);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.findById(rs.getInt("idProposal"));
@@ -135,6 +145,8 @@ public class ProposalDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -145,6 +157,7 @@ public class ProposalDAO {
 	public Proposal findCurrentProposal(int idStudent, int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -162,7 +175,7 @@ public class ProposalDAO {
 			}
 			
 			if(project == null){
-				stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName " +
+				stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName, department.idCampus " +
 						"FROM proposal INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
 						"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 						"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
@@ -174,7 +187,7 @@ public class ProposalDAO {
 				stmt.setInt(3, semester);
 				stmt.setInt(4, year);
 				
-				ResultSet rs = stmt.executeQuery();
+				rs = stmt.executeQuery();
 				
 				if(rs.next()){
 					return this.loadObject(rs);
@@ -185,6 +198,8 @@ public class ProposalDAO {
 				return this.findById(project.getProposal().getIdProposal());
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -195,10 +210,11 @@ public class ProposalDAO {
 	public Proposal findLastProposal(int idStudent, int idDepartment) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName " +
+			stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName, department.idCampus " +
 					"FROM proposal INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
 					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
@@ -209,7 +225,7 @@ public class ProposalDAO {
 			stmt.setInt(1, idStudent);
 			stmt.setInt(2, idDepartment);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -217,6 +233,8 @@ public class ProposalDAO {
 				return null;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -227,11 +245,12 @@ public class ProposalDAO {
 	public List<Proposal> listBySemester(int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-				"SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName, department.name AS departmentName " +
+				"SELECT proposal.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName, department.name AS departmentName, department.idCampus " +
 				"FROM proposal INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
 				"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 				"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
@@ -242,7 +261,7 @@ public class ProposalDAO {
 			stmt.setInt(2, semester);
 			stmt.setInt(3, year);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			List<Proposal> list = new ArrayList<Proposal>();
 			
 			while(rs.next()){
@@ -251,6 +270,8 @@ public class ProposalDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -261,10 +282,11 @@ public class ProposalDAO {
 	public List<Proposal> listByAppraiser(int idAppraiser, int semester, int year) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName " +
+			stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName, department.idCampus " +
 					"FROM proposal INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
 					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
@@ -277,7 +299,7 @@ public class ProposalDAO {
 			stmt.setInt(2, semester);
 			stmt.setInt(3, year);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			List<Proposal> list = new ArrayList<Proposal>();
 			
 			while(rs.next()){
@@ -286,6 +308,8 @@ public class ProposalDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -296,10 +320,11 @@ public class ProposalDAO {
 	public List<Proposal> listByStudent(int idStudent) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName " +
+			stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName, department.idCampus " +
 					"FROM proposal inner join \"user\" student on student.idUser=proposal.idStudent " +
 					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
@@ -308,7 +333,7 @@ public class ProposalDAO {
 		
 			stmt.setInt(1, idStudent);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			List<Proposal> list = new ArrayList<Proposal>();
 			
 			while(rs.next()){
@@ -317,6 +342,8 @@ public class ProposalDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -327,10 +354,11 @@ public class ProposalDAO {
 	public List<Proposal> listBySupervisor(int idSupervisor) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName " +
+			stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName, department.idCampus " +
 					"FROM proposal INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
 					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
@@ -340,7 +368,7 @@ public class ProposalDAO {
 			stmt.setInt(1, idSupervisor);
 			stmt.setInt(2, idSupervisor);
 			
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			List<Proposal> list = new ArrayList<Proposal>();
 			
 			while(rs.next()){
@@ -349,6 +377,8 @@ public class ProposalDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -359,15 +389,19 @@ public class ProposalDAO {
 	public int getProposalStage(int idProposal) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			ResultSet rs = stmt.executeQuery("SELECT idProject FROM project WHERE idProposal=" + String.valueOf(idProposal));
+			rs = stmt.executeQuery("SELECT idProject FROM project WHERE idProposal=" + String.valueOf(idProposal));
 			
 			if(rs.next()){
-				rs = stmt.executeQuery("SELECT idThesis FROM thesis WHERE idProject=" + String.valueOf(rs.getInt("idProject")));
+				int idProject = rs.getInt("idProject");
+				
+				rs.close();
+				rs = stmt.executeQuery("SELECT idThesis FROM thesis WHERE idProject=" + String.valueOf(idProject));
 				
 				if(rs.next()){
 					return 2;
@@ -378,6 +412,8 @@ public class ProposalDAO {
 				return 0;
 			}
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -388,12 +424,13 @@ public class ProposalDAO {
 	public List<Proposal> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName " +
+			rs = stmt.executeQuery("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName, department.idCampus " +
 					"FROM proposal INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
 					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 					"INNER JOIN \"user\" supervisor on supervisor.idUser=proposal.idSupervisor " +
@@ -407,6 +444,8 @@ public class ProposalDAO {
 			
 			return list;
 		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -417,6 +456,7 @@ public class ProposalDAO {
 	public int save(Proposal proposal) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -457,7 +497,7 @@ public class ProposalDAO {
 			stmt.execute();
 			
 			if(insert){
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					proposal.setIdProposal(rs.getInt(1));
@@ -489,6 +529,8 @@ public class ProposalDAO {
 			throw e;
 		}finally{
 			conn.setAutoCommit(true);
+			if((rs != null) && !rs.isClosed())
+				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -518,6 +560,7 @@ public class ProposalDAO {
 		p.setYear(rs.getInt("year"));
 		p.getDepartment().setIdDepartment(rs.getInt("idDepartment"));
 		p.getDepartment().setName(rs.getString("departmentName"));
+		p.getDepartment().getCampus().setIdCampus(rs.getInt("idCampus"));
 		
 		return p;
 	}
