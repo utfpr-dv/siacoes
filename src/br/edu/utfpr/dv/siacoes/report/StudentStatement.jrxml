@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-04-28T14:06:17 -->
+<!-- 2017-08-25T16:04:07 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="StudentStatement" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="764acd4a-1ba3-4380-ab6f-2858cc5be4ec">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -11,8 +11,8 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="cm"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<parameter name="brasao_republica" class="Object"/>
-	<parameter name="logo_utfpr" class="Object"/>
+	<parameter name="brasao_republica" class="java.io.InputStream"/>
+	<parameter name="logo_utfpr" class="java.io.InputStream"/>
 	<parameter name="campus" class="java.lang.String"/>
 	<parameter name="department" class="java.lang.String"/>
 	<queryString>
@@ -80,11 +80,11 @@
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 			</line>
-			<image>
+			<image isUsingCache="true" onErrorType="Blank">
 				<reportElement x="0" y="0" width="110" height="50" uuid="13caf175-8c2f-46ac-af53-1829619c290d"/>
 				<imageExpression><![CDATA[$P{brasao_republica}]]></imageExpression>
 			</image>
-			<image hAlign="Right">
+			<image hAlign="Right" isUsingCache="true" onErrorType="Blank">
 				<reportElement x="380" y="0" width="100" height="50" uuid="14048bc3-b8a5-47ed-861a-356407fa0c66"/>
 				<imageExpression><![CDATA[$P{logo_utfpr}]]></imageExpression>
 			</image>

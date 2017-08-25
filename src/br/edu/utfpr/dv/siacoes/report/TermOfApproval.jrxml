@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-04-23T15:26:59 -->
+<!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
+<!-- 2017-08-25T16:07:40 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TermOfApproval" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="ca4d5aa2-bbad-4d90-85d3-6dbd5493d023">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -11,8 +11,8 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="cm"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<parameter name="brasao_republica" class="Object"/>
-	<parameter name="logo_utfpr" class="Object"/>
+	<parameter name="brasao_republica" class="java.io.InputStream"/>
+	<parameter name="logo_utfpr" class="java.io.InputStream"/>
 	<parameter name="campus" class="java.lang.String"/>
 	<parameter name="department" class="java.lang.String"/>
 	<queryString>
@@ -65,11 +65,11 @@
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 			</line>
-			<image>
+			<image isUsingCache="true" onErrorType="Blank">
 				<reportElement x="0" y="0" width="100" height="50" uuid="31f90514-894f-4457-8c44-3ce7848801b6"/>
 				<imageExpression><![CDATA[$P{brasao_republica}]]></imageExpression>
 			</image>
-			<image hAlign="Right">
+			<image hAlign="Right" isUsingCache="true" onErrorType="Blank">
 				<reportElement x="380" y="0" width="100" height="50" uuid="220c46ed-d056-4c96-af75-ea6b1fd6b3bb"/>
 				<imageExpression><![CDATA[$P{logo_utfpr}]]></imageExpression>
 			</image>

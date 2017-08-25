@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-05-12T20:57:17 -->
+<!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
+<!-- 2017-08-25T15:44:52 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Attendances" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="730" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="3d913f38-4ce2-4b6a-be5a-ab11a4791d3f">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -11,8 +11,8 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="cm"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<parameter name="logo_utfpr" class="Object"/>
-	<parameter name="brasao_republica" class="Object"/>
+	<parameter name="logo_utfpr" class="java.io.InputStream"/>
+	<parameter name="brasao_republica" class="java.io.InputStream"/>
 	<parameter name="campus" class="java.lang.String"/>
 	<parameter name="department" class="java.lang.String"/>
 	<queryString>
@@ -45,11 +45,11 @@
 				</textElement>
 				<textFieldExpression><![CDATA["MINISTÉRIO DA EDUCAÇÃO\nUNIVERSIDADE TECNOLÓGICA FEDERAL DO PARANÁ\n" + $P{campus} + "\n" + $P{department}]]></textFieldExpression>
 			</textField>
-			<image>
+			<image isUsingCache="true" onErrorType="Blank">
 				<reportElement x="0" y="0" width="110" height="50" uuid="40e8170f-3902-4094-94a8-590bc7870322"/>
 				<imageExpression><![CDATA[$P{brasao_republica}]]></imageExpression>
 			</image>
-			<image hAlign="Right">
+			<image hAlign="Right" isUsingCache="true" onErrorType="Blank">
 				<reportElement x="630" y="0" width="100" height="50" uuid="6c7ae643-d83d-4cd6-ad37-9945c88f753b"/>
 				<imageExpression><![CDATA[$P{logo_utfpr}]]></imageExpression>
 			</image>

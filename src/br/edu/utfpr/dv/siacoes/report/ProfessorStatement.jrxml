@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-04-28T14:05:13 -->
+<!-- 2017-08-25T15:56:22 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ProfessorStatement" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="913fa94e-8ee3-4f00-b27a-dcb65cd3decc">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -12,8 +12,8 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="cm"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<parameter name="brasao_republica" class="Object"/>
-	<parameter name="logo_utfpr" class="Object"/>
+	<parameter name="brasao_republica" class="java.io.InputStream"/>
+	<parameter name="logo_utfpr" class="java.io.InputStream"/>
 	<parameter name="campus" class="java.lang.String"/>
 	<parameter name="department" class="java.lang.String"/>
 	<queryString>
@@ -81,11 +81,11 @@
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 			</line>
-			<image>
+			<image isUsingCache="true" onErrorType="Blank">
 				<reportElement x="0" y="0" width="110" height="50" uuid="eec4e031-d660-4809-b726-428603c93d6f"/>
 				<imageExpression><![CDATA[$P{brasao_republica}]]></imageExpression>
 			</image>
-			<image hAlign="Right">
+			<image hAlign="Right" isUsingCache="true" onErrorType="Blank">
 				<reportElement x="380" y="0" width="100" height="50" uuid="14723a95-10db-4448-8e50-6e294b943454"/>
 				<imageExpression><![CDATA[$P{logo_utfpr}]]></imageExpression>
 			</image>

@@ -449,7 +449,7 @@ public class UserDAO {
 						"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
 						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
 						"WHERE login <> 'admin' " + 
-						(!name.isEmpty() ? " AND \"user\".name LIKE ? " : "") +
+						(!name.isEmpty() ? " AND \"user\".name ILIKE ? " : "") +
 						(profile >= 0 ? " AND \"user\".profile = ? " : "") +
 						(onlyActives ? " AND \"user\".active = 1 " : "") +
 						(onlyExternal ? " AND \"user\".external = 1 " : "") +

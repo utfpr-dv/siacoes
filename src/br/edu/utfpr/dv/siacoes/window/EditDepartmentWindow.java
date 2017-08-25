@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +25,7 @@ import com.vaadin.ui.Upload.SucceededListener;
 import br.edu.utfpr.dv.siacoes.bo.DepartmentBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.model.Department;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditDepartmentWindow extends EditWindow {
@@ -68,6 +70,7 @@ public class EditDepartmentWindow extends EditWindow {
 		this.uploadLogo = new Upload("Enviar Logotipo", listener);
 		this.uploadLogo.addSucceededListener(listener);
 		this.uploadLogo.setButtonCaption("Enviar");
+		this.uploadLogo.setImmediate(true);
 		
 		this.imageLogo = new Image();
 		this.imageLogo.setStyleName("ImageLogo");
@@ -102,8 +105,9 @@ public class EditDepartmentWindow extends EditWindow {
 	                public InputStream getStream() {
 	                    return new ByteArrayInputStream(department.getLogo());
 	                }
-	            }, "filename.png");
+	            }, "filename" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(DateUtils.getNow().getTime()) + ".png");
 	
+			resource.setCacheTime(0);
 		    this.imageLogo.setSource(resource);
 		}
 	}

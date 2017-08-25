@@ -4,8 +4,11 @@ import java.awt.Image;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -174,7 +177,12 @@ public class ReportUtils {
         HashMap<String, Object> fillParameters = new HashMap<String, Object>();
         String campus = "";
         String department = "";
-        Image logoUTFPR = new ImageIcon(this.getClass().getClassLoader().getResource("br/edu/utfpr/dv/siacoes/images/assinatura_UTFPR.png")).getImage();
+        InputStream logoUTFPR = null;
+		try {
+			logoUTFPR = new ByteArrayInputStream(Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("br/edu/utfpr/dv/siacoes/images/assinatura_UTFPR.png").toString().replace("file:/", ""))));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
         
         try{
         	DepartmentBO bo = new DepartmentBO();
@@ -186,12 +194,17 @@ public class ReportUtils {
         	Campus c = cbo.findById(d.getCampus().getIdCampus());
         	
         	campus = "CÂMPUS " + c.getName();
-        	logoUTFPR = new ImageIcon(c.getLogo()).getImage();
+        	logoUTFPR = new ByteArrayInputStream(c.getLogo());
         }catch(Exception e){
         	e.printStackTrace();
         }
         
-        Image brasaoRepublica = new ImageIcon(this.getClass().getClassLoader().getResource("br/edu/utfpr/dv/siacoes/images/brasao_republica.png")).getImage();
+        InputStream brasaoRepublica = null;
+		try {
+			brasaoRepublica = new ByteArrayInputStream(Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("br/edu/utfpr/dv/siacoes/images/brasao_republica.png").toString().replace("file:/", ""))));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
         
         fillParameters.put("brasao_republica", brasaoRepublica);
         fillParameters.put("logo_utfpr", logoUTFPR);

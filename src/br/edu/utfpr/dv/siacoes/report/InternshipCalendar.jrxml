@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-05-26T17:40:54 -->
+<!-- 2017-08-25T15:47:53 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Calendar" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="730" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="5a459e48-9f62-41ad-8638-a22a2744ab84">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -11,8 +11,8 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="cm"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<parameter name="brasao_republica" class="Object"/>
-	<parameter name="logo_utfpr" class="Object"/>
+	<parameter name="brasao_republica" class="java.io.InputStream"/>
+	<parameter name="logo_utfpr" class="java.io.InputStream"/>
 	<parameter name="campus" class="java.lang.String"/>
 	<parameter name="department" class="java.lang.String"/>
 	<queryString>
@@ -51,11 +51,11 @@
 				</textElement>
 				<textFieldExpression><![CDATA["MINISTÉRIO DA EDUCAÇÃO\nUNIVERSIDADE TECNOLÓGICA FEDERAL DO PARANÁ\n" + $P{campus} + "\n" + $P{department}]]></textFieldExpression>
 			</textField>
-			<image>
+			<image isUsingCache="true" onErrorType="Blank">
 				<reportElement x="0" y="0" width="110" height="50" uuid="8f3f77d0-b324-46b6-b8af-1939b34459a9"/>
 				<imageExpression><![CDATA[$P{brasao_republica}]]></imageExpression>
 			</image>
-			<image hAlign="Right">
+			<image hAlign="Right" isUsingCache="true" onErrorType="Blank">
 				<reportElement x="630" y="0" width="100" height="50" uuid="13de73e8-d5ee-42ea-990f-aadfe038d506"/>
 				<imageExpression><![CDATA[$P{logo_utfpr}]]></imageExpression>
 			</image>
