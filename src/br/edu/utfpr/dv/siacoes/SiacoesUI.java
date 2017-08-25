@@ -10,7 +10,6 @@ import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 
-import br.edu.utfpr.dv.siacoes.model.InternshipEvaluationItem;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.view.ActivitySubmissionView;
 import br.edu.utfpr.dv.siacoes.view.ActivityGroupView;
@@ -59,7 +58,7 @@ import br.edu.utfpr.dv.siacoes.view.UserView;
 import com.vaadin.ui.UI;
 
 @SuppressWarnings("serial")
-@Theme("default")
+@Theme("facebook")
 public class SiacoesUI extends UI {
 
 	@WebServlet(value = "/*", asyncSupported = true)

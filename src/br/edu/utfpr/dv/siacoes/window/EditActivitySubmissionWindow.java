@@ -1,8 +1,10 @@
 package br.edu.utfpr.dv.siacoes.window;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
@@ -11,7 +13,10 @@ import java.util.logging.Logger;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.server.StreamResource;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.server.StreamResource.StreamSource;
+import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
@@ -70,6 +75,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 	private final TextField textFeedbackUser;
 	private final TextField textDescription;
 	private final TabSheet tabContainer;
+	private final VerticalLayout tab3;
 	
 	public EditActivitySubmissionWindow(ActivitySubmission submission, ListView parentView){
 		super("Editar Submissão", parentView);
@@ -197,19 +203,24 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		
 		this.textComments = new TextArea();
 		this.textComments.setWidth("810px");
-		this.textComments.setHeight("425px");
+		this.textComments.setHeight("370px");
+		
+		this.tab3 = new VerticalLayout();
+		this.tab3.setHeight("370px");
 		
 		this.tabContainer = new TabSheet();
 		this.tabContainer.setWidth("820px");
 		this.tabContainer.addTab(tab1, "Atividade");
 		this.tabContainer.addTab(this.textComments, "Observações");
+		this.tabContainer.addTab(this.tab3, "Comprovante");
 		
 		this.addField(this.tabContainer);
 		
-		this.addButton(this.buttonDownload);
-		this.prepareDownload();
+		//this.addButton(this.buttonDownload);
+		//this.prepareDownload();
 		
 		this.loadSubmission();
+		this.loadCertificate();
 		this.textDescription.focus();
 	}
 	
@@ -292,6 +303,31 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		
 		if(this.submission.getIdActivitySubmission() == 0){
 			this.buttonDownload.setVisible(false);
+		}
+	}
+	
+	private void loadCertificate(){
+		this.tabContainer.getTab(2).setVisible(false);
+		
+		if(submission.getFile() != null){
+			this.tab3.removeAllComponents();
+			
+			StreamSource s = new StreamResource.StreamSource() {
+				@Override
+				public InputStream getStream() {
+					return new ByteArrayInputStream(submission.getFile());
+				}
+			};
+			
+			StreamResource r = new StreamResource(s, "comprovante.pdf");
+			r.setMIMEType("application/pdf");
+			r.setCacheTime(0);
+			
+			BrowserFrame e = new BrowserFrame(null, r);
+			e.setSizeFull();
+			
+			this.tab3.addComponent(e);
+			this.tabContainer.getTab(2).setVisible(true);
 		}
 	}
 

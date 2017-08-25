@@ -1,0 +1,48 @@
+$v-background-color: hsl(0, 0, 99.5%);
+$v-app-background-color: #fff;
+$v-focus-color: hsl(218, 80%, 60%);
+$v-border: 1px solid (v-shade 0.6);
+$v-border-radius: 3px;
+$v-bevel: inset 0 1px 0 v-tint;
+$v-textfield-bevel: false;
+$v-gradient: v-linear 3%;
+$v-shadow: false;
+$valo-menu-background-color: hsl(218, 20%, 98%);
+$v-friendly-color: hsl(163, 61%, 41%);
+$v-error-indicator-color: hsl(349, 66%, 56%);
+$v-font-size: 14px;
+
+@import "../valo/valo";
+
+.light .valo-menu .valo-menu-title {
+  background: $v-app-background-color;
+  color: $v-selection-color;
+  text-shadow: none;
+  border-color: first-color(valo-border($color: $v-app-background-color, $strength: 0.5));
+}
+
+.InvisibleButton {
+  display: none;
+}
+
+.Title{
+  font-size: 36pt;
+  font-weight: bold;
+  text-align: center;
+}
+
+.SubTitle{
+  font-size: 24pt;
+  font-weight: bold;
+  text-align: center;
+}
+
+.ImageHome a img {
+  max-width: 500px;
+  max-height: 300px;
+}
+ 
+.ImageLogo img {
+  max-width: 400px;
+  max-height: 200px;
+}

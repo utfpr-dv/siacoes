@@ -32,7 +32,7 @@ public class CertificateView extends CustomComponent implements View {
 		r.setMIMEType("application/pdf");
 		r.setCacheTime(0);
 		
-		BrowserFrame e = new BrowserFrame("PDF File", r);
+		BrowserFrame e = new BrowserFrame(null, r);
 		e.setSizeFull();
 		
 		this.setCompositionRoot(e);
