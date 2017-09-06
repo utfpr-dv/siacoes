@@ -301,6 +301,7 @@ public class EditUserWindow extends EditWindow {
 			this.user.setRegisterYear(this.textYear.getYear());
 			
 			if(Session.isUserProfessor()){
+				this.user.setInstitution(this.textInstitution.getValue());
 				this.user.setArea(this.textArea.getValue());
 				this.user.setResearch(this.textResearch.getValue());
 				this.user.setLattes(this.textLattes.getValue());

@@ -17,7 +17,6 @@ import com.vaadin.server.StreamResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.BrowserFrame;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
@@ -27,7 +26,6 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
@@ -49,7 +47,6 @@ import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
-import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditActivitySubmissionWindow extends EditWindow {
@@ -70,7 +67,6 @@ public class EditActivitySubmissionWindow extends EditWindow {
 	private final NativeSelect comboFeedback;
 	private final DateField textFeedbackDate;
 	private final TextField textValidatedAmount;
-	private final Button buttonDownload;
 	private final TextArea textComments;
 	private final TextField textFeedbackUser;
 	private final TextField textDescription;
@@ -180,8 +176,6 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			}
 		}
 		
-		this.buttonDownload = new Button("Comprovante");
-		
 		HorizontalLayout h1 = new HorizontalLayout(this.comboCampus, this.comboDepartment);
 		h1.setSpacing(true);
 		
@@ -215,9 +209,6 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		this.tabContainer.addTab(this.tab3, "Comprovante");
 		
 		this.addField(this.tabContainer);
-		
-		//this.addButton(this.buttonDownload);
-		//this.prepareDownload();
 		
 		this.loadSubmission();
 		this.loadCertificate();
@@ -300,10 +291,6 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		this.textFeedbackDate.setValue(this.submission.getFeedbackDate());
 		this.textFeedbackUser.setValue(this.submission.getFeedbackUser().getName());
 		this.textComments.setValue(this.submission.getComments());
-		
-		if(this.submission.getIdActivitySubmission() == 0){
-			this.buttonDownload.setVisible(false);
-		}
 	}
 	
 	private void loadCertificate(){
@@ -373,21 +360,6 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			Notification.show("Salvar Submissão", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
-	
-	private void prepareDownload(){
-		try {
-        	new ExtensionUtils().extendToDownload(this.submission.getIdActivitySubmission() + this.submission.getFileType().getExtension(), this.submission.getFile(), this.buttonDownload);
-    	} catch (Exception e) {
-    		this.buttonDownload.addClickListener(new Button.ClickListener() {
-	            @Override
-	            public void buttonClick(ClickEvent event) {
-	            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            	
-	            	Notification.show("Download do Comprovante", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	            }
-	        });
-		}
-    }
 
 	@SuppressWarnings("serial")
 	class DocumentUploader implements Receiver, SucceededListener {
@@ -431,6 +403,8 @@ public class EditActivitySubmissionWindow extends EditWindow {
 	            submission.setFile(buffer);
 	            
 	            imageFileUploaded.setVisible(true);
+	            
+	            loadCertificate();
 	            
 	            Notification.show("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.", Notification.Type.HUMANIZED_MESSAGE);
 	        } catch (Exception e) {

@@ -80,6 +80,8 @@ public class EditProposalAppraiserWindow extends EditWindow {
 		
 		if(Session.isUserManager(SystemModule.SIGET)){
 			this.addField(this.checkAllowEditing);
+		}else if(!this.appraiser.isAllowEditing()){
+			this.setSaveButtonEnabled(false);
 		}
 		
 		this.loadAppraiser();

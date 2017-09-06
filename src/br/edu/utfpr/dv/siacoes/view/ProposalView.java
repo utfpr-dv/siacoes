@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vaadin.event.EventRouter;
 import com.vaadin.event.SelectionEvent;
 import com.vaadin.event.SelectionEvent.SelectionListener;
 import com.vaadin.ui.Button;
@@ -98,7 +97,18 @@ public class ProposalView extends ListView {
             	ProposalBO bo = new ProposalBO();
             	Proposal p = bo.findById((int)value);
             	
-            	new ExtensionUtils().extendToDownload(p.getTitle() + p.getFileType().getExtension(), p.getFile(), this.buttonDownload);
+            	if(p.getFile() != null){
+            		new ExtensionUtils().extendToDownload(p.getTitle() + p.getFileType().getExtension(), p.getFile(), this.buttonDownload);	
+            	}else{
+            		this.listenerClickDownload = new Button.ClickListener() {
+    		            @Override
+    		            public void buttonClick(ClickEvent event) {
+    		            	Notification.show("Download da Proposta", "O acadêmico ainda não efetuou a submissão da proposta.", Notification.Type.WARNING_MESSAGE);
+    		            }
+    		        };
+    		        
+            		this.buttonDownload.addClickListener(this.listenerClickDownload);
+            	}
         	} catch (Exception e) {
         		this.listenerClickDownload = new Button.ClickListener() {
 		            @Override
