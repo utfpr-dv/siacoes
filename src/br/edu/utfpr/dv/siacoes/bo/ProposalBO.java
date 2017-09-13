@@ -1,7 +1,6 @@
 package br.edu.utfpr.dv.siacoes.bo;
 
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,11 +10,8 @@ import java.util.logging.Logger;
 import br.edu.utfpr.dv.siacoes.dao.ProposalDAO;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
-import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.User;
-import br.edu.utfpr.dv.siacoes.model.Department;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 
 public class ProposalBO {

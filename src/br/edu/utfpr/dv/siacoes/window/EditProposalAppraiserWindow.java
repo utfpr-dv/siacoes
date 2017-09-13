@@ -46,7 +46,7 @@ public class EditProposalAppraiserWindow extends EditWindow {
 	}
 	
 	public EditProposalAppraiserWindow(ProposalAppraiser appraiser, ListView parentView) {
-		super("Editar Avaliador", parentView);
+		super("Emitir Parecer", parentView);
 		
 		if(appraiser == null){
 			this.appraiser = new ProposalAppraiser();
@@ -65,14 +65,17 @@ public class EditProposalAppraiserWindow extends EditWindow {
 	}
 	
 	private void buildWindow(){
+		this.comboAppraiser.setWidth("800px");
+		
 		this.comboFeedback.setNullSelectionAllowed(false);
-		this.comboFeedback.setWidth("400px");
+		this.comboFeedback.setWidth("800px");
 		this.comboFeedback.addItem(ProposalFeedback.NONE);
 		this.comboFeedback.addItem(ProposalFeedback.APPROVED);
 		this.comboFeedback.addItem(ProposalFeedback.APPROVEDWITHRESERVATIONS);
 		this.comboFeedback.addItem(ProposalFeedback.DISAPPROVED);
 		
-		this.textComments.setWidth("400px");
+		this.textComments.setWidth("800px");
+		this.textComments.setHeight("200px");
 		
 		this.addField(this.comboAppraiser);
 		this.addField(this.comboFeedback);

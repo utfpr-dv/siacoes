@@ -32,7 +32,7 @@ import br.edu.utfpr.dv.siacoes.window.EditProposalAppraiserWindow;
 
 public class ProposalFeedbackView extends ListView {
 	
-	public static final String NAME = "proposalsfeedback";
+	public static final String NAME = "proposalfeedback";
 	
 	private final SemesterComboBox comboSemester;
 	private final YearField textYear;
@@ -49,14 +49,13 @@ public class ProposalFeedbackView extends ListView {
 		
 		this.setAddVisible(false);
 		this.setDeleteVisible(false);
-		this.setFiltersVisible(false);
 		
-		this.setEditCaption("Parecer");
+		this.setEditCaption("Emitir Parecer");
 		
 		this.buttonPrintFeedback = new Button("Imprimir Parecer");
 		this.buttonPrintFeedback.setWidth("150px");
 		
-		this.buttonDownloadProposal = new Button("Proposta");
+		this.buttonDownloadProposal = new Button("Down. da Proposta");
 		this.buttonDownloadProposal.setWidth("150px");
 		
 		this.addActionButton(this.buttonPrintFeedback);
@@ -75,6 +74,7 @@ public class ProposalFeedbackView extends ListView {
 		this.getGrid().addColumn("Título", String.class);
 		this.getGrid().addColumn("Acadêmico", String.class);
 		this.getGrid().addColumn("Submissão", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
+		this.getGrid().addColumn("Parecer", String.class);
 		this.getGrid().addSelectionListener(new SelectionListener() {
 			@Override
 			public void select(SelectionEvent event) {
@@ -85,15 +85,19 @@ public class ProposalFeedbackView extends ListView {
 		this.getGrid().getColumns().get(0).setWidth(100);
 		this.getGrid().getColumns().get(1).setWidth(100);
 		this.getGrid().getColumns().get(4).setWidth(125);
+		this.getGrid().getColumns().get(5).setWidth(150);
 		
 		this.prepareDownload();
 		
 		try {
 			ProposalBO bo = new ProposalBO();
+			ProposalAppraiserBO abo = new ProposalAppraiserBO();
 	    	List<Proposal> list = bo.listByAppraiser(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
 	    	
 	    	for(Proposal p : list){
-				Object itemId = this.getGrid().addRow(p.getSemester(), p.getYear(), p.getTitle(), p.getStudent().getName(), p.getSubmissionDate());
+	    		ProposalAppraiser appraiser = abo.findByAppraiser(p.getIdProposal(), Session.getUser().getIdUser());
+	    		
+				Object itemId = this.getGrid().addRow(p.getSemester(), p.getYear(), p.getTitle(), p.getStudent().getName(), p.getSubmissionDate(), appraiser.getFeedback().toString());
 				this.addRowId(itemId, p.getIdProposal());
 			}
 		} catch (Exception e) {

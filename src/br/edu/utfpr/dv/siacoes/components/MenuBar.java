@@ -65,6 +65,7 @@ import br.edu.utfpr.dv.siacoes.view.LibraryView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
 import br.edu.utfpr.dv.siacoes.view.MainView;
 import br.edu.utfpr.dv.siacoes.view.ProjectView;
+import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackStudentView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackView;
 import br.edu.utfpr.dv.siacoes.view.ProposalView;
 import br.edu.utfpr.dv.siacoes.view.SemesterView;
@@ -215,12 +216,23 @@ public class MenuBar extends CustomComponent {
 							}
 		        	    }
 		        	});
+					proposal.addSeparator();
 				}
 				if(Session.isUserProfessor()){
 					proposal.addItem("Cadastrar Parecer", new Command(){
 		        	    @Override
 		        	    public void menuSelected(MenuItem selectedItem){
 		        	        UI.getCurrent().getNavigator().navigateTo(ProposalFeedbackView.NAME);
+		        	    }
+		        	});
+					proposal.addSeparator();
+				}
+				
+				if(Session.isUserProfessor() || Session.isUserStudent()){
+					proposal.addItem("Parecer dos Avaliadores", new Command(){
+		        	    @Override
+		        	    public void menuSelected(MenuItem selectedItem){
+		        	        UI.getCurrent().getNavigator().navigateTo(ProposalFeedbackStudentView.NAME);
 		        	    }
 		        	});
 				}

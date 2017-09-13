@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.dao.ProposalAppraiserDAO;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
@@ -57,14 +56,15 @@ public class ProposalAppraiserBO {
 	public int save(ProposalAppraiser appraiser) throws Exception{
 		int ret = 0;
 		boolean isInsert = (appraiser.getIdProposalAppraiser() == 0);
-		ProposalFeedback oldFeedback;
+		ProposalFeedback oldFeedback = ProposalFeedback.NONE;
+		ProposalAppraiserDAO dao = new ProposalAppraiserDAO();
 		
-		try {
-			ProposalAppraiserDAO dao = new ProposalAppraiserDAO();
-			
-			oldFeedback = dao.findFeedback(appraiser.getProposal().getIdProposal());
-		} catch (SQLException e) {
-			oldFeedback = ProposalFeedback.NONE;
+		if(!isInsert){
+			try {
+				oldFeedback = dao.findFeedback(appraiser.getIdProposalAppraiser());
+			} catch (SQLException e) {
+				oldFeedback = ProposalFeedback.NONE;
+			}	
 		}
 		
 		try {
@@ -74,8 +74,6 @@ public class ProposalAppraiserBO {
 			if((appraiser.getAppraiser() == null) || (appraiser.getAppraiser().getIdUser() == 0)){
 				throw new Exception("Informe o avaliador.");
 			}
-			
-			ProposalAppraiserDAO dao = new ProposalAppraiserDAO();
 			
 			ret = dao.save(appraiser);
 		} catch (SQLException e) {

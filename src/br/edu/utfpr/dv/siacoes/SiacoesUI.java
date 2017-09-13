@@ -40,6 +40,7 @@ import br.edu.utfpr.dv.siacoes.view.ListView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
 import br.edu.utfpr.dv.siacoes.view.MainView;
 import br.edu.utfpr.dv.siacoes.view.ProjectView;
+import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackStudentView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackView;
 import br.edu.utfpr.dv.siacoes.view.ProposalView;
 import br.edu.utfpr.dv.siacoes.view.SemesterView;
@@ -116,6 +117,7 @@ public class SiacoesUI extends UI {
         getNavigator().addView(InternshipLibraryView.NAME, InternshipLibraryView.class);
         getNavigator().addView(TutoredView.NAME, TutoredView.class);
         getNavigator().addView(SemesterView.NAME, SemesterView.class);
+        getNavigator().addView(ProposalFeedbackStudentView.NAME, ProposalFeedbackStudentView.class);
         
         //
         // We use a view change handler to ensure the user is always redirected
