@@ -32,6 +32,8 @@ public class EvaluationItemView extends ListView {
 	public EvaluationItemView(){
 		super(SystemModule.SIGET);
 		
+		this.setCaption("Quesitos de Avaliação");
+		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
 		this.comboStage = new StageComboBox(true);

@@ -38,6 +38,8 @@ public class ProposalView extends ListView {
 	public ProposalView(){
 		super(SystemModule.SIGET);
 		
+		this.setCaption("Propostas de TCC 1");
+		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
 		this.setAddVisible(false);

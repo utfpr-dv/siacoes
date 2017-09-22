@@ -20,6 +20,8 @@ public class CityView extends ListView {
 	public CityView(){
 		super(SystemModule.SIGES);
 		
+		this.setCaption("Cidades");
+		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
 		this.setFiltersVisible(false);

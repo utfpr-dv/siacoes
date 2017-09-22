@@ -45,6 +45,8 @@ public class ProposalFeedbackView extends ListView {
 	public ProposalFeedbackView(){
 		super(SystemModule.SIGET);
 		
+		this.setCaption("Parecer da Proposta de TCC 1");
+		
 		this.setProfilePerimissions(UserProfile.PROFESSOR);
 		
 		this.setAddVisible(false);

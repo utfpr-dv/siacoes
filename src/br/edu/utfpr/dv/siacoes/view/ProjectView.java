@@ -59,6 +59,8 @@ public class ProjectView extends ListView {
 	public ProjectView(){
 		super(SystemModule.SIGET);
 		
+		this.setCaption("Projetos de TCC 1");
+		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
 		this.buttonDownloadProject = new Button("Projeto");

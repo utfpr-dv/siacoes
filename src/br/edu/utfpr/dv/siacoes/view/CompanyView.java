@@ -20,6 +20,8 @@ public class CompanyView extends ListView {
 	public CompanyView(){
 		super(SystemModule.SIGES);
 		
+		this.setCaption("Empresas");
+		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
 		this.setFiltersVisible(false);

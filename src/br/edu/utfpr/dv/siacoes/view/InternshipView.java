@@ -58,6 +58,8 @@ public class InternshipView extends ListView {
 	public InternshipView(){
 		super(SystemModule.SIGES);
 		
+		this.setCaption("Estágios");
+		
 		this.textYear = new YearField();
 		
 		this.comboStudent = new StudentComboBox("Aluno");

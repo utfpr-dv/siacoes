@@ -28,6 +28,8 @@ public class TutoredView extends ListView {
 	public TutoredView(){
 		super(SystemModule.SIGET);
 		
+		this.setCaption("Orientações de TCC");
+		
 		this.setProfilePerimissions(UserProfile.PROFESSOR);
 		
 		this.buttonStatementStage1 = new Button("Declaração TCC 1", new Button.ClickListener() {

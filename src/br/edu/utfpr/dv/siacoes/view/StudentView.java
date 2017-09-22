@@ -25,6 +25,8 @@ public class StudentView extends ListView {
 	public StudentView(){
 		super(SystemModule.SIGES);
 		
+		this.setCaption("Acadêmicos");
+		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
 		this.textName = new TextField("Nome:");

@@ -32,6 +32,8 @@ public class SupervisorChangeView extends ListView {
 	public SupervisorChangeView(){
 		super(SystemModule.SIGET);
 		
+		this.setCaption("Alterações de Orientador");
+		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
 		this.setAddVisible(false);

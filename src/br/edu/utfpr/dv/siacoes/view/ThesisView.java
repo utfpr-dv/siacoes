@@ -59,6 +59,8 @@ public class ThesisView extends ListView {
 	public ThesisView(){
 		super(SystemModule.SIGET);
 		
+		this.setCaption("Monografias de TCC 2");
+		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
 		this.buttonDownloadThesis = new Button("Monografia");

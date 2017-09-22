@@ -20,6 +20,8 @@ public class CountryView extends ListView {
 	public CountryView(){
 		super(SystemModule.SIGES);
 		
+		this.setCaption("Países");
+		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
 		this.setFiltersVisible(false);

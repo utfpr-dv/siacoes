@@ -24,6 +24,8 @@ public class DeadlineView extends ListView {
 	public DeadlineView(){
 		super(SystemModule.SIGET);
 		
+		this.setCaption("Datas Limite de TCC");
+		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
     	this.setFiltersVisible(false);

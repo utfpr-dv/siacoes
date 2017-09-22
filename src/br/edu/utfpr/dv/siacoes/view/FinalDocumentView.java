@@ -35,6 +35,8 @@ public class FinalDocumentView extends ListView {
 	public FinalDocumentView(){
 		super(SystemModule.SIGET);
 		
+		this.setCaption("Versão Final do TCC");
+		
 		this.setProfilePerimissions(UserProfile.PROFESSOR);
 		
 		Semester semester;

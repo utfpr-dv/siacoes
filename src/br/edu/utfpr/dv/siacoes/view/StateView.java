@@ -20,6 +20,8 @@ public class StateView extends ListView {
 	public StateView(){
 		super(SystemModule.SIGES);
 		
+		this.setCaption("Estados");
+		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
 		this.setFiltersVisible(false);

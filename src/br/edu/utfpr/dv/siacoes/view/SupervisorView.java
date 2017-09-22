@@ -33,6 +33,8 @@ public class SupervisorView extends ListView {
 	public SupervisorView() {
 		super(SystemModule.SIGET);
 		
+		this.setCaption("Orientadores");
+		
 		this.setFiltersVisible(false);
 		this.setAddVisible(false);
 		this.setDeleteVisible(false);

@@ -26,6 +26,8 @@ public class ThemeSuggestionView extends ListView {
 	public ThemeSuggestionView(){
 		super(SystemModule.SIGET);
 		
+		this.setCaption("Sugestões de Projeto de TCC");
+		
 		this.checkActive = new CheckBox("Apenas Ativos");
 		this.checkActive.setValue(true);
 		

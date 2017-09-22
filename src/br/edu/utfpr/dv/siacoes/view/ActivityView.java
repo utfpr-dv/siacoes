@@ -26,6 +26,8 @@ public class ActivityView extends ListView {
 	public ActivityView(){
 		super(SystemModule.SIGAC);
 		
+		this.setCaption("Atividades");
+		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
 		this.buttonMoveUp = new Button("Para Cima", new Button.ClickListener() {

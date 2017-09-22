@@ -34,6 +34,8 @@ public class DocumentView extends ListView {
     
     public DocumentView(){
     	super(SystemModule.GENERAL);
+    	
+    	this.setCaption("Regulamentos e Anexos");
 		
     	this.buttonDownload = new Button("Download");
     	

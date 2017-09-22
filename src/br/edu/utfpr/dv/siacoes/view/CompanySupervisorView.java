@@ -20,6 +20,8 @@ public class CompanySupervisorView extends ListView {
 	public CompanySupervisorView(){
 		super(SystemModule.SIGES);
 		
+		this.setCaption("Supervisores");
+		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
 		this.setFiltersVisible(false);

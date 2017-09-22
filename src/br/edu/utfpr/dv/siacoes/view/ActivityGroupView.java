@@ -25,6 +25,8 @@ public class ActivityGroupView extends ListView {
 	public ActivityGroupView(){
 		super(SystemModule.SIGAC);
 		
+		this.setCaption("Grupos de Atividades");
+		
 		this.setProfilePerimissions(UserProfile.ADMINISTRATOR);
 		
 		this.buttonMoveUp = new Button("Para Cima", new Button.ClickListener() {

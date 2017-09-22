@@ -43,6 +43,8 @@ public class AttendanceView extends ListView {
 	public AttendanceView(){
 		super(SystemModule.SIGET);
 		
+		this.setCaption("Registro de Reuniões");
+		
 		this.comboSupervisor = new NativeSelect("Orientador");
 		this.comboSupervisor.setWidth("400px");
 		this.comboSupervisor.setNullSelectionAllowed(false);
@@ -148,13 +150,16 @@ public class AttendanceView extends ListView {
 	
 	private void loadSupervisors(){
 		try {
-			ProposalBO bo = new ProposalBO();
-			List<User> list = bo.listSupervisors(((Proposal)this.comboProposal.getValue()).getIdProposal());
-			
 			this.comboSupervisor.clear();
-			this.comboSupervisor.addItems(list);
-			if(list.size() > 0){
-				this.comboSupervisor.select(list.get(0));	
+			
+			if(this.comboProposal.getValue() != null){
+				ProposalBO bo = new ProposalBO();
+				List<User> list = bo.listSupervisors(((Proposal)this.comboProposal.getValue()).getIdProposal());
+				
+				this.comboSupervisor.addItems(list);
+				if(list.size() > 0){
+					this.comboSupervisor.select(list.get(0));	
+				}
 			}
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);

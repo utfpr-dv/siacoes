@@ -27,6 +27,8 @@ public class LibraryView extends ListView {
 	public LibraryView(){
 		super(SystemModule.SIGET);
 		
+		this.setCaption("Monografias de TCC");
+		
 		this.buttonDownloadThesis = new Button("Download");
 		this.addActionButton(this.buttonDownloadThesis);
 		

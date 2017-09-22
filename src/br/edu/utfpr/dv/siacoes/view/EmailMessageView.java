@@ -30,6 +30,8 @@ public class EmailMessageView extends ListView {
 	public EmailMessageView(){
 		super(SystemModule.GENERAL);
 		
+		this.setCaption("Mensagens de E-mail");
+		
 		this.setProfilePerimissions(UserProfile.ADMINISTRATOR);
 		
 		this.comboModule = new NativeSelect("Módulo");

@@ -35,6 +35,8 @@ public class UserView extends ListView {
 	public UserView(){
 		super(SystemModule.GENERAL);
 		
+		this.setCaption("Usuários");
+		
 		this.setProfilePerimissions(UserProfile.ADMINISTRATOR);
 		
 		this.comboProfile = new NativeSelect("Perfil");

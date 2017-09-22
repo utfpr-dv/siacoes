@@ -20,6 +20,8 @@ public class ActivityUnitView extends ListView {
 	public ActivityUnitView(){
 		super(SystemModule.SIGAC);
 		
+		this.setCaption("Unidades de Atividades");
+		
 		this.setProfilePerimissions(UserProfile.ADMINISTRATOR);
 		
 		this.setFiltersVisible(false);

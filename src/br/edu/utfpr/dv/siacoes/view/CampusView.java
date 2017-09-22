@@ -21,6 +21,8 @@ public class CampusView extends ListView {
 	public CampusView(){
 		super(SystemModule.GENERAL);
 		
+		this.setCaption("Câmpus");
+		
 		this.setProfilePerimissions(UserProfile.ADMINISTRATOR);
 		
 		this.setFiltersVisible(false);

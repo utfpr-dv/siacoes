@@ -26,6 +26,8 @@ public class SemesterView extends ListView {
 	public SemesterView(){
 		super(SystemModule.GENERAL);
 		
+		this.setCaption("Semestres");
+		
 		this.setProfilePerimissions(UserProfile.ADMINISTRATOR);
 		
 		this.comboCampus = new CampusComboBox();

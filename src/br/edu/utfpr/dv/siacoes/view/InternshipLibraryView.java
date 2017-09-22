@@ -30,6 +30,8 @@ public class InternshipLibraryView extends ListView {
 	public InternshipLibraryView(){
 		super(SystemModule.SIGES);
 		
+		this.setCaption("Relatórios de Estágio");
+		
 		this.buttonDownloadFile = new Button("Download");
 		this.addActionButton(this.buttonDownloadFile);
 		

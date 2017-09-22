@@ -9,11 +9,10 @@ import org.vaadin.dialogs.ConfirmDialog;
 
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -26,13 +25,11 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Grid.SingleSelectionModel;
 
-import br.edu.utfpr.dv.siacoes.components.MenuBar;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 
-public abstract class ListView extends CustomComponent implements View {
+public abstract class ListView extends BasicView {
 
-	private MenuBar menu;
     private Grid grid;
     private final Button buttonAdd;
     private final Button buttonEdit;
@@ -44,6 +41,8 @@ public abstract class ListView extends CustomComponent implements View {
     private final Button buttonFilter;
     private final List<GridItem> gridItems;
     private final Label labelGridRecords;
+    private final Accordion accordionFilter;
+    private final VerticalLayout layoutActions;
     
     private UserProfile profilePermissions;
     
@@ -93,8 +92,10 @@ public abstract class ListView extends CustomComponent implements View {
 		this.buttonDelete.setWidth("150px");
 		
 		this.layoutButtons = new VerticalLayout(buttonAdd, buttonEdit, buttonDelete);
-		this.layoutButtons.setWidth("150px");
+		//this.layoutButtons.setWidth("150px");
 		this.layoutButtons.setSpacing(true);
+		this.layoutButtons.setMargin(true);
+		this.layoutButtons.setSizeFull();
 		
 		this.buttonFilter = new Button("Filtrar", new Button.ClickListener() {
             @Override
@@ -119,24 +120,43 @@ public abstract class ListView extends CustomComponent implements View {
 		
 		this.layoutFilter = new VerticalLayout(this.layoutFields, this.buttonFilter);
 		this.layoutFilter.setSpacing(true);
+		this.layoutFilter.setMargin(true);
 		
 		this.layoutGrid = new HorizontalLayout();
 		this.layoutGrid.setSizeFull();
-		this.layoutGrid.setSpacing(true);
+		//this.layoutGrid.setSpacing(true);
+		
+		this.accordionFilter = new Accordion();
+		
+		this.layoutActions = new VerticalLayout();
+		this.layoutActions.setWidth("170px");
+		this.layoutActions.setHeight("100%");
+		//this.layoutActions.setSpacing(true);
+		
+		Panel panelButtons = new Panel("Ações");
+    	panelButtons.setContent(this.layoutButtons);
+    	
+    	this.layoutActions.addComponent(panelButtons);
 		
 		this.setModule(module);
     }
     
     public void setModule(SystemModule module){
-    	this.setCaption(module.getDescription());
+    	if((this.getCaption() == null) || this.getCaption().trim().isEmpty()){
+    		this.setCaption(module.getDescription());
+    	}
+    	
     	this.module = module;
-    	this.menu = new MenuBar(module);
+    	this.setOpenMenu(module);
     	this.setSizeFull();
-		VerticalLayout vl = new VerticalLayout(this.menu, this.layoutFilter, this.layoutGrid);
+    	
+    	this.accordionFilter.addTab(this.layoutFilter, "Filtros");
+    	
+		VerticalLayout vl = new VerticalLayout(this.accordionFilter, this.layoutGrid);
 		vl.setSizeFull();
 		vl.setExpandRatio(this.layoutGrid, 1);
-		vl.setSpacing(true);
-		this.setCompositionRoot(vl);
+		//vl.setSpacing(true);
+		this.setContent(vl);
     }
     
     public SystemModule getModule(){
@@ -158,8 +178,8 @@ public abstract class ListView extends CustomComponent implements View {
     	v1.setSizeFull();
     	
     	this.layoutGrid.addComponent(v1);
-    	this.layoutGrid.addComponent(this.layoutButtons);
-    	this.layoutGrid.setComponentAlignment(this.layoutButtons, Alignment.TOP_RIGHT);
+    	this.layoutGrid.addComponent(this.layoutActions);
+    	this.layoutGrid.setComponentAlignment(this.layoutActions, Alignment.TOP_RIGHT);
     	this.layoutGrid.setExpandRatio(v1, 1);
     	
     	this.labelGridRecords.setCaption("Listando " + String.valueOf(this.gridRowCount) + " registro(s).");
@@ -185,12 +205,13 @@ public abstract class ListView extends CustomComponent implements View {
     
     public void addActionButton(Button button){
     	button.setWidth("150px");
-    	layoutButtons.addComponent(button);
+    	this.layoutButtons.addComponent(button);
     }
     
     public void addActionPanel(Panel panel){
-    	panel.setWidth("150px");
-    	layoutButtons.addComponent(panel);
+    	panel.setWidth("170px");
+    	this.layoutActions.addComponent(panel);
+    	this.layoutActions.setExpandRatio(panel, 1);
     }
     
     public Grid getGrid(){
@@ -198,11 +219,11 @@ public abstract class ListView extends CustomComponent implements View {
     }
     
     public void setFiltersVisible(boolean visible){
-    	layoutFilter.setVisible(visible);
+    	this.accordionFilter.setVisible(visible);
     }
     
     public boolean isFiltersVisible(){
-    	return layoutFilter.isVisible();
+    	return this.accordionFilter.isVisible();
     }
     
     public void setAddVisible(boolean visible){

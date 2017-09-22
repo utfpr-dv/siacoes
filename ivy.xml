@@ -74,5 +74,8 @@
 		
 		<!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-jdbc -->
 		<dependency org="org.apache.tomcat" name="tomcat-jdbc" rev="8.5.14"/>
+		
+		<!-- https://mvnrepository.com/artifact/net.sf.barcode4j/barcode4j -->
+		<dependency org="net.sf.barcode4j" name="barcode4j" rev="2.1"/>
 	</dependencies>
 </ivy-module>

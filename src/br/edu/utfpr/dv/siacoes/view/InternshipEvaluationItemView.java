@@ -30,6 +30,8 @@ public class InternshipEvaluationItemView extends ListView {
 	public InternshipEvaluationItemView(){
 		super(SystemModule.SIGES);
 		
+		this.setCaption("Quesitos de Avaliação");
+		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
 		this.checkActive = new CheckBox("Listar apenas quesitos ativos");

@@ -66,6 +66,8 @@ public class InternshipCalendarView extends ListView {
 	public InternshipCalendarView(){
 		super(SystemModule.SIGES);
 		
+		this.setCaption("Agenda de Bancas de Estágio");
+		
 		Semester semester;
 		try {
 			semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());

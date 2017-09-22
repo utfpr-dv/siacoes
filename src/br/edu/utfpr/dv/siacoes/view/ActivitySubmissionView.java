@@ -37,6 +37,8 @@ public class ActivitySubmissionView extends ListView {
 	public ActivitySubmissionView(){
 		super(SystemModule.SIGAC);
 		
+		this.setCaption("Submissão de Atividades");
+		
 		this.optionFilterType = new OptionGroup();
 		this.optionFilterType.addItem("Listar submissões sem parecer");
 		this.optionFilterType.addItem("Listar submissões por acadêmico");

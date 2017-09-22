@@ -23,6 +23,8 @@ public class DepartmentView extends ListView {
 	public DepartmentView(){
 		super(SystemModule.GENERAL);
 		
+		this.setCaption("Departamentos");
+		
 		this.setProfilePerimissions(UserProfile.ADMINISTRATOR);
 		
 		this.comboCampus = new CampusComboBox();

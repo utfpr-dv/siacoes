@@ -71,6 +71,8 @@ public class CalendarView extends ListView {
 	public CalendarView(){
 		super(SystemModule.SIGET);
 		
+		this.setCaption("Agenda de Bancas de TCC");
+		
 		Semester semester;
 		try {
 			semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());

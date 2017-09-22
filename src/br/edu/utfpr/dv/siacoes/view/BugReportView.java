@@ -19,6 +19,8 @@ public class BugReportView extends ListView {
 	public BugReportView(){
 		super(SystemModule.GENERAL);
 		
+		this.setCaption("Registro de Erros e Sugestões");
+		
 		this.setAddCaption("Reportar");
 		this.setFiltersVisible(false);
 		this.setDeleteVisible(false);
