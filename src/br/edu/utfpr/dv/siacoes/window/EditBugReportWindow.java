@@ -7,8 +7,10 @@ import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.BugReportBO;
@@ -31,6 +33,7 @@ public class EditBugReportWindow extends EditWindow {
 	private final NativeSelect comboStatus;
 	private final DateField textStatusDate;
 	private final TextArea textStatus;
+	private final TabSheet tab;
 
 	public EditBugReportWindow(BugReport bug, ListView parentView){
 		super("Editar Bug", parentView);
@@ -88,19 +91,29 @@ public class EditBugReportWindow extends EditWindow {
 		
 		this.textStatus = new TextArea("Descrição do Status");
 		this.textStatus.setWidth("800px");
-		this.textStatus.setHeight("150px");
+		this.textStatus.setHeight("330px");
 		
-		this.addField(this.textUser);
-		this.addField(this.textTitle);
-		this.addField(this.comboModule);
-		this.addField(this.textDescription);
+		this.tab = new TabSheet();
+		this.tab.setWidth("810px");
 		
-		if(this.bug.getIdBugReport() == 0){
-			this.addField(new HorizontalLayout(this.comboType, this.textReportDate, this.comboStatus));
-		}else{
-			this.addField(new HorizontalLayout(this.comboType, this.textReportDate, this.comboStatus, this.textStatusDate));
-			this.addField(this.textStatus);			
+		HorizontalLayout h1 = new HorizontalLayout(this.comboType, this.textReportDate);
+		h1.setSpacing(true);
+		
+		VerticalLayout tab1 = new VerticalLayout(this.textUser, this.textTitle, this.comboModule, this.textDescription, h1);
+		tab1.setSpacing(true);
+		
+		HorizontalLayout h2 = new HorizontalLayout(this.comboStatus, this.textStatusDate);
+		h2.setSpacing(true);
+		
+		VerticalLayout tab2 = new VerticalLayout(h2, this.textStatus);
+		tab2.setSpacing(true);
+		
+		this.tab.addTab(tab1, "Informações");
+		if(this.bug.getIdBugReport() > 0){
+			this.tab.addTab(tab2, "Feedback");
 		}
+		
+		this.addField(this.tab);
 		
 		this.loadBug();
 		

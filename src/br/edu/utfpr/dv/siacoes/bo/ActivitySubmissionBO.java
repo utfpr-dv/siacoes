@@ -64,6 +64,18 @@ public class ActivitySubmissionBO {
 		}
 	}
 	
+	public List<ActivitySubmission> listWithNoFeedback2(int idDepartment) throws Exception{
+		try{
+			ActivitySubmissionDAO dao = new ActivitySubmissionDAO();
+			
+			return dao.listWithNoFeedback2(idDepartment);
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
+	}
+	
 	public ActivitySubmission findById(int id) throws Exception{
 		try{
 			ActivitySubmissionDAO dao = new ActivitySubmissionDAO();

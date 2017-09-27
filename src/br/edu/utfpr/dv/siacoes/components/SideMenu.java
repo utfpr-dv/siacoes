@@ -350,7 +350,7 @@ public class SideMenu extends CustomComponent {
 			layout.addComponent(new MenuEntry("Projeto de TCC 1", 0));
 			
 			if(Session.isUserStudent()){
-				layout.addComponent(new MenuEntry("Submeter Proposta", 1, new MenuEntryClickListener() {
+				layout.addComponent(new MenuEntry("Submeter Projeto", 1, new MenuEntryClickListener() {
 					@Override
 					public void menuClick() {
 						try {

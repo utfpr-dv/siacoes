@@ -6,14 +6,17 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.renderers.HtmlRenderer;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ActivitySubmissionBO;
@@ -33,6 +36,7 @@ public class ActivitySubmissionView extends ListView {
 	private final Button buttonFinalReport;
 	
 	private final Panel panelScore;
+	private final Panel panelLabel;
 	
 	public ActivitySubmissionView(){
 		super(SystemModule.SIGAC);
@@ -50,6 +54,8 @@ public class ActivitySubmissionView extends ListView {
 		
 		this.panelScore = new Panel("Pontos Validados");
 		
+		this.panelLabel = new Panel("Legenda");
+		
 		if(Session.isUserManager(this.getModule()) || Session.isUserDepartmentManager()){
 			this.setAddVisible(false);
 			this.setDeleteVisible(false);
@@ -60,6 +66,26 @@ public class ActivitySubmissionView extends ListView {
 				this.setEditCaption("Visualizar");
 			}
 			
+			Image imageRedWarning = new Image(null, new ThemeResource("images/redwarning.png"));
+			imageRedWarning.setHeight("16px");
+			imageRedWarning.setWidth("16px");
+			
+			HorizontalLayout h1 = new HorizontalLayout(imageRedWarning, new Label("Provável formando"));
+			h1.setSpacing(true);
+			
+			Image imageYellowWarning = new Image(null, new ThemeResource("images/yellowwarning.png"));
+			imageYellowWarning.setHeight("16px");
+			imageYellowWarning.setWidth("16px");
+			
+			HorizontalLayout h2 = new HorizontalLayout(imageYellowWarning, new Label("Períodos finais"));
+			h2.setSpacing(true);
+			
+			VerticalLayout layout = new VerticalLayout(h1, h2);
+			layout.setSpacing(true);
+			layout.setMargin(true);
+			
+			this.panelLabel.setContent(layout);
+			
 			this.addFilterField(new HorizontalLayout(this.optionFilterType, this.comboStudent));
 		}else{
 			this.setFiltersVisible(false);
@@ -67,6 +93,7 @@ public class ActivitySubmissionView extends ListView {
 		
 		this.addActionButton(this.buttonFinalReport);
 		this.addActionPanel(this.panelScore);
+		this.addActionPanel(this.panelLabel);
 	}
 	
 	@Override
@@ -79,6 +106,9 @@ public class ActivitySubmissionView extends ListView {
 		this.getGrid().addColumn("Parecer", String.class);
 		this.getGrid().addColumn("Pontuação", Double.class);
 		
+		if((Session.isUserManager(this.getModule()) || Session.isUserDepartmentManager()) && (this.optionFilterType.isSelected(this.optionFilterType.getItemIds().iterator().next()))){
+			this.getGrid().getColumns().get(0).setRenderer(new HtmlRenderer());
+		}
 		this.getGrid().getColumns().get(1).setWidth(75);
 		this.getGrid().getColumns().get(2).setWidth(80);
 		this.getGrid().getColumns().get(3).setWidth(80);
@@ -88,6 +118,7 @@ public class ActivitySubmissionView extends ListView {
 		new ExtensionUtils().removeAllExtensions(this.buttonFinalReport);
 		this.buttonFinalReport.setEnabled(true);
 		this.panelScore.setVisible(true);
+		this.panelLabel.setVisible(false);
 		
 		try{
 			ActivitySubmissionBO bo = new ActivitySubmissionBO();
@@ -97,9 +128,10 @@ public class ActivitySubmissionView extends ListView {
 			
 			if(Session.isUserManager(this.getModule()) || Session.isUserDepartmentManager()){
 				if(this.optionFilterType.isSelected(this.optionFilterType.getItemIds().iterator().next())){
-					list = bo.listWithNoFeedback(Session.getUser().getDepartment().getIdDepartment());
+					list = bo.listWithNoFeedback2(Session.getUser().getDepartment().getIdDepartment());
 					this.buttonFinalReport.setEnabled(false);
 					this.panelScore.setVisible(false);
+					this.panelLabel.setVisible(true);
 				}else{
 					list = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), Session.getUser().getDepartment().getIdDepartment());
 					report = bo.getReport(list, this.comboStudent.getStudent(), Session.getUser().getDepartment().getIdDepartment());
@@ -117,8 +149,26 @@ public class ActivitySubmissionView extends ListView {
 				new ExtensionUtils().extendToDownload("RelatorioFinal.pdf", report.toByteArray(), this.buttonFinalReport);
 			}
 			
+			String yellowWarning = "VAADIN/themes/" + UI.getCurrent().getTheme() + "/images/yellowwarning.png";
+			String redWarning = "VAADIN/themes/" + UI.getCurrent().getTheme() + "/images/redwarning.png";
+			
 			for(ActivitySubmission submission : list){
-				Object itemId = this.getGrid().addRow(submission.getStudent().getName(), submission.getSemester(), submission.getYear(), submission.getActivity().getGroup().getSequence(), submission.getDescription(), submission.getFeedback().toString(), submission.getScore());
+				Object itemId;
+				
+				if((Session.isUserManager(this.getModule()) || Session.isUserDepartmentManager()) && (this.optionFilterType.isSelected(this.optionFilterType.getItemIds().iterator().next()))){
+					String name = "<span>" + submission.getStudent().getName() + "</span>";
+					
+					if(submission.getStage() == 2){
+						name = "<img src=\"" + redWarning + "\" style=\"height: 16px; width: 16px; margin-right: 5px;\" />" + name;
+					}else if(submission.getStage() == 1){
+						name = "<img src=\"" + yellowWarning + "\" style=\"height: 16px; width: 16px; margin-right: 5px;\" />" + name;
+					}
+					
+					itemId = this.getGrid().addRow(name, submission.getSemester(), submission.getYear(), submission.getActivity().getGroup().getSequence(), submission.getDescription(), submission.getFeedback().toString(), submission.getScore());
+				}else{
+					itemId = this.getGrid().addRow(submission.getStudent().getName(), submission.getSemester(), submission.getYear(), submission.getActivity().getGroup().getSequence(), submission.getDescription(), submission.getFeedback().toString(), submission.getScore());	
+				}
+				
 				this.addRowId(itemId, submission.getIdActivitySubmission());
 			}
 		}catch(Exception e){

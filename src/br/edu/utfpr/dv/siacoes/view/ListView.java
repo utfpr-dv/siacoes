@@ -10,7 +10,6 @@ import org.vaadin.dialogs.ConfirmDialog;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
@@ -41,7 +40,7 @@ public abstract class ListView extends BasicView {
     private final Button buttonFilter;
     private final List<GridItem> gridItems;
     private final Label labelGridRecords;
-    private final Accordion accordionFilter;
+    private final Panel panelFilter;
     private final VerticalLayout layoutActions;
     
     private UserProfile profilePermissions;
@@ -126,7 +125,7 @@ public abstract class ListView extends BasicView {
 		this.layoutGrid.setSizeFull();
 		//this.layoutGrid.setSpacing(true);
 		
-		this.accordionFilter = new Accordion();
+		this.panelFilter = new Panel("Filtros");
 		
 		this.layoutActions = new VerticalLayout();
 		this.layoutActions.setWidth("170px");
@@ -150,9 +149,9 @@ public abstract class ListView extends BasicView {
     	this.setOpenMenu(module);
     	this.setSizeFull();
     	
-    	this.accordionFilter.addTab(this.layoutFilter, "Filtros");
+    	this.panelFilter.setContent(this.layoutFilter);
     	
-		VerticalLayout vl = new VerticalLayout(this.accordionFilter, this.layoutGrid);
+    	VerticalLayout vl = new VerticalLayout(this.panelFilter, this.layoutGrid);
 		vl.setSizeFull();
 		vl.setExpandRatio(this.layoutGrid, 1);
 		//vl.setSpacing(true);
@@ -219,11 +218,11 @@ public abstract class ListView extends BasicView {
     }
     
     public void setFiltersVisible(boolean visible){
-    	this.accordionFilter.setVisible(visible);
+    	this.panelFilter.setVisible(visible);
     }
     
     public boolean isFiltersVisible(){
-    	return this.accordionFilter.isVisible();
+    	return this.panelFilter.isVisible();
     }
     
     public void setAddVisible(boolean visible){

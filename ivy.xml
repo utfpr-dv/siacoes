@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE ivy-module [
-	<!ENTITY vaadin.version "7.6.6">
+	<!ENTITY vaadin.version "7.7.10">
 ]>
 <ivy-module version="2.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -77,5 +77,11 @@
 		
 		<!-- https://mvnrepository.com/artifact/net.sf.barcode4j/barcode4j -->
 		<dependency org="net.sf.barcode4j" name="barcode4j" rev="2.1"/>
+		
+		<!-- https://mvnrepository.com/artifact/org.vaadin.addons/stackpanel -->
+		<dependency org="org.vaadin.addons" name="stackpanel" rev="1.0.0"/>
+		
+		<!-- https://mvnrepository.com/artifact/com.vaadin/vaadin-icons -->
+		<dependency org="com.vaadin" name="vaadin-icons" rev="3.0.1"/>
 	</dependencies>
 </ivy-module>

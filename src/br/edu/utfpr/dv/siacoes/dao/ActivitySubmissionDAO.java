@@ -155,6 +155,50 @@ public class ActivitySubmissionDAO {
 		}
 	}
 	
+	public List<ActivitySubmission> listWithNoFeedback2(int idDepartment) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+		
+			rs = stmt.executeQuery("SELECT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
+					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, " +
+					"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester, " +
+					"CASE WHEN project.idProject IS NOT NULL THEN 2 WHEN proposal.idProposal IS NOT NULL THEN 1 ELSE 0 END AS stage " +
+					"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
+					"INNER JOIN activity ON activity.idActivity=activitysubmission.idActivity " + 
+					"INNER JOIN activitygroup ON activitygroup.idActivityGroup=activity.idActivityGroup " +
+					"INNER JOIN activityunit ON activityunit.idActivityUnit=activity.idActivityUnit " +
+					"LEFT JOIN \"user\" feedbackUser ON feedbackUser.idUser=activitysubmission.idfeedbackuser " +
+					"LEFT JOIN proposal ON proposal.idStudent=activitysubmission.idStudent " +
+					"LEFT JOIN project ON project.idStudent=activitysubmission.idStudent " +
+					"WHERE activitysubmission.feedback=0 AND activitysubmission.idDepartment=" + String.valueOf(idDepartment) + 
+					" ORDER BY stage DESC, activitygroup.sequence, activitysubmission.year DESC, activitysubmission.semester DESC");
+			
+			List<ActivitySubmission> list = new ArrayList<ActivitySubmission>();
+			
+			while(rs.next()){
+				ActivitySubmission a = this.loadObject(rs);
+				
+				a.setStage(rs.getInt("stage"));
+				
+				list.add(a);
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public ActivitySubmission findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;

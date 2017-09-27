@@ -59,6 +59,7 @@ public class ActivitySubmission {
 	private double validatedAmount;
 	private String comments;
 	private String description;
+	private int stage;
 	
 	public ActivitySubmission(){
 		this.setIdActivitySubmission(0);
@@ -77,6 +78,7 @@ public class ActivitySubmission {
 		this.setValidatedAmount(0);
 		this.setComments("");
 		this.setDescription("");
+		this.setStage(0);
 	}
 	
 	public int getIdActivitySubmission() {
@@ -185,5 +187,11 @@ public class ActivitySubmission {
 		}else{
 			return 0;
 		}
+	}
+	public int getStage() {
+		return stage;
+	}
+	public void setStage(int stage) {
+		this.stage = stage;
 	}
 }
