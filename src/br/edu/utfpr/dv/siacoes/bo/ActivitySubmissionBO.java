@@ -19,9 +19,12 @@ import br.edu.utfpr.dv.siacoes.model.ActivitySubmission;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionDetailReport;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionFooterReport;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionReport;
+import br.edu.utfpr.dv.siacoes.model.ActivityValidationReport;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.SigacConfig;
+import br.edu.utfpr.dv.siacoes.model.StudentActivityStatusReport;
+import br.edu.utfpr.dv.siacoes.model.StudentActivityStatusReport.StudentStage;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
@@ -362,6 +365,74 @@ public class ActivitySubmissionBO {
 		BigDecimal bd = new BigDecimal(value);
 	    bd = bd.setScale(1, RoundingMode.HALF_UP);
 	    return bd.doubleValue();
+	}
+	
+	public List<User> listFeedbackUsers(int idDepartment) throws Exception{
+		try{
+			ActivitySubmissionDAO dao = new ActivitySubmissionDAO();
+			
+			return dao.listFeedbackUsers(idDepartment);
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
+	}
+	
+	public byte[] getActivityValidationReport(int idDepartment, int idFeedbackUser) throws Exception {
+		try{
+			ActivitySubmissionDAO dao = new ActivitySubmissionDAO();
+			
+			List<ActivityValidationReport> list = dao.getActivityValidationReport(idDepartment, idFeedbackUser);
+			
+			ByteArrayOutputStream report = new ReportUtils().createPdfStream(list, "ActivityValidation");
+			
+			return report.toByteArray();
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
+	}
+	
+	public byte[] getStudentActivityStatusReport(int idDepartment, StudentStage stage) throws Exception {
+		try{
+			ActivitySubmissionDAO dao = new ActivitySubmissionDAO();
+			List<ActivitySubmission> list = new ArrayList<ActivitySubmission>();
+			List<ActivitySubmissionFooterReport> scores = new ArrayList<ActivitySubmissionFooterReport>();
+			List<StudentActivityStatusReport> students = dao.getStudentActivityStatusReport(idDepartment);
+			List<StudentActivityStatusReport> report = new ArrayList<StudentActivityStatusReport>();
+			SigacConfig config = new SigacConfigBO().findByDepartment(idDepartment);
+			
+			for(StudentActivityStatusReport user : students){
+				if((user.getStage() >= stage.getValue()) && (user.getStage() != StudentStage.GRADUATED.getValue())){
+					list = this.listByStudent(user.getIdUser(), idDepartment);
+					scores = this.getFooterReport(list);
+					
+					user.setScores(scores);
+					
+					for(ActivitySubmissionFooterReport s : scores){
+						user.setTotalScore(user.getTotalScore() + s.getTotal());
+					}
+					
+					if(user.getTotalScore() >= config.getMinimumScore()){
+						user.setSituation("Pontuação atingida");	
+					}else{
+						user.setSituation("Pontuação insuficiente");
+					}
+					
+					report.add(user);
+				}
+			}
+			
+			ByteArrayOutputStream pdfReport = new ReportUtils().createPdfStream(report, "StudentActivityStatus");
+			
+			return pdfReport.toByteArray();
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
 	}
 	
 	private class ReportActivity{

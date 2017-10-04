@@ -50,7 +50,9 @@ import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.view.ActivityGroupView;
 import br.edu.utfpr.dv.siacoes.view.ActivitySubmissionView;
 import br.edu.utfpr.dv.siacoes.view.ActivityUnitView;
+import br.edu.utfpr.dv.siacoes.view.ActivityValidationReportView;
 import br.edu.utfpr.dv.siacoes.view.ActivityView;
+import br.edu.utfpr.dv.siacoes.view.AttendanceReportView;
 import br.edu.utfpr.dv.siacoes.view.AttendanceView;
 import br.edu.utfpr.dv.siacoes.view.BugReportView;
 import br.edu.utfpr.dv.siacoes.view.CalendarView;
@@ -67,6 +69,7 @@ import br.edu.utfpr.dv.siacoes.view.EvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCalendarView;
 import br.edu.utfpr.dv.siacoes.view.InternshipEvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
+import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipView;
 import br.edu.utfpr.dv.siacoes.view.LibraryView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
@@ -76,6 +79,7 @@ import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackView;
 import br.edu.utfpr.dv.siacoes.view.ProposalView;
 import br.edu.utfpr.dv.siacoes.view.SemesterView;
 import br.edu.utfpr.dv.siacoes.view.StateView;
+import br.edu.utfpr.dv.siacoes.view.StudentActivityStatusReportView;
 import br.edu.utfpr.dv.siacoes.view.StudentView;
 import br.edu.utfpr.dv.siacoes.view.SupervisorChangeView;
 import br.edu.utfpr.dv.siacoes.view.SupervisorView;
@@ -251,6 +255,12 @@ public class SideMenu extends CustomComponent {
 		layout.addComponent(new MenuEntry("Repositório", 0));
 		layout.addComponent(new MenuEntry("Regulamentos e Anexos", 1, DocumentView.NAME + "/" + String.valueOf(SystemModule.SIGAC.getValue())));
 		
+		if(Session.isUserManager(SystemModule.SIGAC) || Session.isUserDepartmentManager()){
+			layout.addComponent(new MenuEntry("Relatórios", 0));
+			layout.addComponent(new MenuEntry("Validação de Atividades", 1, ActivityValidationReportView.NAME));
+			layout.addComponent(new MenuEntry("Situação do Acadêmico", 1, StudentActivityStatusReportView.NAME));
+		}
+		
 		layout.setSizeFull();
 		
 		return layout;
@@ -294,6 +304,11 @@ public class SideMenu extends CustomComponent {
 		layout.addComponent(new MenuEntry("Repositório", 0));
 		layout.addComponent(new MenuEntry("Regulamentos e Anexos", 1, DocumentView.NAME + "/" + String.valueOf(SystemModule.SIGES.getValue())));
 		layout.addComponent(new MenuEntry("Biblioteca", 1, InternshipLibraryView.NAME));
+		
+		if(Session.isUserManager(SystemModule.SIGES) || Session.isUserDepartmentManager()){
+			layout.addComponent(new MenuEntry("Relatórios", 0));
+			layout.addComponent(new MenuEntry("Documentos Faltantes", 1, InternshipMissingDocumentsReportView.NAME));
+		}
 		
 		layout.setSizeFull();
 		
@@ -700,6 +715,11 @@ public class SideMenu extends CustomComponent {
 		layout.addComponent(new MenuEntry("Regulamentos e Anexos", 1, DocumentView.NAME + "/" + String.valueOf(SystemModule.SIGET.getValue())));
 		layout.addComponent(new MenuEntry("Biblioteca", 1, LibraryView.NAME));
 		layout.addComponent(new MenuEntry("Sugestões de Projetos", 1, ThemeSuggestionView.NAME));
+		
+		if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
+			layout.addComponent(new MenuEntry("Relatórios", 0));
+			layout.addComponent(new MenuEntry("Reuniões de Orientação", 1, AttendanceReportView.NAME));
+		}
 		
 		layout.setSizeFull();
 		

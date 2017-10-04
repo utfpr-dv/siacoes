@@ -11,6 +11,8 @@ import java.util.List;
 import br.edu.utfpr.dv.siacoes.model.Attendance;
 import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.model.Semester;
+import br.edu.utfpr.dv.siacoes.model.User;
 
 public class AttendanceDAO {
 	
@@ -243,6 +245,66 @@ public class AttendanceDAO {
 			}
 			
 			return report;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public List<AttendanceReport> getAttendanceReport(int idDepartment, int semester, int year, int stage) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			List<AttendanceReport> list = new ArrayList<AttendanceReport>();
+			Semester sem = new SemesterDAO().findBySemester(new CampusDAO().findByDepartment(idDepartment).getIdCampus(), semester, year);
+			
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT proposal.idproposal, proposal.idstudent, student.name AS studentName, " +
+					"CASE WHEN thesis.idthesis IS NOT NULL THEN thesis.title WHEN project.idproject IS NOT NULL THEN project.title ELSE proposal.title END AS title " +
+					"FROM proposal INNER JOIN \"user\" student ON student.iduser=proposal.idstudent " +
+					"INNER JOIN \"user\" supervisor ON supervisor.iduser=proposal.idsupervisor " + 
+					"LEFT JOIN project ON project.idproposal=proposal.idproposal " + 
+					"LEFT JOIN thesis ON thesis.idproject=project.idproject " +
+					"WHERE (proposal.semester=" + String.valueOf(semester) + " OR project.semester=" + String.valueOf(semester) + " OR thesis.semester=" + String.valueOf(semester) + 
+						") AND (proposal.year=" + String.valueOf(year) + " OR project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + ") " +
+					" ORDER BY student.name");
+			
+			while(rs.next()){
+				ProposalDAO dao = new ProposalDAO();
+				List<User> supervisors = dao.listSupervisors(rs.getInt("idproposal"));
+				
+				for(User s : supervisors){
+					for(int i = 1; i <= 2; i++){
+						if((stage == 0) || (stage == i)){
+							AttendanceReport report = new AttendanceReport();
+							
+							report.setStudent(rs.getString("studentName"));
+							report.setTitle(rs.getString("title"));
+							report.setSupervisor(s.getName());
+							report.setStage(i);
+							
+							AttendanceReport rep = this.getReport(rs.getInt("idstudent"), rs.getInt("idproposal"), s.getIdUser(), i);
+							
+							for(Attendance attendance : rep.getAttendances()){
+								if((attendance.getDate().after(sem.getStartDate()) || attendance.getDate().equals(sem.getStartDate())) && (attendance.getDate().before(sem.getEndDate()) || attendance.getDate().equals(sem.getEndDate()))){
+									report.getAttendances().add(attendance);
+								}
+							}
+							
+							list.add(report);
+						}
+					}
+				}
+			}
+			
+			return list;
 		}finally{
 			if((rs != null) && !rs.isClosed())
 				rs.close();

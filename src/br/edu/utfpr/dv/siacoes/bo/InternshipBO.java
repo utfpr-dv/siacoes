@@ -1,5 +1,6 @@
 package br.edu.utfpr.dv.siacoes.bo;
 
+import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -14,7 +15,9 @@ import br.edu.utfpr.dv.siacoes.dao.InternshipDAO;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
+import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
+import br.edu.utfpr.dv.siacoes.model.InternshipMissingDocumentsReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 
@@ -32,14 +35,14 @@ public class InternshipBO {
 		}
 	}
 	
-	public List<Internship> list(int year, int idStudent, int idSupervisor, int idCompany, int type, int status) throws Exception{
+	public List<Internship> list(int idDepartment, int year, int idStudent, int idSupervisor, int idCompany, int type, int status) throws Exception{
 		try{
 			InternshipDAO dao = new InternshipDAO();
 			
 			if((year == 0) && (idStudent == 0) && (idSupervisor == 0) && (idCompany == 0) && (type == -1) && (status == -1)){
-				return dao.listAll();
+				return dao.listByDepartment(idDepartment);
 			}else{
-				return dao.list(year, idStudent, idSupervisor, idCompany, type, status);	
+				return dao.list(idDepartment, year, idStudent, idSupervisor, idCompany, type, status);	
 			}
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
@@ -242,6 +245,22 @@ public class InternshipBO {
 	
 	public boolean delete(Internship internship) throws Exception{
 		return this.delete(internship.getIdInternship());
+	}
+	
+	public byte[] getMissingDocumentsReport(int idDepartment, int year, int idStudent, int idSupervisor, int idCompany, int type, int status, boolean finalReportMissing) throws Exception{
+		try{
+			InternshipDAO dao = new InternshipDAO();
+			
+			List<InternshipMissingDocumentsReport> list = dao.getMissingDocumentsReport(idDepartment, year, idStudent, idSupervisor, idCompany, type, status, finalReportMissing);
+			
+			ByteArrayOutputStream report = new ReportUtils().createPdfStream(list, "InternshipMissingDocuments");
+			
+			return report.toByteArray();
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
 	}
 	
 }

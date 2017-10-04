@@ -14,7 +14,9 @@ import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.view.ActivitySubmissionView;
 import br.edu.utfpr.dv.siacoes.view.ActivityGroupView;
 import br.edu.utfpr.dv.siacoes.view.ActivityUnitView;
+import br.edu.utfpr.dv.siacoes.view.ActivityValidationReportView;
 import br.edu.utfpr.dv.siacoes.view.ActivityView;
+import br.edu.utfpr.dv.siacoes.view.AttendanceReportView;
 import br.edu.utfpr.dv.siacoes.view.AttendanceView;
 import br.edu.utfpr.dv.siacoes.view.AuthenticateView;
 import br.edu.utfpr.dv.siacoes.view.BugReportView;
@@ -34,6 +36,7 @@ import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCalendarView;
 import br.edu.utfpr.dv.siacoes.view.InternshipEvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
+import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipView;
 import br.edu.utfpr.dv.siacoes.view.LibraryView;
 import br.edu.utfpr.dv.siacoes.view.ListView;
@@ -43,11 +46,13 @@ import br.edu.utfpr.dv.siacoes.view.ProjectView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackStudentView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackView;
 import br.edu.utfpr.dv.siacoes.view.ProposalView;
+import br.edu.utfpr.dv.siacoes.view.ReportView;
 import br.edu.utfpr.dv.siacoes.view.SemesterView;
 import br.edu.utfpr.dv.siacoes.view.SigacView;
 import br.edu.utfpr.dv.siacoes.view.SigesView;
 import br.edu.utfpr.dv.siacoes.view.SigetView;
 import br.edu.utfpr.dv.siacoes.view.StateView;
+import br.edu.utfpr.dv.siacoes.view.StudentActivityStatusReportView;
 import br.edu.utfpr.dv.siacoes.view.StudentView;
 import br.edu.utfpr.dv.siacoes.view.SupervisorChangeView;
 import br.edu.utfpr.dv.siacoes.view.SupervisorView;
@@ -118,6 +123,10 @@ public class SiacoesUI extends UI {
         getNavigator().addView(TutoredView.NAME, TutoredView.class);
         getNavigator().addView(SemesterView.NAME, SemesterView.class);
         getNavigator().addView(ProposalFeedbackStudentView.NAME, ProposalFeedbackStudentView.class);
+        getNavigator().addView(ActivityValidationReportView.NAME, ActivityValidationReportView.class);
+        getNavigator().addView(StudentActivityStatusReportView.NAME, StudentActivityStatusReportView.class);
+        getNavigator().addView(AttendanceReportView.NAME, AttendanceReportView.class);
+        getNavigator().addView(InternshipMissingDocumentsReportView.NAME, InternshipMissingDocumentsReportView.class);
         
         //
         // We use a view change handler to ensure the user is always redirected
@@ -145,14 +154,26 @@ public class SiacoesUI extends UI {
                     // then cancel
                     return true;
                 } else if(!isMainView && !isLoginView) {
-                	ListView view = (ListView)event.getNewView();
-                	
-                	if((view.getProfilePermissions() == UserProfile.ADMINISTRATOR) && (!Session.isUserAdministrator())){
-                		return false;
-                	} else if((view.getProfilePermissions() == UserProfile.MANAGER) && !Session.isUserManager(view.getModule()) && !Session.isUserDepartmentManager()){
-                		return false;
-                	} else if((view.getProfilePermissions() == UserProfile.PROFESSOR) && (!Session.isUserProfessor())) {
-                		return false;
+                	if(event.getNewView() instanceof ListView){
+                		ListView view = (ListView)event.getNewView();
+                    	
+                    	if((view.getProfilePermissions() == UserProfile.ADMINISTRATOR) && (!Session.isUserAdministrator())){
+                    		return false;
+                    	} else if((view.getProfilePermissions() == UserProfile.MANAGER) && !Session.isUserManager(view.getModule()) && !Session.isUserDepartmentManager()){
+                    		return false;
+                    	} else if((view.getProfilePermissions() == UserProfile.PROFESSOR) && (!Session.isUserProfessor())) {
+                    		return false;
+                    	}	
+                	}else{
+                		ReportView view = (ReportView)event.getNewView();
+                    	
+                    	if((view.getProfilePermissions() == UserProfile.ADMINISTRATOR) && (!Session.isUserAdministrator())){
+                    		return false;
+                    	} else if((view.getProfilePermissions() == UserProfile.MANAGER) && !Session.isUserManager(view.getModule()) && !Session.isUserDepartmentManager()){
+                    		return false;
+                    	} else if((view.getProfilePermissions() == UserProfile.PROFESSOR) && (!Session.isUserProfessor())) {
+                    		return false;
+                    	}
                 	}
                 }
 

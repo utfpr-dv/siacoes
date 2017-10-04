@@ -22,6 +22,10 @@ public class StageComboBox extends NativeSelect {
 		this.setWidth("100px");
 	}
 	
+	public boolean isBothSelected(){
+		return this.getValue().equals("Ambos");
+	}
+	
 	public int getStage(){
 		return (int)this.getValue();
 	}

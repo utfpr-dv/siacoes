@@ -61,6 +61,7 @@ public class InternshipView extends ListView {
 		this.setCaption("Estágios");
 		
 		this.textYear = new YearField();
+		this.textYear.setYear(0);
 		
 		this.comboStudent = new StudentComboBox("Aluno");
 		
@@ -74,7 +75,7 @@ public class InternshipView extends ListView {
 		this.comboStatus.addItem(InternshipStatus.CURRENT);
 		this.comboStatus.addItem(InternshipStatus.FINISHED);
 		this.comboStatus.addItem("Todos");
-		this.comboStatus.select("Todos");
+		this.comboStatus.select(InternshipStatus.CURRENT);
 		
 		this.comboType = new NativeSelect("Tipo");
 		this.comboType.setWidth("195px");
@@ -191,7 +192,7 @@ public class InternshipView extends ListView {
 					status = ((InternshipStatus)this.comboStatus.getValue()).getValue();
 				}
 				
-				list = bo.list(this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status);
+				list = bo.list(Session.getUser().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status);
 			}else if(this.profile == UserProfile.PROFESSOR){
 				list = bo.listBySupervisor(Session.getUser().getIdUser());
 			}else{

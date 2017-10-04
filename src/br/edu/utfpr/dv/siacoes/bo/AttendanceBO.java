@@ -1,5 +1,6 @@
 package br.edu.utfpr.dv.siacoes.bo;
 
+import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -11,6 +12,7 @@ import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
+import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class AttendanceBO {
 
@@ -94,6 +96,28 @@ public class AttendanceBO {
 			AttendanceDAO dao = new AttendanceDAO();
 			
 			return dao.getReport(idStudent, idProposal, idSupervisor, stage);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public byte[] getAttendanceReport(int idDepartment, int semester, int year, int stage, boolean showDetail) throws Exception{
+		try {
+			AttendanceDAO dao = new AttendanceDAO();
+			
+			List<AttendanceReport> list = dao.getAttendanceReport(idDepartment, semester, year, stage);
+			
+			ByteArrayOutputStream report;
+			
+			if(!showDetail){
+				report = new ReportUtils().createPdfStream(list, "AttendanceList");
+			}else{
+				report = new ReportUtils().createPdfStream(list, "AttendanceDetailedList");
+			}
+			
+			return report.toByteArray();
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
