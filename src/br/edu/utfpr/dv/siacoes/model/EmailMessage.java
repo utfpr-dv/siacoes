@@ -16,7 +16,17 @@ public class EmailMessage {
 		PROPOSALCHANGESTUDENT(9),
 		PROPOSALCHANGESUPERVISOR(10),
 		PROPOSALAPPRAISERREGISTER(11),
-		PROPOSALAPPRAISERFEEDBACK(12);
+		PROPOSALAPPRAISERFEEDBACK(12),
+		JURYINCLUDEDSTUDENT(13),
+		JURYINCLUDEDAPPRAISER(14),
+		JURYCHANGEDSTUDENT(15),
+		JURYCHANGEDAPPRAISER(16),
+		JURYREMOVEDAPPRAISER(17),
+		INTERNSHIPJURYINCLUDEDSTUDENT(18),
+		INTERNSHIPJURYINCLUDEDAPPRAISER(19),
+		INTERNSHIPJURYCHANGEDSTUDENT(20),
+		INTERNSHIPJURYCHANGEDAPPRAISER(21),
+		INTERNSHIPJURYREMOVEDAPPRAISER(22);
 		
 		private final int value; 
 		MessageType(int value){ 
@@ -63,6 +73,26 @@ public class EmailMessage {
 					return "Cadastro de Avaliador da Proposta de TCC 1";
 				case PROPOSALAPPRAISERFEEDBACK:
 					return "Feedback da Proposta de TCC 1";
+				case JURYINCLUDEDSTUDENT:
+					return "Banca de TCC Marcada (Estudante)";
+				case JURYINCLUDEDAPPRAISER:
+					return "Banca de TCC Marcada (Avaliador)";
+				case JURYCHANGEDSTUDENT:
+					return "Banca de TCC Alterada (Estudante)";
+				case JURYCHANGEDAPPRAISER:
+					return "Banca de TCC Alterada (Avaliador)";
+				case JURYREMOVEDAPPRAISER:
+					return "Banca de TCC (Avaliador Removido)";
+				case INTERNSHIPJURYINCLUDEDSTUDENT:
+					return "Banca de Estágio Marcada (Estudante)";
+				case INTERNSHIPJURYINCLUDEDAPPRAISER:
+					return "Banca de Estágio Marcada (Avaliador)";
+				case INTERNSHIPJURYCHANGEDSTUDENT:
+					return "Banca de Estágio Alterada (Estudante)";
+				case INTERNSHIPJURYCHANGEDAPPRAISER:
+					return "Banca de Estágio Alterada (Avaliador)";
+				case INTERNSHIPJURYREMOVEDAPPRAISER:
+					return "Banca de Estágio (Avaliador Removido)";
 				default:
 					return "";
 			}

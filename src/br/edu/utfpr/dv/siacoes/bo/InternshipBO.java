@@ -14,6 +14,7 @@ import br.edu.utfpr.dv.siacoes.dao.ConnectionDAO;
 import br.edu.utfpr.dv.siacoes.dao.InternshipDAO;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Internship;
+import br.edu.utfpr.dv.siacoes.model.InternshipByCompany;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
@@ -256,6 +257,18 @@ public class InternshipBO {
 			ByteArrayOutputStream report = new ReportUtils().createPdfStream(list, "InternshipMissingDocuments");
 			
 			return report.toByteArray();
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
+	}
+	
+	public List<InternshipByCompany> listInternshipByCompany(int idDepartment) throws Exception {
+		try{
+			InternshipDAO dao = new InternshipDAO();
+			
+			return dao.listInternshipByCompany(idDepartment);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

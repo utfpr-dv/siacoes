@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-10-04T18:01:02 -->
+<!-- 2017-10-05T14:01:06 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Attendances" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="730" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="3d913f38-4ce2-4b6a-be5a-ab11a4791d3f">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -96,17 +96,17 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="52" splitType="Stretch">
-			<textField>
+		<band height="53" splitType="Prevent">
+			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="0" y="16" width="180" height="15" uuid="2ff398b2-b05d-4c40-9a25-5c7cff43445d">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial"/>
+					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{student}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="180" y="16" width="150" height="15" uuid="bdae1610-c298-4f3b-831c-5d99d370c694">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
@@ -115,7 +115,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{supervisor}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="330" y="16" width="120" height="15" uuid="f9397103-7282-49a9-8ed4-26d72050ee73">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
@@ -124,7 +124,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{companySupervisor}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="450" y="16" width="120" height="15" uuid="c36bef89-05bd-4a82-afb3-bec83fbb53fb">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
@@ -152,14 +152,17 @@
 				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="570" y="34" width="80" height="13" uuid="45c57802-1192-4ce3-890a-9fcfc4fef81e"/>
+				<reportElement positionType="Float" x="630" y="32" width="60" height="15" uuid="45c57802-1192-4ce3-890a-9fcfc4fef81e">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Relatório Final:]]></text>
+				<text><![CDATA[Relat. Final:]]></text>
 			</staticText>
 			<textField>
-				<reportElement positionType="Float" x="650" y="32" width="80" height="15" uuid="5bf90df2-ed70-49e9-9af2-4a5d653dab23">
+				<reportElement positionType="Float" x="690" y="32" width="40" height="15" uuid="5bf90df2-ed70-49e9-9af2-4a5d653dab23">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Center">
@@ -173,22 +176,29 @@
 				</reportElement>
 			</line>
 			<staticText>
-				<reportElement positionType="Float" x="30" y="33" width="140" height="13" uuid="4ab67128-f98f-4510-87bf-42dab16312e4"/>
+				<reportElement positionType="Float" x="210" y="32" width="110" height="15" uuid="4ab67128-f98f-4510-87bf-42dab16312e4">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Relatórios do Acadêmico:]]></text>
+				<text><![CDATA[Relat. do Acadêmico:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="210" y="34" width="140" height="13" uuid="24de43c4-785f-45ea-8b8a-ecca1a08c163"/>
+				<reportElement positionType="Float" x="350" y="32" width="110" height="15" uuid="24de43c4-785f-45ea-8b8a-ecca1a08c163">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Relatórios do Orientador:]]></text>
+				<text><![CDATA[Relat. do Orientador:]]></text>
 			</staticText>
 			<textField>
-				<reportElement positionType="Float" x="170" y="33" width="40" height="15" uuid="022623e2-6a0c-49db-8099-f85d788128f5">
+				<reportElement positionType="Float" x="320" y="32" width="30" height="15" uuid="022623e2-6a0c-49db-8099-f85d788128f5">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Center">
 					<font fontName="Arial"/>
@@ -196,7 +206,7 @@
 				<textFieldExpression><![CDATA[$F{studentReport}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="350" y="33" width="40" height="15" uuid="74740ed0-3f20-4015-81fa-ee41c6b25f6a">
+				<reportElement positionType="Float" x="460" y="32" width="30" height="15" uuid="74740ed0-3f20-4015-81fa-ee41c6b25f6a">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Center">
@@ -205,14 +215,17 @@
 				<textFieldExpression><![CDATA[$F{supervisorReport}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="390" y="34" width="140" height="13" uuid="b310e899-fea6-46f4-a24a-880ba42b4629"/>
+				<reportElement positionType="Float" x="490" y="32" width="110" height="15" uuid="b310e899-fea6-46f4-a24a-880ba42b4629">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Relatórios do Supervisor:]]></text>
+				<text><![CDATA[Relat. do Supervisor:]]></text>
 			</staticText>
 			<textField>
-				<reportElement positionType="Float" x="530" y="33" width="40" height="15" uuid="db2ac0be-ce40-4731-9b22-523e7d719843">
+				<reportElement positionType="Float" x="600" y="32" width="30" height="15" uuid="db2ac0be-ce40-4731-9b22-523e7d719843">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Center">
@@ -262,6 +275,46 @@
 				</textElement>
 				<text><![CDATA[Situação]]></text>
 			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="32" width="40" height="15" uuid="e4f4fbb5-ad15-4430-a4b9-7b85432c3cc9">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Início:]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="40" y="32" width="60" height="15" uuid="60d818e1-6475-41e5-a429-309cd6314651">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[DATEFORMAT($F{startDate}, "dd/MM/yyyy")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="100" y="32" width="50" height="15" uuid="7a81c9b0-d631-41ff-947e-e79fa4479fa1">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Término:]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="150" y="32" width="60" height="15" uuid="f5a46ea0-5f86-46d8-bfb4-d059c3deb1ec">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[DATEFORMAT($F{endDate}, "dd/MM/yyyy")]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<pageFooter>

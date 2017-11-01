@@ -67,6 +67,7 @@ import br.edu.utfpr.dv.siacoes.view.DocumentView;
 import br.edu.utfpr.dv.siacoes.view.EmailMessageView;
 import br.edu.utfpr.dv.siacoes.view.EvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCalendarView;
+import br.edu.utfpr.dv.siacoes.view.InternshipCompanyChartView;
 import br.edu.utfpr.dv.siacoes.view.InternshipEvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
 import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
@@ -308,6 +309,9 @@ public class SideMenu extends CustomComponent {
 		if(Session.isUserManager(SystemModule.SIGES) || Session.isUserDepartmentManager()){
 			layout.addComponent(new MenuEntry("Relatórios", 0));
 			layout.addComponent(new MenuEntry("Documentos Faltantes", 1, InternshipMissingDocumentsReportView.NAME));
+			
+			layout.addComponent(new MenuEntry("Gráficos", 0));
+			layout.addComponent(new MenuEntry("Estagiários por Empresa", 1, InternshipCompanyChartView.NAME));
 		}
 		
 		layout.setSizeFull();

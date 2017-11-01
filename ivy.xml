@@ -52,16 +52,13 @@
 		<dependency org="com.vaadin" name="vaadin-testbench-api" rev="latest.release" conf="nodeploy -> default" />
 
 		<!-- Precompiled DefaultWidgetSet -->
-		<dependency org="com.vaadin" name="vaadin-client-compiled"
-			rev="&vaadin.version;" />
+		<dependency org="com.vaadin" name="vaadin-client-compiled" rev="&vaadin.version;" />
 
 		<!-- Vaadin client side, needed for widget set compilation -->
-		<dependency org="com.vaadin" name="vaadin-client" rev="&vaadin.version;"
-			 conf="widgetset-compile->default" />
+		<dependency org="com.vaadin" name="vaadin-client" rev="&vaadin.version;" />
 
 		<!-- Compiler for custom widget sets. Should not be deployed -->
-		<dependency org="com.vaadin" name="vaadin-client-compiler"
-			rev="&vaadin.version;" conf="widgetset-compile->default" />
+		<dependency org="com.vaadin" name="vaadin-client-compiler" rev="&vaadin.version;" conf="widgetset-compile->default" />
 		
 		<!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
 		<dependency org="com.google.zxing" name="core" rev="3.3.0"/>
@@ -83,5 +80,8 @@
 		
 		<!-- https://mvnrepository.com/artifact/com.vaadin/vaadin-icons -->
 		<dependency org="com.vaadin" name="vaadin-icons" rev="3.0.1"/>
+		
+		<!-- https://mvnrepository.com/artifact/org.knowm.xchart/xchart -->
+		<dependency org="org.knowm.xchart" name="xchart" rev="3.5.0"/>
 	</dependencies>
 </ivy-module>

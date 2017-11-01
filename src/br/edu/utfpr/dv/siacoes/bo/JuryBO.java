@@ -3,6 +3,7 @@ package br.edu.utfpr.dv.siacoes.bo;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -10,6 +11,7 @@ import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.JuryDAO;
 import br.edu.utfpr.dv.siacoes.model.CalendarReport;
+import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserScore;
@@ -21,6 +23,7 @@ import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.TermOfApprovalReport;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.EvaluationItem.EvaluationItemType;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 
@@ -101,6 +104,7 @@ public class JuryBO {
 	public int save(Jury jury) throws Exception{
 		try {
 			boolean insert = (jury.getIdJury() == 0);
+			Jury oldJury = null;
 			
 			if(((jury.getProject() == null) || (jury.getProject().getIdProject() == 0)) && ((jury.getThesis() == null) || (jury.getThesis().getIdThesis() == 0))){
 				throw new Exception("Informe o projeto ou monografia a que a banca pertence.");
@@ -131,13 +135,88 @@ public class JuryBO {
 			
 			JuryDAO dao = new JuryDAO();
 			
-			if(insert){
-				//Banca marcada
-			}else{
-				//Reagendamento de banca
+			if(!insert){
+				oldJury = dao.findById(jury.getIdJury());
+				oldJury.setAppraisers(new JuryAppraiserBO().listAppraisers(jury.getIdJury()));
 			}
 			
-			return dao.save(jury);
+			int id = dao.save(jury);
+			
+			try{
+				if(jury.getStage() == 2){
+					jury.setThesis(new ThesisBO().findById(jury.getThesis().getIdThesis()));
+				}else{
+					jury.setProject(new ProjectBO().findById(jury.getProject().getIdProject()));
+				}
+				
+				EmailMessageBO bo = new EmailMessageBO();
+				List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+				
+				keys.add(new EmailMessageEntry<String, String>("student", (jury.getStage() == 2 ? jury.getThesis().getStudent().getName() : jury.getProject().getStudent().getName())));
+				keys.add(new EmailMessageEntry<String, String>("title", (jury.getStage() == 2 ? jury.getThesis().getTitle() : jury.getProject().getTitle())));
+				keys.add(new EmailMessageEntry<String, String>("date", new SimpleDateFormat("dd/MM/yyyy").format(jury.getDate())));
+				keys.add(new EmailMessageEntry<String, String>("time", new SimpleDateFormat("HH:mm").format(jury.getStartTime())));
+				keys.add(new EmailMessageEntry<String, String>("local", jury.getLocal()));
+				keys.add(new EmailMessageEntry<String, String>("stage", "TCC " + String.valueOf(jury.getStage())));
+				keys.add(new EmailMessageEntry<String, String>("appraiser", jury.getSupervisor().getName()));
+				
+				if(insert){
+					bo.sendEmail((jury.getStage() == 2 ? jury.getThesis().getStudent().getIdUser() : jury.getProject().getStudent().getIdUser()), MessageType.JURYINCLUDEDSTUDENT, keys);
+					
+					for(JuryAppraiser appraiser : jury.getAppraisers()){
+						keys.remove(keys.size() - 1);
+						keys.add(new EmailMessageEntry<String, String>("appraiser", appraiser.getAppraiser().getName()));
+						bo.sendEmail(appraiser.getAppraiser().getIdUser(), MessageType.JURYINCLUDEDAPPRAISER, keys);
+					}
+				}else{
+					boolean juryChanged = ((!jury.getDate().equals(oldJury.getDate())) || (!jury.getStartTime().equals(oldJury.getStartTime())) || (!jury.getLocal().equals(oldJury.getLocal())));
+					
+					if(juryChanged){
+						bo.sendEmail((jury.getStage() == 2 ? jury.getThesis().getStudent().getIdUser() : jury.getProject().getStudent().getIdUser()), MessageType.JURYCHANGEDSTUDENT, keys);
+					}
+					
+					//Membro removido da banca
+					for(JuryAppraiser a : oldJury.getAppraisers()){
+						boolean find = false;
+						
+						for(JuryAppraiser a2 : jury.getAppraisers()){
+							if(a.getAppraiser().getIdUser() == a2.getAppraiser().getIdUser()){
+								find = true;
+							}
+						}
+						
+						if(!find){
+							keys.remove(keys.size() - 1);
+							keys.add(new EmailMessageEntry<String, String>("appraiser", a.getAppraiser().getName()));
+							bo.sendEmail(a.getAppraiser().getIdUser(), MessageType.JURYREMOVEDAPPRAISER, keys);
+						}
+					}
+					
+					//Alterações de membros da banca
+					for(JuryAppraiser a : jury.getAppraisers()){
+						boolean find = false;
+						
+						for(JuryAppraiser a2 : oldJury.getAppraisers()){
+							if(a.getAppraiser().getIdUser() == a2.getAppraiser().getIdUser()){
+								find = true;
+							}
+						}
+						
+						keys.remove(keys.size() - 1);
+						keys.add(new EmailMessageEntry<String, String>("appraiser", a.getAppraiser().getName()));
+						
+						if(!find){
+							bo.sendEmail(a.getAppraiser().getIdUser(), MessageType.JURYINCLUDEDAPPRAISER, keys);
+						}else if(juryChanged){
+							bo.sendEmail(a.getAppraiser().getIdUser(), MessageType.JURYCHANGEDAPPRAISER, keys);	
+						}
+					}
+				}
+			}catch(Exception e){
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			}
+			
+			return id;
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

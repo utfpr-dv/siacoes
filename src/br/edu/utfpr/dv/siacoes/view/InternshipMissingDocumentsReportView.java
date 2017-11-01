@@ -76,7 +76,7 @@ public class InternshipMissingDocumentsReportView extends ReportView {
 	}
 	
 	@Override
-	public void generateReport() throws Exception {
+	public byte[] generateReport() throws Exception {
 		int type = -1, status = -1;
 		
 		if(!this.comboType.getValue().equals("Todos")){
@@ -88,9 +88,7 @@ public class InternshipMissingDocumentsReportView extends ReportView {
 		}
 		
 		InternshipBO bo = new InternshipBO();
-		byte[] report = bo.getMissingDocumentsReport(Session.getUser().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status, this.checkFinalReportMissing.getValue());
-		
-		this.showReport(report);
+		return bo.getMissingDocumentsReport(Session.getUser().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status, this.checkFinalReportMissing.getValue());
 	}
 
 }

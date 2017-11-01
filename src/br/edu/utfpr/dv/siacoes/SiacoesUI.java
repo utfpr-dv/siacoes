@@ -23,6 +23,7 @@ import br.edu.utfpr.dv.siacoes.view.BugReportView;
 import br.edu.utfpr.dv.siacoes.view.CalendarView;
 import br.edu.utfpr.dv.siacoes.view.CampusView;
 import br.edu.utfpr.dv.siacoes.view.CertificateView;
+import br.edu.utfpr.dv.siacoes.view.ChartView;
 import br.edu.utfpr.dv.siacoes.view.CityView;
 import br.edu.utfpr.dv.siacoes.view.CompanySupervisorView;
 import br.edu.utfpr.dv.siacoes.view.CompanyView;
@@ -34,6 +35,7 @@ import br.edu.utfpr.dv.siacoes.view.EmailMessageView;
 import br.edu.utfpr.dv.siacoes.view.EvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCalendarView;
+import br.edu.utfpr.dv.siacoes.view.InternshipCompanyChartView;
 import br.edu.utfpr.dv.siacoes.view.InternshipEvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
 import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
@@ -127,6 +129,7 @@ public class SiacoesUI extends UI {
         getNavigator().addView(StudentActivityStatusReportView.NAME, StudentActivityStatusReportView.class);
         getNavigator().addView(AttendanceReportView.NAME, AttendanceReportView.class);
         getNavigator().addView(InternshipMissingDocumentsReportView.NAME, InternshipMissingDocumentsReportView.class);
+        getNavigator().addView(InternshipCompanyChartView.NAME, InternshipCompanyChartView.class);
         
         //
         // We use a view change handler to ensure the user is always redirected
@@ -163,7 +166,17 @@ public class SiacoesUI extends UI {
                     		return false;
                     	} else if((view.getProfilePermissions() == UserProfile.PROFESSOR) && (!Session.isUserProfessor())) {
                     		return false;
-                    	}	
+                    	}
+                	}else if(event.getNewView() instanceof ChartView){
+                		ChartView view = (ChartView)event.getNewView();
+                    	
+                    	if((view.getProfilePermissions() == UserProfile.ADMINISTRATOR) && (!Session.isUserAdministrator())){
+                    		return false;
+                    	} else if((view.getProfilePermissions() == UserProfile.MANAGER) && !Session.isUserManager(view.getModule()) && !Session.isUserDepartmentManager()){
+                    		return false;
+                    	} else if((view.getProfilePermissions() == UserProfile.PROFESSOR) && (!Session.isUserProfessor())) {
+                    		return false;
+                    	}
                 	}else{
                 		ReportView view = (ReportView)event.getNewView();
                     	

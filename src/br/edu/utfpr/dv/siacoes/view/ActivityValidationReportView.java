@@ -53,11 +53,9 @@ public class ActivityValidationReportView extends ReportView {
 	}
 
 	@Override
-	public void generateReport() throws Exception {
+	public byte[] generateReport() throws Exception {
 		ActivitySubmissionBO bo = new ActivitySubmissionBO();
-		byte[] report = bo.getActivityValidationReport(Session.getUser().getDepartment().getIdDepartment(), ((User)this.comboFeedbackUser.getValue()).getIdUser());
-		
-		this.showReport(report);
+		return bo.getActivityValidationReport(Session.getUser().getDepartment().getIdDepartment(), ((User)this.comboFeedbackUser.getValue()).getIdUser());
 	}
 
 }

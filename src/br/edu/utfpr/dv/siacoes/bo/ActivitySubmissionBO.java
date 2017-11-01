@@ -227,7 +227,7 @@ public class ActivitySubmissionBO {
 		SigacConfigBO dbo = new SigacConfigBO();
 		SigacConfig config = dbo.findByDepartment(idDepartment);
 		
-		if(report.getTotalScore() >= config.getMinimumScore()){
+		if((report.getTotalScore() >= config.getMinimumScore()) && this.hasMinimalScores(report.getFooter())){
 			report.setSituation("Pontuação atingida");	
 		}else{
 			report.setSituation("Pontuação insuficiente");
@@ -251,6 +251,16 @@ public class ActivitySubmissionBO {
 		pdfMerge.mergeDocuments(null);
 		
 		return output;
+	}
+	
+	private boolean hasMinimalScores(List<ActivitySubmissionFooterReport> list){
+		for(ActivitySubmissionFooterReport footer : list){
+			if(footer.getTotal() < footer.getMinimum()){
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	private List<byte[]> loadDocuments(List<ActivitySubmission> submissions){
@@ -415,7 +425,7 @@ public class ActivitySubmissionBO {
 						user.setTotalScore(user.getTotalScore() + s.getTotal());
 					}
 					
-					if(user.getTotalScore() >= config.getMinimumScore()){
+					if((user.getTotalScore() >= config.getMinimumScore()) && this.hasMinimalScores(scores)){
 						user.setSituation("Pontuação atingida");	
 					}else{
 						user.setSituation("Pontuação insuficiente");

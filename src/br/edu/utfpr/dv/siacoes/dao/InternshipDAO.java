@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.Internship;
+import br.edu.utfpr.dv.siacoes.model.InternshipByCompany;
 import br.edu.utfpr.dv.siacoes.model.InternshipMissingDocumentsReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportType;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipStatus;
@@ -406,8 +407,42 @@ public class InternshipDAO {
 				report.setSupervisorReport(rs.getInt("supervisorReport"));
 				report.setCompanySupervisorReport(rs.getInt("companySupervisorReport"));
 				report.setStatus(InternshipStatus.valueOf(rs.getInt("status")));
+				report.setType(InternshipType.valueOf(rs.getInt("type")));
 				
 				list.add(report);
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
+	}
+	
+	public List<InternshipByCompany> listInternshipByCompany(int idDepartment) throws SQLException {
+		ResultSet rs = null;
+		Statement stmt = null;
+		
+		try{
+			stmt = this.conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT internship.idcompany, company.name, COUNT(*) AS total " +
+					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"WHERE internship.iddepartment=" + String.valueOf(idDepartment) +
+					" GROUP BY internship.idcompany, company.name ORDER BY total DESC");
+			
+			List<InternshipByCompany> list = new ArrayList<InternshipByCompany>();
+			
+			while(rs.next()){
+				InternshipByCompany item = new InternshipByCompany();
+				
+				item.setIdCompany(rs.getInt("idcompany"));
+				item.setCompanyName(rs.getString("name"));
+				item.setTotalStudents(rs.getInt("total"));
+				
+				list.add(item);
 			}
 			
 			return list;

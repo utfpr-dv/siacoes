@@ -22,7 +22,6 @@ public abstract class ReportView extends BasicView {
 	private final Button buttonReport;
 	
 	private UserProfile profilePermissions;
-    
     private SystemModule module;
     
     public ReportView(SystemModule module){
@@ -32,7 +31,7 @@ public abstract class ReportView extends BasicView {
             @Override
             public void buttonClick(ClickEvent event) {
             	try{
-            		generateReport();
+            		showReport(generateReport());
             	}catch(Exception e){
             		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
             		
@@ -88,9 +87,9 @@ public abstract class ReportView extends BasicView {
     	return this.profilePermissions;
     }
     
-    public abstract void generateReport() throws Exception;
+    public abstract byte[] generateReport() throws Exception;
     
-    public void showReport(byte[] pdfReport){
+    private void showReport(byte[] pdfReport){
     	Session.putReport(pdfReport);
 		
 		getUI().getPage().open("#!" + CertificateView.NAME + "/session/" + UUID.randomUUID().toString(), "_blank");
