@@ -47,6 +47,8 @@ public class FinalDocument {
 	private Date submissionDate;
 	private byte[] file;
 	private boolean _private;
+	private boolean companyInfo;
+	private boolean patent;
 	private Date supervisorFeedbackDate;
 	private DocumentFeedback supervisorFeedback;
 	private String comments;
@@ -59,6 +61,8 @@ public class FinalDocument {
 		this.setSubmissionDate(new Date());
 		this.setFile(null);
 		this.setPrivate(false);
+		this.setCompanyInfo(false);
+		this.setPatent(false);
 		this.setSupervisorFeedbackDate(null);
 		this.setSupervisorFeedback(DocumentFeedback.NONE);
 		this.setComments("");
@@ -123,6 +127,18 @@ public class FinalDocument {
 	}
 	public void setComments(String comments) {
 		this.comments = comments;
+	}
+	public boolean isCompanyInfo() {
+		return companyInfo;
+	}
+	public void setCompanyInfo(boolean companyInfo) {
+		this.companyInfo = companyInfo;
+	}
+	public boolean isPatent() {
+		return patent;
+	}
+	public void setPatent(boolean patent) {
+		this.patent = patent;
 	}
 	public int getStage(){
 		if((this.getThesis() != null) && (this.getThesis().getIdThesis() != 0))

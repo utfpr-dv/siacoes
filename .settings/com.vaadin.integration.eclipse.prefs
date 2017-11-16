@@ -1,4 +1,4 @@
-com.vaadin.integration.eclipse.mavenLatestVersionsUpgrade=["7.7.11"]
+com.vaadin.integration.eclipse.mavenLatestVersionsUpgrade=["7.7.12"]
 com.vaadin.integration.eclipse.notifyOfVaadinUpdates=true
 com.vaadin.integration.eclipse.useLatestNightly=false
 com.vaadin.integration.eclipse.widgetsetBuildsSuspended=true

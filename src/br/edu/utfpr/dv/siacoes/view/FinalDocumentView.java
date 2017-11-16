@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.renderers.DateRenderer;
 
 import br.edu.utfpr.dv.siacoes.Session;
@@ -22,6 +24,7 @@ import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
+import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
 import br.edu.utfpr.dv.siacoes.window.EditFinalDocumentWindow;
 
 public class FinalDocumentView extends ListView {
@@ -31,6 +34,9 @@ public class FinalDocumentView extends ListView {
 	private final CheckBox checkListAll;
 	private final SemesterComboBox comboSemester;
 	private final YearField textYear;
+	private final Button buttonLibraryReport;
+	
+	private Button.ClickListener listenerClickLibraryReport;
 	
 	public FinalDocumentView(){
 		super(SystemModule.SIGET);
@@ -54,11 +60,17 @@ public class FinalDocumentView extends ListView {
 		
 		this.checkListAll = new CheckBox("Listar Todos");
 		
+		this.buttonLibraryReport = new Button("Relat. Biblioteca");
+		
 		if(!Session.isUserManager(this.getModule())){
 			this.checkListAll.setVisible(false);
+			
+			this.buttonLibraryReport.setVisible(false);
 		}
 		
 		this.addFilterField(new HorizontalLayout(this.comboSemester, this.textYear, this.checkListAll));
+		
+		this.addActionButton(this.buttonLibraryReport);
 		
 		this.setAddVisible(false);
 		this.setDeleteVisible(false);
@@ -91,6 +103,10 @@ public class FinalDocumentView extends ListView {
 				list = bo.listBySemester(Session.getUser().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), true);
 			}else{
 				list = bo.listBySupervisor(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
+			}
+			
+			if(Session.isUserManager(this.getModule())){
+				this.prepareLibraryReport();
 			}
 			
 			for(FinalDocument doc : list){
@@ -141,6 +157,29 @@ public class FinalDocumentView extends ListView {
 	public void filterClick() throws Exception {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private void prepareLibraryReport(){
+		this.buttonLibraryReport.removeClickListener(this.listenerClickLibraryReport);
+		new ExtensionUtils().removeAllExtensions(this.buttonLibraryReport);
+    	
+		try {
+			FinalDocumentBO bo = new FinalDocumentBO();
+        	byte[] report = bo.getLibraryReport(Session.getUser().getDepartment().getIdDepartment(), this.textYear.getYear(), this.comboSemester.getSemester());
+        	
+        	new ExtensionUtils().extendToDownload("RelatorioBiblioteca.zip", report, this.buttonLibraryReport);	
+    	} catch (Exception e) {
+    		this.listenerClickLibraryReport = new Button.ClickListener() {
+	            @Override
+	            public void buttonClick(ClickEvent event) {
+	            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+	            	
+	            	Notification.show("Relatório para Biblioteca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+	            }
+	        };
+	        
+    		this.buttonLibraryReport.addClickListener(this.listenerClickLibraryReport);
+		}
 	}
 
 }

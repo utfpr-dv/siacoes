@@ -39,6 +39,7 @@ public class EditDepartmentWindow extends EditWindow {
 	private final Upload uploadLogo;
 	private final Image imageLogo;
 	private final TextField textSite;
+	private final TextField textInitials;
 
 	public EditDepartmentWindow(Department department, ListView parentView){
 		super("Editar Departamento", parentView);
@@ -64,6 +65,10 @@ public class EditDepartmentWindow extends EditWindow {
 		this.textSite.setWidth("800px");
 		this.textSite.setMaxLength(255);
 		
+		this.textInitials = new TextField("Sigla");
+		this.textInitials.setWidth("400px");
+		this.textInitials.setMaxLength(50);
+		
 		this.checkActive = new CheckBox("Ativo");
 		
 		DocumentUploader listener = new DocumentUploader();
@@ -79,8 +84,8 @@ public class EditDepartmentWindow extends EditWindow {
 		
 		this.addField(new HorizontalLayout(this.textName, this.comboCampus));
 		this.addField(this.textFullName);
+		this.addField(new HorizontalLayout(this.textInitials, this.checkActive));
 		this.addField(this.textSite);
-		this.addField(this.checkActive);
 		this.addField(new HorizontalLayout(this.uploadLogo, this.imageLogo));
 		
 		this.loadDepartment();
@@ -93,6 +98,7 @@ public class EditDepartmentWindow extends EditWindow {
 		this.checkActive.setValue(this.department.isActive());
 		this.textSite.setValue(this.department.getSite());
 		this.textFullName.setValue(this.department.getFullName());
+		this.textInitials.setValue(this.department.getInitials());
 		
 		this.loadLogo();
 	}
@@ -122,6 +128,7 @@ public class EditDepartmentWindow extends EditWindow {
 			this.department.setActive(this.checkActive.getValue());
 			this.department.setSite(this.textSite.getValue());
 			this.department.setFullName(this.textFullName.getValue());
+			this.department.setInitials(this.textInitials.getValue());
 			
 			bo.save(this.department);
 			

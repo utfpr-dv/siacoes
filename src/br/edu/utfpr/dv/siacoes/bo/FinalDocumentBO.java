@@ -1,12 +1,21 @@
 package br.edu.utfpr.dv.siacoes.bo;
 
+import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import br.edu.utfpr.dv.siacoes.dao.FinalDocumentDAO;
+import br.edu.utfpr.dv.siacoes.model.Campus;
+import br.edu.utfpr.dv.siacoes.model.Department;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument;
+import br.edu.utfpr.dv.siacoes.model.LibraryCoverReport;
+import br.edu.utfpr.dv.siacoes.model.LibraryReport;
+import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class FinalDocumentBO {
 	
@@ -106,11 +115,11 @@ public class FinalDocumentBO {
 		}
 	}
 	
-	public List<FinalDocument> listByDepartment(int idDepartment, boolean includePrivate) throws Exception{
+	public List<FinalDocument> listByDepartment(int idDepartment) throws Exception{
 		try{
 			FinalDocumentDAO dao = new FinalDocumentDAO();
 			
-			return dao.listByDepartment(idDepartment, includePrivate);
+			return dao.listByDepartment(idDepartment);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -133,6 +142,64 @@ public class FinalDocumentBO {
 			FinalDocumentDAO dao = new FinalDocumentDAO();
 			
 			return dao.save(thesis);
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public byte[] getLibraryReport(int idDepartment, int year, int semester) throws Exception{
+		try{
+			ByteArrayOutputStream ret = new ByteArrayOutputStream();
+			Department department = new DepartmentBO().findById(idDepartment);
+			Campus campus = new CampusBO().findById(department.getCampus().getIdCampus());
+			LibraryCoverReport cover = new LibraryCoverReport();
+			
+			cover.setYear(year);
+			cover.setSemester(semester);
+			cover.setCourse("CURSO SUPERIOR DE " + department.getName().toUpperCase());
+			cover.setCity(campus.getName());
+			
+			List<LibraryCoverReport> listCover = new ArrayList<LibraryCoverReport>();
+			listCover.add(cover);
+			
+			FinalDocumentDAO dao = new FinalDocumentDAO();
+			List<LibraryReport> list = dao.getLibraryReport(idDepartment, year, semester);
+			
+			for(LibraryReport item : list){
+				item.setFileName(campus.getInitials() + "_" + department.getInitials() + "_" + String.valueOf(year) + "_" + 
+						String.valueOf(semester) + "_" + String.valueOf(item.getSequence()) + ".pdf");
+			}
+			
+			ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "Library");
+			
+			ByteArrayOutputStream coverRep = new ReportUtils().createPdfStream(listCover, "LibraryCover");
+			
+			ZipOutputStream out = new ZipOutputStream(ret);
+			
+			for(LibraryReport item : list){
+				ZipEntry e = new ZipEntry(item.getFileName());
+				out.putNextEntry(e);
+				
+				out.write(item.getFile(), 0, item.getFile().length);
+				out.closeEntry();
+			}
+			
+			ZipEntry e = new ZipEntry("Lista de TCCs.pdf");
+			out.putNextEntry(e);
+			out.write(rep.toByteArray(), 0, rep.size());
+			out.closeEntry();
+			
+			e = new ZipEntry("Capa.pdf");
+			out.putNextEntry(e);
+			out.write(coverRep.toByteArray(), 0, coverRep.size());
+			out.closeEntry();
+			
+			out.flush();
+			out.close();
+			
+			return ret.toByteArray();
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

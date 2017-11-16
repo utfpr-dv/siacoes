@@ -53,6 +53,8 @@ public class EditFinalDocumentWindow extends EditWindow {
 	private final Upload uploadFile;
 	private final Image imageFileUploaded;
 	private final CheckBox checkPrivate;
+	private final CheckBox checkCompanyInfo;
+	private final CheckBox checkPatent;
 	private final NativeSelect comboFeedback;
 	private final TextArea textComments;
 	private final DateField textFeedbackDate;
@@ -96,7 +98,11 @@ public class EditFinalDocumentWindow extends EditWindow {
 		this.imageFileUploaded = new Image("", new ThemeResource("images/ok.png"));
 		this.imageFileUploaded.setVisible(false);
 		
-		this.checkPrivate = new CheckBox("Documento em sigilo (não será visível nas pesquisas)");
+		this.checkPrivate = new CheckBox("Documento em sigilo (somente estará disponível para consulta na biblioteca)");
+		
+		this.checkCompanyInfo = new CheckBox("Este trabalho possui informações de empresas");
+		
+		this.checkPatent = new CheckBox("Este trabalho é base para geração de patente");
 		
 		this.textComments = new TextArea("Comentários");
 		this.textComments.setWidth("800px");
@@ -120,6 +126,8 @@ public class EditFinalDocumentWindow extends EditWindow {
 		this.addField(this.textTitle);
 		this.addField(new HorizontalLayout(this.uploadFile, this.imageFileUploaded, this.comboSemester, this.textYear, this.textSubmissionDate));
 		this.addField(this.checkPrivate);
+		this.addField(this.checkCompanyInfo);
+		this.addField(this.checkPatent);
 		this.addField(new HorizontalLayout(this.comboFeedback, this.textFeedbackDate));
 		this.addField(this.textComments);
 		
@@ -164,6 +172,8 @@ public class EditFinalDocumentWindow extends EditWindow {
 		this.textYear.setYear(this.thesis.getThesis().getYear());
 		this.textSubmissionDate.setValue(this.thesis.getSubmissionDate());
 		this.checkPrivate.setValue(this.thesis.isPrivate());
+		this.checkCompanyInfo.setValue(this.thesis.isCompanyInfo());
+		this.checkPatent.setValue(this.thesis.isPatent());
 		this.comboFeedback.setValue(this.thesis.getSupervisorFeedback());
 		this.textFeedbackDate.setValue(this.thesis.getSupervisorFeedbackDate());
 		this.textComments.setValue(this.thesis.getComments());
@@ -197,6 +207,8 @@ public class EditFinalDocumentWindow extends EditWindow {
 			
 			this.thesis.setTitle(this.textTitle.getValue());
 			this.thesis.setPrivate(this.checkPrivate.getValue());
+			this.thesis.setCompanyInfo(this.checkCompanyInfo.getValue());
+			this.thesis.setPatent(this.checkPatent.getValue());
 			
 			if(Session.isUserProfessor()){
 				if((this.thesis.getSupervisorFeedback() == DocumentFeedback.NONE) && (this.comboFeedback.getValue() != DocumentFeedback.NONE)){

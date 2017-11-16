@@ -58,7 +58,7 @@ public class LibraryView extends ListView {
 		
 		try {
 			FinalDocumentBO bo = new FinalDocumentBO();
-	    	List<FinalDocument> list = bo.listByDepartment(Session.getUser().getDepartment().getIdDepartment(), false);
+	    	List<FinalDocument> list = bo.listByDepartment(Session.getUser().getDepartment().getIdDepartment());
 	    	
 	    	for(FinalDocument p : list){
 				Object itemId = this.getGrid().addRow(p.getThesis().getSemester(), p.getThesis().getYear(), p.getTitle(), p.getThesis().getStudent().getName());
@@ -75,13 +75,25 @@ public class LibraryView extends ListView {
 		Object value = getIdSelected();
 		
 		this.buttonDownloadThesis.removeClickListener(this.listenerClickDownload);
+		new ExtensionUtils().removeAllExtensions(this.buttonDownloadThesis);
     	
     	if(value != null){
 			try {
 				FinalDocumentBO bo = new FinalDocumentBO();
             	FinalDocument p = bo.findById((int)value);
             	
-            	new ExtensionUtils().extendToDownload(p.getTitle() + ".pdf", p.getFile(), this.buttonDownloadThesis);
+            	if(p.isPrivate()){
+            		this.listenerClickDownload = new Button.ClickListener() {
+        	            @Override
+        	            public void buttonClick(ClickEvent event) {
+        	            	Notification.show("Download da Monografia", "Este documento foi marcado como sigiloso no ato de sua submissão.\n\nVocê pode efetuar a consulta do documento na biblioteca do câmpus.", Notification.Type.WARNING_MESSAGE);
+        	            }
+        	        };
+            		
+            		this.buttonDownloadThesis.addClickListener(this.listenerClickDownload);
+            	}else{
+            		new ExtensionUtils().extendToDownload(p.getTitle() + ".pdf", p.getFile(), this.buttonDownloadThesis);	
+            	}
         	} catch (Exception e) {
         		this.listenerClickDownload = new Button.ClickListener() {
 		            @Override
@@ -95,8 +107,6 @@ public class LibraryView extends ListView {
         		this.buttonDownloadThesis.addClickListener(this.listenerClickDownload);
 			}
     	}else{
-    		new ExtensionUtils().removeAllExtensions(this.buttonDownloadThesis);
-    		
     		this.listenerClickDownload = new Button.ClickListener() {
 	            @Override
 	            public void buttonClick(ClickEvent event) {

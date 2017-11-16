@@ -66,6 +66,7 @@ import br.edu.utfpr.dv.siacoes.view.DepartmentView;
 import br.edu.utfpr.dv.siacoes.view.DocumentView;
 import br.edu.utfpr.dv.siacoes.view.EmailMessageView;
 import br.edu.utfpr.dv.siacoes.view.EvaluationItemView;
+import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCalendarView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCompanyChartView;
 import br.edu.utfpr.dv.siacoes.view.InternshipEvaluationItemView;
@@ -365,278 +366,284 @@ public class SideMenu extends CustomComponent {
 			}
 		}
 		
-		if(Session.isUserStudent() || Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
-			layout.addComponent(new MenuEntry("Projeto de TCC 1", 0));
+		layout.addComponent(new MenuEntry("Projeto de TCC 1", 0));
+		if(Session.isUserStudent()){
+			layout.addComponent(new MenuEntry("Submeter Projeto", 1, new MenuEntryClickListener() {
+				@Override
+				public void menuClick() {
+					try {
+						ProjectBO bo = new ProjectBO();
+						Project p = bo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+						
+						if(p == null){
+							DeadlineBO dbo = new DeadlineBO();
+							Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+							
+							if((d == null) || DateUtils.getToday().getTime().after(d.getProjectDeadline())){
+								throw new Exception("A submissão de projetos já foi encerrada.");
+							}
+							
+							ProposalBO pbo = new ProposalBO();
+							Proposal proposal = pbo.findCurrentProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+							
+							if(proposal == null){
+								if(sigetConfig.isRegisterProposal()){
+									throw new Exception("Não foi encontrada a submissão da proposta. É necessário primeiramente submeter a proposta.");
+								}else{
+									throw new Exception("Não foi encontrada o registro de orientação. É necessário primeiramente registrar a orientação.");
+								}
+							}
+							
+							p = new Project(Session.getUser(), proposal);
+						}
+						
+						UI.getCurrent().addWindow(new EditProjectWindow(p, null));
+					} catch (Exception e) {
+						Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+						
+						Notification.show("Submeter Projeto", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+					}
+				}
+			}));
+				
+			layout.addComponent(new MenuEntry("Imprimir Documentos", 1, new MenuEntryClickListener() {
+				@Override
+				public void menuClick() {
+					try {
+						ProjectBO bo = new ProjectBO();
+						Project p = bo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+						
+						if(p == null){
+							p = bo.findLastProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+						}
+						
+						if(p == null){
+							Notification.show("Imprimir Documentos", "É necessário submeter o projeto para imprimir os documentos.", Notification.Type.ERROR_MESSAGE);
+						}else{
+							Page.getCurrent().getJavaScript().execute("document.getElementById('projectFilesDownload').click();");	
+						}
+        	    	} catch (Exception e) {
+        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	    		
+						Notification.show("Imprimir Documentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+					}
+				}
+			}));
 			
-			if(Session.isUserStudent()){
-				layout.addComponent(new MenuEntry("Submeter Projeto", 1, new MenuEntryClickListener() {
-					@Override
-					public void menuClick() {
-						try {
-							ProjectBO bo = new ProjectBO();
-							Project p = bo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-							
-							if(p == null){
-								DeadlineBO dbo = new DeadlineBO();
-								Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-								
-								if((d == null) || DateUtils.getToday().getTime().after(d.getProjectDeadline())){
-									throw new Exception("A submissão de projetos já foi encerrada.");
-								}
-								
-								ProposalBO pbo = new ProposalBO();
-								Proposal proposal = pbo.findCurrentProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-								
-								if(proposal == null){
-									if(sigetConfig.isRegisterProposal()){
-										throw new Exception("Não foi encontrada a submissão da proposta. É necessário primeiramente submeter a proposta.");
-									}else{
-										throw new Exception("Não foi encontrada o registro de orientação. É necessário primeiramente registrar a orientação.");
-									}
-								}
-								
-								p = new Project(Session.getUser(), proposal);
-							}
-							
-							UI.getCurrent().addWindow(new EditProjectWindow(p, null));
-						} catch (Exception e) {
-							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-							
-							Notification.show("Submeter Projeto", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			layout.addComponent(new MenuEntry("Feedback da Banca", 1, new MenuEntryClickListener() {
+				@Override
+				public void menuClick() {
+					try {
+						ProjectBO bo = new ProjectBO();
+						Project p = bo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+						
+						if(p == null){
+							p = bo.findLastProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 						}
-					}
-				}));
-					
-				layout.addComponent(new MenuEntry("Imprimir Documentos", 1, new MenuEntryClickListener() {
-					@Override
-					public void menuClick() {
-						try {
-							ProjectBO bo = new ProjectBO();
-							Project p = bo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+						
+						if(p == null){
+							Notification.show("Feedback da Banca", "É necessário submeter o projeto para obter o feedback da banca examinadora.", Notification.Type.ERROR_MESSAGE);
+						}else{
+							JuryBO jbo = new JuryBO();
+							Jury jury = jbo.findByProject(p.getIdProject());
 							
-							if(p == null){
-								p = bo.findLastProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-							}
-							
-							if(p == null){
-								Notification.show("Imprimir Documentos", "É necessário submeter o projeto para imprimir os documentos.", Notification.Type.ERROR_MESSAGE);
+							if(jury == null){
+								Notification.show("Feedback da Banca", "A banca examinadora do projeto ainda não foi agendada.", Notification.Type.ERROR_MESSAGE);
 							}else{
-								Page.getCurrent().getJavaScript().execute("document.getElementById('projectFilesDownload').click();");	
+								UI.getCurrent().addWindow(new DownloadFeedbackWindow(jury));
 							}
-	        	    	} catch (Exception e) {
-	        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	        	    		
-							Notification.show("Imprimir Documentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 						}
+        	    	} catch (Exception e) {
+        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	    		
+						Notification.show("Feedback da Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 					}
-				}));
-				
-				layout.addComponent(new MenuEntry("Feedback da Banca", 1, new MenuEntryClickListener() {
-					@Override
-					public void menuClick() {
-						try {
+				}
+			}));
+			
+			layout.addComponent(new MenuEntry("Submeter Versão Final", 1, new MenuEntryClickListener() {
+				@Override
+				public void menuClick() {
+					try {
+						FinalDocumentBO fbo = new FinalDocumentBO();
+						FinalDocument ft = fbo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+						
+						if(ft == null){
 							ProjectBO bo = new ProjectBO();
-							Project p = bo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+							Project project = bo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+						
+							/*if(project == null){
+								project = bo.findApprovedProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+							}*/
 							
-							if(p == null){
-								p = bo.findLastProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-							}
-							
-							if(p == null){
-								Notification.show("Feedback da Banca", "É necessário submeter o projeto para obter o feedback da banca examinadora.", Notification.Type.ERROR_MESSAGE);
+							if(project == null){
+								throw new Exception("É necessário submeter o projeto para avaliação da banca antes.");
 							}else{
-								JuryBO jbo = new JuryBO();
-								Jury jury = jbo.findByProject(p.getIdProject());
-								
-								if(jury == null){
-									Notification.show("Feedback da Banca", "A banca examinadora do projeto ainda não foi agendada.", Notification.Type.ERROR_MESSAGE);
-								}else{
-									UI.getCurrent().addWindow(new DownloadFeedbackWindow(jury));
-								}
+								ft = new FinalDocument();
+								ft.setTitle(project.getTitle());
+								ft.setProject(project);
 							}
-	        	    	} catch (Exception e) {
-	        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	        	    		
-							Notification.show("Feedback da Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 						}
+						
+						UI.getCurrent().addWindow(new EditFinalDocumentWindow(ft, null));
+					} catch (Exception e) {
+						Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+						
+						Notification.show("Submeter Versão Final", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 					}
-				}));
-				
-				layout.addComponent(new MenuEntry("Submeter Versão Final", 1, new MenuEntryClickListener() {
-					@Override
-					public void menuClick() {
-						try {
-							FinalDocumentBO fbo = new FinalDocumentBO();
-							FinalDocument ft = fbo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-							
-							if(ft == null){
-								ProjectBO bo = new ProjectBO();
-								Project project = bo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-							
-								/*if(project == null){
-									project = bo.findApprovedProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
-								}*/
-								
-								if(project == null){
-									throw new Exception("É necessário submeter o projeto para avaliação da banca antes.");
-								}else{
-									ft = new FinalDocument();
-									ft.setTitle(project.getTitle());
-									ft.setProject(project);
-								}
-							}
-							
-							UI.getCurrent().addWindow(new EditFinalDocumentWindow(ft, null));
-						} catch (Exception e) {
-							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-							
-							Notification.show("Submeter Versão Final", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-						}
-					}
-				}));
-				
-				Button button = new Button();
-	        	button.setId("projectFilesDownload");
-	        	button.addStyleName("InvisibleButton");
-	        	layout.addComponent(button);
-	        	this.prepareDownloadStage1(button);
-			}else{
+				}
+			}));
+			
+			Button button = new Button();
+        	button.setId("projectFilesDownload");
+        	button.addStyleName("InvisibleButton");
+        	layout.addComponent(button);
+        	this.prepareDownloadStage1(button);
+		}else{
+			if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
 				layout.addComponent(new MenuEntry("Listar Projetos", 1, ProjectView.NAME));
-        	}
+			}
 			
-			layout.addComponent(new MenuEntry("Monografia de TCC 2", 0));
-			if(Session.isUserStudent()){
-				layout.addComponent(new MenuEntry("Submeter Monografia", 1, new MenuEntryClickListener() {
-					@Override
-					public void menuClick() {
-						try {
+			layout.addComponent(new MenuEntry("Validar Versão Final", 1, FinalDocumentView.NAME));
+    	}
+		
+		layout.addComponent(new MenuEntry("Monografia de TCC 2", 0));
+		if(Session.isUserStudent()){
+			layout.addComponent(new MenuEntry("Submeter Monografia", 1, new MenuEntryClickListener() {
+				@Override
+				public void menuClick() {
+					try {
+						ThesisBO bo = new ThesisBO();
+						Thesis thesis = bo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+						
+						if(thesis == null){
+							DeadlineBO dbo = new DeadlineBO();
+							Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+							
+							if((d == null) || DateUtils.getToday().getTime().after(d.getThesisDeadline())){
+								throw new Exception("A submissão de monografias já foi encerrada.");
+							}
+							
+							ProjectBO pbo = new ProjectBO();
+							Project project = pbo.findApprovedProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+							
+							if(project == null){
+								throw new Exception("Não foi encontrada a submissão do projeto. É necessário submeter primeiramente o projeto.");
+							}
+							
+							thesis = new Thesis(Session.getUser(), project);
+						}
+						
+						UI.getCurrent().addWindow(new EditThesisWindow(thesis, null));
+					} catch (Exception e) {
+						Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+						
+						Notification.show("Submeter Monografia", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+					}
+				}
+			}));
+			
+			layout.addComponent(new MenuEntry("Imprimir Documentos", 1, new MenuEntryClickListener() {
+				@Override
+				public void menuClick() {
+					try {
+						ThesisBO bo = new ThesisBO();
+						Thesis thesis = bo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+						
+						if(thesis == null){
+							thesis = bo.findLastThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+						}
+						
+						if(thesis == null){
+							Notification.show("Imprimir Documentos", "É necessário submeter a monografia para imprimir os documentos.", Notification.Type.ERROR_MESSAGE);
+						}else{
+							Page.getCurrent().getJavaScript().execute("document.getElementById('thesisFilesDownload').click();");	
+						}
+					} catch (Exception e) {
+						Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+						
+						Notification.show("Imprimir Documentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+					}
+				}
+			}));
+			
+			layout.addComponent(new MenuEntry("Feedback da Banca", 1, new MenuEntryClickListener() {
+				@Override
+				public void menuClick() {
+					try {
+        	    		ThesisBO bo = new ThesisBO();
+						Thesis thesis = bo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+						
+						if(thesis == null){
+							thesis = bo.findLastThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+						}
+						
+						if(thesis == null){
+							Notification.show("Feedback da Banca", "É necessário submeter o projeto para obter o feedback da banca examinadora.", Notification.Type.ERROR_MESSAGE);
+						}else{
+							JuryBO jbo = new JuryBO();
+							Jury jury = jbo.findByThesis(thesis.getIdThesis());
+							
+							if(jury == null){
+								Notification.show("Feedback da Banca", "A banca examinadora do projeto ainda não foi agendada.", Notification.Type.ERROR_MESSAGE);
+							}else{
+								UI.getCurrent().addWindow(new DownloadFeedbackWindow(jury));
+							}
+						}
+        	    	} catch (Exception e) {
+        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	    		
+						Notification.show("Feedback da Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+					}
+				}
+			}));
+			
+			layout.addComponent(new MenuEntry("Submeter Versão Final", 1, new MenuEntryClickListener() {
+				@Override
+				public void menuClick() {
+					try {
+						FinalDocumentBO fbo = new FinalDocumentBO();
+						FinalDocument ft = fbo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+						
+						if(ft == null){
 							ThesisBO bo = new ThesisBO();
 							Thesis thesis = bo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+						
+							/*if(thesis == null){
+								thesis = bo.findApprovedThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
+							}*/
 							
 							if(thesis == null){
-								DeadlineBO dbo = new DeadlineBO();
-								Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-								
-								if((d == null) || DateUtils.getToday().getTime().after(d.getThesisDeadline())){
-									throw new Exception("A submissão de monografias já foi encerrada.");
-								}
-								
-								ProjectBO pbo = new ProjectBO();
-								Project project = pbo.findApprovedProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-								
-								if(project == null){
-									throw new Exception("Não foi encontrada a submissão do projeto. É necessário submeter primeiramente o projeto.");
-								}
-								
-								thesis = new Thesis(Session.getUser(), project);
-							}
-							
-							UI.getCurrent().addWindow(new EditThesisWindow(thesis, null));
-						} catch (Exception e) {
-							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-							
-							Notification.show("Submeter Monografia", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-						}
-					}
-				}));
-				
-				layout.addComponent(new MenuEntry("Imprimir Documentos", 1, new MenuEntryClickListener() {
-					@Override
-					public void menuClick() {
-						try {
-							ThesisBO bo = new ThesisBO();
-							Thesis thesis = bo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-							
-							if(thesis == null){
-								thesis = bo.findLastThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-							}
-							
-							if(thesis == null){
-								Notification.show("Imprimir Documentos", "É necessário submeter a monografia para imprimir os documentos.", Notification.Type.ERROR_MESSAGE);
+								throw new Exception("É necessário submeter a monografia para avaliação da banca antes.");
 							}else{
-								Page.getCurrent().getJavaScript().execute("document.getElementById('thesisFilesDownload').click();");	
+								ft = new FinalDocument();
+								ft.setTitle(thesis.getTitle());
+								ft.setThesis(thesis);
 							}
-						} catch (Exception e) {
-							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-							
-							Notification.show("Imprimir Documentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 						}
+						
+						UI.getCurrent().addWindow(new EditFinalDocumentWindow(ft, null));
+					} catch (Exception e) {
+						Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+						
+						Notification.show("Submeter Versão Final", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 					}
-				}));
-				
-				layout.addComponent(new MenuEntry("Feedback da Banca", 1, new MenuEntryClickListener() {
-					@Override
-					public void menuClick() {
-						try {
-	        	    		ThesisBO bo = new ThesisBO();
-							Thesis thesis = bo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-							
-							if(thesis == null){
-								thesis = bo.findLastThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-							}
-							
-							if(thesis == null){
-								Notification.show("Feedback da Banca", "É necessário submeter o projeto para obter o feedback da banca examinadora.", Notification.Type.ERROR_MESSAGE);
-							}else{
-								JuryBO jbo = new JuryBO();
-								Jury jury = jbo.findByThesis(thesis.getIdThesis());
-								
-								if(jury == null){
-									Notification.show("Feedback da Banca", "A banca examinadora do projeto ainda não foi agendada.", Notification.Type.ERROR_MESSAGE);
-								}else{
-									UI.getCurrent().addWindow(new DownloadFeedbackWindow(jury));
-								}
-							}
-	        	    	} catch (Exception e) {
-	        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	        	    		
-							Notification.show("Feedback da Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-						}
-					}
-				}));
-				
-				layout.addComponent(new MenuEntry("Submeter Versão Final", 1, new MenuEntryClickListener() {
-					@Override
-					public void menuClick() {
-						try {
-							FinalDocumentBO fbo = new FinalDocumentBO();
-							FinalDocument ft = fbo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-							
-							if(ft == null){
-								ThesisBO bo = new ThesisBO();
-								Thesis thesis = bo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-							
-								/*if(thesis == null){
-									thesis = bo.findApprovedThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
-								}*/
-								
-								if(thesis == null){
-									throw new Exception("É necessário submeter a monografia para avaliação da banca antes.");
-								}else{
-									ft = new FinalDocument();
-									ft.setTitle(thesis.getTitle());
-									ft.setThesis(thesis);
-								}
-							}
-							
-							UI.getCurrent().addWindow(new EditFinalDocumentWindow(ft, null));
-						} catch (Exception e) {
-							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-							
-							Notification.show("Submeter Versão Final", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-						}
-					}
-				}));
-				
-				Button button = new Button();
-	        	button.setId("thesisFilesDownload");
-	        	button.addStyleName("InvisibleButton");
-	        	layout.addComponent(button);
-		    	this.prepareDownloadStage2(button);
-			}else{
+				}
+			}));
+			
+			Button button = new Button();
+        	button.setId("thesisFilesDownload");
+        	button.addStyleName("InvisibleButton");
+        	layout.addComponent(button);
+	    	this.prepareDownloadStage2(button);
+		}else{
+			if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
 				layout.addComponent(new MenuEntry("Listar Monografias", 1, ThesisView.NAME));
-        	}
-		}
+			}
+			
+			layout.addComponent(new MenuEntry("Validar Versão Final", 1, FinalDocumentView.NAME));
+    	}
+		
 		
 		layout.addComponent(new MenuEntry("Orientação", 0));
 		if(Session.isUserStudent()){

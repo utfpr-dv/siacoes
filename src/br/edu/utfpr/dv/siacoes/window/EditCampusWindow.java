@@ -41,6 +41,7 @@ public class EditCampusWindow extends EditWindow {
 	private final Upload uploadLogo;
 	private final Image imageLogo;
 	private final TextField textSite;
+	private final TextField textInitials;
 	
 	public EditCampusWindow(Campus campus, ListView parentView){
 		super("Editar Câmpus", parentView);
@@ -63,6 +64,10 @@ public class EditCampusWindow extends EditWindow {
 		this.textSite.setWidth("800px");
 		this.textSite.setMaxLength(255);
 		
+		this.textInitials = new TextField("Sigla");
+		this.textInitials.setWidth("400px");
+		this.textInitials.setMaxLength(50);
+		
 		this.checkActive = new CheckBox("Ativo");
 		
 		DocumentUploader listener = new DocumentUploader();
@@ -77,6 +82,7 @@ public class EditCampusWindow extends EditWindow {
 		this.imageLogo.setHeight("200px");
 		
 		this.addField(new HorizontalLayout(this.textName, this.checkActive));
+		this.addField(this.textInitials);
 		this.addField(this.textAddress);
 		this.addField(this.textSite);
 		this.addField(new HorizontalLayout(this.uploadLogo, this.imageLogo));
@@ -90,6 +96,7 @@ public class EditCampusWindow extends EditWindow {
 		this.textAddress.setValue(this.campus.getAddress());
 		this.checkActive.setValue(this.campus.isActive());
 		this.textSite.setValue(this.campus.getSite());
+		this.textInitials.setValue(this.campus.getInitials());
 		
 		this.loadLogo();
 	}
@@ -118,6 +125,7 @@ public class EditCampusWindow extends EditWindow {
 			this.campus.setAddress(this.textAddress.getValue());
 			this.campus.setActive(this.checkActive.getValue());
 			this.campus.setSite(this.textSite.getValue());
+			this.campus.setInitials(this.textInitials.getValue());
 			
 			bo.save(this.campus);
 			

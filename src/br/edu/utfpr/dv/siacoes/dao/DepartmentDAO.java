@@ -114,9 +114,9 @@ public class DepartmentDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO department(idCampus, name, logo, active, site, fullName) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO department(idCampus, name, logo, active, site, fullName, initials) VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE department SET idCampus=?, name=?, logo=?, active=?, site=?, fullName=? WHERE idDepartment=?");
+				stmt = conn.prepareStatement("UPDATE department SET idCampus=?, name=?, logo=?, active=?, site=?, fullName=?, initials=? WHERE idDepartment=?");
 			}
 			
 			stmt.setInt(1, department.getCampus().getIdCampus());
@@ -129,9 +129,10 @@ public class DepartmentDAO {
 			stmt.setInt(4, department.isActive() ? 1 : 0);
 			stmt.setString(5, department.getSite());
 			stmt.setString(6, department.getFullName());
+			stmt.setString(7, department.getInitials());
 			
 			if(!insert){
-				stmt.setInt(7, department.getIdDepartment());
+				stmt.setInt(8, department.getIdDepartment());
 			}
 			
 			stmt.execute();
@@ -166,6 +167,7 @@ public class DepartmentDAO {
 		department.setActive(rs.getInt("active") == 1);
 		department.setSite(rs.getString("site"));
 		department.getCampus().setName(rs.getString("campusName"));
+		department.setInitials(rs.getString("initials"));
 		
 		return department;
 	}

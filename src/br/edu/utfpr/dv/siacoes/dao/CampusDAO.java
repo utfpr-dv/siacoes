@@ -107,9 +107,9 @@ public class CampusDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO campus(name, address, logo, active, site) VALUES(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO campus(name, address, logo, active, site, initials) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE campus SET name=?, address=?, logo=?, active=?, site=? WHERE idCampus=?");
+				stmt = conn.prepareStatement("UPDATE campus SET name=?, address=?, logo=?, active=?, site=?, initials=? WHERE idCampus=?");
 			}
 			
 			stmt.setString(1, campus.getName());
@@ -121,9 +121,10 @@ public class CampusDAO {
 			}
 			stmt.setInt(4, campus.isActive() ? 1 : 0);
 			stmt.setString(5, campus.getSite());
+			stmt.setString(6, campus.getInitials());
 			
 			if(!insert){
-				stmt.setInt(6, campus.getIdCampus());
+				stmt.setInt(7, campus.getIdCampus());
 			}
 			
 			stmt.execute();
@@ -156,6 +157,7 @@ public class CampusDAO {
 		campus.setLogo(rs.getBytes("logo"));
 		campus.setActive(rs.getInt("active") == 1);
 		campus.setSite(rs.getString("site"));
+		campus.setInitials(rs.getString("initials"));
 		
 		return campus;
 	}

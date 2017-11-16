@@ -9,6 +9,7 @@ public class Department {
 	private byte[] logo;
 	private boolean active;
 	private String site;
+	private String initials;
 	
 	public Department(){
 		this.setIdDepartment(0);
@@ -18,6 +19,7 @@ public class Department {
 		this.setLogo(null);
 		this.setActive(true);
 		this.setSite("");
+		this.setInitials("");
 	}
 	
 	public int getIdDepartment() {
@@ -61,6 +63,12 @@ public class Department {
 	}
 	public void setSite(String site){
 		this.site = site;
+	}
+	public String getInitials() {
+		return initials;
+	}
+	public void setInitials(String initials) {
+		this.initials = initials;
 	}
 	
 	public String toString(){

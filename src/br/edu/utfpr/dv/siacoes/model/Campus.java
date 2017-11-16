@@ -8,6 +8,7 @@ public class Campus {
 	private byte[] logo;
 	private boolean active;
 	private String site;
+	private String initials;
 	
 	public Campus(){
 		this.setIdCampus(0);
@@ -16,6 +17,7 @@ public class Campus {
 		this.setLogo(null);
 		this.setActive(true);
 		this.setSite("");
+		this.setInitials("");
 	}
 	
 	public int getIdCampus() {
@@ -54,7 +56,13 @@ public class Campus {
 	public void setSite(String site){
 		this.site = site;
 	}
-	
+	public String getInitials() {
+		return initials;
+	}
+	public void setInitials(String initials) {
+		this.initials = initials;
+	}
+
 	public String toString(){
 		return this.getName();
 	}
