@@ -109,29 +109,51 @@ public class Jury {
 	}
 	public User getSupervisor(){
 		if((this.getThesis() != null) && (this.getThesis().getIdThesis() != 0)){
-			Thesis thesis = new Thesis();
-			
-			try {
-				ThesisBO bo = new ThesisBO();
-				
-				thesis = bo.findById(this.getThesis().getIdThesis());
-			} catch (Exception e) {
-				e.printStackTrace();
+			if((this.getThesis().getSupervisor() == null) || (this.getThesis().getSupervisor().getIdUser() == 0)){
+				this.loadThesis();
 			}
 			
-			return thesis.getSupervisor();
+			return this.getThesis().getSupervisor();
 		}else{
-			Project project = new Project();
-			
-			try {
-				ProjectBO bo = new ProjectBO();
-				
-				project = bo.findById(this.getProject().getIdProject());
-			} catch (Exception e) {
-				e.printStackTrace();
+			if((this.getProject().getSupervisor() == null) || (this.getProject().getSupervisor().getIdUser() == 0)){
+				this.loadProject();
 			}
 			
-			return project.getSupervisor();
+			return this.getProject().getSupervisor();
+		}
+	}
+	public User getStudent(){
+		if((this.getThesis() != null) && (this.getThesis().getIdThesis() != 0)){
+			if((this.getThesis().getStudent() == null) || (this.getThesis().getStudent().getIdUser() == 0)){
+				this.loadThesis();
+			}
+			
+			return this.getThesis().getStudent();
+		}else{
+			if((this.getProject().getStudent() == null) || (this.getProject().getStudent().getIdUser() == 0)){
+				this.loadProject();
+			}
+			
+			return this.getProject().getStudent();
+		}
+	}
+	
+	private void loadThesis(){
+		try {
+			ThesisBO bo = new ThesisBO();
+			
+			this.setThesis(bo.findById(this.getThesis().getIdThesis()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	private void loadProject(){
+		try {
+			ProjectBO bo = new ProjectBO();
+			
+			this.setProject(bo.findById(this.getProject().getIdProject()));
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

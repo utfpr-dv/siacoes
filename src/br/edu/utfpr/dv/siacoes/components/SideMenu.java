@@ -5,13 +5,21 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.http.Cookie;
+
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.server.Page;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Accordion;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -66,6 +74,7 @@ import br.edu.utfpr.dv.siacoes.view.DepartmentView;
 import br.edu.utfpr.dv.siacoes.view.DocumentView;
 import br.edu.utfpr.dv.siacoes.view.EmailMessageView;
 import br.edu.utfpr.dv.siacoes.view.EvaluationItemView;
+import br.edu.utfpr.dv.siacoes.view.EventCalendarView;
 import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCalendarView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCompanyChartView;
@@ -75,6 +84,7 @@ import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipView;
 import br.edu.utfpr.dv.siacoes.view.LibraryView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
+import br.edu.utfpr.dv.siacoes.view.MainView;
 import br.edu.utfpr.dv.siacoes.view.ProjectView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackStudentView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackView;
@@ -109,6 +119,29 @@ public class SideMenu extends CustomComponent {
     public static final String NOTIFICATIONS_BADGE_ID = "dashboard-menu-notifications-badge";
     private static final String STYLE_VISIBLE = "valo-menu-visible";
     
+    public enum SideMenuState{
+    	EXPANDED(0), COLLAPSED(1);
+    	
+    	private final int value; 
+    	SideMenuState(int value){ 
+			this.value = value; 
+		}
+		
+		public int getValue(){ 
+			return value;
+		}
+		
+		public static SideMenuState valueOf(int value){
+			for(SideMenuState u : SideMenuState.values()){
+				if(u.getValue() == value){
+					return u;
+				}
+			}
+			
+			return null;
+		}
+    }
+    
     private SigetConfig sigetConfig;
 	private SigacConfig sigacConfig;
 	private SigesConfig sigesConfig;
@@ -116,6 +149,13 @@ public class SideMenu extends CustomComponent {
 
 	private MenuItem settingsItem;
 	private Accordion accordionMenu;
+	private SideMenuState state;
+	
+	private VerticalLayout layoutCollapsed;
+	private VerticalLayout layoutExpanded;
+	private CssLayout menuContent;
+	
+	private SystemModule openMenu = SystemModule.GENERAL;
 	
 	public SideMenu() {
         setPrimaryStyleName("valo-menu");
@@ -155,9 +195,14 @@ public class SideMenu extends CustomComponent {
 		}
 
         setCompositionRoot(buildContent());
+        
+        
+        this.setMenuState(this.getMenuStateFromCookie());
     }
 	
 	public void setOpenMenu(SystemModule module){
+		this.openMenu = module;
+		
 		switch(module){
 			case SIGAC:
 				this.accordionMenu.setSelectedTab(0);
@@ -173,16 +218,65 @@ public class SideMenu extends CustomComponent {
 		}
 	}
 	
-	private Component buildContent() {
-		final CssLayout menuContent = new CssLayout();
-        menuContent.addStyleName("sidebar");
-        menuContent.addStyleName(ValoTheme.MENU_PART);
-        menuContent.addStyleName("no-vertical-drag-hints");
-        menuContent.addStyleName("no-horizontal-drag-hints");
-        menuContent.setWidth(null);
-        menuContent.setHeight("100%");
+	public SystemModule getOpenMenu(){
+		return this.openMenu;
+	}
+	
+	public SideMenuState getMenuState(){
+		return this.state;
+	}
+	
+	public void setMenuState(SideMenuState state){
+		this.state = state;
+		this.setMenuStateToCookie(this.state);
+		
+		this.layoutExpanded.setVisible(this.getMenuState() == SideMenuState.EXPANDED);
+		this.layoutCollapsed.setVisible(this.getMenuState() == SideMenuState.COLLAPSED);
+		
+		if(this.getMenuState() == SideMenuState.EXPANDED){
+			this.menuContent.setWidth("220px");
+		}else{
+			this.menuContent.setWidth("50px");
+		}
+	}
+	
+	public void toggleMenu(){
+		if(this.getMenuState() == SideMenuState.COLLAPSED){
+			this.setMenuState(SideMenuState.EXPANDED);
+		}else{
+			this.setMenuState(SideMenuState.COLLAPSED);
+		}
+	}
+	
+	private SideMenuState getMenuStateFromCookie(){
+		Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
+		
+		for (Cookie cookie : cookies) {
+			if ("menuState".equals(cookie.getName())) {
+				return SideMenuState.valueOf(Integer.valueOf(cookie.getValue()));
+		    }
+		}
 
-        menuContent.addComponent(this.buildUserMenu());
+		return SideMenuState.EXPANDED;
+	}
+	
+	private void setMenuStateToCookie(SideMenuState state){
+		Cookie cookie = new Cookie("menuState", String.valueOf(state.getValue()));
+		
+		cookie.setMaxAge(60 * 24 * 3600);
+		cookie.setPath("/");
+		
+		VaadinService.getCurrentResponse().addCookie(cookie);
+	}
+	
+	private Component buildContent() {
+		this.menuContent = new CssLayout();
+		this.menuContent.addStyleName("sidebar");
+		this.menuContent.addStyleName(ValoTheme.MENU_PART);
+		this.menuContent.addStyleName("no-vertical-drag-hints");
+		this.menuContent.addStyleName("no-horizontal-drag-hints");
+		this.menuContent.setWidth("220px");
+		this.menuContent.setHeight("100%");
         
         this.accordionMenu = new Accordion();
         
@@ -194,12 +288,24 @@ public class SideMenu extends CustomComponent {
         
         this.accordionMenu.addTab(this.buildMenuManagement(), "Recursos Gerais");
         
-        menuContent.addComponent(this.accordionMenu);
+        this.menuContent.addComponent(this.accordionMenu);
         
-        return menuContent;
+        this.layoutExpanded = new VerticalLayout();
+        this.layoutExpanded.addComponent(this.buildUserMenu());
+        this.layoutExpanded.addComponent(this.buildLinkMenu());
+        this.layoutExpanded.addComponent(this.accordionMenu);
+        
+        this.menuContent.addComponent(this.layoutExpanded);
+        
+        this.layoutCollapsed = new VerticalLayout();
+        this.layoutCollapsed.addComponent(this.buildLinkMenuCollapsed());
+        
+        this.menuContent.addComponent(this.layoutCollapsed);
+        
+        return this.menuContent;
     }
 	
-	private Component buildUserMenu() {
+	private com.vaadin.ui.MenuBar buildUserMenu() {
         final com.vaadin.ui.MenuBar settings = new com.vaadin.ui.MenuBar();
         final User user = Session.getUser();
         
@@ -214,7 +320,7 @@ public class SideMenu extends CustomComponent {
             	UI.getCurrent().addWindow(new EditUserWindow(Session.getUser(), null));
             }
         });
-        if((Session.getUser() != null) && Session.getUser().isExternal()){
+        if(Session.getUser().isExternal() && !Session.isLoggedAs()){
 	        settingsItem.addItem("Alterar Senha", new Command() {
 	            @Override
 	            public void menuSelected(final MenuItem selectedItem) {
@@ -222,16 +328,196 @@ public class SideMenu extends CustomComponent {
 	            }
 	        });
         }
+        if(Session.isLoggedAs()){
+        	settingsItem.addSeparator();
+            settingsItem.addItem("Logoff de " + Session.getUser().getName(), new Command() {
+                @Override
+                public void menuSelected(final MenuItem selectedItem) {
+                    Session.logoffAs();
+                    
+                    getUI().getNavigator().navigateTo(MainView.NAME);
+                }
+            });
+        }
         settingsItem.addSeparator();
         settingsItem.addItem("Logoff", new Command() {
             @Override
             public void menuSelected(final MenuItem selectedItem) {
-                logoff();
+                Session.logoff();
+                
+                getUI().getNavigator().navigateTo(LoginView.NAME);
             }
         });
         
         return settings;
     }
+	
+	private Component buildLinkMenu(){
+		HorizontalLayout layout = new HorizontalLayout();
+		
+		Link linkCalendar = new Link(null, null);
+		linkCalendar.setIcon(new ThemeResource("images/calendar.png"));
+		linkCalendar.setDescription("Calendário de eventos");
+		
+		VerticalLayout layoutCalendar = new VerticalLayout(linkCalendar);
+		layoutCalendar.setHeight("50px");
+		layoutCalendar.setWidth("50px");
+		layoutCalendar.setComponentAlignment(linkCalendar, Alignment.MIDDLE_CENTER);
+		layoutCalendar.addLayoutClickListener(new LayoutClickListener() {
+			@Override
+        	public void layoutClick(LayoutClickEvent event) {
+				UI.getCurrent().getNavigator().navigateTo(EventCalendarView.NAME + "/" + getOpenMenu().getValue());
+            }
+		});
+		
+		Link linkActivities = new Link(null, null);
+		linkActivities.setIcon(new ThemeResource("images/activities.png"));
+		linkActivities.setDescription("Atividades Complementares");
+		
+		VerticalLayout layoutActivities = new VerticalLayout(linkActivities);
+		layoutActivities.setHeight("50px");
+		layoutActivities.setWidth("50px");
+		layoutActivities.setComponentAlignment(linkActivities, Alignment.MIDDLE_CENTER);
+		layoutActivities.addLayoutClickListener(new LayoutClickListener() {
+			@Override
+        	public void layoutClick(LayoutClickEvent event) {
+				setOpenMenu(SystemModule.SIGAC);
+            }
+		});
+		
+		Link linkInternsip = new Link(null, null);
+		linkInternsip.setIcon(new ThemeResource("images/internship.png"));
+		linkInternsip.setDescription("Estágios");
+		
+		VerticalLayout layoutInternship = new VerticalLayout(linkInternsip);
+		layoutInternship.setHeight("50px");
+		layoutInternship.setWidth("50px");
+		layoutInternship.setComponentAlignment(linkInternsip, Alignment.MIDDLE_CENTER);
+		layoutInternship.addLayoutClickListener(new LayoutClickListener() {   
+			@Override
+        	public void layoutClick(LayoutClickEvent event) {
+				setOpenMenu(SystemModule.SIGES);
+            }
+		});
+		
+		Link linkThesis = new Link(null, null);
+		linkThesis.setIcon(new ThemeResource("images/thesis.png"));
+		linkThesis.setDescription("TCC");
+		
+		VerticalLayout layoutThesis = new VerticalLayout(linkThesis);
+		layoutThesis.setHeight("50px");
+		layoutThesis.setWidth("50px");
+		layoutThesis.setComponentAlignment(linkThesis, Alignment.MIDDLE_CENTER);
+		layoutThesis.addLayoutClickListener(new LayoutClickListener() {
+			@Override
+        	public void layoutClick(LayoutClickEvent event) {
+				setOpenMenu(SystemModule.SIGET);
+            }
+		});
+		
+		layout.addComponent(layoutCalendar);
+		layout.setComponentAlignment(layoutCalendar, Alignment.MIDDLE_CENTER);
+		layout.addComponent(layoutActivities);
+		layout.setComponentAlignment(layoutActivities, Alignment.MIDDLE_CENTER);
+		layout.addComponent(layoutInternship);
+		layout.setComponentAlignment(layoutInternship, Alignment.MIDDLE_CENTER);
+		layout.addComponent(layoutThesis);
+		layout.setComponentAlignment(layoutThesis, Alignment.MIDDLE_CENTER);
+		
+		return layout;
+	}
+	
+	private Component buildLinkMenuCollapsed(){
+		VerticalLayout layout = new VerticalLayout();
+		
+		com.vaadin.ui.MenuBar settings = this.buildUserMenu();
+		settings.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
+		settings.addStyleName(ValoTheme.MENUBAR_SMALL);
+		settings.addStyleName("withouarrow");
+		settings.setHeight("50px");
+		settings.setWidth("50px");
+		settings.getItems().get(0).setIcon(new ThemeResource("images/user.png"));
+		settings.getItems().get(0).setText("");
+		
+		Link linkCalendar = new Link(null, null);
+		linkCalendar.setIcon(new ThemeResource("images/calendar.png"));
+		linkCalendar.setDescription("Calendário de eventos");
+		
+		VerticalLayout layoutCalendar = new VerticalLayout(linkCalendar);
+		layoutCalendar.setHeight("50px");
+		layoutCalendar.setWidth("50px");
+		layoutCalendar.setComponentAlignment(linkCalendar, Alignment.MIDDLE_CENTER);
+		layoutCalendar.addLayoutClickListener(new LayoutClickListener() {
+			@Override
+        	public void layoutClick(LayoutClickEvent event) {
+				UI.getCurrent().getNavigator().navigateTo(EventCalendarView.NAME + "/" + getOpenMenu().getValue());
+            }
+		});
+		
+		Link linkActivities = new Link(null, null);
+		linkActivities.setIcon(new ThemeResource("images/activities.png"));
+		linkActivities.setDescription("Atividades Complementares");
+		
+		VerticalLayout layoutActivities = new VerticalLayout(linkActivities);
+		layoutActivities.setHeight("50px");
+		layoutActivities.setWidth("50px");
+		layoutActivities.setComponentAlignment(linkActivities, Alignment.MIDDLE_CENTER);
+		layoutActivities.addLayoutClickListener(new LayoutClickListener() {
+			@Override
+        	public void layoutClick(LayoutClickEvent event) {
+				setOpenMenu(SystemModule.SIGAC);
+				setMenuState(SideMenuState.EXPANDED);
+				setMenuStateToCookie(SideMenuState.COLLAPSED);
+            }
+		});
+		
+		Link linkInternsip = new Link(null, null);
+		linkInternsip.setIcon(new ThemeResource("images/internship.png"));
+		linkInternsip.setDescription("Estágios");
+		
+		VerticalLayout layoutInternship = new VerticalLayout(linkInternsip);
+		layoutInternship.setHeight("50px");
+		layoutInternship.setWidth("50px");
+		layoutInternship.setComponentAlignment(linkInternsip, Alignment.MIDDLE_CENTER);
+		layoutInternship.addLayoutClickListener(new LayoutClickListener() {   
+			@Override
+        	public void layoutClick(LayoutClickEvent event) {
+				setOpenMenu(SystemModule.SIGES);
+				setMenuState(SideMenuState.EXPANDED);
+				setMenuStateToCookie(SideMenuState.COLLAPSED);
+            }
+		});
+		
+		Link linkThesis = new Link(null, null);
+		linkThesis.setIcon(new ThemeResource("images/thesis.png"));
+		linkThesis.setDescription("TCC");
+		
+		VerticalLayout layoutThesis = new VerticalLayout(linkThesis);
+		layoutThesis.setHeight("50px");
+		layoutThesis.setWidth("50px");
+		layoutThesis.setComponentAlignment(linkThesis, Alignment.MIDDLE_CENTER);
+		layoutThesis.addLayoutClickListener(new LayoutClickListener() {
+			@Override
+        	public void layoutClick(LayoutClickEvent event) {
+				setOpenMenu(SystemModule.SIGET);
+				setMenuState(SideMenuState.EXPANDED);
+				setMenuStateToCookie(SideMenuState.COLLAPSED);
+            }
+		});
+		
+		layout.addComponent(settings);
+		layout.setComponentAlignment(settings, Alignment.MIDDLE_CENTER);
+		layout.addComponent(layoutCalendar);
+		layout.setComponentAlignment(layoutCalendar, Alignment.MIDDLE_CENTER);
+		layout.addComponent(layoutActivities);
+		layout.setComponentAlignment(layoutActivities, Alignment.MIDDLE_CENTER);
+		layout.addComponent(layoutInternship);
+		layout.setComponentAlignment(layoutInternship, Alignment.MIDDLE_CENTER);
+		layout.addComponent(layoutThesis);
+		layout.setComponentAlignment(layoutThesis, Alignment.MIDDLE_CENTER);
+		
+		return layout;
+	}
 	
 	private Component buildMenuActivities(){
 		VerticalLayout layout = new VerticalLayout();
@@ -756,14 +1042,6 @@ public class SideMenu extends CustomComponent {
 		
 		return layout;
 	}
-	
-	private void logoff(){
-    	// "Logout" the user
-        getSession().setAttribute("user", null);
-
-        // Refresh this view, should redirect to login view
-        getUI().getNavigator().navigateTo(LoginView.NAME);
-    }
 	
 	private void prepareDownloadStage1(Button buttonToExtend){
 		try {

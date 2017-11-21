@@ -112,7 +112,8 @@ public class JuryAppraiserDAO {
 					"LEFT JOIN project ON project.idProject=jury.idProject " +
 					"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
 					"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
-					"WHERE juryappraiser.idJury = " + String.valueOf(idJury));
+					"WHERE juryappraiser.idJury = " + String.valueOf(idJury) + 
+					" ORDER BY appraiser.name");
 			List<JuryAppraiser> list = new ArrayList<JuryAppraiser>();
 			
 			while(rs.next()){

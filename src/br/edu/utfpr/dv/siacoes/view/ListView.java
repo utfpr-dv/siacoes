@@ -43,9 +43,6 @@ public abstract class ListView extends BasicView {
     private final Panel panelFilter;
     private final VerticalLayout layoutActions;
     
-    private UserProfile profilePermissions;
-    
-    private SystemModule module;
     private int gridRowCount;
     
     public ListView(SystemModule module){
@@ -136,17 +133,7 @@ public abstract class ListView extends BasicView {
     	panelButtons.setContent(this.layoutButtons);
     	
     	this.layoutActions.addComponent(panelButtons);
-		
-		this.setModule(module);
-    }
-    
-    public void setModule(SystemModule module){
-    	if((this.getCaption() == null) || this.getCaption().trim().isEmpty()){
-    		this.setCaption(module.getDescription());
-    	}
     	
-    	this.module = module;
-    	this.setOpenMenu(module);
     	this.setSizeFull();
     	
     	this.panelFilter.setContent(this.layoutFilter);
@@ -156,10 +143,8 @@ public abstract class ListView extends BasicView {
 		vl.setExpandRatio(this.layoutGrid, 1);
 		//vl.setSpacing(true);
 		this.setContent(vl);
-    }
-    
-    public SystemModule getModule(){
-    	return this.module;
+		
+		this.setModule(module);
     }
     
     protected abstract void loadGrid();
@@ -182,14 +167,6 @@ public abstract class ListView extends BasicView {
     	this.layoutGrid.setExpandRatio(v1, 1);
     	
     	this.labelGridRecords.setCaption("Listando " + String.valueOf(this.gridRowCount) + " registro(s).");
-    }
-    
-    public void setProfilePerimissions(UserProfile profile){
-    	this.profilePermissions = profile;
-    }
-    
-    public UserProfile getProfilePermissions(){
-    	return this.profilePermissions;
     }
     
     public void addFilterField(Component c){

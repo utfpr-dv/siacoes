@@ -23,6 +23,44 @@ public class Session {
 		}
 	}
 	
+	public static void setAdministrator(User user){
+		VaadinSession.getCurrent().setAttribute("admin", user);
+	}
+	
+	public static User getAdministrator(){
+		if(VaadinSession.getCurrent().getAttribute("admin") == null){
+			return new User();
+		}else{
+			return (User)VaadinSession.getCurrent().getAttribute("admin");
+		}
+	}
+	
+	public static void loginAs(User user){
+		if(Session.isUserAdministrator()){
+			if(VaadinSession.getCurrent().getAttribute("admin") == null){
+				Session.setAdministrator(Session.getUser());
+			}
+			
+			Session.setUser(user);
+		}
+	}
+	
+	public static void logoffAs(){
+		if(VaadinSession.getCurrent().getAttribute("admin") != null){
+			Session.setUser(Session.getAdministrator());
+			Session.setAdministrator(null);
+		}
+	}
+	
+	public static boolean isLoggedAs(){
+		return (VaadinSession.getCurrent().getAttribute("admin") != null);
+	}
+	
+	public static void logoff(){
+		Session.setUser(null);
+        Session.setAdministrator(null);
+	}
+	
 	public static boolean isUserProfessor(){
 		if(VaadinSession.getCurrent().getAttribute("user") == null){
 			return false;

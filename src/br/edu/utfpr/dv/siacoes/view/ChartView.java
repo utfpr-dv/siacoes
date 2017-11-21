@@ -37,9 +37,6 @@ public abstract class ChartView extends BasicView {
 	private final Panel panelChart;
 	private final Button buttonChart;
 	
-	private UserProfile profilePermissions;
-    private SystemModule module;
-	
 	public ChartView(SystemModule module){
 		this.setProfilePerimissions(UserProfile.STUDENT);
     	
@@ -100,16 +97,6 @@ public abstract class ChartView extends BasicView {
     	
     	this.setContent(layout);
 	}
-
-	public void setModule(SystemModule module){
-    	if((this.getCaption() == null) || this.getCaption().trim().isEmpty()){
-    		this.setCaption(module.getDescription());
-    	}
-    	
-    	this.module = module;
-    	this.setOpenMenu(module);
-    	this.setSizeFull();
-    }
     
     public void addFilterField(Component c){
     	if(c instanceof HorizontalLayout){
@@ -119,18 +106,6 @@ public abstract class ChartView extends BasicView {
 		}
     	
     	layoutFields.addComponent(c);
-    }
-    
-    public SystemModule getModule(){
-    	return this.module;
-    }
-    
-    public void setProfilePerimissions(UserProfile profile){
-    	this.profilePermissions = profile;
-    }
-    
-    public UserProfile getProfilePermissions(){
-    	return this.profilePermissions;
     }
     
     private void setChartVisible(boolean visible){

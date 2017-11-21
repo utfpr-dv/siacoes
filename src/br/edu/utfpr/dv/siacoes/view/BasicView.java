@@ -1,17 +1,24 @@
 package br.edu.utfpr.dv.siacoes.view;
 
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.navigator.View;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.components.SideMenu;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 
 public abstract class BasicView extends CustomComponent implements View {
 	
@@ -19,16 +26,11 @@ public abstract class BasicView extends CustomComponent implements View {
 	private final ComponentContainer content;
 	private final SideMenu menu;
 	
+	private UserProfile profilePermissions;
+    
+    private SystemModule module;
+	
 	public BasicView(){
-		HorizontalLayout horizontal = new HorizontalLayout();
-		
-		horizontal.setSizeFull();
-		horizontal.addStyleName("mainview");
-		horizontal.setSpacing(false);
-
-		this.menu = new SideMenu();
-		horizontal.addComponent(this.menu);
-
 		VerticalLayout vertical = new VerticalLayout();
 		
 		vertical.setSizeFull();
@@ -38,25 +40,56 @@ public abstract class BasicView extends CustomComponent implements View {
 		
 		layoutCaption.setStyleName(ValoTheme.MENU_ROOT);
 		layoutCaption.setWidth("100%");
-		layoutCaption.setHeight("25px");
+		layoutCaption.setHeight("30px");
+		layoutCaption.setSpacing(true);
+		
+		Link linkHamburguer = new Link(null, null);
+		linkHamburguer.setIcon(new ThemeResource("images/menu.png"));
+		
+		VerticalLayout layoutHamburguer = new VerticalLayout(linkHamburguer);
+		layoutHamburguer.setHeight("30px");
+		layoutHamburguer.setWidth("50px");
+		layoutHamburguer.setComponentAlignment(linkHamburguer, Alignment.MIDDLE_CENTER);
+		layoutHamburguer.addLayoutClickListener(new LayoutClickListener() {
+			@Override
+        	public void layoutClick(LayoutClickEvent event) {
+				menu.toggleMenu();
+            }
+		});
 		
 		this.labelCaption = new Label();
-		layoutCaption.addComponent(this.labelCaption);
 		this.labelCaption.setStyleName("Caption");
+		
+		layoutCaption.addComponent(layoutHamburguer);
+		layoutCaption.addComponent(this.labelCaption);
+		layoutCaption.setComponentAlignment(this.labelCaption, Alignment.MIDDLE_RIGHT);
+		layoutCaption.setExpandRatio(this.labelCaption, 1);
 		
 		vertical.addComponent(layoutCaption);
 		
+		HorizontalLayout horizontal = new HorizontalLayout();
+		
+		horizontal.setSizeFull();
+		horizontal.addStyleName("mainview");
+		horizontal.setSpacing(false);
+
+		this.menu = new SideMenu();
+		horizontal.addComponent(this.menu);
+
         this.content = new CssLayout();
         this.content.addStyleName("view-content");
         this.content.setSizeFull();
-        vertical.addComponent(this.content);
-        vertical.setExpandRatio(this.content, 1.0f);
+        horizontal.addComponent(this.content);
+        horizontal.setExpandRatio(this.content, 1.0f);
         
-        horizontal.addComponent(vertical);
-        horizontal.setExpandRatio(vertical, 1.0f);
+        vertical.addComponent(horizontal);
+        vertical.setExpandRatio(horizontal, 1.0f);
         
-        this.setCompositionRoot(horizontal);
+        this.setCompositionRoot(vertical);
         this.setSizeFull();
+        
+        this.setProfilePerimissions(UserProfile.STUDENT);
+		this.setModule(SystemModule.GENERAL);
 	}
 	
 	public void setCaption(String caption){
@@ -73,5 +106,26 @@ public abstract class BasicView extends CustomComponent implements View {
 	public void setOpenMenu(SystemModule module){
 		this.menu.setOpenMenu(module);
 	}
+	
+	public void setModule(SystemModule module){
+    	if((this.getCaption() == null) || this.getCaption().trim().isEmpty()){
+    		this.setCaption(module.getDescription());
+    	}
+    	
+    	this.module = module;
+    	this.setOpenMenu(module);
+    }
+    
+    public SystemModule getModule(){
+    	return this.module;
+    }
+    
+    public void setProfilePerimissions(UserProfile profile){
+    	this.profilePermissions = profile;
+    }
+    
+    public UserProfile getProfilePermissions(){
+    	return this.profilePermissions;
+    }
 
 }

@@ -1,24 +1,15 @@
 package br.edu.utfpr.dv.siacoes.util;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import org.bouncycastle.jcajce.provider.digest.SHA3;
+import org.bouncycastle.util.encoders.Hex;
 
 public class StringUtils {
+	
+	public static String generateSHA3Hash(String s){
+		SHA3.DigestSHA3 digestSHA3 = new SHA3.DigestSHA3(512);
+	    byte[] digest = digestSHA3.digest(s.getBytes());
 
-	public static String generateMD5Hash(String s){
-		try {
-			MessageDigest m = MessageDigest.getInstance("MD5");
-			
-			m.update(s.getBytes(),0,s.length());
-		    
-			return new BigInteger(1, m.digest()).toString(16);
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-			
-			return "";
-		}
-	    
+	    return Hex.toHexString(digest);
 	}
 	
 }

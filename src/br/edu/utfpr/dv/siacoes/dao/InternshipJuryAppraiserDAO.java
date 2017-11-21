@@ -105,7 +105,8 @@ public class InternshipJuryAppraiserDAO {
 					"INNER JOIN internshipjury ON internshipjury.idInternshipJury=internshipjuryappraiser.idInternshipJury " +
 					"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " + 
 					"INNER JOIN \"user\" student ON student.idUser=internship.idStudent " +
-					"WHERE internshipjuryappraiser.idInternshipJury = " + String.valueOf(idInternshipJury));
+					"WHERE internshipjuryappraiser.idInternshipJury = " + String.valueOf(idInternshipJury) +
+					" ORDER BY appraiser.name");
 			List<InternshipJuryAppraiser> list = new ArrayList<InternshipJuryAppraiser>();
 			
 			while(rs.next()){

@@ -19,6 +19,7 @@ import br.edu.utfpr.dv.siacoes.view.ActivityView;
 import br.edu.utfpr.dv.siacoes.view.AttendanceReportView;
 import br.edu.utfpr.dv.siacoes.view.AttendanceView;
 import br.edu.utfpr.dv.siacoes.view.AuthenticateView;
+import br.edu.utfpr.dv.siacoes.view.BasicView;
 import br.edu.utfpr.dv.siacoes.view.BugReportView;
 import br.edu.utfpr.dv.siacoes.view.CalendarView;
 import br.edu.utfpr.dv.siacoes.view.CampusView;
@@ -33,6 +34,7 @@ import br.edu.utfpr.dv.siacoes.view.DepartmentView;
 import br.edu.utfpr.dv.siacoes.view.DocumentView;
 import br.edu.utfpr.dv.siacoes.view.EmailMessageView;
 import br.edu.utfpr.dv.siacoes.view.EvaluationItemView;
+import br.edu.utfpr.dv.siacoes.view.EventCalendarView;
 import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCalendarView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCompanyChartView;
@@ -130,6 +132,7 @@ public class SiacoesUI extends UI {
         getNavigator().addView(AttendanceReportView.NAME, AttendanceReportView.class);
         getNavigator().addView(InternshipMissingDocumentsReportView.NAME, InternshipMissingDocumentsReportView.class);
         getNavigator().addView(InternshipCompanyChartView.NAME, InternshipCompanyChartView.class);
+        getNavigator().addView(EventCalendarView.NAME, EventCalendarView.class);
         
         //
         // We use a view change handler to ensure the user is always redirected
@@ -157,28 +160,8 @@ public class SiacoesUI extends UI {
                     // then cancel
                     return true;
                 } else if(!isMainView && !isLoginView) {
-                	if(event.getNewView() instanceof ListView){
-                		ListView view = (ListView)event.getNewView();
-                    	
-                    	if((view.getProfilePermissions() == UserProfile.ADMINISTRATOR) && (!Session.isUserAdministrator())){
-                    		return false;
-                    	} else if((view.getProfilePermissions() == UserProfile.MANAGER) && !Session.isUserManager(view.getModule()) && !Session.isUserDepartmentManager()){
-                    		return false;
-                    	} else if((view.getProfilePermissions() == UserProfile.PROFESSOR) && (!Session.isUserProfessor())) {
-                    		return false;
-                    	}
-                	}else if(event.getNewView() instanceof ChartView){
-                		ChartView view = (ChartView)event.getNewView();
-                    	
-                    	if((view.getProfilePermissions() == UserProfile.ADMINISTRATOR) && (!Session.isUserAdministrator())){
-                    		return false;
-                    	} else if((view.getProfilePermissions() == UserProfile.MANAGER) && !Session.isUserManager(view.getModule()) && !Session.isUserDepartmentManager()){
-                    		return false;
-                    	} else if((view.getProfilePermissions() == UserProfile.PROFESSOR) && (!Session.isUserProfessor())) {
-                    		return false;
-                    	}
-                	}else{
-                		ReportView view = (ReportView)event.getNewView();
+                	if(event.getNewView() instanceof BasicView){
+                		BasicView view = (BasicView)event.getNewView();
                     	
                     	if((view.getProfilePermissions() == UserProfile.ADMINISTRATOR) && (!Session.isUserAdministrator())){
                     		return false;

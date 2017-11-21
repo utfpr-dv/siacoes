@@ -116,30 +116,35 @@ public class InternshipJury {
 		this.companySupervisorScore = companySupervisorScore;
 	}
 	public User getSupervisor(){
-		Internship internship = new Internship();
-		
-		try {
-			InternshipBO bo = new InternshipBO();
-			
-			internship = bo.findById(this.getInternship().getIdInternship());
-		} catch (Exception e) {
-			e.printStackTrace();
+		if((this.getInternship().getSupervisor() == null) || (this.getInternship().getSupervisor().getIdUser() == 0)){
+			this.loadInternship();
 		}
 		
-		return internship.getSupervisor();
+		return this.getInternship().getSupervisor();
 	}
 	public User getCompanySupervisor(){
-		Internship internship = new Internship();
+		if((this.getInternship().getCompanySupervisor() == null) || (this.getInternship().getCompanySupervisor().getIdUser() == 0)){
+			this.loadInternship();
+		}
 		
+		return this.getInternship().getCompanySupervisor();
+	}
+	public User getStudent(){
+		if((this.getInternship().getStudent() == null) || (this.getInternship().getStudent().getIdUser() == 0)){
+			this.loadInternship();
+		}
+		
+		return this.getInternship().getStudent();
+	}
+	
+	private void loadInternship(){
 		try {
 			InternshipBO bo = new InternshipBO();
 			
-			internship = bo.findById(this.getInternship().getIdInternship());
+			this.setInternship(bo.findById(this.getInternship().getIdInternship()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		return internship.getCompanySupervisor();
 	}
 
 }

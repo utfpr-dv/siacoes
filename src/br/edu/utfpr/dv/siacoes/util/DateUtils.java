@@ -57,6 +57,12 @@ public class DateUtils {
 		return cal.get(Calendar.YEAR);
 	}
 	
+	public static int getHour(Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		return cal.get(Calendar.HOUR_OF_DAY);
+	}
+	
 	public static Date concat(Date date, Date time){
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
@@ -78,6 +84,34 @@ public class DateUtils {
 		}catch(Exception e){
 			return "";
 		}
+	}
+	
+	public static Date addHour(Date date, int hours){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		
+		cal.add(Calendar.HOUR_OF_DAY, hours);
+		
+		return cal.getTime();
+	}
+	
+	public static Date addDay(Date date, int days){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		
+		cal.add(Calendar.DAY_OF_YEAR, days);
+		
+		return cal.getTime();
+	}
+	
+	public static Date getSunday(Date date){
+		Calendar c = Calendar.getInstance();
+		c.setFirstDayOfWeek(Calendar.SUNDAY);
+		c.setTime(date);
+		int today = c.get(Calendar.DAY_OF_WEEK);
+		c.add(Calendar.DAY_OF_WEEK, -today + Calendar.SUNDAY);
+		
+		return c.getTime();
 	}
 	
 	/*public static Date getStartDate(int semester, int year){

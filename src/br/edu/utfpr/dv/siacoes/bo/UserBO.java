@@ -228,8 +228,8 @@ public class UserBO {
 	
 	public User changePassword(int idUser, String currentPassword, String newPassword) throws Exception{
 		try {
-			String currentHash = StringUtils.generateMD5Hash(currentPassword);
-			String newHash = StringUtils.generateMD5Hash(newPassword);
+			String currentHash = StringUtils.generateSHA3Hash(currentPassword);
+			String newHash = StringUtils.generateSHA3Hash(newPassword);
 			
 			UserDAO dao = new UserDAO();
 			User user = dao.findById(idUser);
@@ -259,7 +259,7 @@ public class UserBO {
 	}
 	
 	public User validateLogin(String login, String password) throws Exception{
-		String hash = StringUtils.generateMD5Hash(password);
+		String hash = StringUtils.generateSHA3Hash(password);
 		
 		if(login.contains("@")){
 			login = login.substring(0, login.indexOf("@"));

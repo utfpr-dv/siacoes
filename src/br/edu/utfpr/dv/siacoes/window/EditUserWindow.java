@@ -318,7 +318,7 @@ public class EditUserWindow extends EditWindow {
 				this.user.setDepartmentManager(this.checkDepartmentManager.getValue());
 				
 				if(this.user.getPassword().isEmpty()){
-					this.user.setPassword(StringUtils.generateMD5Hash(this.user.getLogin()));
+					this.user.setPassword(StringUtils.generateSHA3Hash(this.user.getLogin()));
 				}
 			}
 			

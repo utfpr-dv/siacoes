@@ -20,9 +20,6 @@ public abstract class ReportView extends BasicView {
 	
 	private final VerticalLayout layoutFields;
 	private final Button buttonReport;
-	
-	private UserProfile profilePermissions;
-    private SystemModule module;
     
     public ReportView(SystemModule module){
     	this.setProfilePerimissions(UserProfile.STUDENT);
@@ -55,16 +52,6 @@ public abstract class ReportView extends BasicView {
     	this.setContent(layout);
     }
     
-    public void setModule(SystemModule module){
-    	if((this.getCaption() == null) || this.getCaption().trim().isEmpty()){
-    		this.setCaption(module.getDescription());
-    	}
-    	
-    	this.module = module;
-    	this.setOpenMenu(module);
-    	this.setSizeFull();
-    }
-    
     public void addFilterField(Component c){
     	if(c instanceof HorizontalLayout){
 			((HorizontalLayout)c).setSpacing(true);
@@ -73,18 +60,6 @@ public abstract class ReportView extends BasicView {
 		}
     	
     	layoutFields.addComponent(c);
-    }
-    
-    public SystemModule getModule(){
-    	return this.module;
-    }
-    
-    public void setProfilePerimissions(UserProfile profile){
-    	this.profilePermissions = profile;
-    }
-    
-    public UserProfile getProfilePermissions(){
-    	return this.profilePermissions;
     }
     
     public abstract byte[] generateReport() throws Exception;

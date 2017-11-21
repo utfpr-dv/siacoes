@@ -83,5 +83,8 @@
 		
 		<!-- https://mvnrepository.com/artifact/org.knowm.xchart/xchart -->
 		<dependency org="org.knowm.xchart" name="xchart" rev="3.5.0"/>
+		
+		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on -->
+		<dependency org="org.bouncycastle" name="bcpkix-jdk15on" rev="1.58"/>
 	</dependencies>
 </ivy-module>

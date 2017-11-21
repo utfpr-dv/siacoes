@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
@@ -13,7 +14,9 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.DocumentBO;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.model.Document;
@@ -31,6 +34,7 @@ public class UserView extends ListView {
 	private final TextField textName;
 	private final CheckBox checkActive;
 	private final CheckBox checkExternal;
+	private final Button buttonLoginAs;
 	
 	public UserView(){
 		super(SystemModule.GENERAL);
@@ -57,10 +61,19 @@ public class UserView extends ListView {
 		
 		this.checkExternal = new CheckBox("Somente usuários externos");
 		
+		this.buttonLoginAs = new Button("Logar como ...", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	loginAs();
+            }
+        });
+		
 		VerticalLayout vl = new VerticalLayout(this.checkActive, this.checkExternal);
 		vl.setSpacing(true);
 		
 		this.addFilterField(new HorizontalLayout(this.textName, this.comboProfile, vl));
+		
+		this.addActionButton(this.buttonLoginAs);
 		
 		this.setDeleteVisible(false);
 	}
@@ -93,6 +106,27 @@ public class UserView extends ListView {
 			Notification.show("Listar Usuários", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
     }
+	
+	private void loginAs(){
+		Object id = this.getIdSelected();
+		
+		if(id != null){
+			try {
+				UserBO bo = new UserBO();
+				User user = bo.findById((int)id);
+				
+				Session.loginAs(user);
+				
+				getUI().getNavigator().navigateTo(MainView.NAME);
+			} catch (Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				
+				Notification.show("Logar como", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			}
+		}else{
+			Notification.show("Logar como", "Selecione um usuário.", Notification.Type.ERROR_MESSAGE);
+		}
+	}
 
 	@Override
 	public void addClick() {

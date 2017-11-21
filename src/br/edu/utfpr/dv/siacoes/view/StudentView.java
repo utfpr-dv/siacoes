@@ -65,7 +65,7 @@ public class StudentView extends ListView {
 		user.setActive(true);
 		user.setExternal(false);
 		user.setDepartment(Session.getUser().getDepartment());
-		user.setPassword(StringUtils.generateMD5Hash(""));
+		user.setPassword(StringUtils.generateSHA3Hash(""));
 		
 		UI.getCurrent().addWindow(new EditStudentWindow(user, this));
 	}
