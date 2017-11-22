@@ -505,6 +505,23 @@ public class SideMenu extends CustomComponent {
             }
 		});
 		
+		Link linkConfig = new Link(null, null);
+		linkConfig.setIcon(new ThemeResource("images/config.png"));
+		linkConfig.setDescription("TCC");
+		
+		VerticalLayout layoutConfig = new VerticalLayout(linkConfig);
+		layoutConfig.setHeight("50px");
+		layoutConfig.setWidth("50px");
+		layoutConfig.setComponentAlignment(linkConfig, Alignment.MIDDLE_CENTER);
+		layoutConfig.addLayoutClickListener(new LayoutClickListener() {
+			@Override
+        	public void layoutClick(LayoutClickEvent event) {
+				setOpenMenu(SystemModule.GENERAL);
+				setMenuState(SideMenuState.EXPANDED);
+				setMenuStateToCookie(SideMenuState.COLLAPSED);
+            }
+		});
+		
 		layout.addComponent(settings);
 		layout.setComponentAlignment(settings, Alignment.MIDDLE_CENTER);
 		layout.addComponent(layoutCalendar);
@@ -515,6 +532,8 @@ public class SideMenu extends CustomComponent {
 		layout.setComponentAlignment(layoutInternship, Alignment.MIDDLE_CENTER);
 		layout.addComponent(layoutThesis);
 		layout.setComponentAlignment(layoutThesis, Alignment.MIDDLE_CENTER);
+		layout.addComponent(layoutConfig);
+		layout.setComponentAlignment(layoutConfig, Alignment.MIDDLE_CENTER);
 		
 		return layout;
 	}
