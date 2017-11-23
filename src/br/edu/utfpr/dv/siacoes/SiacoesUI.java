@@ -10,6 +10,7 @@ import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 
+import br.edu.utfpr.dv.siacoes.model.AppConfig;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.view.ActivitySubmissionView;
 import br.edu.utfpr.dv.siacoes.view.ActivityGroupView;
@@ -24,7 +25,6 @@ import br.edu.utfpr.dv.siacoes.view.BugReportView;
 import br.edu.utfpr.dv.siacoes.view.CalendarView;
 import br.edu.utfpr.dv.siacoes.view.CampusView;
 import br.edu.utfpr.dv.siacoes.view.CertificateView;
-import br.edu.utfpr.dv.siacoes.view.ChartView;
 import br.edu.utfpr.dv.siacoes.view.CityView;
 import br.edu.utfpr.dv.siacoes.view.CompanySupervisorView;
 import br.edu.utfpr.dv.siacoes.view.CompanyView;
@@ -43,14 +43,12 @@ import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
 import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipView;
 import br.edu.utfpr.dv.siacoes.view.LibraryView;
-import br.edu.utfpr.dv.siacoes.view.ListView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
 import br.edu.utfpr.dv.siacoes.view.MainView;
 import br.edu.utfpr.dv.siacoes.view.ProjectView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackStudentView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackView;
 import br.edu.utfpr.dv.siacoes.view.ProposalView;
-import br.edu.utfpr.dv.siacoes.view.ReportView;
 import br.edu.utfpr.dv.siacoes.view.SemesterView;
 import br.edu.utfpr.dv.siacoes.view.SigacView;
 import br.edu.utfpr.dv.siacoes.view.SigesView;
@@ -181,6 +179,8 @@ public class SiacoesUI extends UI {
             	Page.getCurrent().setTitle("SIACOES");
             }
         });
+        
+        UI.getCurrent().setTheme(AppConfig.getInstance().getTheme().name().toLowerCase());
 	}
 
 }

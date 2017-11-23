@@ -101,6 +101,7 @@ import br.edu.utfpr.dv.siacoes.view.TutoredView;
 import br.edu.utfpr.dv.siacoes.view.UserView;
 import br.edu.utfpr.dv.siacoes.window.AboutWindow;
 import br.edu.utfpr.dv.siacoes.window.DownloadFeedbackWindow;
+import br.edu.utfpr.dv.siacoes.window.EditAppConfigWindow;
 import br.edu.utfpr.dv.siacoes.window.EditFinalDocumentWindow;
 import br.edu.utfpr.dv.siacoes.window.EditPasswordWindow;
 import br.edu.utfpr.dv.siacoes.window.EditProjectWindow;
@@ -1052,6 +1053,7 @@ public class SideMenu extends CustomComponent {
 			layout.addComponent(new MenuEntry("Semestres", 1, SemesterView.NAME));
 			layout.addComponent(new MenuEntry("Envio de E-mails", 1, EmailMessageView.NAME));
 			layout.addComponent(new MenuEntry("Usuários", 1, UserView.NAME));
+			layout.addComponent(new MenuEntry("Configurações", 1, new EditAppConfigWindow()));
 		}
 		
 		layout.addComponent(new MenuEntry("Reportar Erro", 0, BugReportView.NAME));

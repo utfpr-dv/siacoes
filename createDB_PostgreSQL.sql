@@ -1,3 +1,7 @@
+CREATE TABLE appconfig (
+    theme SMALLINT NOT NULL
+);
+
 CREATE TABLE ldapconfig (
   idldapconfig SERIAL NOT NULL ,
   host VARCHAR(100) NOT NULL ,

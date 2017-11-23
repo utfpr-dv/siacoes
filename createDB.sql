@@ -1,3 +1,7 @@
+CREATE TABLE `appconfig` (
+    `theme` SMALLINT NOT NULL
+);
+
 CREATE TABLE `ldapconfig` (
   `idldapconfig` INT NOT NULL AUTO_INCREMENT ,
   `host` VARCHAR(100) NOT NULL ,

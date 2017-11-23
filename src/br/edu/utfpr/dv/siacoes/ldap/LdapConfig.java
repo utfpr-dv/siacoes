@@ -1,5 +1,6 @@
 package br.edu.utfpr.dv.siacoes.ldap;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -79,21 +80,36 @@ public class LdapConfig {
 	}
 	
 	private void loadConfig() throws SQLException{
-		Statement stmt = ConnectionDAO.getInstance().getConnection().createStatement();
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
 		
-		ResultSet rs = stmt.executeQuery("SELECT * FROM ldapconfig");
-		
-		if(rs.next()){
-			this.host = rs.getString("host");
-			this.port = rs.getInt("port");
-			this.useSSL = (rs.getInt("useSSL") == 1);
-			this.ignoreCertificates = (rs.getInt("ignoreCertificates") == 1);
-			this.basedn = rs.getString("basedn");
-			this.uidField = rs.getString("uidField");
-			this.cpfField = rs.getString("cpfField");
-			this.registerField = rs.getString("registerField");
-			this.nameField = rs.getString("nameField");
-			this.emailField = rs.getString("emailField");
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT * FROM ldapconfig");
+			
+			if(rs.next()){
+				this.host = rs.getString("host");
+				this.port = rs.getInt("port");
+				this.useSSL = (rs.getInt("useSSL") == 1);
+				this.ignoreCertificates = (rs.getInt("ignoreCertificates") == 1);
+				this.basedn = rs.getString("basedn");
+				this.uidField = rs.getString("uidField");
+				this.cpfField = rs.getString("cpfField");
+				this.registerField = rs.getString("registerField");
+				this.nameField = rs.getString("nameField");
+				this.emailField = rs.getString("emailField");
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
 		}
 	}
 	
