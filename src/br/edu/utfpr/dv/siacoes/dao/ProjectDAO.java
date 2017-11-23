@@ -117,7 +117,7 @@ public class ProjectDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return rs.getInt("idJury");
+				return rs.getInt("idCampus");
 			}else{
 				return 0;
 			}
