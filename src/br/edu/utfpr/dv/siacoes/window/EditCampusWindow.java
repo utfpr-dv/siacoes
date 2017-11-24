@@ -1,6 +1,5 @@
 package br.edu.utfpr.dv.siacoes.window;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,8 +10,6 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
 
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.CheckBox;
@@ -26,7 +23,6 @@ import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
 
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
-import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
@@ -78,8 +74,7 @@ public class EditCampusWindow extends EditWindow {
 		
 		this.imageLogo = new Image();
 		this.imageLogo.setStyleName("ImageLogo");
-		this.imageLogo.setWidth("400px");
-		this.imageLogo.setHeight("200px");
+		this.imageLogo.setSizeUndefined();
 		
 		this.addField(new HorizontalLayout(this.textName, this.checkActive));
 		this.addField(this.textInitials);
@@ -180,7 +175,6 @@ public class EditCampusWindow extends EditWindow {
 	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 	        }
 		}
-
 	}
 
 }

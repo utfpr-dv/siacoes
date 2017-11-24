@@ -494,9 +494,9 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO \"user\"(name, login, password, email, profile, institution, research, lattes, external, active, area, idDepartment, sigacManager, sigesManager, sigetManager, departmentManager, studentCode, registerSemester, registerYear, phone, idcompany) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO \"user\"(name, login, password, email, profile, institution, research, lattes, external, active, area, idDepartment, sigacManager, sigesManager, sigetManager, departmentManager, studentCode, registerSemester, registerYear, phone, idcompany, photo) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE \"user\" SET name=?, login=?, password=?, email=?, profile=?, institution=?, research=?, lattes=?, external=?, active=?, area=?, idDepartment=?, sigacManager=?, sigesManager=?, sigetManager=?, departmentManager=?, studentCode=?, registerSemester=?, registerYear=?, phone=?, idcompany=? WHERE idUser=?");
+				stmt = conn.prepareStatement("UPDATE \"user\" SET name=?, login=?, password=?, email=?, profile=?, institution=?, research=?, lattes=?, external=?, active=?, area=?, idDepartment=?, sigacManager=?, sigesManager=?, sigetManager=?, departmentManager=?, studentCode=?, registerSemester=?, registerYear=?, phone=?, idcompany=?, photo=? WHERE idUser=?");
 			}
 			
 			stmt.setString(1, user.getName());
@@ -528,9 +528,14 @@ public class UserDAO {
 			}else{
 				stmt.setInt(21, user.getCompany().getIdCompany());	
 			}
+			if(user.getPhoto() == null){
+				stmt.setNull(22, Types.BINARY);
+			}else{
+				stmt.setBytes(22, user.getPhoto());	
+			}
 			
 			if(!insert){
-				stmt.setInt(22, user.getIdUser());
+				stmt.setInt(23, user.getIdUser());
 			}
 			
 			stmt.execute();
@@ -590,6 +595,7 @@ public class UserDAO {
 		user.setStudentCode(rs.getString("studentCode"));
 		user.setRegisterSemester(rs.getInt("registerSemester"));
 		user.setRegisterYear(rs.getInt("registerYear"));
+		user.setPhoto(rs.getBytes("photo"));
 		
 		return user;
 	}

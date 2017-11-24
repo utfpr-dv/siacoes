@@ -160,6 +160,7 @@ CREATE TABLE "user" (
   studentCode VARCHAR(45) NOT NULL,
   registerSemester SMALLINT NOT NULL,
   registerYear SMALLINT NOT NULL,
+  photo BYTEA DEFAULT NULL,
   PRIMARY KEY (iduser),
   CONSTRAINT fk_user_department FOREIGN KEY (idDepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_user_company FOREIGN KEY (idcompany ) REFERENCES company (idcompany ) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -495,8 +496,8 @@ CREATE INDEX fk_supervisorchange_proposal_idx ON supervisorchange (idProposal);
 CREATE TABLE project (
   idproject SERIAL NOT NULL,
   idproposal INT NOT NULL,
-  title VARCHAR(100) NOT NULL,
-  subarea VARCHAR(100) NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  subarea VARCHAR(255) NOT NULL,
   idstudent INT NOT NULL,
   idsupervisor INT NOT NULL,
   file BYTEA NOT NULL,
@@ -520,8 +521,8 @@ CREATE INDEX fk_project_cosupervisor_idx ON project (idcosupervisor);
 CREATE TABLE thesis (
   idthesis SERIAL NOT NULL,
   idproject INT NOT NULL,
-  title VARCHAR(100) NOT NULL,
-  subarea VARCHAR(100) NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  subarea VARCHAR(255) NOT NULL,
   idstudent INT NOT NULL,
   idsupervisor INT NOT NULL,
   file BYTEA NOT NULL,

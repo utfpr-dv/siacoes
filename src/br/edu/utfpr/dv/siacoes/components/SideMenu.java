@@ -1,5 +1,7 @@
 package br.edu.utfpr.dv.siacoes.components;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -10,6 +12,7 @@ import javax.servlet.http.Cookie;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.server.Page;
+import com.vaadin.server.StreamResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Accordion;
@@ -314,6 +317,18 @@ public class SideMenu extends CustomComponent {
         
         settingsItem = settings.addItem("", new ThemeResource("images/profile-pic-300px.jpg"), null);
         settingsItem.setText(user.getName());
+        
+        if(user.getPhoto() != null){
+        	StreamResource resource = new StreamResource(
+	            new StreamResource.StreamSource() {
+	                @Override
+	                public InputStream getStream() {
+	                    return new ByteArrayInputStream(user.getPhoto());
+	                }
+	            }, "userphoto" + String.valueOf(user.getPhoto()) + ".jpg");
+	
+    		settingsItem.setIcon(resource);
+        }
         
         settingsItem.addItem("Meus Dados", new Command() {
             @Override

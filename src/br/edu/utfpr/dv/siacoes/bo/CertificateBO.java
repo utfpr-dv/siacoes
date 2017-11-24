@@ -23,6 +23,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.dao.CertificateDAO;
+import br.edu.utfpr.dv.siacoes.model.AppConfig;
 import br.edu.utfpr.dv.siacoes.model.Certificate;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipStatus;
@@ -866,7 +867,7 @@ public class CertificateBO {
 	}
 	
 	private String getLink(String guid){
-		return "http://coensapp.dv.utfpr.edu.br/siacoes/#!authenticate/" + guid;
+		return AppConfig.getInstance().getHost() + "/#!authenticate/" + guid;
 	}
 	
 	private byte[] createQRCode(String qrCodeData, int qrCodeheight, int qrCodewidth) throws WriterException, IOException {

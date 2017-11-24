@@ -42,11 +42,13 @@ public class MainView extends BasicView {
     	this.logoES = new Link();
     	this.logoES.setTargetName("_blank");
     	this.logoES.setStyleName("ImageHome");
+    	this.logoES.setSizeUndefined();
     	
     	this.logoUTFPR = new Link(null, new ExternalResource("http://www.utfpr.edu.br"));
     	this.logoUTFPR.setIcon(new ThemeResource("images/assinatura_UTFPR.png"));
     	this.logoUTFPR.setTargetName("_blank");
     	this.logoUTFPR.setStyleName("ImageHome");
+    	this.logoUTFPR.setSizeUndefined();
     	
     	HorizontalLayout layoutLogo = new HorizontalLayout(this.logoES, this.logoUTFPR);
     	layoutLogo.setSpacing(true);

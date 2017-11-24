@@ -57,9 +57,11 @@ public class AppConfig {
 	}
 	
 	private AppTheme theme;
-
+	private String host;
+	
 	private AppConfig(){
 		this.setTheme(AppTheme.DEFAULT);
+		this.setHost("");
 	}
 	
 	public AppTheme getTheme() {
@@ -68,7 +70,13 @@ public class AppConfig {
 	public void setTheme(AppTheme theme) {
 		this.theme = theme;
 	}
-	
+	public String getHost() {
+		return host;
+	}
+	public void setHost(String host) {
+		this.host = host;
+	}
+
 	private static AppConfig instance = null;
 	
 	public static synchronized AppConfig getInstance(){
@@ -98,6 +106,7 @@ public class AppConfig {
 			
 			if(rs.next()){
 				this.setTheme(AppTheme.valueOf(rs.getInt("theme")));
+				this.setHost(rs.getString("host"));
 			}
 		}finally{
 			if((rs != null) && !rs.isClosed())
@@ -121,12 +130,13 @@ public class AppConfig {
 			stmt2 = conn.createStatement();
 			rs = stmt2.executeQuery("SELECT * FROM appconfig");
 			if(rs.next()){
-				stmt = conn.prepareStatement("UPDATE appconfig SET theme=?");	
+				stmt = conn.prepareStatement("UPDATE appconfig SET theme=?, host=?");	
 			}else{
-				stmt = conn.prepareStatement("INSERT INTO appconfig(theme) VALUES(?)");
+				stmt = conn.prepareStatement("INSERT INTO appconfig(theme, host) VALUES(?, ?)");
 			}
 			
 			stmt.setInt(1, this.getTheme().getValue());
+			stmt.setString(2, this.getHost());
 			
 			stmt.execute();
 			

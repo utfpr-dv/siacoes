@@ -66,6 +66,7 @@ public class User {
 	private String studentCode;
 	private int registerSemester;
 	private int registerYear;
+	private byte[] photo;
 	
 	public User(){
 		this.setIdUser(0);
@@ -90,6 +91,7 @@ public class User {
 		this.setStudentCode("");
 		this.setRegisterSemester(DateUtils.getSemester());
 		this.setRegisterYear(DateUtils.getYear());
+		this.setPhoto(null);
 	}
 	
 	public int getIdUser() {
@@ -224,7 +226,13 @@ public class User {
 	public int getRegisterYear(){
 		return registerYear;
 	}
-	
+	public byte[] getPhoto() {
+		return photo;
+	}
+	public void setPhoto(byte[] photo) {
+		this.photo = photo;
+	}
+
 	@Override
 	public String toString(){
 		return this.getName();
