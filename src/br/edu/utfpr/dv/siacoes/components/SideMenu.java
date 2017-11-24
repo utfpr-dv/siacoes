@@ -523,7 +523,7 @@ public class SideMenu extends CustomComponent {
 		
 		Link linkConfig = new Link(null, null);
 		linkConfig.setIcon(new ThemeResource("images/config.png"));
-		linkConfig.setDescription("TCC");
+		linkConfig.setDescription("Recursos Gerais");
 		
 		VerticalLayout layoutConfig = new VerticalLayout(linkConfig);
 		layoutConfig.setHeight("50px");

@@ -34,11 +34,12 @@ public class InternshipJuryStudentDAO {
 		try{
 			stmt = this.conn.prepareStatement(
 					"SELECT internshipjurystudent.*, student.name, student.studentCode, internshipjury.date, internshipjury.startTime, internshipjury.endTime, " +
-					"internshipjury.idInternship, istudent.name AS internshipStudent " +
+					"internshipjury.idInternship, istudent.name AS internshipStudent, company.name AS companyName " +
 					"FROM internshipjurystudent INNER JOIN internshipjury ON internshipjury.idInternshipJury=internshipjurystudent.idInternshipJury " +
 					"INNER JOIN \"user\" student ON student.idUser=internshipjurystudent.idStudent " +
 					"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " + 
 					"INNER JOIN \"user\" istudent ON istudent.idUser=internship.idStudent " +
+					"INNER JOIN company ON company.idCompany=internship.idCompany " +
 					"WHERE idInternshipJuryStudent = ?");
 			
 			stmt.setInt(1, id);
@@ -65,11 +66,12 @@ public class InternshipJuryStudentDAO {
 		try{
 			stmt = this.conn.prepareStatement(
 					"SELECT internshipjurystudent.*, student.name, student.studentCode, internshipjury.date, internshipjury.startTime, internshipjury.endTime, " +
-					"internshipjury.idInternship, istudent.name AS internshipStudent " +
+					"internshipjury.idInternship, istudent.name AS internshipStudent, company.name AS companyName " +
 					"FROM internshipjurystudent INNER JOIN internshipjury ON internshipjury.idInternshipJury=internshipjurystudent.idInternshipJury " +
 					"INNER JOIN \"user\" student ON student.idUser=internshipjurystudent.idStudent " +
 					"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " + 
 					"INNER JOIN \"user\" istudent ON istudent.idUser=internship.idStudent " +
+					"INNER JOIN company ON company.idCompany=internship.idCompany " +
 					"WHERE internshipjurystudent.idInternshipJury = ? AND internshipjurystudent.idStudent=?");
 			
 			stmt.setInt(1, idInternshipJury);
@@ -97,11 +99,12 @@ public class InternshipJuryStudentDAO {
 		try{
 			stmt = this.conn.prepareStatement(
 					"SELECT internshipjurystudent.*, student.name, student.studentCode, internshipjury.date, internshipjury.startTime, internshipjury.endTime, " +
-					"internshipjury.idInternship, istudent.name AS internshipStudent " +
+					"internshipjury.idInternship, istudent.name AS internshipStudent, company.name AS companyName " +
 					"FROM internshipjurystudent INNER JOIN internshipjury ON internshipjury.idInternshipJury=internshipjurystudent.idInternshipJury " +
 					"INNER JOIN \"user\" student ON student.idUser=internshipjurystudent.idStudent " +
 					"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " + 
 					"INNER JOIN \"user\" istudent ON istudent.idUser=internship.idStudent " +
+					"INNER JOIN company ON company.idCompany=internship.idCompany " +
 					"WHERE internshipjurystudent.idInternshipJury = ?");
 			
 			stmt.setInt(1, idInternshipJury);
@@ -130,11 +133,12 @@ public class InternshipJuryStudentDAO {
 		try{
 			stmt = this.conn.prepareStatement(
 					"SELECT internshipjurystudent.*, student.name, student.studentCode, internshipjury.date, internshipjury.startTime, internshipjury.endTime, " +
-					"internshipjury.idInternship, istudent.name AS internshipStudent " +
+					"internshipjury.idInternship, istudent.name AS internshipStudent, company.name AS companyName " +
 					"FROM internshipjurystudent INNER JOIN internshipjury ON internshipjury.idInternshipJury=internshipjurystudent.idInternshipJury " +
 					"INNER JOIN \"user\" student ON student.idUser=internshipjurystudent.idStudent " +
 					"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " + 
 					"INNER JOIN \"user\" istudent ON istudent.idUser=internship.idStudent " +
+					"INNER JOIN company ON company.idCompany=internship.idCompany " +
 					"WHERE internshipjurystudent.idStudent = ?");
 			
 			stmt.setInt(1, idStudent);
@@ -214,6 +218,7 @@ public class InternshipJuryStudentDAO {
 		student.getStudent().setIdUser(rs.getInt("idStudent"));
 		student.getStudent().setName(rs.getString("name"));
 		student.getStudent().setStudentCode(rs.getString("studentCode"));
+		student.getInternshipJury().getInternship().getCompany().setName(rs.getString("companyName"));
 		
 		return student;
 	}

@@ -770,6 +770,7 @@ public class CertificateBO {
 		statement.setEvent("Estágio Curricular Obrigatório");
 		statement.setStudent(appraiser.getInternshipJury().getInternship().getStudent().getName());
 		statement.setTitle(appraiser.getInternshipJury().getInternship().getReportTitle());
+		statement.setCompany(appraiser.getInternshipJury().getInternship().getCompany().getName());
 		
 		try {
 			UserBO bo = new UserBO();
@@ -816,6 +817,7 @@ public class CertificateBO {
 		statement.setEvent("Estágio Curricular Obrigatório");
 		statement.setStudent(student.getInternshipJury().getInternship().getStudent().getName());
 		statement.setTitle(student.getInternshipJury().getInternship().getReportTitle());
+		statement.setCompany(student.getInternshipJury().getInternship().getCompany().getName());
 		
 		try {
 			UserBO bo = new UserBO();

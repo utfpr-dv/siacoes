@@ -1,6 +1,7 @@
 package br.edu.utfpr.dv.siacoes.window;
 
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -403,7 +404,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 				
 				Session.putReport(report);
 				
-				getUI().getPage().open("#!certificate/session", "_blank");
+				getUI().getPage().open("#!certificate/session/" + UUID.randomUUID().toString(), "_blank");
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
@@ -424,7 +425,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 				
 				Session.putReport(report);
 				
-				getUI().getPage().open("#!certificate/session", "_blank");
+				getUI().getPage().open("#!certificate/session/" + UUID.randomUUID().toString(), "_blank");
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	

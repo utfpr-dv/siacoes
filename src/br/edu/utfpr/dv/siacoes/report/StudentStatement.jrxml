@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-08-25T16:04:07 -->
+<!-- 2017-11-24T18:18:07 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="StudentStatement" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="764acd4a-1ba3-4380-ab6f-2858cc5be4ec">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -60,6 +60,9 @@
 	<field name="departmentManager" class="java.lang.String">
 		<fieldDescription><![CDATA[departmentManager]]></fieldDescription>
 	</field>
+	<field name="company" class="java.lang.String">
+		<fieldDescription><![CDATA[company]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -111,7 +114,7 @@
 					<font size="12"/>
 					<paragraph lineSpacing="1_1_2"/>
 				</textElement>
-				<textFieldExpression><![CDATA["                                              Declaro para os devidos fins de direito que o(a) acadêmico(a) " + $F{name} + ", registro acadêmico " + $F{studentCode} + ", esteve presente e acompanhou a Defesa Pública de " + $F{event} + " do(a) acadêmico(a) " + $F{student} + " com tema \"" + $F{title} + "\", a qual ocorreu no dia " + DATEFORMAT($F{date}, "dd/MM/yyyy") + ", com início às " + DATEFORMAT($F{startTime}, "HH:mm") + " e término às " + DATEFORMAT($F{endTime}, "HH:mm") + "."]]></textFieldExpression>
+				<textFieldExpression><![CDATA["                                              Declaro para os devidos fins de direito que o(a) acadêmico(a) " + $F{name} + ", registro acadêmico " + $F{studentCode} + ", esteve presente e acompanhou a Defesa Pública de " + $F{event} + " do(a) acadêmico(a) " + $F{student} + IF(FIND($F{event}, "TCC") >= 0, " com tema \"" + $F{title} + "\"", " realizado na empresa " + $F{company}) + ", a qual ocorreu no dia " + DATEFORMAT($F{date}, "dd/MM/yyyy") + ", com início às " + DATEFORMAT($F{startTime}, "HH:mm") + " e término às " + DATEFORMAT($F{endTime}, "HH:mm") + "."]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="416" width="480" height="21" uuid="9ab6c1d1-a15d-42ab-9feb-82f650c117ba"/>
