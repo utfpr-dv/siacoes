@@ -65,11 +65,11 @@ public class JuryAppraiserBO {
 		Calendar cal = Calendar.getInstance();
 		
 		cal.setTime(date);
-		cal.add(Calendar.HOUR_OF_DAY, -1);
+		cal.add(Calendar.MINUTE, -59);
 		startDate = cal.getTime();
 		
 		cal.setTime(date);
-		cal.add(Calendar.HOUR_OF_DAY, 1);
+		cal.add(Calendar.MINUTE, 59);
 		endDate = cal.getTime();
 		
 		try{
