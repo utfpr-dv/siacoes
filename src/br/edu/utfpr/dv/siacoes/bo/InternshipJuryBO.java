@@ -137,7 +137,7 @@ public class InternshipJuryBO {
 				keys.add(new EmailMessageEntry<String, String>("student", jury.getInternship().getStudent().getName()));
 				keys.add(new EmailMessageEntry<String, String>("title", jury.getInternship().getReportTitle()));
 				keys.add(new EmailMessageEntry<String, String>("date", new SimpleDateFormat("dd/MM/yyyy").format(jury.getDate())));
-				keys.add(new EmailMessageEntry<String, String>("time", new SimpleDateFormat("HH:mm").format(jury.getStartTime())));
+				keys.add(new EmailMessageEntry<String, String>("time", new SimpleDateFormat("HH:mm").format(jury.getDate())));
 				keys.add(new EmailMessageEntry<String, String>("local", jury.getLocal()));
 				keys.add(new EmailMessageEntry<String, String>("company", jury.getInternship().getCompany().getName()));
 				keys.add(new EmailMessageEntry<String, String>("appraiser", jury.getSupervisor().getName()));
@@ -151,7 +151,7 @@ public class InternshipJuryBO {
 						bo.sendEmail(appraiser.getAppraiser().getIdUser(), MessageType.INTERNSHIPJURYINCLUDEDAPPRAISER, keys);
 					}
 				}else{
-					boolean juryChanged = ((!jury.getDate().equals(oldJury.getDate())) || (!jury.getStartTime().equals(oldJury.getStartTime())) || (!jury.getLocal().equals(oldJury.getLocal())));
+					boolean juryChanged = ((!jury.getDate().equals(oldJury.getDate())) || (!jury.getLocal().equals(oldJury.getLocal())));
 					
 					if(juryChanged){
 						bo.sendEmail(jury.getInternship().getStudent().getIdUser(), MessageType.INTERNSHIPJURYCHANGEDSTUDENT, keys);

@@ -155,7 +155,7 @@ public class JuryBO {
 				keys.add(new EmailMessageEntry<String, String>("student", (jury.getStage() == 2 ? jury.getThesis().getStudent().getName() : jury.getProject().getStudent().getName())));
 				keys.add(new EmailMessageEntry<String, String>("title", (jury.getStage() == 2 ? jury.getThesis().getTitle() : jury.getProject().getTitle())));
 				keys.add(new EmailMessageEntry<String, String>("date", new SimpleDateFormat("dd/MM/yyyy").format(jury.getDate())));
-				keys.add(new EmailMessageEntry<String, String>("time", new SimpleDateFormat("HH:mm").format(jury.getStartTime())));
+				keys.add(new EmailMessageEntry<String, String>("time", new SimpleDateFormat("HH:mm").format(jury.getDate())));
 				keys.add(new EmailMessageEntry<String, String>("local", jury.getLocal()));
 				keys.add(new EmailMessageEntry<String, String>("stage", "TCC " + String.valueOf(jury.getStage())));
 				keys.add(new EmailMessageEntry<String, String>("appraiser", jury.getSupervisor().getName()));
@@ -169,7 +169,7 @@ public class JuryBO {
 						bo.sendEmail(appraiser.getAppraiser().getIdUser(), MessageType.JURYINCLUDEDAPPRAISER, keys);
 					}
 				}else{
-					boolean juryChanged = ((!jury.getDate().equals(oldJury.getDate())) || (!jury.getStartTime().equals(oldJury.getStartTime())) || (!jury.getLocal().equals(oldJury.getLocal())));
+					boolean juryChanged = ((!jury.getDate().equals(oldJury.getDate())) || (!jury.getLocal().equals(oldJury.getLocal())));
 					
 					if(juryChanged){
 						bo.sendEmail((jury.getStage() == 2 ? jury.getThesis().getStudent().getIdUser() : jury.getProject().getStudent().getIdUser()), MessageType.JURYCHANGEDSTUDENT, keys);
