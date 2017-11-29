@@ -270,6 +270,9 @@ public class CertificateBO {
 		if((appraiser == null) || (appraiser.getIdJuryAppraiser() == 0)){
 			throw new Exception("É preciso salvar o membro antes de gerar a declaração.");
 		}
+		if(!new JuryAppraiserScoreBO().hasScore(appraiser.getJury().getIdJury(), appraiser.getAppraiser().getIdUser())){
+			throw new Exception("A declaração somente pode ser emitida após o lançamento das notas.");
+		}
 		
 		StatementReport report = this.loadJuryProfessorStatement(appraiser);
 		List<StatementReport> list = new ArrayList<StatementReport>();
@@ -401,6 +404,9 @@ public class CertificateBO {
 	public byte[] getInternshipJuryProfessorStatement(InternshipJuryAppraiser appraiser) throws Exception{
 		if((appraiser == null) || (appraiser.getIdInternshipJuryAppraiser() == 0)){
 			throw new Exception("É preciso salvar o membro antes de gerar a declaração.");
+		}
+		if(!new InternshipJuryAppraiserScoreBO().hasScore(appraiser.getInternshipJury().getIdInternshipJury(), appraiser.getAppraiser().getIdUser())){
+			throw new Exception("A declaração somente pode ser emitida após o lançamento das notas.");
 		}
 		
 		StatementReport report = this.loadInternshipJuryProfessorStatement(appraiser);

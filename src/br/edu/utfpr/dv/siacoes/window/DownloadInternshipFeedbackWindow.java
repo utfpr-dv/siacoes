@@ -16,26 +16,26 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.renderers.ImageRenderer;
 
-import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserBO;
-import br.edu.utfpr.dv.siacoes.model.Jury;
-import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
+import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserBO;
+import br.edu.utfpr.dv.siacoes.model.InternshipJury;
+import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
 
-public class DownloadFeedbackWindow extends Window {
+public class DownloadInternshipFeedbackWindow extends Window {
 	
-	private final Jury jury;
+	private final InternshipJury jury;
 	
 	private final Grid grid;
 	private final Button buttonDownload;
 	
 	private Button.ClickListener listenerClickDownload;
-	private List<JuryAppraiser> appraisers;
+	private List<InternshipJuryAppraiser> appraisers;
 	
-	public DownloadFeedbackWindow(Jury jury){
+	public DownloadInternshipFeedbackWindow(InternshipJury jury){
 		super("Feedback da Banca Examinadora");
 		
 		if(jury == null){
-			this.jury = new Jury();
+			this.jury = new InternshipJury();
 		}else{
 			this.jury = jury;
 		}
@@ -72,10 +72,10 @@ public class DownloadFeedbackWindow extends Window {
 	
 	private void loadFeedback(){
 		try {
-			JuryAppraiserBO bo = new JuryAppraiserBO();
-	    	this.appraisers = bo.listAppraisers(this.jury.getIdJury());
+			InternshipJuryAppraiserBO bo = new InternshipJuryAppraiserBO();
+	    	this.appraisers = bo.listAppraisers(this.jury.getIdInternshipJury());
 	    	
-	    	for(JuryAppraiser ja: this.appraisers){
+	    	for(InternshipJuryAppraiser ja: this.appraisers){
 				this.grid.addRow(new ThemeResource("images/" + ja.getFileType().name() + ".png"), ja.getAppraiser().getName());
 			}
 		} catch (Exception e) {
@@ -92,11 +92,11 @@ public class DownloadFeedbackWindow extends Window {
     	new ExtensionUtils().removeAllExtensions(this.buttonDownload);
     	
     	if(value != null){
-    		int id = this.appraisers.get((int)value - 1).getIdJuryAppraiser();
+    		int id = this.appraisers.get((int)value - 1).getIdInternshipJuryAppraiser();
     		
     		try {
-    			JuryAppraiserBO bo = new JuryAppraiserBO();
-            	JuryAppraiser ja = bo.findById(id);
+    			InternshipJuryAppraiserBO bo = new InternshipJuryAppraiserBO();
+            	InternshipJuryAppraiser ja = bo.findById(id);
             	
             	if(ja.getFile() != null){
             		new ExtensionUtils().extendToDownload(ja.getAppraiser().getName() + ja.getFileType().getExtension(), ja.getFile(), this.buttonDownload);

@@ -192,7 +192,7 @@ public class EventCalendarView extends BasicView {
 				
 				for(Jury jury : listThesis){
 					String title = "Banca de TCC " + String.valueOf(jury.getStage());
-					String student = "Acadêmico: " + jury.getStudent().getName();
+					String student = "Acadêmico(a): " + jury.getStudent().getName();
 					String local = "Local: " + jury.getLocal();
 					String appraisers = "Membros da banca: ";
 					
@@ -218,7 +218,7 @@ public class EventCalendarView extends BasicView {
 				
 				for(InternshipJury jury : listInternship){
 					String title = "Banca de Estágio";
-					String student = "Acadêmico: " + jury.getStudent();
+					String student = "Acadêmico(a): " + jury.getStudent();
 					String local = "Local: " + jury.getLocal();
 					String appraisers = "Membros da banca: ";
 					

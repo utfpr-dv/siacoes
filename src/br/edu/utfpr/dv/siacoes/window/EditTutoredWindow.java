@@ -289,7 +289,7 @@ public class EditTutoredWindow extends EditWindow {
 		if((this.thesis != null) && (this.thesis.getIdThesis() != 0)){
 			this.tab.addTab(tab3, "Monografia de TCC 2");
 		}
-		this.tab.setHeight("400px");
+		this.tab.setHeight("340px");
 		
 		this.addField(this.tab);
 		

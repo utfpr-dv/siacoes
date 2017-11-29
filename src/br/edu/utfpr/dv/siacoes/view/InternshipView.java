@@ -33,6 +33,7 @@ import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.window.DownloadInternshipFeedbackWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipFinalDocumentWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipJuryWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipWindow;
@@ -54,6 +55,7 @@ public class InternshipView extends ListView {
 	private final Button buttonJury;
 	private final Button buttonProfessorStatement;
 	private final Button buttonStudentStatement;
+	private final Button buttonJuryFeedback;
 	
 	public InternshipView(){
 		super(SystemModule.SIGES);
@@ -133,6 +135,15 @@ public class InternshipView extends ListView {
 		
 		this.addActionButton(this.buttonFinalReport);
 		
+		this.buttonJuryFeedback = new Button("Feedback da Banca", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	juryFeedback();
+            }
+        });
+		
+		this.addActionButton(this.buttonJuryFeedback);
+		
 		this.buttonFinalDocument = new Button("Versão Final", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
@@ -154,6 +165,7 @@ public class InternshipView extends ListView {
 			this.buttonProfessorStatement.setVisible(Session.isUserProfessor());
 			this.buttonStudentStatement.setVisible(Session.isUserStudent());
 			this.buttonFinalReport.setVisible(this.profile == UserProfile.STUDENT);
+			this.buttonJuryFeedback.setVisible(this.profile == UserProfile.STUDENT || this.profile == UserProfile.PROFESSOR);
 			
 			if(this.profile == UserProfile.PROFESSOR){
 				this.buttonFinalDocument.setCaption("Val. Relat. Final");
@@ -340,6 +352,29 @@ public class InternshipView extends ListView {
 	public void filterClick() throws Exception {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private void juryFeedback(){
+		Object id = getIdSelected();
+    	
+    	if(id == null){
+    		Notification.show("Selecionar Registro", "Selecione o registro para visualizar o feedback.", Notification.Type.WARNING_MESSAGE);
+    	}else{
+    		try{
+    			InternshipJuryBO bo = new InternshipJuryBO();
+    			InternshipJury jury = bo.findByInternship((int)id);
+    			
+    			if((jury != null) && (jury.getIdInternshipJury() != 0)){
+    				UI.getCurrent().addWindow(new DownloadInternshipFeedbackWindow(jury));
+    			}else{
+    				Notification.show("Feedback da Banca", "Ainda não foi marcada a banca para este trabalho.", Notification.Type.WARNING_MESSAGE);
+    			}
+    		} catch (Exception e) {
+    			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+    			
+    			Notification.show("Feedback da Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+    		}
+    	}
 	}
 	
 	private void downloadProfessorStatement(){

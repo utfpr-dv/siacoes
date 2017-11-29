@@ -3,12 +3,12 @@ package br.edu.utfpr.dv.siacoes.window;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
@@ -36,11 +36,13 @@ import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
+import br.edu.utfpr.dv.siacoes.model.Document;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
+import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditProjectWindow extends EditWindow {
@@ -59,6 +61,7 @@ public class EditProjectWindow extends EditWindow {
 	private final DateField textSubmissionDate;
 	private final Upload uploadFile;
 	private final Image imageFileUploaded;
+	private final Button buttonDownloadFile;
 	private final TextArea textAbstract;
 	private final TabSheet tabData;
 	
@@ -118,6 +121,9 @@ public class EditProjectWindow extends EditWindow {
 		this.imageFileUploaded = new Image("", new ThemeResource("images/ok.png"));
 		this.imageFileUploaded.setVisible(false);
 		
+		this.buttonDownloadFile = new Button("Download do Projeto");
+		this.buttonDownloadFile.setVisible(false);
+		
 		VerticalLayout v1 = new VerticalLayout();
 		v1.setSpacing(true);
 		
@@ -167,6 +173,8 @@ public class EditProjectWindow extends EditWindow {
 		
 		this.loadProject();
 		this.textTitle.focus();
+		
+		this.addButton(this.buttonDownloadFile);
 	}
 	
 	private void loadProject(){
@@ -205,6 +213,9 @@ public class EditProjectWindow extends EditWindow {
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			}
+		}else if(this.project.getFile() != null){
+			this.buttonDownloadFile.setVisible(true);
+			this.prepareDownloadProject();
 		}
 	}
 	
@@ -252,7 +263,19 @@ public class EditProjectWindow extends EditWindow {
 			Notification.show("Salvar Projeto", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
-
+	
+	private void prepareDownloadProject(){
+		new ExtensionUtils().removeAllExtensions(this.buttonDownloadFile);
+		
+		if(this.project.getFile() != null){
+			this.buttonDownloadFile.setVisible(true);
+			
+			new ExtensionUtils().extendToDownload("Projeto_TCC_" + this.project.getIdProject() + Document.DocumentType.PDF.getExtension(), this.project.getFile(), this.buttonDownloadFile);
+		}else{
+			this.buttonDownloadFile.setVisible(false);
+		}
+	}
+	
 	@SuppressWarnings("serial")
 	class DocumentUploader implements Receiver, SucceededListener {
 		private File tempFile;
@@ -295,6 +318,8 @@ public class EditProjectWindow extends EditWindow {
 	            project.setFile(buffer);
 	            
 	            imageFileUploaded.setVisible(true);
+	            buttonDownloadFile.setVisible(true);
+	            prepareDownloadProject();
 	            
 	            Notification.show("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.", Notification.Type.HUMANIZED_MESSAGE);
 	        } catch (Exception e) {

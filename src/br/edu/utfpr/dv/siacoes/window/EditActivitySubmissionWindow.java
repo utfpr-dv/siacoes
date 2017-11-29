@@ -392,7 +392,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			try {
 	            FileInputStream input = new FileInputStream(tempFile);
 	            
-	            if(input.available() > (250 * 1024)){
+	            if(input.available() > (300 * 1024)){
 					throw new Exception("O arquivo precisa ter um tamanho máximo de 200 KB.");
 	            }
 	            

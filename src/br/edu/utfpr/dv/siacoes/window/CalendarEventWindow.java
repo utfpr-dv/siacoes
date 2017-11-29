@@ -51,6 +51,7 @@ public class CalendarEventWindow extends Window {
 		
 		VerticalLayout layout = new VerticalLayout(this.textTitle, this.textStudent, this.textCompany, h1, this.textAppraisers);
 		layout.setSpacing(true);
+		layout.setMargin(true);
 		
 		if((event.getJury() != null) && (event.getJury().getIdJury() != 0)){
 			this.setCaption("Banca de TCC " + String.valueOf(event.getJury().getStage()));

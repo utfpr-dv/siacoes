@@ -632,8 +632,8 @@ public class SideMenu extends CustomComponent {
 			layout.addComponent(new MenuEntry("Relatórios", 0));
 			layout.addComponent(new MenuEntry("Documentos Faltantes", 1, InternshipMissingDocumentsReportView.NAME));
 			
-			layout.addComponent(new MenuEntry("Gráficos", 0));
-			layout.addComponent(new MenuEntry("Estagiários por Empresa", 1, InternshipCompanyChartView.NAME));
+			//layout.addComponent(new MenuEntry("Gráficos", 0));
+			//layout.addComponent(new MenuEntry("Estagiários por Empresa", 1, InternshipCompanyChartView.NAME));
 		}
 		
 		layout.setSizeFull();

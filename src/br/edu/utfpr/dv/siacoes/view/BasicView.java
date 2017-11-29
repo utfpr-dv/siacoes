@@ -3,6 +3,7 @@ package br.edu.utfpr.dv.siacoes.view;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.navigator.View;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
@@ -10,9 +11,9 @@ import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -60,9 +61,18 @@ public abstract class BasicView extends CustomComponent implements View {
 		this.labelCaption = new Label();
 		this.labelCaption.setStyleName("Caption");
 		
+		Link logoUTFPR = new Link(null, new ExternalResource("http://www.utfpr.edu.br"));
+		logoUTFPR.setIcon(new ThemeResource("images/logo_UTFPR_24.png"));
+		Link logoES = new Link(null, new ExternalResource("http://coens.dv.utfpr.edu.br"));
+		logoES.setIcon(new ThemeResource("images/logo_ES_24.png"));
+		
 		layoutCaption.addComponent(layoutHamburguer);
 		layoutCaption.addComponent(this.labelCaption);
-		layoutCaption.setComponentAlignment(this.labelCaption, Alignment.MIDDLE_RIGHT);
+		layoutCaption.addComponent(logoUTFPR);
+		layoutCaption.addComponent(logoES);
+		layoutCaption.setComponentAlignment(this.labelCaption, Alignment.MIDDLE_LEFT);
+		layoutCaption.setComponentAlignment(logoUTFPR, Alignment.MIDDLE_RIGHT);
+		layoutCaption.setComponentAlignment(logoES, Alignment.MIDDLE_RIGHT);
 		layoutCaption.setExpandRatio(this.labelCaption, 1);
 		
 		vertical.addComponent(layoutCaption);
