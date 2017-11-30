@@ -69,6 +69,7 @@ public class EventCalendarView extends BasicView {
 		this.calendar.setFirstVisibleHourOfDay(7);
 		this.calendar.setLastVisibleHourOfDay(23);
 		this.calendar.setSizeFull();
+		this.calendar.setReadOnly(true);
 		this.calendar.setHandler(new EventClickHandler() {
 			@Override
 			public void eventClick(EventClick e) {
@@ -202,7 +203,7 @@ public class EventCalendarView extends BasicView {
 						appraisers += appraiser.getAppraiser().getName() + "; ";
 					}
 					
-					CalendarEvent event = new CalendarEvent(title + " - " + student + " - " + local, appraisers, jury.getDate(), DateUtils.addHour(jury.getDate(), 1));
+					CalendarEvent event = new CalendarEvent(title + " - " + student + " - " + local, title + " - " + student + " - " + local + " - " + appraisers, jury.getDate(), DateUtils.addHour(jury.getDate(), 1));
 					
 					event.setJury(jury);
 					
@@ -228,7 +229,7 @@ public class EventCalendarView extends BasicView {
 						appraisers += appraiser.getAppraiser().getName() + "; ";
 					}
 					
-					CalendarEvent event = new CalendarEvent(title + " - " + student + " - " + local, appraisers, jury.getDate(), DateUtils.addHour(jury.getDate(), 1));
+					CalendarEvent event = new CalendarEvent(title + " - " + student + " - " + local, title + " - " + student + " - " + local + " - " + appraisers, jury.getDate(), DateUtils.addHour(jury.getDate(), 1));
 					
 					event.setInternshipJury(jury);
 					
