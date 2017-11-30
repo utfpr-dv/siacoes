@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-09-26T11:17:13 -->
+<!-- 2017-11-30T14:41:23 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="JuryForm2" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="aaaa9f03-6de2-4449-a217-db75b3350ee7">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -89,9 +89,9 @@
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="670" splitType="Stretch">
+		<band height="650" splitType="Stretch">
 			<staticText>
-				<reportElement positionType="Float" x="0" y="538" width="481" height="20" uuid="2f0bb051-c983-44e9-97ee-f6807a02c91e"/>
+				<reportElement positionType="Float" x="0" y="535" width="481" height="20" uuid="2f0bb051-c983-44e9-97ee-f6807a02c91e"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -104,7 +104,7 @@
 				<text><![CDATA[Observações]]></text>
 			</staticText>
 			<textField>
-				<reportElement positionType="Float" x="0" y="558" width="481" height="70" uuid="b4b5321c-a903-4c03-8dbd-78bdbeaddbcc"/>
+				<reportElement positionType="Float" x="0" y="555" width="481" height="70" uuid="b4b5321c-a903-4c03-8dbd-78bdbeaddbcc"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -117,7 +117,7 @@
 				<textFieldExpression><![CDATA[$F{comments}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="0" y="631" width="481" height="31" uuid="4f2a0334-c1c5-461c-8241-0c144885c5f8"/>
+				<reportElement x="0" y="628" width="481" height="22" uuid="4f2a0334-c1c5-461c-8241-0c144885c5f8"/>
 				<subreportParameter name="brasao_republica">
 					<subreportParameterExpression><![CDATA[$P{brasao_republica}]]></subreportParameterExpression>
 				</subreportParameter>

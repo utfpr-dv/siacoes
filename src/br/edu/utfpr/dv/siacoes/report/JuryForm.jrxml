@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-09-26T11:15:58 -->
+<!-- 2017-11-30T14:40:48 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="JuryForm2" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="aaaa9f03-6de2-4449-a217-db75b3350ee7">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -77,9 +77,9 @@
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="436" splitType="Stretch">
+		<band height="444" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="191" width="390" height="20" uuid="8df902a6-ee46-4591-8bc9-7ed923253c45"/>
+				<reportElement positionType="Float" x="0" y="199" width="390" height="20" uuid="8df902a6-ee46-4591-8bc9-7ed923253c45"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -92,7 +92,7 @@
 				<text><![CDATA[Média Final:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="217" width="481" height="20" uuid="2f0bb051-c983-44e9-97ee-f6807a02c91e"/>
+				<reportElement positionType="Float" x="0" y="225" width="481" height="20" uuid="2f0bb051-c983-44e9-97ee-f6807a02c91e"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -105,7 +105,7 @@
 				<text><![CDATA[Observações]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="237" width="481" height="70" uuid="b4b5321c-a903-4c03-8dbd-78bdbeaddbcc"/>
+				<reportElement positionType="Float" x="0" y="245" width="481" height="70" uuid="b4b5321c-a903-4c03-8dbd-78bdbeaddbcc"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -118,15 +118,15 @@
 				<textFieldExpression><![CDATA[$F{comments}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="307" width="480" height="30" uuid="10da8350-72f9-4237-bf03-da31775250f5"/>
+				<reportElement positionType="Float" x="1" y="315" width="480" height="30" uuid="10da8350-72f9-4237-bf03-da31775250f5"/>
 				<text><![CDATA[Ao término da avaliação, favor entregar esta ficha ao Professor Responsável pelo TCC, com assinatura da banca avaliadora e do acadêmico.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1" y="337" width="480" height="30" uuid="4f128dc7-8009-4392-bbc3-0d1a1a4675d3"/>
+				<reportElement positionType="Float" x="1" y="345" width="480" height="30" uuid="4f128dc7-8009-4392-bbc3-0d1a1a4675d3"/>
 				<text><![CDATA[A nota obtida no trabalho escrito está condicionada à realização das correções apontadas pela banca avaliadora e à entrega da versão final do trabalho para arquivamento.]]></text>
 			</staticText>
 			<subreport>
-				<reportElement x="0" y="369" width="481" height="66" uuid="4f2a0334-c1c5-461c-8241-0c144885c5f8"/>
+				<reportElement positionType="Float" x="0" y="377" width="481" height="66" uuid="4f2a0334-c1c5-461c-8241-0c144885c5f8"/>
 				<subreportParameter name="brasao_republica">
 					<subreportParameterExpression><![CDATA[$P{brasao_republica}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -143,7 +143,7 @@
 				<subreportExpression><![CDATA["br/edu/utfpr/dv/siacoes/report/JuryFormAppraiser.jasper"]]></subreportExpression>
 			</subreport>
 			<break>
-				<reportElement x="0" y="367" width="481" height="1" uuid="f8f92a07-2979-4d95-95e5-b0e6795e164e"/>
+				<reportElement x="0" y="375" width="481" height="1" uuid="f8f92a07-2979-4d95-95e5-b0e6795e164e"/>
 			</break>
 			<textField>
 				<reportElement x="0" y="7" width="480" height="20" uuid="08767914-d7f5-4907-8d80-6f68f7584e41"/>
@@ -270,7 +270,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="151" width="120" height="20" uuid="fb7a8ec4-af98-4745-8ca8-b5f5b9f154cc"/>
+				<reportElement positionType="Float" x="0" y="159" width="120" height="20" uuid="fb7a8ec4-af98-4745-8ca8-b5f5b9f154cc"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -283,7 +283,7 @@
 				<text><![CDATA[Notas]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="120" y="151" width="90" height="20" uuid="f98ebe5a-53d9-42df-8b57-788ab4d48898">
+				<reportElement positionType="Float" x="120" y="159" width="90" height="20" uuid="f98ebe5a-53d9-42df-8b57-788ab4d48898">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<box>
@@ -298,7 +298,7 @@
 				<text><![CDATA[Escrita]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="210" y="151" width="90" height="20" uuid="67c0ab50-e406-46c0-b6cd-ca0a2f18e8d6"/>
+				<reportElement positionType="Float" x="210" y="159" width="90" height="20" uuid="67c0ab50-e406-46c0-b6cd-ca0a2f18e8d6"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -311,7 +311,7 @@
 				<text><![CDATA[Apresentação]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="300" y="151" width="90" height="20" uuid="d8a746bd-d35e-42fe-8eff-b061ee9e6104">
+				<reportElement positionType="Float" x="300" y="159" width="90" height="20" uuid="d8a746bd-d35e-42fe-8eff-b061ee9e6104">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<box>
@@ -326,7 +326,7 @@
 				<text><![CDATA[Arguição]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="390" y="151" width="90" height="20" uuid="35a5392b-c6b2-4012-bdca-97abb9b86160">
+				<reportElement positionType="Float" x="390" y="159" width="90" height="20" uuid="35a5392b-c6b2-4012-bdca-97abb9b86160">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<box>
@@ -346,12 +346,12 @@
 				<subreportExpression><![CDATA["br/edu/utfpr/dv/siacoes/report/JuryFormAppraiserList.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement x="0" y="171" width="480" height="19" uuid="98863768-5106-4388-bba5-df2c85ee33d4"/>
+				<reportElement positionType="Float" x="0" y="179" width="480" height="19" uuid="98863768-5106-4388-bba5-df2c85ee33d4"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{scores})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["br/edu/utfpr/dv/siacoes/report/JuryFormAppraiserScore.jasper"]]></subreportExpression>
 			</subreport>
 			<textField>
-				<reportElement x="390" y="191" width="90" height="20" uuid="3ef153e4-7bf0-4c94-8230-36bce5b057fe"/>
+				<reportElement positionType="Float" x="390" y="199" width="90" height="20" uuid="3ef153e4-7bf0-4c94-8230-36bce5b057fe"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>

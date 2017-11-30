@@ -10,6 +10,7 @@ public class InternshipJuryFormReport {
 	private Date date;
 	private String student;
 	private String comments;
+	private String company;
 	private double appraisersPonderosity;
 	private double supervisorPonderosity;
 	private double companySupervisorPonderosity;
@@ -25,6 +26,7 @@ public class InternshipJuryFormReport {
 		this.setDate(new Date());
 		this.setStudent("");
 		this.setComments("");
+		this.setCompany("");
 		this.setAppraisersPonderosity(0);
 		this.setSupervisorPonderosity(0);
 		this.setCompanySupervisorPonderosity(0);
@@ -40,6 +42,12 @@ public class InternshipJuryFormReport {
 	}
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	public String getCompany() {
+		return company;
+	}
+	public void setCompany(String company) {
+		this.company = company;
 	}
 	public Date getDate() {
 		return date;

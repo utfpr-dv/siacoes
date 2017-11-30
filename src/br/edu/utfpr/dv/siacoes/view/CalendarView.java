@@ -61,10 +61,12 @@ public class CalendarView extends ListView {
 	private final Button buttonStatements;
 	private final Button buttonSingleStatement;
 	private final Button buttonSendFeedback;
+	private final Button buttonParticipants;
 	
 	private Button.ClickListener listenerClickFile;
 	private Button.ClickListener listenerClickForm;
 	private Button.ClickListener listenerClickTerm;
+	private Button.ClickListener listenerClickParticipants;
 	
 	private boolean listAll = false;
 
@@ -96,6 +98,8 @@ public class CalendarView extends ListView {
 		
 		this.buttonForm = new Button("Ficha");
 		
+		this.buttonParticipants = new Button("Lista de Presença");
+		
 		this.buttonTerm = new Button("Termo");
 		
 		this.buttonSendFeedback = new Button("Feedback", new Button.ClickListener() {
@@ -115,7 +119,7 @@ public class CalendarView extends ListView {
 		this.buttonSingleStatement = new Button("Declaração", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-            	downloadSingleStagement();
+            	downloadSingleStatement();
             }
         });
 		
@@ -124,6 +128,7 @@ public class CalendarView extends ListView {
 		this.addActionButton(this.buttonCalendar);
 		this.addActionButton(this.buttonFile);
 		this.addActionButton(this.buttonForm);
+		this.addActionButton(this.buttonParticipants);
 		this.addActionButton(this.buttonTerm);
 		this.addActionButton(this.buttonSendFeedback);
 		this.addActionButton(this.buttonSingleStatement);
@@ -140,6 +145,7 @@ public class CalendarView extends ListView {
 			this.buttonSendFeedback.setVisible(false);
 			this.buttonTerm.setVisible(Session.isUserManager(this.getModule()));
 			this.buttonForm.setVisible(Session.isUserManager(this.getModule()));
+			this.buttonParticipants.setVisible(Session.isUserManager(this.getModule()));
 			this.buttonSingleStatement.setVisible(false);
 			this.buttonFile.setVisible(Session.isUserManager(this.getModule()));
 		}else{
@@ -147,6 +153,7 @@ public class CalendarView extends ListView {
 			this.buttonTerm.setVisible(false);
 			this.buttonFile.setVisible(Session.isUserProfessor());
 			this.buttonForm.setVisible(Session.isUserProfessor());
+			this.buttonParticipants.setVisible(Session.isUserProfessor());
 			this.buttonSendFeedback.setVisible(Session.isUserProfessor());
 			this.buttonStatements.setVisible(false);
 			this.buttonCalendar.setVisible(Session.isUserProfessor());
@@ -245,7 +252,7 @@ public class CalendarView extends ListView {
     	}
 	}
 	
-	private void downloadSingleStagement(){
+	private void downloadSingleStatement(){
 		Object value = getIdSelected();
 		
 		if(value == null){
@@ -330,11 +337,12 @@ public class CalendarView extends ListView {
 		Object value = getIdSelected();
     	
 		this.buttonForm.removeClickListener(this.listenerClickForm);
+		this.buttonParticipants.removeClickListener(this.listenerClickParticipants);
 		this.buttonFile.removeClickListener(this.listenerClickFile);
 		this.buttonTerm.removeClickListener(this.listenerClickTerm);
 		
     	if(value != null){
-    		if(this.buttonForm.isVisible()){
+    		if(this.buttonForm.isVisible() || this.buttonParticipants.isVisible()){
 				try {
 					JuryBO bo = new JuryBO();
 					JuryFormReport report = bo.getFormReport((int)value);
@@ -343,6 +351,7 @@ public class CalendarView extends ListView {
 					list.add(report);
 					
 					new ReportUtils().prepareForPdfReport("JuryForm", "Ficha de Avaliação", list, this.buttonForm);
+					new ReportUtils().prepareForPdfReport("JuryParticipants", "Lista de Presença", list, this.buttonParticipants);
 				} catch (Exception e) {
 					this.listenerClickForm = new Button.ClickListener() {
 			            @Override
@@ -354,6 +363,17 @@ public class CalendarView extends ListView {
 			        };
 			        
 					this.buttonForm.addClickListener(this.listenerClickForm);
+					
+					this.listenerClickParticipants = new Button.ClickListener() {
+			            @Override
+			            public void buttonClick(ClickEvent event) {
+			            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			            	
+			            	Notification.show("Imprimir Lista de Presença", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			            }
+			        };
+			        
+			        this.buttonParticipants.addClickListener(this.listenerClickParticipants);
 				}
     		}
 			
@@ -419,12 +439,20 @@ public class CalendarView extends ListView {
     	}else{
     		new ExtensionUtils().removeAllExtensions(this.buttonFile);
     		new ExtensionUtils().removeAllExtensions(this.buttonForm);
+    		new ExtensionUtils().removeAllExtensions(this.buttonParticipants);
     		new ExtensionUtils().removeAllExtensions(this.buttonTerm);
     		
     		this.listenerClickForm = new Button.ClickListener() {
 	            @Override
 	            public void buttonClick(ClickEvent event) {
 	            	Notification.show("Imprimir Ficha de Avaliação", "Selecione uma banca para imprimir a ficha de avaliação.", Notification.Type.WARNING_MESSAGE);
+	            }
+	        };
+	        
+	        this.listenerClickParticipants = new Button.ClickListener() {
+	            @Override
+	            public void buttonClick(ClickEvent event) {
+	            	Notification.show("Imprimir Lista de Presença", "Selecione uma banca para imprimir a lista de presença.", Notification.Type.WARNING_MESSAGE);
 	            }
 	        };
 	        
@@ -443,6 +471,7 @@ public class CalendarView extends ListView {
 	        };
     		
     		this.buttonForm.addClickListener(this.listenerClickForm);
+    		this.buttonParticipants.addClickListener(this.listenerClickParticipants);
     		this.buttonTerm.addClickListener(this.listenerClickTerm);
     		this.buttonFile.addClickListener(this.listenerClickFile);
     	}

@@ -233,10 +233,13 @@ public class AttendanceDAO {
 			
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
-			rs = stmt.executeQuery("SELECT attendance.*, student.name AS studentName, supervisor.name AS supervisorName, proposal.title AS proposalTitle " +
+			rs = stmt.executeQuery("SELECT attendance.*, student.name AS studentName, supervisor.name AS supervisorName, " +
+					"COALESCE(thesis.title, project.title, proposal.title) AS proposalTitle " +
 					"FROM attendance INNER JOIN proposal ON proposal.idProposal=attendance.idProposal " +
 					"INNER JOIN \"user\" student ON student.idUser=attendance.idStudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=attendance.idSupervisor " +
+					"LEFT JOIN project ON project.idproposal=proposal.idproposal " +
+					"LEFT JOIN thesis ON thesis.idproject=project.idproject " +
 					"WHERE attendance.idStudent = " + String.valueOf(idStudent) + " AND attendance.idProposal = " + String.valueOf(idProposal) + " AND attendance.idSupervisor = " + String.valueOf(idSupervisor) + " AND attendance.stage = " + String.valueOf(stage) + 
 					" ORDER BY attendance.date, attendance.startTime");
 			

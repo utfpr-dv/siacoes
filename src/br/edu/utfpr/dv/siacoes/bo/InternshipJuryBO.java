@@ -259,6 +259,7 @@ public class InternshipJuryBO {
 			
 			report.setTitle(internship.getReportTitle());
 			report.setStudent(internship.getStudent().getName());
+			report.setCompany(internship.getCompany().getName());
 			
 			User supervisor = jury.getSupervisor();
 			
