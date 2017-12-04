@@ -171,9 +171,7 @@ public class ThesisView extends ListView {
 
 				byte[] report = bo.getThesisProfessorStatement(thesis.getSupervisor(), thesis);
 				
-				Session.putReport(report);
-				
-				getUI().getPage().open("#!" + CertificateView.NAME + "/session/" + UUID.randomUUID().toString(), "_blank");
+				this.showReport(report);
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
@@ -199,9 +197,7 @@ public class ThesisView extends ListView {
 				}else{
 					byte[] report = bo.getThesisProfessorStatement(thesis.getCosupervisor(), thesis);
 					
-					Session.putReport(report);
-					
-					getUI().getPage().open("#!" + CertificateView.NAME + "/session/" + UUID.randomUUID().toString(), "_blank");
+					this.showReport(report);
 				}
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
@@ -241,9 +237,7 @@ public class ThesisView extends ListView {
 					
 					byte[] report = output.toByteArray();
 					
-					Session.putReport(report);
-					
-					getUI().getPage().open("#!" + CertificateView.NAME + "/session/" + UUID.randomUUID().toString(), "_blank");
+					this.showReport(report);
 				}else{
 					Notification.show("Gerar Declarações", "Não há declarações para serem geradas.", Notification.Type.WARNING_MESSAGE);
 				}

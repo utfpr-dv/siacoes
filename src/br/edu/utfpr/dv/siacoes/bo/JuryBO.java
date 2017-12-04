@@ -362,6 +362,7 @@ public class JuryBO {
 				scorePonderosity = writingPonderosity + oralPonderosity + argumentationPonderosity;
 				
 				scoreReport.setScore(this.round(scoreSum / scorePonderosity));
+				appraiserReport.setScore(scoreReport.getScore());
 					
 				if(appraiser.getAppraiser().getIdUser() != supervisor.getIdUser()){
 					appraiserReport.setDescription("Membro " + String.valueOf(member));

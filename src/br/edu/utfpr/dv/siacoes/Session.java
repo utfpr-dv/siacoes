@@ -111,14 +111,14 @@ public class Session {
 		return Session.getUser().isDepartmentManager();
 	}
 	
-	public static void putReport(byte[] report){
-		VaadinSession.getCurrent().setAttribute("report", report);
+	public static void putReport(byte[] report, String id){
+		VaadinSession.getCurrent().setAttribute(id, report);
 	}
 	
-	public static byte[] getReport(){
-		byte[] report = (byte[]) VaadinSession.getCurrent().getAttribute("report");
+	public static byte[] getReport(String id){
+		byte[] report = (byte[]) VaadinSession.getCurrent().getAttribute(id);
 		
-		VaadinSession.getCurrent().setAttribute("report", null);
+		VaadinSession.getCurrent().setAttribute(id, null);
 		
 		return report;
 	}

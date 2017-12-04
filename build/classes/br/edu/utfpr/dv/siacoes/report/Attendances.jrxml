@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-08-25T15:44:52 -->
+<!-- 2017-12-04T20:51:10 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Attendances" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="730" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="3d913f38-4ce2-4b6a-be5a-ab11a4791d3f">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -120,7 +120,7 @@
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="12"/>
+					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
 			</textField>
@@ -133,7 +133,7 @@
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="12"/>
+					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{student}]]></textFieldExpression>
 			</textField>
@@ -146,7 +146,7 @@
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="12"/>
+					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{supervisor}]]></textFieldExpression>
 			</textField>
@@ -161,42 +161,52 @@
 			</subreport>
 		</band>
 	</detail>
-	<summary>
-		<band height="78" splitType="Stretch">
+	<pageFooter>
+		<band height="90">
 			<textField>
-				<reportElement x="380" y="40" width="330" height="21" uuid="3084eb9a-a137-4505-9192-27a03550bea1"/>
+				<reportElement x="570" y="70" width="100" height="20" uuid="2921cd76-6e82-488f-a618-3e41aa745c6e"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="670" y="70" width="58" height="20" uuid="9364d03d-ac97-4306-9efd-eb3b24e0eadd"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[" de " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="380" y="34" width="330" height="21" uuid="8b276023-3ec7-43a8-bbcb-8e456685098c"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{student}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="380" y="61" width="330" height="15" uuid="4fe9a3b0-4355-4b91-833d-7f12f4936c80"/>
+				<reportElement x="380" y="55" width="330" height="15" uuid="f71c4824-4c06-4b45-8a38-657cd4a0fb3d"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<text><![CDATA[Acadêmico]]></text>
 			</staticText>
 			<line>
-				<reportElement x="416" y="36" width="241" height="1" uuid="958665f5-5f92-4c0f-a4f4-4246161848f4"/>
+				<reportElement x="416" y="30" width="241" height="1" uuid="67d1e906-14e9-4e37-bbf3-7a7a4a45f716"/>
 			</line>
 			<textField>
-				<reportElement x="20" y="40" width="330" height="21" uuid="7d8bca9f-6703-477a-ac12-d2d18f23c20e"/>
+				<reportElement x="20" y="34" width="330" height="21" uuid="84604799-ffaf-4c29-a8d3-88ff6489c34b"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{supervisor}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="20" y="61" width="330" height="15" uuid="3c08dcde-e84a-489c-a1ec-94c526bb216d"/>
+				<reportElement x="20" y="55" width="330" height="15" uuid="dedc6df5-a924-4634-b2c1-ed36be0f7a42"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<text><![CDATA[Professor Orientador]]></text>
 			</staticText>
 			<line>
-				<reportElement x="61" y="36" width="241" height="1" uuid="6a64472e-1258-464c-9b49-4bb9e9e9a8a2"/>
+				<reportElement x="61" y="30" width="241" height="1" uuid="5c593156-e1c9-4883-99f3-3f067d0f7d20"/>
 			</line>
 		</band>
-	</summary>
+	</pageFooter>
 </jasperReport>

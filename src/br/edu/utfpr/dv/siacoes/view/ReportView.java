@@ -64,12 +64,6 @@ public abstract class ReportView extends BasicView {
     
     public abstract byte[] generateReport() throws Exception;
     
-    private void showReport(byte[] pdfReport){
-    	Session.putReport(pdfReport);
-		
-		getUI().getPage().open("#!" + CertificateView.NAME + "/session/" + UUID.randomUUID().toString(), "_blank");
-    }
-    
     @Override
 	public void enter(ViewChangeEvent event) {
 		// TODO Auto-generated method stub

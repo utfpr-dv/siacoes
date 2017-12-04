@@ -12,8 +12,6 @@ import java.util.logging.Logger;
 
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 
-import com.vaadin.event.SelectionEvent;
-import com.vaadin.event.SelectionEvent.SelectionListener;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -41,7 +39,6 @@ import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
-import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipJuryAppraiserFeedbackWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipJuryWindow;
@@ -59,10 +56,6 @@ public class InternshipCalendarView extends ListView {
 	private final Button buttonSingleStatement;
 	private final Button buttonSendFeedback;
 	private final Button buttonParticipants;
-	
-	private Button.ClickListener listenerClickFile;
-	private Button.ClickListener listenerClickForm;
-	private Button.ClickListener listenerClickParticipants;
 	
 	private boolean listAll = false;
 	
@@ -90,11 +83,26 @@ public class InternshipCalendarView extends ListView {
 		this.setEditVisible(false);
 		this.setDeleteVisible(false);
 		
-		this.buttonFile = new Button("Trabalho");
+		this.buttonFile = new Button("Down. do Relatório", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadFile();
+            }
+        });
 		
-		this.buttonForm = new Button("Ficha");
+		this.buttonForm = new Button("Ficha de Avaliação", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadForm();
+            }
+        });
 		
-		this.buttonParticipants = new Button("Lista de Presença");
+		this.buttonParticipants = new Button("Lista de Presença", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadParticipants();
+            }
+        });
 		
 		this.buttonSendFeedback = new Button("Feedback", new Button.ClickListener() {
             @Override
@@ -157,16 +165,7 @@ public class InternshipCalendarView extends ListView {
 		this.getGrid().addColumn("Local", String.class);
 		this.getGrid().addColumn("Acadêmico", String.class);
 		this.getGrid().addColumn("Empresa", String.class);
-		this.getGrid().addSelectionListener(new SelectionListener() {
-			@Override
-			public void select(SelectionEvent event) {
-				prepareDownload();
-			}
-		});
-		
 		this.getGrid().getColumns().get(0).setWidth(165);
-		
-		this.prepareDownload();
 		
 		try {
 			InternshipJuryBO bo = new InternshipJuryBO();
@@ -200,6 +199,81 @@ public class InternshipCalendarView extends ListView {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			Notification.show("Listar Bancas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		}
+	}
+	
+	private void downloadFile(){
+		Object value = getIdSelected();
+		
+		if(value == null){
+			Notification.show("Download do Trabalho", "Selecione uma banca para fazer o download do trabalho.", Notification.Type.WARNING_MESSAGE);
+		}else{
+			try {
+				InternshipJuryBO bo = new InternshipJuryBO();
+				InternshipJury jury = bo.findById((int)value);
+				
+				InternshipBO ibo = new InternshipBO();
+				Internship internship = ibo.findById(jury.getInternship().getIdInternship());
+				
+				if(internship.getFinalReport() == null){
+					Notification.show("Download do Trabalho", "O relatório final do estágio não foi anexado ao cadastro.", Notification.Type.WARNING_MESSAGE);
+				}else{
+					this.showReport(internship.getFinalReport());
+				}
+        	} catch (Exception e) {
+        		Notification.show("Download do Trabalho", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			}
+		}
+	}
+	
+	private void downloadForm(){
+		Object value = getIdSelected();
+		
+		if(value == null){
+			Notification.show("Imprimir Ficha de Avaliação", "Selecione uma banca para gerar a ficha de avaliação.", Notification.Type.WARNING_MESSAGE);
+		}else{
+			try{
+				InternshipJuryBO bo = new InternshipJuryBO();
+				InternshipJuryFormReport report = bo.getFormReport((int)value);
+				
+				List<InternshipJuryFormReport> list = new ArrayList<InternshipJuryFormReport>();
+				list.add(report);
+
+				this.showReport(new ReportUtils().createPdfStream(list, "InternshipJuryForm").toByteArray());
+			}catch(Exception e){
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+	        	
+	        	Notification.show("Imprimir Ficha de Avaliação", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			}
+		}
+	}
+	
+	private void downloadParticipants(){
+		Object value = getIdSelected();
+		
+		if(value == null){
+			Notification.show("Imprimir Lista de Presença", "Selecione uma banca para gerar a lista de presença.", Notification.Type.WARNING_MESSAGE);
+		}else{
+			try{
+				InternshipJuryBO bo = new InternshipJuryBO();
+				InternshipJuryFormReport report = bo.getFormReport((int)value);
+				
+				JuryFormReport report2 = new JuryFormReport();
+				
+				report2.setTitle(report.getCompany());
+				report2.setStage(0);
+				report2.setStudent(report.getStudent());
+				report2.setDate(report.getDate());
+				
+				List<JuryFormReport> list = new ArrayList<JuryFormReport>();
+				list.add(report2);
+				
+				this.showReport(new ReportUtils().createPdfStream(list, "JuryParticipants").toByteArray());
+			}catch(Exception e){
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+	        	
+	        	Notification.show("Imprimir Lista de Presença", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			}
 		}
 	}
 	
@@ -250,9 +324,7 @@ public class InternshipCalendarView extends ListView {
 				}
 				
 				if(report != null){
-					Session.putReport(report);
-					
-					getUI().getPage().open("#!" + CertificateView.NAME + "/session/" + UUID.randomUUID().toString(), "_blank");
+					this.showReport(report);
 				}else{
 					Notification.show("Gerar Declaração", "Não foi encontrada a declaração para imprimir.", Notification.Type.WARNING_MESSAGE);
 				}
@@ -294,9 +366,7 @@ public class InternshipCalendarView extends ListView {
 					
 					byte[] report = output.toByteArray();
 					
-					Session.putReport(report);
-					
-					getUI().getPage().open("#!" + CertificateView.NAME + "/session/" + UUID.randomUUID().toString(), "_blank");
+					this.showReport(report);
 				}else{
 					Notification.show("Gerar Declarações", "Não há declarações para serem geradas.", Notification.Type.WARNING_MESSAGE);
 				}
@@ -306,127 +376,6 @@ public class InternshipCalendarView extends ListView {
 	        	Notification.show("Gerar Declarações", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
 		}
-	}
-	
-	private void prepareDownload(){
-		Object value = getIdSelected();
-    	
-		this.buttonForm.removeClickListener(this.listenerClickForm);
-		this.buttonParticipants.removeClickListener(this.listenerClickParticipants);
-		this.buttonFile.removeClickListener(this.listenerClickFile);
-		
-    	if(value != null){
-    		if(this.buttonForm.isVisible() || this.buttonParticipants.isVisible()){
-				try {
-					InternshipJuryBO bo = new InternshipJuryBO();
-					InternshipJuryFormReport report = bo.getFormReport((int)value);
-					
-					List<InternshipJuryFormReport> list = new ArrayList<InternshipJuryFormReport>();
-					list.add(report);
-					
-					new ReportUtils().prepareForPdfReport("InternshipJuryForm", "Ficha de Avaliação", list, this.buttonForm);
-					
-					JuryFormReport report2 = new JuryFormReport();
-					
-					report2.setTitle(report.getCompany());
-					report2.setStage(0);
-					report2.setStudent(report.getStudent());
-					report2.setDate(report.getDate());
-					
-					List<JuryFormReport> list2 = new ArrayList<JuryFormReport>();
-					list2.add(report2);
-					
-					new ReportUtils().prepareForPdfReport("JuryParticipants", "Lista de Presença", list2, this.buttonParticipants);
-				} catch (Exception e) {
-					this.listenerClickForm = new Button.ClickListener() {
-			            @Override
-			            public void buttonClick(ClickEvent event) {
-			            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-			            	
-			            	Notification.show("Imprimir Ficha de Avaliação", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-			            }
-			        };
-			        
-					this.buttonForm.addClickListener(this.listenerClickForm);
-					
-					this.listenerClickParticipants = new Button.ClickListener() {
-			            @Override
-			            public void buttonClick(ClickEvent event) {
-			            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-			            	
-			            	Notification.show("Imprimir Lista de Presença", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-			            }
-			        };
-			        
-			        this.buttonParticipants.addClickListener(this.listenerClickParticipants);
-				}
-    		}
-			
-    		if(this.buttonFile.isVisible()){
-				try {
-					InternshipJuryBO bo = new InternshipJuryBO();
-					InternshipJury jury = bo.findById((int)value);
-					
-					InternshipBO ibo = new InternshipBO();
-					Internship internship = ibo.findById(jury.getInternship().getIdInternship());
-					
-					if(internship.getFinalReport() == null){
-						this.listenerClickFile = new Button.ClickListener() {
-				            @Override
-				            public void buttonClick(ClickEvent event) {
-				            	Notification.show("Download do Trabalho", "O relatório final do estágio não foi anexado ao cadastro.", Notification.Type.WARNING_MESSAGE);
-				            }
-				        };
-				        
-		        		this.buttonFile.addClickListener(this.listenerClickFile);
-					}else{
-						String fileName = internship.getStudent().getName() + ".pdf";
-						
-						new ExtensionUtils().extendToDownload(fileName, internship.getFinalReport(), this.buttonFile);
-					}
-	        	} catch (Exception e) {
-	        		this.listenerClickFile = new Button.ClickListener() {
-			            @Override
-			            public void buttonClick(ClickEvent event) {
-			            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-			            	
-			            	Notification.show("Download do Trabalho", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-			            }
-			        };
-			        
-	        		this.buttonFile.addClickListener(this.listenerClickFile);
-				}
-    		}
-    	}else{
-    		new ExtensionUtils().removeAllExtensions(this.buttonFile);
-    		new ExtensionUtils().removeAllExtensions(this.buttonForm);
-    		new ExtensionUtils().removeAllExtensions(this.buttonParticipants);
-    		
-    		this.listenerClickForm = new Button.ClickListener() {
-	            @Override
-	            public void buttonClick(ClickEvent event) {
-	            	Notification.show("Imprimir Ficha de Avaliação", "Selecione uma banca para imprimir a ficha de avaliação.", Notification.Type.WARNING_MESSAGE);
-	            }
-	        };
-	        
-	        this.listenerClickParticipants = new Button.ClickListener() {
-	            @Override
-	            public void buttonClick(ClickEvent event) {
-	            	Notification.show("Imprimir Lista de Presença", "Selecione uma banca para imprimir a lista de presença.", Notification.Type.WARNING_MESSAGE);
-	            }
-	        };
-	        
-	        this.listenerClickFile = new Button.ClickListener() {
-	            @Override
-	            public void buttonClick(ClickEvent event) {
-	            	Notification.show("Download do Trabalho", "Selecione uma banca para baixar o trabalho.", Notification.Type.WARNING_MESSAGE);
-	            }
-	        };
-    		
-    		this.buttonForm.addClickListener(this.listenerClickForm);
-    		this.buttonParticipants.addClickListener(this.listenerClickParticipants);
-    		this.buttonFile.addClickListener(this.listenerClickFile);
-    	}
 	}
 	
 	@Override

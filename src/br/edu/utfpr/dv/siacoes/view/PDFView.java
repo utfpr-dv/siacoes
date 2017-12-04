@@ -2,8 +2,6 @@ package br.edu.utfpr.dv.siacoes.view;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -12,12 +10,11 @@ import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.CustomComponent;
 
-import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
-import br.edu.utfpr.dv.siacoes.model.Certificate;
+import br.edu.utfpr.dv.siacoes.Session;
 
-public class CertificateView extends CustomComponent implements View {
+public class PDFView extends CustomComponent implements View {
 	
-	public static final String NAME = "certificate";
+	public static final String NAME = "pdf";
 	
 	private void showPdf(byte[] report){
 		StreamSource s = new StreamResource.StreamSource() {
@@ -43,15 +40,8 @@ public class CertificateView extends CustomComponent implements View {
 		if(event.getParameters() != null){
 			String guid = event.getParameters();
 			
-			if(!guid.isEmpty()){
-				try {
-					CertificateBO bo = new CertificateBO();
-					Certificate certificate = bo.findByGuid(guid.trim());
-					
-					this.showPdf(certificate.getFile());
-				} catch (Exception e) {
-					Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-				}
+			if(guid.startsWith("session")){
+				this.showPdf(Session.getReport(guid.replace("session/", "")));
 			}
 		}
 	}

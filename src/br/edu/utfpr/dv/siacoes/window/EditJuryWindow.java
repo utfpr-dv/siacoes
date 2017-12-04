@@ -395,9 +395,7 @@ public class EditJuryWindow extends EditWindow {
 				CertificateBO bo = new CertificateBO();
 				byte[] report = bo.getJuryProfessorStatement(this.jury.getAppraisers().get(index).getIdJuryAppraiser());
 				
-				Session.putReport(report);
-				
-				getUI().getPage().open("#!certificate/session", "_blank");
+				this.showReport(report);
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
@@ -416,9 +414,7 @@ public class EditJuryWindow extends EditWindow {
 				CertificateBO bo = new CertificateBO();
 				byte[] report = bo.getJuryStudentStatement(this.jury.getParticipants().get(index).getIdJuryStudent());
 				
-				Session.putReport(report);
-				
-				getUI().getPage().open("#!certificate/session", "_blank");
+				this.showReport(report);
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	

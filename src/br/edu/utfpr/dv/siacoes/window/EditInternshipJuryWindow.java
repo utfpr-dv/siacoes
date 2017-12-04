@@ -402,9 +402,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 				CertificateBO bo = new CertificateBO();
 				byte[] report = bo.getInternshipJuryProfessorStatement(this.jury.getAppraisers().get(index).getIdInternshipJuryAppraiser());
 				
-				Session.putReport(report);
-				
-				getUI().getPage().open("#!certificate/session/" + UUID.randomUUID().toString(), "_blank");
+				this.showReport(report);
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
@@ -423,9 +421,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 				CertificateBO bo = new CertificateBO();
 				byte[] report = bo.getInternshipJuryStudentStatement(this.jury.getParticipants().get(index).getIdInternshipJuryStudent());
 				
-				Session.putReport(report);
-				
-				getUI().getPage().open("#!certificate/session/" + UUID.randomUUID().toString(), "_blank");
+				this.showReport(report);
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	

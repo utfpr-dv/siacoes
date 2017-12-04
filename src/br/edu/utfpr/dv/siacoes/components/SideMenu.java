@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,13 +12,11 @@ import javax.servlet.http.Cookie;
 
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
-import com.vaadin.server.Page;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
@@ -88,6 +87,7 @@ import br.edu.utfpr.dv.siacoes.view.InternshipView;
 import br.edu.utfpr.dv.siacoes.view.LibraryView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
 import br.edu.utfpr.dv.siacoes.view.MainView;
+import br.edu.utfpr.dv.siacoes.view.PDFView;
 import br.edu.utfpr.dv.siacoes.view.ProjectView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackStudentView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackView;
@@ -741,7 +741,18 @@ public class SideMenu extends CustomComponent {
 						if(p == null){
 							Notification.show("Imprimir Documentos", "É necessário submeter o projeto para imprimir os documentos.", Notification.Type.ERROR_MESSAGE);
 						}else{
-							Page.getCurrent().getJavaScript().execute("document.getElementById('projectFilesDownload').click();");	
+							AttendanceBO abo = new AttendanceBO();
+							AttendanceReport attendance = abo.getReport(Session.getUser().getIdUser(), p.getProposal().getIdProposal(), p.getSupervisor().getIdUser(), 1);
+							
+							List<AttendanceReport> list = new ArrayList<AttendanceReport>();
+							list.add(attendance);
+							
+							showReport(new ReportUtils().createPdfStream(list, "Attendances").toByteArray());
+							
+							List<SupervisorFeedbackReport> list2 = new ArrayList<SupervisorFeedbackReport>();
+							list2.add(bo.getSupervisorFeedbackReport(p));
+							
+							showReport(new ReportUtils().createPdfStream(list2, "SupervisorFeedback").toByteArray());
 						}
         	    	} catch (Exception e) {
         	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
@@ -814,12 +825,6 @@ public class SideMenu extends CustomComponent {
 					}
 				}
 			}));
-			
-			Button button = new Button();
-        	button.setId("projectFilesDownload");
-        	button.addStyleName("InvisibleButton");
-        	layout.addComponent(button);
-        	this.prepareDownloadStage1(button);
 		}else{
 			if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
 				layout.addComponent(new MenuEntry("Listar Projetos", 1, ProjectView.NAME));
@@ -878,7 +883,21 @@ public class SideMenu extends CustomComponent {
 						if(thesis == null){
 							Notification.show("Imprimir Documentos", "É necessário submeter a monografia para imprimir os documentos.", Notification.Type.ERROR_MESSAGE);
 						}else{
-							Page.getCurrent().getJavaScript().execute("document.getElementById('thesisFilesDownload').click();");	
+							ProjectBO pbo = new ProjectBO();
+							Project project = pbo.findById(thesis.getProject().getIdProject());
+							
+							AttendanceBO abo = new AttendanceBO();
+							AttendanceReport attendance = abo.getReport(Session.getUser().getIdUser(), project.getProposal().getIdProposal(), thesis.getSupervisor().getIdUser(), 2);
+							
+							List<AttendanceReport> list = new ArrayList<AttendanceReport>();
+							list.add(attendance);
+							
+							showReport(new ReportUtils().createPdfStream(list, "Attendances").toByteArray());
+							
+							List<SupervisorFeedbackReport> list2 = new ArrayList<SupervisorFeedbackReport>();
+							list2.add(bo.getSupervisorFeedbackReport(thesis));
+							
+							showReport(new ReportUtils().createPdfStream(list2, "SupervisorFeedback").toByteArray());
 						}
 					} catch (Exception e) {
 						Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
@@ -951,12 +970,6 @@ public class SideMenu extends CustomComponent {
 					}
 				}
 			}));
-			
-			Button button = new Button();
-        	button.setId("thesisFilesDownload");
-        	button.addStyleName("InvisibleButton");
-        	layout.addComponent(button);
-	    	this.prepareDownloadStage2(button);
 		}else{
 			if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
 				layout.addComponent(new MenuEntry("Listar Monografias", 1, ThesisView.NAME));
@@ -1079,67 +1092,12 @@ public class SideMenu extends CustomComponent {
 		return layout;
 	}
 	
-	private void prepareDownloadStage1(Button buttonToExtend){
-		try {
-			ProjectBO pbo = new ProjectBO();
-			Project project = pbo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), this.semester.getSemester(), this.semester.getYear());
-			
-			if(project == null){
-				project = pbo.findLastProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), this.semester.getSemester(), this.semester.getYear());
-			}
-			
-			if(project != null){
-				AttendanceBO abo = new AttendanceBO();
-				AttendanceReport attendance = abo.getReport(Session.getUser().getIdUser(), project.getProposal().getIdProposal(), project.getSupervisor().getIdUser(), 1);
-				
-				List<AttendanceReport> list = new ArrayList<AttendanceReport>();
-				list.add(attendance);
-				
-				new ReportUtils().prepareForPdfReport("Attendances", "Acompanhamento", list, buttonToExtend);
-				
-				List<SupervisorFeedbackReport> list2 = new ArrayList<SupervisorFeedbackReport>();
-				list2.add(pbo.getSupervisorFeedbackReport(project));
-				
-				new ReportUtils().prepareForPdfReport("SupervisorFeedback", "Parecer do Orientador", list2, buttonToExtend, false);
-			}
-		} catch (Exception e) {
-			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-			
-			Notification.show("Download de Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-		}
-	}
-	
-	private void prepareDownloadStage2(Button buttonToExtend){
-		try {
-			ThesisBO tbo = new ThesisBO();
-			Thesis thesis = tbo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), this.semester.getSemester(), this.semester.getYear());
-			
-			if(thesis == null){
-				thesis = tbo.findLastThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), this.semester.getSemester(), this.semester.getYear());
-			}
-			
-			if(thesis != null){
-				ProjectBO pbo = new ProjectBO();
-				Project project = pbo.findById(thesis.getProject().getIdProject());
-				
-				AttendanceBO abo = new AttendanceBO();
-				AttendanceReport attendance = abo.getReport(Session.getUser().getIdUser(), project.getProposal().getIdProposal(), thesis.getSupervisor().getIdUser(), 2);
-				
-				List<AttendanceReport> list = new ArrayList<AttendanceReport>();
-				list.add(attendance);
-				
-				new ReportUtils().prepareForPdfReport("Attendances", "Acompanhamento", list, buttonToExtend);
-				
-				List<SupervisorFeedbackReport> list2 = new ArrayList<SupervisorFeedbackReport>();
-				list2.add(tbo.getSupervisorFeedbackReport(thesis));
-				
-				new ReportUtils().prepareForPdfReport("SupervisorFeedback", "Parecer do Orientador", list2, buttonToExtend, false);
-			}
-		} catch (Exception e) {
-			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-			
-			Notification.show("Download de Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-		}
-	}
+	private void showReport(byte[] pdfReport){
+		String id = UUID.randomUUID().toString();
+    	
+		Session.putReport(pdfReport, id);
+		
+		getUI().getPage().open("#!" + PDFView.NAME + "/session/" + id, "_blank");
+    }
 	
 }

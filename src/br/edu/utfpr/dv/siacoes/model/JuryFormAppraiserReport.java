@@ -8,21 +8,25 @@ public class JuryFormAppraiserReport {
 	
 	private int stage;
 	private String title;
+	private String company;
 	private Date date;
 	private String student;
 	private String description;
 	private String name;
 	private String comments;
+	private double score;
 	private List<JuryFormAppraiserDetailReport> detail;
 	
 	public JuryFormAppraiserReport(){
 		this.setStage(0);
 		this.setTitle("");
+		this.setCompany("");
 		this.setDate(new Date());
 		this.setStudent("");
 		this.setDescription("");
 		this.setName("");
 		this.setComments("");
+		this.setScore(0);
 		this.setDetail(new ArrayList<JuryFormAppraiserDetailReport>());
 	}
 	
@@ -37,6 +41,12 @@ public class JuryFormAppraiserReport {
 	}
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	public String getCompany() {
+		return company;
+	}
+	public void setCompany(String company) {
+		this.company = company;
 	}
 	public Date getDate() {
 		return date;
@@ -67,6 +77,12 @@ public class JuryFormAppraiserReport {
 	}
 	public void setComments(String comments) {
 		this.comments = comments;
+	}
+	public double getScore() {
+		return score;
+	}
+	public void setScore(double score) {
+		this.score = score;
 	}
 	public List<JuryFormAppraiserDetailReport> getDetail() {
 		return detail;

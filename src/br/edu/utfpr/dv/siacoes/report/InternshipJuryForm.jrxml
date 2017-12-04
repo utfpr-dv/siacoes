@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-11-30T14:41:23 -->
+<!-- 2017-12-04T18:03:29 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="JuryForm2" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="aaaa9f03-6de2-4449-a217-db75b3350ee7">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -57,6 +57,9 @@
 	</field>
 	<field name="appraisers" class="java.util.List">
 		<fieldDescription><![CDATA[appraisers]]></fieldDescription>
+	</field>
+	<field name="company" class="java.lang.String">
+		<fieldDescription><![CDATA[company]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -144,7 +147,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Título do Relatório:]]></text>
+				<text><![CDATA[Empresa (UCE):]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="56" width="110" height="20" uuid="c53ba733-0ed9-468a-8cf8-4c877bef24f4"/>
@@ -183,7 +186,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{company}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="110" y="56" width="370" height="20" uuid="ba81d460-3bc7-46f6-ac13-1b6e0a36416c"/>

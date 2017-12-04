@@ -45,14 +45,12 @@ import br.edu.utfpr.dv.siacoes.view.InternshipView;
 import br.edu.utfpr.dv.siacoes.view.LibraryView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
 import br.edu.utfpr.dv.siacoes.view.MainView;
+import br.edu.utfpr.dv.siacoes.view.PDFView;
 import br.edu.utfpr.dv.siacoes.view.ProjectView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackStudentView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackView;
 import br.edu.utfpr.dv.siacoes.view.ProposalView;
 import br.edu.utfpr.dv.siacoes.view.SemesterView;
-import br.edu.utfpr.dv.siacoes.view.SigacView;
-import br.edu.utfpr.dv.siacoes.view.SigesView;
-import br.edu.utfpr.dv.siacoes.view.SigetView;
 import br.edu.utfpr.dv.siacoes.view.StateView;
 import br.edu.utfpr.dv.siacoes.view.StudentActivityStatusReportView;
 import br.edu.utfpr.dv.siacoes.view.StudentView;
@@ -84,9 +82,6 @@ public class SiacoesUI extends UI {
         getNavigator().addView("", MainView.class);
         getNavigator().addView(MainView.NAME, MainView.class);
         getNavigator().addView(LoginView.NAME, LoginView.class);
-        getNavigator().addView(SigacView.NAME, SigacView.class);
-        getNavigator().addView(SigesView.NAME, SigesView.class);
-        getNavigator().addView(SigetView.NAME, SigetView.class);
         getNavigator().addView(DocumentView.NAME, DocumentView.class);
         getNavigator().addView(UserView.NAME, UserView.class);
         getNavigator().addView(DeadlineView.NAME, DeadlineView.class);
@@ -131,6 +126,7 @@ public class SiacoesUI extends UI {
         getNavigator().addView(InternshipMissingDocumentsReportView.NAME, InternshipMissingDocumentsReportView.class);
         getNavigator().addView(InternshipCompanyChartView.NAME, InternshipCompanyChartView.class);
         getNavigator().addView(EventCalendarView.NAME, EventCalendarView.class);
+        getNavigator().addView(PDFView.NAME, PDFView.class);
         
         //
         // We use a view change handler to ensure the user is always redirected
@@ -144,7 +140,7 @@ public class SiacoesUI extends UI {
                 // Check if a user has logged in
                 boolean isLoggedIn = Session.isAuthenticated();
                 boolean isLoginView = event.getNewView() instanceof LoginView;
-                boolean isMainView = ((event.getNewView() instanceof SigacView) || (event.getNewView() instanceof SigesView) || (event.getNewView() instanceof SigetView) || (event.getNewView() instanceof MainView));
+                boolean isMainView = event.getNewView() instanceof MainView;
                 
                 if ((event.getNewView() instanceof AuthenticateView) || (event.getNewView() instanceof CertificateView)){
                 	return true;

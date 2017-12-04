@@ -94,9 +94,7 @@ public class TutoredView extends ListView {
 
 				byte[] report = bo.getThesisProfessorStatement(Session.getUser().getIdUser(), (int)value, stage);
 				
-				Session.putReport(report);
-				
-				getUI().getPage().open("#!" + CertificateView.NAME + "/session/" + UUID.randomUUID().toString(), "_blank");
+				this.showReport(report);
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	

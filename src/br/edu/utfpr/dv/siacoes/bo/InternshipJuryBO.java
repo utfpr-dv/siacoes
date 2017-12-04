@@ -279,6 +279,7 @@ public class InternshipJuryBO {
 				appraiserReport.setDate(report.getDate());
 				appraiserReport.setStudent(report.getStudent());
 				appraiserReport.setTitle(report.getTitle());
+				appraiserReport.setCompany(report.getCompany());
 				
 				for(InternshipJuryAppraiserScore score : list){
 					JuryFormAppraiserDetailReport appraiserDetail = new JuryFormAppraiserDetailReport();
@@ -337,19 +338,21 @@ public class InternshipJuryBO {
 				scoreSum = (scoreReport.getScoreWriting() * writingPonderosity) + (scoreReport.getScoreOral() * oralPonderosity) + (scoreReport.getScoreArgumentation() * argumentationPonderosity);
 				scorePonderosity = writingPonderosity + oralPonderosity + argumentationPonderosity;
 				
+				appraiserReport.setScore(this.round(scoreSum / scorePonderosity));
+				
 				if(appraiser.getAppraiser().getIdUser() != supervisor.getIdUser()){
 					appraiserReport.setDescription("Aval. " + String.valueOf(member));
 					
 					if(member == 1){
-						report.setAppraiser1Score(this.round(scoreSum / scorePonderosity));
+						report.setAppraiser1Score(appraiserReport.getScore());
 					}else if(member == 2){
-						report.setAppraiser2Score(this.round(scoreSum / scorePonderosity));
+						report.setAppraiser2Score(appraiserReport.getScore());
 					}
 					
 					member = member + 1;
 				}else{
 					appraiserReport.setDescription("Orientador");
-					report.setSupervisorScore(this.round(scoreSum / scorePonderosity));
+					report.setSupervisorScore(appraiserReport.getScore());
 				}
 				
 				scoreReport.setName(appraiserReport.getName());

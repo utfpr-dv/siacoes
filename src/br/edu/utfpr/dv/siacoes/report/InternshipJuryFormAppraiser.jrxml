@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-09-26T11:17:40 -->
+<!-- 2017-12-04T18:06:34 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="JuryFormAppraiser" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="d066e92b-b4bc-457d-ba3e-cdcacb930d7f">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -39,6 +39,12 @@
 	<field name="title" class="java.lang.String">
 		<fieldDescription><![CDATA[title]]></fieldDescription>
 	</field>
+	<field name="score" class="java.lang.Double">
+		<fieldDescription><![CDATA[score]]></fieldDescription>
+	</field>
+	<field name="company" class="java.lang.String">
+		<fieldDescription><![CDATA[company]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -55,7 +61,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Título do Relatório:]]></text>
+				<text><![CDATA[Empresa (UCE):]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="50" width="110" height="20" uuid="7e65c09a-a2db-4f17-844c-5e55e7ab46c1"/>
@@ -94,7 +100,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{company}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="110" y="50" width="370" height="20" uuid="5ddb9968-0864-4651-ade6-5748940d3c1e"/>
@@ -158,7 +164,8 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="47" splitType="Stretch">
+		<band height="45" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<staticText>
 				<reportElement x="0" y="2" width="380" height="20" uuid="84f46fb3-5d14-4b90-9234-d5538b2fb155"/>
 				<box>
@@ -220,7 +227,7 @@
 	<columnFooter>
 		<band height="166" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="1" width="481" height="20" uuid="f46e9cd6-1a9c-47c1-965e-23a2cc4b020e"/>
+				<reportElement x="0" y="26" width="481" height="20" uuid="f46e9cd6-1a9c-47c1-965e-23a2cc4b020e"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -233,7 +240,7 @@
 				<text><![CDATA[Observações]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="21" width="481" height="54" uuid="d41fc3c5-6135-4e9a-9b1a-1e665a65eda2"/>
+				<reportElement x="0" y="46" width="481" height="43" uuid="d41fc3c5-6135-4e9a-9b1a-1e665a65eda2"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -267,6 +274,34 @@
 			<break>
 				<reportElement x="0" y="164" width="480" height="1" uuid="06a4f19b-17a7-4657-b8c8-aab641c95bdc"/>
 			</break>
+			<staticText>
+				<reportElement x="0" y="-1" width="430" height="20" uuid="ee72d6dd-bcdc-42dc-b7ed-27e7fda77a7a"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Nota Final (0 a 10,0):]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="430" y="-1" width="50" height="20" uuid="b4fece42-eb9f-47a9-820c-1fc081d3036d">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{score} == 0, "", $F{score})]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnFooter>
 </jasperReport>
