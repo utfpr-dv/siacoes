@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-12-04T18:03:29 -->
+<!-- 2017-12-05T15:05:58 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="JuryForm2" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="aaaa9f03-6de2-4449-a217-db75b3350ee7">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -445,7 +445,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[TEXT($F{appraisersPonderosity}, "0.0")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#0.0").format($F{appraisersPonderosity})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="360" y="430" width="120" height="20" uuid="74a99f19-0845-4b1f-a29e-56f64411fe73"/>
@@ -458,7 +458,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{appraiser1Score} + $F{appraiser2Score} == 0, "", TEXT(($F{appraiser1Score} + $F{appraiser2Score}) / 2.0, "0.0"))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{appraiser1Score} + $F{appraiser2Score} == 0, "", new java.text.DecimalFormat("#0.00").format(($F{appraiser1Score} + $F{appraiser2Score}) / 2.0))]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="360" y="370" width="60" height="60" uuid="1affba52-7eb7-4a3d-8eda-de14c27d5890"/>
@@ -471,7 +471,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{appraiser1Score} == 0, "", TEXT($F{appraiser1Score}, "0.0"))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{appraiser1Score} == 0, "", new java.text.DecimalFormat("#0.00").format($F{appraiser1Score}))]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="420" y="370" width="60" height="60" uuid="e0833cda-085e-47b0-b91c-fac56f19bd22"/>
@@ -484,7 +484,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{appraiser2Score} == 0, "", TEXT($F{appraiser2Score}, "0.0"))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{appraiser2Score} == 0, "", new java.text.DecimalFormat("#0.00").format($F{appraiser2Score}))]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="0" y="450" width="300" height="30" uuid="0a39723d-a112-429d-9c73-f8b1e5247f90"/>
@@ -523,7 +523,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[TEXT($F{companySupervisorPonderosity}, "0.0")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#0.0").format($F{companySupervisorPonderosity})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="300" y="480" width="60" height="30" uuid="2241caa4-6669-40c9-8c9b-5ea574dbec61"/>
@@ -536,7 +536,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[TEXT($F{supervisorPonderosity}, "0.0")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#0.0").format($F{supervisorPonderosity})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="360" y="450" width="120" height="30" uuid="be040e11-8e4f-4833-ac38-d7f175922855"/>
@@ -549,7 +549,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{companySupervisorScore} == 0, "", TEXT($F{companySupervisorScore}, "0.0"))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{companySupervisorScore} == 0, "", new java.text.DecimalFormat("#0.00").format($F{companySupervisorScore}))]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="360" y="480" width="120" height="30" uuid="f664f2c6-f5c1-4c25-b866-8f0dfc4d3130"/>
@@ -562,7 +562,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{supervisorScore} == 0, "", TEXT($F{supervisorScore}, "0.0"))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{supervisorScore} == 0, "", new java.text.DecimalFormat("#0.00").format($F{supervisorScore}))]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="0" y="510" width="360" height="20" uuid="9b8b5057-4e5e-4e4d-a9b0-60a6bc2a1b99"/>
@@ -588,7 +588,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{finalScore} == 0, "", TEXT($F{finalScore}, "0.0"))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{finalScore} == 0, "", new java.text.DecimalFormat("#0.00").format($F{finalScore}))]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="1" y="254" width="480" height="16" uuid="7ec6c156-7ce2-4e0d-9c59-919fa0a8da5b"/>
@@ -601,7 +601,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="11" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Pelo presente documento atribui-se a nota final " + IF($F{finalScore} == 0, "_________", TEXT($F{finalScore}, "0.0")) + ", conforme critérios em anexo."]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Pelo presente documento atribui-se a nota final " + IF($F{finalScore} == 0, "_________", new java.text.DecimalFormat("#0.00").format($F{finalScore})) + ", conforme critérios em anexo."]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

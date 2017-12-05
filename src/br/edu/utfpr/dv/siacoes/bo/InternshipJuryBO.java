@@ -351,7 +351,7 @@ public class InternshipJuryBO {
 			}
 			
 			if((report.getAppraiser1Score() > 0) && (report.getAppraiser2Score() > 0) && (report.getSupervisorScore() > 0) && (report.getCompanySupervisorScore() > 0)){
-				report.setFinalScore((((report.getAppraiser1Score() + report.getAppraiser2Score()) * report.getAppraisersPonderosity()) + (report.getSupervisorScore() * report.getSupervisorPonderosity()) + (report.getCompanySupervisorScore() * report.getCompanySupervisorPonderosity())) / (report.getAppraisersPonderosity() + report.getSupervisorPonderosity() + report.getCompanySupervisorPonderosity()));	
+				report.setFinalScore(((((report.getAppraiser1Score() + report.getAppraiser2Score()) / 2.0) * report.getAppraisersPonderosity()) + (report.getSupervisorScore() * report.getSupervisorPonderosity()) + (report.getCompanySupervisorScore() * report.getCompanySupervisorPonderosity())) / (report.getAppraisersPonderosity() + report.getSupervisorPonderosity() + report.getCompanySupervisorPonderosity()));	
 			}else{
 				report.setFinalScore(0);
 			}
@@ -366,7 +366,7 @@ public class InternshipJuryBO {
 	
 	private double round(double value){
 		BigDecimal bd = new BigDecimal(value);
-	    bd = bd.setScale(1, RoundingMode.HALF_UP);
+	    bd = bd.setScale(2, RoundingMode.HALF_UP);
 	    return bd.doubleValue();
 	}
 	

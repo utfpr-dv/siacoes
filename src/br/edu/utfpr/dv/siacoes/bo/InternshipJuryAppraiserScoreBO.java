@@ -59,7 +59,7 @@ public class InternshipJuryAppraiserScoreBO {
 		}
 		
 		BigDecimal bd = new BigDecimal(score.getScore());
-	    bd = bd.setScale(1, RoundingMode.HALF_UP);
+	    bd = bd.setScale(2, RoundingMode.HALF_UP);
 	    score.setScore(bd.doubleValue());
 		
 		try {

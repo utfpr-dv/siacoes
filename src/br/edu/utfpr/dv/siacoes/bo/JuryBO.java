@@ -390,7 +390,7 @@ public class JuryBO {
 	
 	private double round(double value){
 		BigDecimal bd = new BigDecimal(value);
-	    bd = bd.setScale(1, RoundingMode.HALF_UP);
+	    bd = bd.setScale(2, RoundingMode.HALF_UP);
 	    return bd.doubleValue();
 	}
 	
