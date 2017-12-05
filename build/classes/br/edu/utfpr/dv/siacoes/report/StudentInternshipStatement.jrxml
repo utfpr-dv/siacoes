@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-08-25T16:02:59 -->
+<!-- 2017-12-04T22:07:08 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="StudentInternshipStatement" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="53852868-873c-449c-97c8-4e31e5259c71">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -195,7 +195,7 @@
 				<text><![CDATA[Para autenticar este documento, acesse o link abaixo:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="40" width="130" height="20" uuid="650c1248-eaa0-4e6c-9197-4b766a93e48b">
+				<reportElement x="0" y="40" width="414" height="20" uuid="650c1248-eaa0-4e6c-9197-4b766a93e48b">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<text><![CDATA[Ou leia o QRCode ao lado.]]></text>

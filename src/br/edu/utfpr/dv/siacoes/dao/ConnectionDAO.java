@@ -39,7 +39,7 @@ public class ConnectionDAO {
 		
 		try{
 			Properties props = new Properties();
-	        FileInputStream fis = new FileInputStream(this.getClass().getClassLoader().getResource("/dblocal.properties").getPath());
+	        FileInputStream fis = new FileInputStream(this.getClass().getClassLoader().getResource("/db.properties").getPath());
 	        
 	        props.load(fis);
 	        
