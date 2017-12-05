@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import org.vaadin.dialogs.ConfirmDialog;
 import org.vaadin.thomas.timefield.TimeField;
 
+import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
@@ -19,7 +20,6 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 
-import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
@@ -28,7 +28,6 @@ import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryStudent;
 import br.edu.utfpr.dv.siacoes.model.User;
-import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditJuryWindow extends EditWindow {
@@ -36,7 +35,6 @@ public class EditJuryWindow extends EditWindow {
 	private final Jury jury;
 	
 	private final DateField textDate;
-	private final TimeField textTime;
 	private final TextField textLocal;
 	private final HorizontalLayout layoutAppraisers;
 	private final HorizontalLayout layoutParticipants;
@@ -72,10 +70,8 @@ public class EditJuryWindow extends EditWindow {
 		this.textLocal.setMaxLength(100);
 		
 		this.textDate = new DateField("Data");
-		this.textDate.setDateFormat("dd/MM/yyyy");
-		
-		this.textTime = new TimeField("Horário");
-		this.textTime.set24HourClock(true);
+		this.textDate.setDateFormat("dd/MM/yyyy HH:mm");
+		this.textDate.setResolution(Resolution.MINUTE);
 		
 		this.textStartTime = new TimeField("Horário Inicial");
 		this.textStartTime.set24HourClock(true);
@@ -88,13 +84,11 @@ public class EditJuryWindow extends EditWindow {
 		this.textComments.setHeight("150px");
 		
 		VerticalLayout tab1 = new VerticalLayout();
+		tab1.setSpacing(true);
 		tab1.addComponent(this.textLocal);
-		HorizontalLayout h1 = new HorizontalLayout(this.textDate, this.textTime);
+		HorizontalLayout h1 = new HorizontalLayout(this.textDate, this.textStartTime, this.textEndTime);
 		h1.setSpacing(true);
 		tab1.addComponent(h1);
-		HorizontalLayout h2 = new HorizontalLayout(this.textStartTime, this.textEndTime);
-		h2.setSpacing(true);
-		tab1.addComponent(h2);
 		tab1.addComponent(this.textComments);
 		
 		this.layoutAppraisers = new HorizontalLayout();
@@ -172,7 +166,6 @@ public class EditJuryWindow extends EditWindow {
 	
 	private void loadJury(){
 		this.textDate.setValue(this.jury.getDate());
-		this.textTime.setValue(this.jury.getDate());
 		this.textLocal.setValue(this.jury.getLocal());
 		this.textStartTime.setValue(this.jury.getStartTime());
 		this.textEndTime.setValue(this.jury.getEndTime());
@@ -271,7 +264,7 @@ public class EditJuryWindow extends EditWindow {
 			this.jury.setComments(this.textComments.getValue());
 			this.jury.setStartTime(this.textStartTime.getValue());
 			this.jury.setEndTime(this.textEndTime.getValue());
-			this.jury.setDate(DateUtils.concat(this.textDate.getValue(), this.textTime.getValue()));
+			this.jury.setDate(this.textDate.getValue());
 			
 			bo.save(this.jury);
 			

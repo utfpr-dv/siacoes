@@ -1,13 +1,13 @@
 package br.edu.utfpr.dv.siacoes.window;
 
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.vaadin.dialogs.ConfirmDialog;
 import org.vaadin.thomas.timefield.TimeField;
 
+import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
@@ -20,7 +20,6 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 
-import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
@@ -29,7 +28,6 @@ import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryStudent;
 import br.edu.utfpr.dv.siacoes.model.User;
-import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditInternshipJuryWindow extends EditWindow {
@@ -37,7 +35,6 @@ public class EditInternshipJuryWindow extends EditWindow {
 	private final InternshipJury jury;
 	
 	private final DateField textDate;
-	private final TimeField textTime;
 	private final TextField textLocal;
 	private final HorizontalLayout layoutAppraisers;
 	private final HorizontalLayout layoutParticipants;
@@ -74,10 +71,8 @@ public class EditInternshipJuryWindow extends EditWindow {
 		this.textLocal.setMaxLength(100);
 		
 		this.textDate = new DateField("Data");
-		this.textDate.setDateFormat("dd/MM/yyyy");
-		
-		this.textTime = new TimeField("Horário");
-		this.textTime.set24HourClock(true);
+		this.textDate.setDateFormat("dd/MM/yyyy HH:mm");
+		this.textDate.setResolution(Resolution.MINUTE);
 		
 		this.textCompanySupervisorScore = new TextField("Nota do Supervisor na Empresa");
 		this.textCompanySupervisorScore.setWidth("100px");
@@ -93,13 +88,11 @@ public class EditInternshipJuryWindow extends EditWindow {
 		this.textComments.setHeight("150px");
 		
 		VerticalLayout tab1 = new VerticalLayout();
+		tab1.setSpacing(true);
 		tab1.addComponent(this.textLocal);
-		HorizontalLayout h1 = new HorizontalLayout(this.textDate, this.textTime, this.textCompanySupervisorScore);
+		HorizontalLayout h1 = new HorizontalLayout(this.textDate, this.textStartTime, this.textEndTime, this.textCompanySupervisorScore);
 		h1.setSpacing(true);
 		tab1.addComponent(h1);
-		HorizontalLayout h2 = new HorizontalLayout(this.textStartTime, this.textEndTime);
-		h2.setSpacing(true);
-		tab1.addComponent(h2);
 		tab1.addComponent(this.textComments);
 		
 		this.layoutAppraisers = new HorizontalLayout();
@@ -177,7 +170,6 @@ public class EditInternshipJuryWindow extends EditWindow {
 	
 	private void loadJury(){
 		this.textDate.setValue(this.jury.getDate());
-		this.textTime.setValue(this.jury.getDate());
 		this.textLocal.setValue(this.jury.getLocal());
 		this.textStartTime.setValue(this.jury.getStartTime());
 		this.textEndTime.setValue(this.jury.getEndTime());
@@ -277,7 +269,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 			this.jury.setComments(this.textComments.getValue());
 			this.jury.setStartTime(this.textStartTime.getValue());
 			this.jury.setEndTime(this.textEndTime.getValue());
-			this.jury.setDate(DateUtils.concat(this.textDate.getValue(), this.textTime.getValue()));
+			this.jury.setDate(this.textDate.getValue());
 			this.jury.setCompanySupervisorScore(Double.parseDouble(this.textCompanySupervisorScore.getValue()));
 			
 			bo.save(this.jury);
