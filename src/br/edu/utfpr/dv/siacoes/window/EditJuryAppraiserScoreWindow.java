@@ -2,7 +2,6 @@ package br.edu.utfpr.dv.siacoes.window;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -86,7 +85,7 @@ public class EditJuryAppraiserScoreWindow extends EditWindow {
 				labelPonderosity.setWidth("50px");
 				
 				TextField textScore = new TextField();
-				textScore.setValue(String.valueOf(score.getScore()));
+				textScore.setValue(String.format("%4.2f", score.getScore()));
 				textScore.setWidth("100px");
 				
 				this.layoutEvaluationItems.addComponent(new HorizontalLayout(labelDescription, labelPonderosity, textScore));
@@ -114,7 +113,7 @@ public class EditJuryAppraiserScoreWindow extends EditWindow {
 				double score = 0;
 				
 				try{
-					score = Double.parseDouble(((TextField)((HorizontalLayout)this.layoutEvaluationItems.getComponent(i)).getComponent(2)).getValue());
+					score = Double.parseDouble(((TextField)((HorizontalLayout)this.layoutEvaluationItems.getComponent(i)).getComponent(2)).getValue().replace(",", "."));
 				}catch(Exception e){
 					throw new Exception("A nota para o quesito " + String.valueOf(i + 1) + " está em um formato incorreto.");
 				}
@@ -141,6 +140,7 @@ public class EditJuryAppraiserScoreWindow extends EditWindow {
 		}finally{
 			try {
 				conn.setAutoCommit(true);
+				conn.close();
 			} catch (SQLException e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			}

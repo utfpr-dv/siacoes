@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-12-04T17:59:08 -->
+<!-- 2017-12-05T12:08:07 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="JuryFormAppraiser" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="d066e92b-b4bc-457d-ba3e-cdcacb930d7f">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -283,7 +283,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{score} == 0, "", $F{score})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{score} == 0, "", new java.text.DecimalFormat("#0.00").format($F{score}))]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="-1" width="430" height="20" uuid="ab336213-90e7-4be0-b31f-41f9daab6dcf"/>

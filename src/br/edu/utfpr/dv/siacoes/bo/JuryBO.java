@@ -295,7 +295,7 @@ public class JuryBO {
 				List<JuryAppraiserScore> list = bo.listScores(appraiser.getIdJuryAppraiser());
 				JuryFormAppraiserReport appraiserReport = new JuryFormAppraiserReport();
 				JuryFormAppraiserScoreReport scoreReport = new JuryFormAppraiserScoreReport();
-				double scoreSum = 0, scorePonderosity = 0, writingPonderosity = 0, oralPonderosity = 0, argumentationPonderosity = 0;
+				double scoreSum = 0, writingPonderosity = 0, oralPonderosity = 0, argumentationPonderosity = 0;
 				
 				appraiserReport.setName(appraiser.getAppraiser().getName());
 				appraiserReport.setComments(appraiser.getComments());
@@ -317,28 +317,18 @@ public class JuryBO {
 					
 					switch(score.getEvaluationItem().getType()){
 						case WRITING:
-							scoreReport.setScoreWriting(scoreReport.getScoreWriting() + (score.getScore() * score.getEvaluationItem().getPonderosity()));
+							scoreReport.setScoreWriting(scoreReport.getScoreWriting() + score.getScore());
 							writingPonderosity = writingPonderosity + score.getEvaluationItem().getPonderosity();
 							break;
 						case ORAL:
-							scoreReport.setScoreOral(scoreReport.getScoreOral() + (score.getScore() * score.getEvaluationItem().getPonderosity()));
+							scoreReport.setScoreOral(scoreReport.getScoreOral() + score.getScore());
 							oralPonderosity = oralPonderosity + score.getEvaluationItem().getPonderosity();
 							break;
 						case ARGUMENTATION:
-							scoreReport.setScoreArgumentation(scoreReport.getScoreArgumentation() + (score.getScore() * score.getEvaluationItem().getPonderosity()));
+							scoreReport.setScoreArgumentation(scoreReport.getScoreArgumentation() + score.getScore());
 							argumentationPonderosity = argumentationPonderosity + score.getEvaluationItem().getPonderosity();
 							break;
 					}
-				}
-				
-				if(writingPonderosity > 0){
-					scoreReport.setScoreWriting(this.round(scoreReport.getScoreWriting() / writingPonderosity));
-				}
-				if(oralPonderosity > 0){
-					scoreReport.setScoreOral(this.round(scoreReport.getScoreOral() / oralPonderosity));
-				}
-				if(argumentationPonderosity > 0){
-					scoreReport.setScoreArgumentation(this.round(scoreReport.getScoreArgumentation() / argumentationPonderosity));
 				}
 				
 				for(JuryFormAppraiserDetailReport appraiserDetail : appraiserReport.getDetail()){
@@ -358,10 +348,9 @@ public class JuryBO {
 					}
 				}
 				
-				scoreSum = (scoreReport.getScoreWriting() * writingPonderosity) + (scoreReport.getScoreOral() * oralPonderosity) + (scoreReport.getScoreArgumentation() * argumentationPonderosity);
-				scorePonderosity = writingPonderosity + oralPonderosity + argumentationPonderosity;
+				scoreSum = scoreReport.getScoreWriting() + scoreReport.getScoreOral() + scoreReport.getScoreArgumentation();
 				
-				scoreReport.setScore(this.round(scoreSum / scorePonderosity));
+				scoreReport.setScore(this.round(scoreSum));
 				appraiserReport.setScore(scoreReport.getScore());
 					
 				if(appraiser.getAppraiser().getIdUser() != supervisor.getIdUser()){

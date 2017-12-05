@@ -48,8 +48,8 @@ public class InternshipJuryAppraiserScoreBO {
 	}
 	
 	public int save(InternshipJuryAppraiserScore score) throws Exception{
-		if((score.getScore() < 0) || (score.getScore() > 10)){
-			throw new Exception("A nota deve estar entre 0 e 10.");
+		if((score.getScore() < 0) || (score.getScore() > score.getInternshipEvaluationItem().getPonderosity())){
+			throw new Exception("A nota deve estar entre 0 e o peso do quesito.");
 		}
 		if((score.getInternshipEvaluationItem() == null) || (score.getInternshipEvaluationItem().getIdInternshipEvaluationItem() == 0)){
 			throw new Exception("Informe o quesito avaliado.");

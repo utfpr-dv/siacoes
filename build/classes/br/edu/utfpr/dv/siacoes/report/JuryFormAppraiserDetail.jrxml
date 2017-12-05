@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-12-04T17:52:52 -->
+<!-- 2017-12-05T12:08:26 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="JuryFormAppraiserDetail" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="fe3b4af5-735f-4ca9-8680-c9e6f6712ceb">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -29,7 +29,7 @@
 	<field name="order" class="java.lang.Integer">
 		<fieldDescription><![CDATA[order]]></fieldDescription>
 	</field>
-	<variable name="SumScore" class="java.lang.Double" resetType="Group" resetGroup="Group1" incrementType="Group" incrementGroup="Group1" calculation="Sum">
+	<variable name="SumScore" class="java.lang.Double" resetType="Group" resetGroup="Group1" calculation="Sum">
 		<variableExpression><![CDATA[$F{score}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
@@ -69,7 +69,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial" size="12"/>
 					</textElement>
-					<textFieldExpression><![CDATA[IF($V{SumScore} == 0, "", $V{SumScore})]]></textFieldExpression>
+					<textFieldExpression><![CDATA[IF($V{SumScore} == 0, "", new java.text.DecimalFormat("#0.00").format($V{SumScore}))]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="0" width="430" height="20" uuid="002ca3a0-d2ed-4775-88cb-80097a886b1e"/>
@@ -82,7 +82,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial" size="12"/>
 					</textElement>
-					<textFieldExpression><![CDATA["Subtotal (0 a " + $V{SumPonderosity} + "):"]]></textFieldExpression>
+					<textFieldExpression><![CDATA["Subtotal (0 a " + new java.text.DecimalFormat("#0.0").format($V{SumPonderosity}) + "):"]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
