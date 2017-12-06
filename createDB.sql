@@ -1,5 +1,9 @@
 CREATE TABLE `appconfig` (
-    `theme` SMALLINT NOT NULL
+    `theme` SMALLINT NOT NULL,
+	`host` VARCHAR(255) NOT NULL,
+	`sigacenabled` TINYINT NOT NULL,
+	`sigesenabled` TINYINT NOT NULL,
+	`sigetenabled` TINYINT NOT NULL
 );
 
 CREATE TABLE `ldapconfig` (

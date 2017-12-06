@@ -1,0 +1,150 @@
+﻿package br.edu.utfpr.dv.siacoes.window;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TextArea;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
+
+import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserScoreBO;
+import br.edu.utfpr.dv.siacoes.dao.ConnectionDAO;
+import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
+import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiserScore;
+
+public class EditInternshipJuryAppraiserScoreWindow extends EditWindow {
+	
+	private final InternshipJuryAppraiser appraiser;
+	
+	private final TextField textAppraiser;
+	private final VerticalLayout layoutEvaluationItems;
+	private final TextArea textComments;
+	private final TabSheet tab;
+	
+	public EditInternshipJuryAppraiserScoreWindow(InternshipJuryAppraiser appraiser){
+		super("Lançar Notas", null);
+		
+		if(appraiser == null){
+			this.appraiser = new InternshipJuryAppraiser();
+		}else{
+			this.appraiser = appraiser;
+		}
+		
+		this.textAppraiser = new TextField("Membro");
+		this.textAppraiser.setWidth("800px");
+		this.textAppraiser.setEnabled(false);
+		
+		this.layoutEvaluationItems = new VerticalLayout();
+		
+		Label labelDescription = new Label("Quesito");
+		labelDescription.setWidth("650px");
+		
+		Label labelPonderosity = new Label("Peso");
+		labelPonderosity.setWidth("50px");
+		
+		Label labelScore = new Label("Nota");
+		labelScore.setWidth("100px");
+		
+		this.textComments = new TextArea("Observações");
+		this.textComments.setWidth("800px");
+		this.textComments.setHeight("300px");
+		
+		this.tab = new TabSheet();
+		
+		VerticalLayout tab1 = new VerticalLayout(new HorizontalLayout(labelDescription, labelPonderosity, labelScore), this.layoutEvaluationItems);
+		this.tab.addTab(tab1, "Notas");
+		this.tab.addTab(this.textComments);
+		
+		this.addField(this.textAppraiser);
+		this.addField(this.tab);
+		
+		this.loadScores();
+	}
+	
+	private void loadScores(){
+		try {
+			InternshipJuryAppraiserScoreBO bo = new InternshipJuryAppraiserScoreBO();
+			
+			this.appraiser.setScores(bo.listScores(this.appraiser.getIdInternshipJuryAppraiser()));
+			
+			this.textAppraiser.setValue(this.appraiser.getAppraiser().getName());
+			this.textComments.setValue(this.appraiser.getComments());
+			this.layoutEvaluationItems.removeAllComponents();
+			
+			for(InternshipJuryAppraiserScore score : this.appraiser.getScores()){
+				Label labelDescription = new Label(score.getInternshipEvaluationItem().getDescription());
+				labelDescription.setWidth("650px");
+				
+				Label labelPonderosity = new Label(String.valueOf(score.getInternshipEvaluationItem().getPonderosity()));
+				labelPonderosity.setWidth("50px");
+				
+				TextField textScore = new TextField();
+				textScore.setValue(String.format("%4.2f", score.getScore()));
+				textScore.setWidth("100px");
+				
+				this.layoutEvaluationItems.addComponent(new HorizontalLayout(labelDescription, labelPonderosity, textScore));
+			}
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			Notification.show("Carregar Notas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		}
+	}
+	
+	@Override
+	public void save() {
+		Connection conn = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			conn.setAutoCommit(false);
+			
+			InternshipJuryAppraiserScoreBO bo = new InternshipJuryAppraiserScoreBO(conn);
+			
+			this.appraiser.setComments(this.textComments.getValue());
+			
+			for(int i = 0; i < this.appraiser.getScores().size(); i++){
+				double score = 0;
+				
+				try{
+					score = Double.parseDouble(((TextField)((HorizontalLayout)this.layoutEvaluationItems.getComponent(i)).getComponent(2)).getValue().replace(",", "."));
+				}catch(Exception e){
+					throw new Exception("A nota para o quesito " + String.valueOf(i + 1) + " está em um formato incorreto.");
+				}
+				
+				InternshipJuryAppraiserScore jas = this.appraiser.getScores().get(i);
+				jas.setScore(score);
+				
+				bo.save(jas);
+			}
+			
+			conn.commit();
+			
+			this.close();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
+			}
+			
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			Notification.show("Salvar Notas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		}finally{
+			try {
+				conn.setAutoCommit(true);
+				conn.close();
+			} catch (SQLException e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			}
+		}
+	}
+
+}

@@ -1,5 +1,9 @@
 CREATE TABLE appconfig (
-    theme SMALLINT NOT NULL
+    theme SMALLINT NOT NULL,
+	host VARCHAR(255) NOT NULL,
+	sigacenabled SMALLINT NOT NULL,
+	sigesenabled SMALLINT NOT NULL,
+	sigetenabled SMALLINT NOT NULL
 );
 
 CREATE TABLE ldapconfig (

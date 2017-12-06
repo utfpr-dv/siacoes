@@ -1,0 +1,318 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  	<modelVersion>4.0.0</modelVersion>
+  	<groupId>br.edu.utfpr.dv</groupId>
+  	<artifactId>siacoes</artifactId>
+  	<packaging>war</packaging>
+  	<version>0.0.1-SNAPSHOT</version>
+  	<name>siacoes</name>
+  	<url>http://maven.apache.org</url>
+  
+  	<properties>
+		<vaadin.version>7.7.12</vaadin.version>
+		<vaadin.plugin.version>7.7.12</vaadin.plugin.version>
+		<jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<!-- If there are no local customisations, this can also be "fetch" or "cdn" -->
+		<vaadin.widgetset.mode>local</vaadin.widgetset.mode>
+	</properties>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.vaadin</groupId>
+				<artifactId>vaadin-bom</artifactId>
+				<version>${vaadin.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+  
+  	<dependencies>
+    	<dependency>
+      		<groupId>junit</groupId>
+      		<artifactId>junit</artifactId>
+      		<version>3.8.1</version>
+      		<scope>test</scope>
+    	</dependency>
+    	<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+		<dependency>
+      		<groupId>javax.servlet</groupId>
+      		<artifactId>javax.servlet-api</artifactId>
+      		<version>4.0.0</version>
+      		<scope>provided</scope>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/com.vaadin/vaadin-server -->
+		<dependency>
+      		<groupId>com.vaadin</groupId>
+      		<artifactId>vaadin-server</artifactId>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/com.vaadin/vaadin-themes -->
+		<dependency>
+      		<groupId>com.vaadin</groupId>
+      		<artifactId>vaadin-themes</artifactId>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/com.vaadin/vaadin-push -->
+		<dependency>
+      		<groupId>com.vaadin</groupId>
+      		<artifactId>vaadin-push</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.vaadin/vaadin-client-compiled -->
+		<dependency>
+      		<groupId>com.vaadin</groupId>
+      		<artifactId>vaadin-client-compiled</artifactId>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/com.vaadin/vaadin-client -->
+		<dependency>
+      		<groupId>com.vaadin</groupId>
+      		<artifactId>vaadin-client</artifactId>
+      		<scope>provided</scope>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/com.vaadin/vaadin-client-compiler -->
+		<dependency>
+      		<groupId>com.vaadin</groupId>
+      		<artifactId>vaadin-client-compiler</artifactId>
+      		<scope>provided</scope>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
+		<dependency>
+      		<groupId>org.apache.logging.log4j</groupId>
+      		<artifactId>log4j-api</artifactId>
+      		<version>2.9.1</version>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+		<dependency>
+      		<groupId>org.apache.logging.log4j</groupId>
+      		<artifactId>log4j-core</artifactId>
+      		<version>2.9.1</version>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/org.vaadin.addons/timefield -->
+		<dependency>
+      		<groupId>org.vaadin.addons</groupId>
+      		<artifactId>timefield</artifactId>
+      		<version>0.9</version>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/org.vaadin.addon/confirmdialog -->
+		<dependency>
+      		<groupId>org.vaadin.addon</groupId>
+      		<artifactId>confirmdialog</artifactId>
+      		<version>3.2.0</version>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-digester3 -->
+		<dependency>
+      		<groupId>org.apache.commons</groupId>
+      		<artifactId>commons-digester3</artifactId>
+      		<version>3.2</version>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+		<dependency>
+      		<groupId>org.apache.commons</groupId>
+      		<artifactId>commons-collections4</artifactId>
+      		<version>4.1</version>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-dbcp2 -->
+		<dependency>
+      		<groupId>org.apache.commons</groupId>
+      		<artifactId>commons-dbcp2</artifactId>
+      		<version>2.1.1</version>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
+		<dependency>
+      		<groupId>org.apache.pdfbox</groupId>
+      		<artifactId>pdfbox</artifactId>
+      		<version>2.0.8</version>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
+		<dependency>
+      		<groupId>com.google.zxing</groupId>
+      		<artifactId>core</artifactId>
+      		<version>3.3.1</version>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/com.google.zxing/javase -->
+		<dependency>
+      		<groupId>com.google.zxing</groupId>
+      		<artifactId>javase</artifactId>
+      		<version>3.3.1</version>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-bridge -->
+		<dependency>
+      		<groupId>org.apache.xmlgraphics</groupId>
+      		<artifactId>batik-bridge</artifactId>
+      		<version>1.9.1</version>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-jdbc -->
+		<dependency>
+      		<groupId>org.apache.tomcat</groupId>
+      		<artifactId>tomcat-jdbc</artifactId>
+      		<version>8.5.23</version>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/net.sf.barcode4j/barcode4j -->
+		<dependency>
+     		<groupId>net.sf.barcode4j</groupId>
+      		<artifactId>barcode4j</artifactId>
+      		<version>2.1</version>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/com.vaadin/vaadin-icons -->
+		<dependency>
+      		<groupId>com.vaadin</groupId>
+      		<artifactId>vaadin-icons</artifactId>
+      		<version>3.0.1</version>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on -->
+		<dependency>
+      		<groupId>org.bouncycastle</groupId>
+      		<artifactId>bcpkix-jdk15on</artifactId>
+      		<version>1.58</version>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/org.knowm.xchart/xchart -->
+		<dependency>
+      		<groupId>org.knowm.xchart</groupId>
+      		<artifactId>xchart</artifactId>
+      		<version>3.5.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+		<dependency>
+      		<groupId>org.postgresql</groupId>
+      		<artifactId>postgresql</artifactId>
+      		<version>42.1.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports -->
+		<dependency>
+      		<groupId>net.sf.jasperreports</groupId>
+      		<artifactId>jasperreports</artifactId>
+      		<version>6.4.3</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports-fonts -->
+		<dependency>
+      		<groupId>net.sf.jasperreports</groupId>
+      		<artifactId>jasperreports-fonts</artifactId>
+      		<version>6.0.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all -->
+		<dependency>
+		    <groupId>org.codehaus.groovy</groupId>
+		    <artifactId>groovy-all</artifactId>
+		    <version>2.4.12</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.sun.mail/javax.mail -->
+		<dependency>
+		    <groupId>com.sun.mail</groupId>
+		    <artifactId>javax.mail</artifactId>
+		    <version>1.6.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
+		<dependency>
+		    <groupId>joda-time</groupId>
+		    <artifactId>joda-time</artifactId>
+		    <version>2.9.9</version>
+		</dependency>
+  	</dependencies>
+  	
+  	<build>
+  		<finalName>siacoes</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<!-- Exclude an unnecessary file generated by the GWT compiler. -->
+					<packagingExcludes>WEB-INF/classes/VAADIN/widgetsets/WEB-INF/**</packagingExcludes>
+					<source>1.8</source>
+            		<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.vaadin</groupId>
+				<artifactId>vaadin-maven-plugin</artifactId>
+				<version>${vaadin.plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>update-theme</goal>
+							<goal>update-widgetset</goal>
+							<goal>compile</goal>
+							<!-- Comment out compile-theme goal to use on-the-fly theme compilation -->
+							<goal>compile-theme</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.0.0</version>
+				<!-- Clean up also any pre-compiled themes -->
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>src/main/webapp/VAADIN/themes</directory>
+							<includes>
+								<include>**/styles.css</include>
+								<include>**/styles.scss.cache</include>
+							</includes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+
+			<!-- The Jetty plugin allows us to easily test the development build by
+				running jetty:run on the command line. -->
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty.plugin.version}</version>
+				<configuration>
+					<scanIntervalSeconds>2</scanIntervalSeconds>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<!-- Vaadin pre-release repositories -->
+			<id>vaadin-prerelease</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+
+			<repositories>
+				<repository>
+					<id>vaadin-prereleases</id>
+					<url>http://maven.vaadin.com/vaadin-prereleases</url>
+				</repository>
+				<repository>
+					<id>vaadin-snapshots</id>
+					<url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
+					<releases>
+						<enabled>false</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<id>vaadin-prereleases</id>
+					<url>http://maven.vaadin.com/vaadin-prereleases</url>
+				</pluginRepository>
+				<pluginRepository>
+					<id>vaadin-snapshots</id>
+					<url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
+					<releases>
+						<enabled>false</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</pluginRepository>
+			</pluginRepositories>
+		</profile>
+	</profiles>
+</project>
