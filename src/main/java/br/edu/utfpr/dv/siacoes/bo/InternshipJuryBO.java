@@ -233,7 +233,7 @@ public class InternshipJuryBO {
 		}
 		
 		if(jury.getIdInternshipJury() != 0){
-			JuryAppraiserScoreBO bo = new JuryAppraiserScoreBO();
+			InternshipJuryAppraiserScoreBO bo = new InternshipJuryAppraiserScoreBO();
 			if(bo.hasScore(jury.getIdInternshipJury(), appraiser.getIdUser())){
 				throw new Exception("O membro já lançou as notas para esta banca e não pode ser removido.");
 			}	
