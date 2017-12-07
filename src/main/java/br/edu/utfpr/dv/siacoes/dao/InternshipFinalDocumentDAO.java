@@ -171,7 +171,7 @@ public class InternshipFinalDocumentDAO {
 					"INNER JOIN \"user\" s ON s.idUser=internship.idStudent " +
 					"INNER JOIN \"user\" s2 ON s2.idUser=internship.idSupervisor " +
 					"INNER JOIN company c ON c.idCompany=internship.idCompany " +
-					"WHERE internshipfinaldocument.supervisorFeedback=1 AND MONTH(internshipjury.date) " + (semester == 1 ? "<= 7" : "> 7") + " AND YEAR(internshipjury.date)=? AND internship.idDepartment=? " + (includePrivate ? "" : " AND internshipfinaldocument.private=0 ") +
+					"WHERE MONTH(internshipjury.date) " + (semester == 1 ? "<= 7" : "> 7") + " AND YEAR(internshipjury.date)=? AND internship.idDepartment=? " + (includePrivate ? "" : " AND internshipfinaldocument.private=0 ") +
 					"ORDER BY internshipfinaldocument.submissionDate DESC, internshipfinaldocument.title");
 		
 			stmt.setInt(1, year);

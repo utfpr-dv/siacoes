@@ -308,7 +308,7 @@ public class FinalDocumentDAO {
 				"INNER JOIN project ON project.idProject=thesis.idProject " +
 				"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
 				"INNER JOIN \"user\" ON \"user\".idUser=thesis.idStudent " +
-				"WHERE finaldocument.supervisorFeedback=1 AND thesis.semester=? AND thesis.year=? AND proposal.idDepartment=? " + (includePrivate ? "" : " AND finaldocument.private=0 ") +
+				"WHERE thesis.semester=? AND thesis.year=? AND proposal.idDepartment=? " + (includePrivate ? "" : " AND finaldocument.private=0 ") +
 				" UNION ALL " +
 				"SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, finaldocument.companyInfo, finaldocument.patent, " +
@@ -316,7 +316,7 @@ public class FinalDocumentDAO {
 				"FROM finaldocument INNER JOIN project ON project.idProject=finaldocument.idProject " +
 				"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
 				"INNER JOIN \"user\" ON \"user\".idUser=project.idStudent " +
-				"WHERE finaldocument.supervisorFeedback=1 AND project.semester=? AND project.year=? AND proposal.idDepartment=? " + (includePrivate ? "" : " AND finaldocument.private=0 ") +
+				"WHERE project.semester=? AND project.year=? AND proposal.idDepartment=? " + (includePrivate ? "" : " AND finaldocument.private=0 ") +
 				"ORDER BY title");
 		
 			stmt.setInt(1, semester);
