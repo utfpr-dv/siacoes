@@ -1,22 +1,18 @@
 ﻿package br.edu.utfpr.dv.siacoes.view;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
+import org.dussan.vaadin.dcharts.ChartImageFormat;
+import org.dussan.vaadin.dcharts.DCharts;
+import org.dussan.vaadin.dcharts.DownloadButtonLocation;
 
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.StreamResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
@@ -26,7 +22,6 @@ import com.vaadin.ui.Button.ClickListener;
 
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
-import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public abstract class ChartView extends BasicView {
 	
@@ -80,6 +75,7 @@ public abstract class ChartView extends BasicView {
 		
 		this.panelWindowChart = new Panel();
 		this.panelWindowChart.setContent(this.layoutChart);
+		this.panelWindowChart.setSizeFull();
 		
 		this.layoutContent = new VerticalLayout(this.layoutFields);
 		this.layoutContent.setSizeFull();
@@ -120,25 +116,14 @@ public abstract class ChartView extends BasicView {
     }
     
     private void plotChart() throws Exception {
-    	Image imageChart = new Image();
-    	byte[] chart = generateChart();
-    	
-    	StreamResource resource = new StreamResource(
-            new StreamResource.StreamSource() {
-                @Override
-                public InputStream getStream() {
-                    return new ByteArrayInputStream(chart);
-                }
-            }, "chart" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(DateUtils.getNow().getTime()) + ".png");
-
-		resource.setCacheTime(0);
-		imageChart.setSource(resource);
-		imageChart.setSizeFull();
+    	DCharts chart = generateChart().setEnableDownload(true).setDownloadButtonCaption("Salvar Gráfico").setDownloadButtonLocation(DownloadButtonLocation.BOTTOM_LEFT).setChartImageFormat(ChartImageFormat.PNG);
+    	chart.setHeight("95%");
+    	chart.show();
 		
-		this.panelChart.setContent(imageChart);
+		this.panelChart.setContent(chart);
     }
     
-    public abstract byte[] generateChart() throws Exception;
+    public abstract DCharts generateChart() throws Exception;
     
     @Override
 	public void enter(ViewChangeEvent event) {

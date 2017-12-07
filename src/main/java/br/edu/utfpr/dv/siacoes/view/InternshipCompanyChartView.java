@@ -1,18 +1,25 @@
 ﻿package br.edu.utfpr.dv.siacoes.view;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.knowm.xchart.BitmapEncoder;
-import org.knowm.xchart.BitmapEncoder.BitmapFormat;
-import org.knowm.xchart.CategoryChart;
-import org.knowm.xchart.CategoryChartBuilder;
-import org.knowm.xchart.CategorySeries;
-import org.knowm.xchart.XYChart;
-import org.knowm.xchart.XYChartBuilder;
-import org.knowm.xchart.style.Styler.ChartTheme;
-import org.knowm.xchart.style.Styler.LegendPosition;
+import org.dussan.vaadin.dcharts.DCharts;
+import org.dussan.vaadin.dcharts.base.elements.XYaxis;
+import org.dussan.vaadin.dcharts.base.elements.XYseries;
+import org.dussan.vaadin.dcharts.data.DataSeries;
+import org.dussan.vaadin.dcharts.data.Ticks;
+import org.dussan.vaadin.dcharts.metadata.LegendPlacements;
+import org.dussan.vaadin.dcharts.metadata.SeriesToggles;
+import org.dussan.vaadin.dcharts.metadata.TooltipAxes;
+import org.dussan.vaadin.dcharts.metadata.locations.TooltipLocations;
+import org.dussan.vaadin.dcharts.metadata.renderers.AxisRenderers;
+import org.dussan.vaadin.dcharts.metadata.renderers.SeriesRenderers;
+import org.dussan.vaadin.dcharts.options.Axes;
+import org.dussan.vaadin.dcharts.options.Highlighter;
+import org.dussan.vaadin.dcharts.options.Legend;
+import org.dussan.vaadin.dcharts.options.Options;
+import org.dussan.vaadin.dcharts.options.Series;
+import org.dussan.vaadin.dcharts.options.SeriesDefaults;
+import org.dussan.vaadin.dcharts.renderers.legend.EnhancedLegendRenderer;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
@@ -29,35 +36,30 @@ public class InternshipCompanyChartView extends ChartView {
 	}
 
 	@Override
-	public byte[] generateChart() throws Exception {
+	public DCharts generateChart() throws Exception {
 		List<InternshipByCompany> list = new InternshipBO().listInternshipByCompany(Session.getUser().getDepartment().getIdDepartment());
 		
-	    CategoryChartBuilder builder = new CategoryChartBuilder();
-	    builder.width(800);
-	    builder.height(400);
-	    builder.title("Estagiários por Empresa");
-	    builder.yAxisTitle("Estagiários");
-	    
-	    CategoryChart chart = builder.build();
-	    chart.getStyler().setHasAnnotations(true);
-
-	    //List<String> xData = new ArrayList<String>();
-	    //List<Number> yData = new ArrayList<Number>();
+		DataSeries dataSeries = new DataSeries();
 		
-        for(InternshipByCompany item : list){
-        	//xData.add(item.getCompanyName());
-        	//yData.add(item.getTotalStudents());
-        	
-        	chart.addSeries((item.getCompanyName().length() > 30 ? item.getCompanyName().substring(0, 30) : item.getCompanyName()), new int[]{0}, new int[]{item.getTotalStudents()});
+		SeriesDefaults seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.BAR);
+		Series series = new Series();
+		
+		for(InternshipByCompany item : list){
+        	dataSeries.add(item.getTotalStudents());
+        	series.addSeries(new XYseries().setLabel(item.getCompanyName()));
         }
-        
-        //CategorySeries serie = chart.addSeries("T", xData, yData);
-        
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        
-        BitmapEncoder.saveBitmap(chart, output, BitmapFormat.JPG);
-        
-        return output.toByteArray();
+		
+		Legend legend = new Legend().setShow(true).setRendererOptions(new EnhancedLegendRenderer().setSeriesToggle(SeriesToggles.SLOW).setSeriesToggleReplot(true)).setPlacement(LegendPlacements.OUTSIDE_GRID);
+
+		Axes axes = new Axes().addAxis(new XYaxis().setRenderer(AxisRenderers.CATEGORY).setTicks(new Ticks().add("")));
+
+		Highlighter highlighter = new Highlighter().setShow(true).setShowTooltip(true).setTooltipAlwaysVisible(true).setKeepTooltipInsideChart(true).setTooltipLocation(TooltipLocations.NORTH).setTooltipAxes(TooltipAxes.XY_BAR);
+
+		Options options = new Options().setSeriesDefaults(seriesDefaults).setAxes(axes).setHighlighter(highlighter).setSeries(series).setLegend(legend);
+
+		DCharts chart = new DCharts().setDataSeries(dataSeries).setOptions(options);
+		
+		return chart;
 	}
 
 }
