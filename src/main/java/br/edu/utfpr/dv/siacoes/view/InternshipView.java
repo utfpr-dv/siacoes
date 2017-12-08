@@ -3,7 +3,6 @@
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,6 +32,7 @@ import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.window.DownloadInternshipFeedbackWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipFinalDocumentWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipJuryWindow;
@@ -314,7 +314,7 @@ public class InternshipView extends ListView {
     						InternshipJuryBO bo3 = new InternshipJuryBO();
     						InternshipJury jury = bo3.findByInternship((int)id);
     						
-    						if((jury == null) || (jury.getIdInternshipJury() == 0)){
+    						if((jury == null) || (jury.getIdInternshipJury() == 0) || jury.getDate().after(DateUtils.getNow().getTime())){
     							throw new Exception("A versão final do relatório só pode ser enviada após a realização da banca de estágio.");
     						}
     					}

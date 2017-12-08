@@ -841,9 +841,16 @@ public class SideMenu extends CustomComponent {
 							if(project == null){
 								throw new Exception("É necessário submeter o projeto para avaliação da banca antes.");
 							}else{
-								ft = new FinalDocument();
-								ft.setTitle(project.getTitle());
-								ft.setProject(project);
+								JuryBO jbo = new JuryBO();
+								Jury jury = jbo.findByProject(project.getIdProject());
+								
+								if((jury == null) || (jury.getIdJury() == 0) || jury.getDate().after(DateUtils.getNow().getTime())){
+									throw new Exception("A versão final do projeto só pode ser enviada após a realização da banca.");
+								}else{
+									ft = new FinalDocument();
+									ft.setTitle(project.getTitle());
+									ft.setProject(project);	
+								}
 							}
 						}
 						
@@ -986,9 +993,16 @@ public class SideMenu extends CustomComponent {
 							if(thesis == null){
 								throw new Exception("É necessário submeter a monografia para avaliação da banca antes.");
 							}else{
-								ft = new FinalDocument();
-								ft.setTitle(thesis.getTitle());
-								ft.setThesis(thesis);
+								JuryBO jbo = new JuryBO();
+								Jury jury = jbo.findByThesis(thesis.getIdThesis());
+								
+								if((jury == null) || (jury.getIdJury() == 0) || jury.getDate().after(DateUtils.getNow().getTime())){
+									throw new Exception("A versão final da monografia só pode ser enviada após a realização da banca.");
+								}else{
+									ft = new FinalDocument();
+									ft.setTitle(thesis.getTitle());
+									ft.setThesis(thesis);
+								}
 							}
 						}
 						

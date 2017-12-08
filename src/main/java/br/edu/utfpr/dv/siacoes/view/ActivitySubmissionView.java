@@ -112,6 +112,7 @@ public class ActivitySubmissionView extends ListView {
 		this.getGrid().getColumns().get(1).setWidth(75);
 		this.getGrid().getColumns().get(2).setWidth(80);
 		this.getGrid().getColumns().get(3).setWidth(80);
+		this.getGrid().getColumns().get(4).setWidth(350);
 		this.getGrid().getColumns().get(5).setWidth(150);
 		this.getGrid().getColumns().get(6).setWidth(125);
 		
