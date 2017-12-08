@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
+
 public class InternshipJuryFormReport {
 	
 	private String title;
@@ -19,6 +21,7 @@ public class InternshipJuryFormReport {
 	private double supervisorScore;
 	private double companySupervisorScore;
 	private double finalScore;
+	private JuryResult result;
 	private List<JuryFormAppraiserReport> appraisers;
 	
 	public InternshipJuryFormReport(){
@@ -35,6 +38,7 @@ public class InternshipJuryFormReport {
 		this.setSupervisorScore(0);
 		this.setCompanySupervisorScore(0);
 		this.setAppraisers(new ArrayList<JuryFormAppraiserReport>());
+		this.setResult(JuryResult.NONE);
 	}
 	
 	public String getTitle() {
@@ -120,6 +124,12 @@ public class InternshipJuryFormReport {
 	}
 	public void setAppraisers(List<JuryFormAppraiserReport> appraisers) {
 		this.appraisers = appraisers;
+	}
+	public JuryResult getResult() {
+		return result;
+	}
+	public void setResult(JuryResult result) {
+		this.result = result;
 	}
 
 }

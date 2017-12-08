@@ -51,3 +51,18 @@ $v-font-size: 13px;
   max-width: 150px;
   max-height: 200px;
 }
+
+.Border {
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    padding: 5px;
+}
+
+.CenterText{
+  text-align: center;
+}
+
+.BoldText{
+  font-weight: bold;
+}

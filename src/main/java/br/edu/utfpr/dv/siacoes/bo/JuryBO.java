@@ -502,4 +502,10 @@ public class JuryBO {
 		return report;
 	}
 	
+	public boolean hasScores(int idJury) throws Exception{
+		JuryDAO dao = new JuryDAO();
+		
+		return dao.hasScores(idJury);
+	}
+	
 }

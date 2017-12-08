@@ -1579,6 +1579,21 @@ div.v-layout.v-horizontal.v-widget {
 	max-height: 200px;
 }
 
+.Border {
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+	padding: 5px;
+}
+
+.CenterText {
+	text-align: center;
+}
+
+.BoldText {
+	font-weight: bold;
+}
+
 .pink.v-app, .pink.v-app-loading {
 	font: 400 13px/1.55 Helvetica, Arial, "lucida grande", tahoma, verdana, arial, sans-serif;
 	color: #915D84;

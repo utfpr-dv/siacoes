@@ -253,6 +253,7 @@ public class InternshipJuryBO {
 			report.setCompanySupervisorPonderosity(jury.getCompanySupervisorPonderosity());
 			report.setAppraisersPonderosity(10 - jury.getSupervisorPonderosity() - jury.getCompanySupervisorPonderosity());
 			report.setCompanySupervisorScore(jury.getCompanySupervisorScore());
+			report.setResult(jury.getResult());
 			
 			InternshipBO ibo = new InternshipBO();
 			Internship internship = ibo.findById(jury.getInternship().getIdInternship());
@@ -414,6 +415,12 @@ public class InternshipJuryBO {
 		}
 		
 		return report;
+	}
+	
+	public boolean hasScores(int idInternshipJury) throws Exception{
+		InternshipJuryDAO dao = new InternshipJuryDAO();
+		
+		return dao.hasScores(idInternshipJury);
 	}
 
 }

@@ -1588,6 +1588,21 @@ div.v-layout.v-horizontal.v-widget {
 	max-height: 200px;
 }
 
+.Border {
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+	padding: 5px;
+}
+
+.CenterText {
+	text-align: center;
+}
+
+.BoldText {
+	font-weight: bold;
+}
+
 .metro.v-app, .metro.v-app-loading {
 	font: 300 13px/1.55 "Source Sans Pro", sans-serif;
 	color: #474747;

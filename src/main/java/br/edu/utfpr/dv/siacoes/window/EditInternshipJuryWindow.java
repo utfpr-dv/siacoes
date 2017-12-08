@@ -12,6 +12,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
@@ -28,6 +29,8 @@ import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryStudent;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
+import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditInternshipJuryWindow extends EditWindow {
@@ -52,6 +55,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 	private final TextArea textComments;
 	private final TextField textCompanySupervisorScore;
 	private final TabSheet tabContainer;
+	private final NativeSelect comboResult;
 	
 	public EditInternshipJuryWindow(InternshipJury jury, ListView parentView){
 		super("Banca", parentView);
@@ -83,6 +87,15 @@ public class EditInternshipJuryWindow extends EditWindow {
 		this.textEndTime = new TimeField("Horário Final");
 		this.textEndTime.set24HourClock(true);
 		
+		this.comboResult = new NativeSelect("Resultado Final");
+		this.comboResult.setWidth("200px");
+		this.comboResult.setNullSelectionAllowed(false);
+		this.comboResult.addItem(JuryResult.NONE);
+		this.comboResult.addItem(JuryResult.APPROVED);
+		this.comboResult.addItem(JuryResult.APPROVEDWITHRESERVATIONS);
+		this.comboResult.addItem(JuryResult.DISAPPROVED);
+		this.comboResult.select(JuryResult.NONE);
+		
 		this.textComments = new TextArea("Observações");
 		this.textComments.setWidth("690px");
 		this.textComments.setHeight("150px");
@@ -90,9 +103,12 @@ public class EditInternshipJuryWindow extends EditWindow {
 		VerticalLayout tab1 = new VerticalLayout();
 		tab1.setSpacing(true);
 		tab1.addComponent(this.textLocal);
-		HorizontalLayout h1 = new HorizontalLayout(this.textDate, this.textStartTime, this.textEndTime, this.textCompanySupervisorScore);
+		HorizontalLayout h1 = new HorizontalLayout(this.textDate, this.textStartTime, this.textEndTime);
 		h1.setSpacing(true);
 		tab1.addComponent(h1);
+		HorizontalLayout h2 = new HorizontalLayout(this.textCompanySupervisorScore, this.comboResult);
+		h2.setSpacing(true);
+		tab1.addComponent(h2);
 		tab1.addComponent(this.textComments);
 		
 		this.layoutAppraisers = new HorizontalLayout();
@@ -175,6 +191,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 		this.textEndTime.setValue(this.jury.getEndTime());
 		this.textComments.setValue(this.jury.getComments());
 		this.textCompanySupervisorScore.setValue(String.valueOf(this.jury.getCompanySupervisorScore()));
+		this.comboResult.setValue(this.jury.getResult());
 		
 		if(this.jury.getIdInternshipJury() == 0){
 			InternshipJuryAppraiser appraiser = new InternshipJuryAppraiser();
@@ -271,6 +288,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 			this.jury.setEndTime(this.textEndTime.getValue());
 			this.jury.setDate(this.textDate.getValue());
 			this.jury.setCompanySupervisorScore(Double.parseDouble(this.textCompanySupervisorScore.getValue()));
+			this.jury.setResult((JuryResult)this.comboResult.getValue());
 			
 			bo.save(this.jury);
 			

@@ -268,6 +268,7 @@ CREATE  TABLE internshipjury (
   supervisorPonderosity REAL NOT NULL ,
   companySupervisorPonderosity REAL NOT NULL ,
   companySupervisorScore REAL NOT NULL ,
+  result smallint NOT NULL,
   PRIMARY KEY (idinternshipjury) ,
   CONSTRAINT fk_internshipjury_idinternship FOREIGN KEY (idinternship) REFERENCES internship (idinternship) ON DELETE NO ACTION ON UPDATE NO ACTION
 );

@@ -268,6 +268,7 @@ CREATE  TABLE `internshipjury` (
   `supervisorPonderosity` DOUBLE NOT NULL ,
   `companySupervisorPonderosity` DOUBLE NOT NULL ,
   `companySupervisorScore` DOUBLE NOT NULL ,
+  `result` TINYINT NOT NULL,
   PRIMARY KEY (`idinternshipjury`) ,
   INDEX `fk_internshipjury_idinternship_idx` (`idinternship` ASC) ,
   CONSTRAINT `fk_internshipjury_idinternship` FOREIGN KEY (`idinternship` ) REFERENCES `internship` (`idinternship` ) ON DELETE NO ACTION ON UPDATE NO ACTION

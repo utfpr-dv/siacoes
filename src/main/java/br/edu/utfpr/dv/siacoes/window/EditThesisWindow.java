@@ -8,10 +8,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
@@ -25,6 +28,7 @@ import com.vaadin.ui.Upload.SucceededListener;
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.bo.DeadlineBO;
+import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
@@ -38,6 +42,11 @@ import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
 import br.edu.utfpr.dv.siacoes.model.Document;
+import br.edu.utfpr.dv.siacoes.model.Jury;
+import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserDetailReport;
+import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
+import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserScoreReport;
+import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.Semester;
@@ -218,9 +227,18 @@ public class EditThesisWindow extends EditWindow {
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			}
-		}else if(this.thesis.getFile() != null){
-			this.buttonDownloadFile.setVisible(true);
-			this.prepareDownloadThesis();
+		}else{
+			if(this.thesis.getFile() != null){
+				this.buttonDownloadFile.setVisible(true);
+				this.prepareDownloadThesis();
+			}
+			
+			try {
+				this.loadGrades();
+			} catch (Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				Notification.show("Carregar Notas", "Não foi possível carregar as notas atribuídas pela banca.", Notification.Type.ERROR_MESSAGE);
+			}
 		}
 	}
 	
@@ -253,8 +271,6 @@ public class EditThesisWindow extends EditWindow {
 			this.thesis.setTitle(this.textTitle.getValue());
 			this.thesis.setSubarea(this.textSubarea.getValue());
 			this.thesis.setAbstract(this.textAbstract.getValue());
-			//this.thesis.setSupervisor(this.comboSupervisor.getProfessor());
-			//this.thesis.setCosupervisor(this.comboCosupervisor.getProfessor());
 			
 			bo.save(this.thesis);
 			
@@ -278,6 +294,89 @@ public class EditThesisWindow extends EditWindow {
 			new ExtensionUtils().extendToDownload("Monografia_TCC_" + this.thesis.getIdThesis() + Document.DocumentType.PDF.getExtension(), this.thesis.getFile(), this.buttonDownloadFile);
 		}else{
 			this.buttonDownloadFile.setVisible(false);
+		}
+	}
+	
+	private void loadGrades() throws Exception {
+		if(this.thesis.getIdThesis() != 0) {
+			JuryBO bo = new JuryBO();
+			Jury jury = bo.findByThesis(this.thesis.getIdThesis());
+			
+			if((jury.getIdJury() != 0) && (bo.hasScores(jury.getIdJury()))) {
+				JuryFormReport report = bo.getFormReport(jury.getIdJury());
+				
+				TabSheet tab = new TabSheet();
+				tab.setSizeFull();
+				
+				Grid gridGeneral = new Grid();
+				gridGeneral.setWidth("100%");
+				gridGeneral.setHeight("150px");
+				gridGeneral.addColumn("", String.class);
+				gridGeneral.addColumn("Avaliador", String.class);
+				gridGeneral.addColumn("Escrita", Double.class);
+				gridGeneral.addColumn("Apresentação", Double.class);
+				gridGeneral.addColumn("Arguição", Double.class);
+				gridGeneral.addColumn("Total", Double.class);
+				
+				for(JuryFormAppraiserScoreReport appraiser : report.getScores()) {
+					gridGeneral.addRow(appraiser.getDescription(), appraiser.getName(), appraiser.getScoreWriting(), appraiser.getScoreOral(), appraiser.getScoreArgumentation(), (appraiser.getScoreWriting() + appraiser.getScoreOral() + appraiser.getScoreArgumentation()));
+				}
+				
+				TextField textScore = new TextField();
+				textScore.setCaption(null);
+				textScore.setEnabled(false);
+				textScore.setWidth("100px");
+				textScore.setValue(String.format("%.2f", report.getScore()));
+				
+				Label labelScore = new Label("Média Final:");
+				
+				HorizontalLayout layoutScore = new HorizontalLayout(labelScore, textScore);
+				layoutScore.setComponentAlignment(labelScore, Alignment.MIDDLE_RIGHT);
+				layoutScore.setSpacing(true);
+				
+				TextArea textComments = new TextArea("Comentários");
+				textComments.setWidth("100%");
+				textComments.setHeight("75px");
+				textComments.setEnabled(false);
+				textComments.setValue(report.getComments());
+				
+				VerticalLayout tab1 = new VerticalLayout(gridGeneral, layoutScore, textComments);
+				tab1.setComponentAlignment(layoutScore, Alignment.MIDDLE_RIGHT);
+				tab1.setSpacing(true);
+				
+				tab.addTab(tab1, "Geral");
+				
+				for(JuryFormAppraiserReport appraiser : report.getAppraisers()) {
+					TextField textAppraiser = new TextField("Avaliador:");
+					textAppraiser.setWidth("100%");
+					textAppraiser.setEnabled(false);
+					textAppraiser.setValue(appraiser.getName());
+					
+					Grid gridScores = new Grid();
+					gridScores.setWidth("100%");
+					gridScores.setHeight("150px");
+					gridScores.addColumn("Quesito", String.class);
+					gridScores.addColumn("Peso", Double.class);
+					gridScores.addColumn("Nota", Double.class);
+					
+					for(JuryFormAppraiserDetailReport scores : appraiser.getDetail()) {
+						gridScores.addRow(scores.getEvaluationItem(), scores.getPonderosity(), scores.getScore());
+					}
+					
+					TextArea textAppraiserComments = new TextArea("Comentários");
+					textAppraiserComments.setWidth("100%");
+					textAppraiserComments.setHeight("50px");
+					textAppraiserComments.setEnabled(false);
+					textAppraiserComments.setValue(appraiser.getComments());
+					
+					VerticalLayout tabAppraiser = new VerticalLayout(textAppraiser, gridScores, textAppraiserComments);
+					tabAppraiser.setSpacing(true);
+					
+					tab.addTab(tabAppraiser, appraiser.getDescription());
+				}
+				
+				this.tabData.addTab(tab, "Avaliação");
+			}
 		}
 	}
 	

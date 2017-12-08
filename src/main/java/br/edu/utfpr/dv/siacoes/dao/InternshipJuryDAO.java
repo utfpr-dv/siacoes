@@ -14,6 +14,7 @@ import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryStudent;
+import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
 
 public class InternshipJuryDAO {
 	
@@ -181,7 +182,7 @@ public class InternshipJuryDAO {
 			boolean insert = (jury.getIdInternshipJury() == 0);
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO internshipjury(date, local, idInternship, comments, startTime, endTime, minimumScore, supervisorPonderosity, companySupervisorPonderosity, companySupervisorScore) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO internshipjury(date, local, idInternship, comments, startTime, endTime, minimumScore, supervisorPonderosity, companySupervisorPonderosity, companySupervisorScore, result) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 				
 				jury.setMinimumScore(10);
 				
@@ -202,7 +203,7 @@ public class InternshipJuryDAO {
 					}
 				}
 			}else{
-				stmt = conn.prepareStatement("UPDATE internshipjury SET date=?, local=?, idInternship=?, comments=?, startTime=?, endTime=?, minimumScore=?, supervisorPonderosity=?, companySupervisorPonderosity=?, companySupervisorScore=? WHERE idInternshipJury=?");
+				stmt = conn.prepareStatement("UPDATE internshipjury SET date=?, local=?, idInternship=?, comments=?, startTime=?, endTime=?, minimumScore=?, supervisorPonderosity=?, companySupervisorPonderosity=?, companySupervisorScore=?, result=? WHERE idInternshipJury=?");
 			}
 			
 			stmt.setTimestamp(1, new java.sql.Timestamp(jury.getDate().getTime()));
@@ -215,9 +216,10 @@ public class InternshipJuryDAO {
 			stmt.setDouble(8, jury.getSupervisorPonderosity());
 			stmt.setDouble(9, jury.getCompanySupervisorPonderosity());
 			stmt.setDouble(10, jury.getCompanySupervisorScore());
+			stmt.setInt(11, jury.getResult().getValue());
 			
 			if(!insert){
-				stmt.setInt(11, jury.getIdInternshipJury());
+				stmt.setInt(12, jury.getIdInternshipJury());
 			}
 			
 			stmt.execute();
@@ -296,8 +298,34 @@ public class InternshipJuryDAO {
 		jury.setSupervisorPonderosity(rs.getDouble("supervisorPonderosity"));
 		jury.setCompanySupervisorPonderosity(rs.getDouble("companySupervisorPonderosity"));
 		jury.setCompanySupervisorScore(rs.getDouble("companySupervisorScore"));
+		jury.setResult(JuryResult.valueOf(rs.getInt("result")));
 		
 		return jury;
+	}
+	
+	public boolean hasScores(int idInternshipJury) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT COUNT(*) AS total FROM internshipjuryappraiser " + 
+					"INNER JOIN internshipjuryappraiserscore ON internshipjuryappraiserscore.idinternshipjuryappraiser=internshipjuryappraiser.idinternshipjuryappraiser " + 
+					"WHERE internshipjuryappraiser.idinternshipjury=?");
+			stmt.setInt(1, idInternshipJury);
+			
+			rs = stmt.executeQuery();
+			rs.next();
+			return rs.getInt("total") > 0;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
 	}
 	
 	public boolean hasAllScores(int idInternshipJury) throws SQLException{

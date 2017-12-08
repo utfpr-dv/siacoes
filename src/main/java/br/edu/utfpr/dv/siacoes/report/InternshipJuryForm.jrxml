@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-12-05T15:05:58 -->
+<!-- Created with Jaspersoft Studio version 6.4.3.final using JasperReports Library version 6.4.3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="JuryForm2" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="aaaa9f03-6de2-4449-a217-db75b3350ee7">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -60,6 +59,9 @@
 	</field>
 	<field name="company" class="java.lang.String">
 		<fieldDescription><![CDATA[company]]></fieldDescription>
+	</field>
+	<field name="result" class="br.edu.utfpr.dv.siacoes.model.Jury.JuryResult">
+		<fieldDescription><![CDATA[result]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -279,19 +281,6 @@
 				<text><![CDATA[A Banca Examinadora, composta pelos professores acima identificados, fez a avaliação do trabalho, tendo examinado o Relatório de Estágio Curricular Obrigatório, decidindo pela]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="1" y="182" width="480" height="18" uuid="6a451cdd-96eb-43f5-a97f-a0ec15897af0"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[(  ) APROVAÇÃO SEM RESSALVAS]]></text>
-			</staticText>
-			<staticText>
 				<reportElement positionType="Float" x="1" y="203" width="480" height="26" uuid="bc2fa5da-207b-43bb-9bc7-ee2105a11873"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -303,32 +292,6 @@
 					<font fontName="Arial" size="11" isBold="false"/>
 				</textElement>
 				<text><![CDATA[                                                             , de acordo com documento em anexo ou com as correções indicadas no texto do relatório.]]></text>
-			</staticText>
-			<staticText>
-				<reportElement positionType="Float" x="1" y="201" width="480" height="18" uuid="37197d95-3eb2-4cf3-b19d-8e7414060f2d"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[(  ) APROVAÇÃO COM RESSALVAS]]></text>
-			</staticText>
-			<staticText>
-				<reportElement positionType="Float" x="1" y="232" width="480" height="18" uuid="05efd2c1-2d6d-42fc-b898-44fe76d7a0ed"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[(  ) REPROVAÇÃO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement positionType="Float" x="1" y="272" width="480" height="58" uuid="457f5e3a-2b56-4e3e-8bab-9c5e24062ec5"/>
@@ -602,6 +565,45 @@
 					<font fontName="Arial" size="11" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Pelo presente documento atribui-se a nota final " + IF($F{finalScore} == 0, "_________", new java.text.DecimalFormat("#0.00").format($F{finalScore})) + ", conforme critérios em anexo."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="1" y="182" width="480" height="18" uuid="ff882afe-394d-486c-a509-a62ed1c82bd8"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{result} == br.edu.utfpr.dv.siacoes.model.Jury.JuryResult.APPROVED, "(X)", "(  )") + "APROVAÇÃO SEM RESSALVAS"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="1" y="201" width="480" height="18" uuid="f05202d4-fe7f-4400-b266-c5246853e1b6"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{result} == br.edu.utfpr.dv.siacoes.model.Jury.JuryResult.APPROVEDWITHRESERVATIONS, "(X)", "(  )") + "APROVAÇÃO COM RESSALVAS"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="1" y="232" width="480" height="18" uuid="96ff4bdd-6cee-4ff6-aa5e-21b1764944c1"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{result} == br.edu.utfpr.dv.siacoes.model.Jury.JuryResult.DISAPPROVED, "(X)", "(  )") + "REPROVAÇÃO"]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

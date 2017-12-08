@@ -353,6 +353,31 @@ public class JuryDAO {
 		return jury;
 	}
 	
+	public boolean hasScores(int idJury) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT COUNT(*) AS total FROM juryappraiser " + 
+					"INNER JOIN juryappraiserscore ON juryappraiserscore.idjuryappraiser=juryappraiser.idjuryappraiser " + 
+					"WHERE juryappraiser.idjury=?");
+			stmt.setInt(1, idJury);
+			
+			rs = stmt.executeQuery();
+			rs.next();
+			return rs.getInt("total") > 0;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public boolean hasAllScores(int idJury) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;

@@ -9,6 +9,48 @@ import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class Jury {
 	
+	public enum JuryResult{
+		NONE(0), APPROVED(1), APPROVEDWITHRESERVATIONS(2), DISAPPROVED(3);
+		
+		private final int value; 
+		JuryResult(int value){ 
+			this.value = value; 
+		}
+		
+		public int getValue(){ 
+			return value;
+		}
+		
+		public static JuryResult valueOf(int value){
+			for(JuryResult d : JuryResult.values()){
+				if(d.getValue() == value){
+					return d;
+				}
+			}
+			
+			return null;
+		}
+		
+		public String toString(){
+			return this.getDescription();
+		}
+		
+		public String getDescription(){
+			switch(this){
+				case NONE:
+					return "Nenhum";
+				case APPROVED:
+					return "Aprovado";
+				case APPROVEDWITHRESERVATIONS:
+					return "Aprovado com Ressalvas";
+				case DISAPPROVED:
+					return "Reprovado";
+				default:
+					return "";
+			}
+		}
+	}
+	
 	private int idJury;
 	private Date date;
 	private String local;

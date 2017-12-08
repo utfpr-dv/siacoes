@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
+import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class InternshipJury {
@@ -21,6 +22,7 @@ public class InternshipJury {
 	private double supervisorPonderosity;
 	private double companySupervisorPonderosity;
 	private double companySupervisorScore;
+	private JuryResult result;
 
 	public InternshipJury(){
 		this.setIdInternshipJury(0);
@@ -35,6 +37,7 @@ public class InternshipJury {
 		this.setSupervisorPonderosity(0);
 		this.setCompanySupervisorPonderosity(0);
 		this.setCompanySupervisorScore(0);
+		this.setResult(JuryResult.NONE);
 	}
 	
 	public int getIdInternshipJury() {
@@ -114,6 +117,12 @@ public class InternshipJury {
 	}
 	public void setCompanySupervisorScore(double companySupervisorScore) {
 		this.companySupervisorScore = companySupervisorScore;
+	}
+	public JuryResult getResult() {
+		return result;
+	}
+	public void setResult(JuryResult result) {
+		this.result = result;
 	}
 	public User getSupervisor(){
 		if((this.getInternship().getSupervisor() == null) || (this.getInternship().getSupervisor().getIdUser() == 0)){

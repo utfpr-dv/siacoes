@@ -1598,6 +1598,21 @@ div.v-layout.v-horizontal.v-widget {
 	max-height: 200px;
 }
 
+.Border {
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+	padding: 5px;
+}
+
+.CenterText {
+	text-align: center;
+}
+
+.BoldText {
+	font-weight: bold;
+}
+
 .valo-test .v-button-primary.v-button-primary {
 	background: #fff;
 	border-color: #96be5a;
