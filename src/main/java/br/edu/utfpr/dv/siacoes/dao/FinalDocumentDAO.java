@@ -245,7 +245,7 @@ public class FinalDocumentDAO {
 		}
 	}
 	
-	public List<FinalDocument> listByDepartment(int idDepartment) throws SQLException{
+	public List<FinalDocument> listByDepartment(int idDepartment, boolean showThesis, boolean showProjects) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -253,26 +253,30 @@ public class FinalDocumentDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-				"SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
+				(showThesis ? "SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, finaldocument.companyInfo, finaldocument.patent, " +
 				"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, project.idProposal, \"user\".name AS student " +
 				"FROM finaldocument INNER JOIN thesis ON thesis.idThesis=finaldocument.idThesis " +
 				"INNER JOIN project ON project.idProject=thesis.idProject " +
 				"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
 				"INNER JOIN \"user\" ON \"user\".idUser=thesis.idStudent " +
-				"WHERE finaldocument.supervisorFeedback=1 AND proposal.idDepartment=? " +
-				" UNION ALL " +
-				"SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
+				"WHERE finaldocument.supervisorFeedback=1 AND proposal.idDepartment=? " : "") +
+				(showThesis && showProjects ? " UNION ALL " : "") +
+				(showProjects ? "SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, finaldocument.companyInfo, finaldocument.patent, " +
 				"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, \"user\".name AS student " +
 				"FROM finaldocument INNER JOIN project ON project.idProject=finaldocument.idProject " +
 				"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
 				"INNER JOIN \"user\" ON \"user\".idUser=project.idStudent " +
-				"WHERE finaldocument.supervisorFeedback=1 AND proposal.idDepartment=? " +
+				"WHERE finaldocument.supervisorFeedback=1 AND proposal.idDepartment=? " : "") +
 				"ORDER BY year DESC, semester DESC, title");
 		
-			stmt.setInt(1, idDepartment);
-			stmt.setInt(2, idDepartment);
+			if(showThesis) {
+				stmt.setInt(1, idDepartment);	
+			}
+			if(showProjects) {
+				stmt.setInt((showThesis ? 2 : 1), idDepartment);	
+			}
 			
 			rs = stmt.executeQuery();
 			

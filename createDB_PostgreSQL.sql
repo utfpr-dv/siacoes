@@ -92,6 +92,7 @@ CREATE  TABLE sigesconfig (
   minimumScore REAL NOT NULL ,
   supervisorPonderosity REAL NOT NULL ,
   companySupervisorPonderosity REAL NOT NULL ,
+  showgradestostudent SMALLINT NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigesconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -100,6 +101,7 @@ CREATE  TABLE sigetconfig (
   iddepartment INT NOT NULL ,
   minimumScore REAL NOT NULL ,
   registerProposal SMALLINT NOT NULL ,
+  showgradestostudent SMALLINT NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigetconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );

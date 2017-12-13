@@ -18,6 +18,7 @@ public class EditSigesWindow extends EditWindow {
 	private final TextField textMinimumScore;
 	private final TextField textSupervisorPonderosity;
 	private final TextField textCompanySupervisorPonderosity;
+	private final CheckBox checkShowGradesToStudent;
 	
 	public EditSigesWindow(SigesConfig config, ListView parentView){
 		super("Editar Configurações", parentView);
@@ -33,17 +34,21 @@ public class EditSigesWindow extends EditWindow {
 		this.textCompanySupervisorPonderosity = new TextField("Peso da Nota do Supervisor na Empresa");
 		this.textCompanySupervisorPonderosity.setWidth("100px");
 		
+		this.checkShowGradesToStudent = new CheckBox("Permitir que o acadêmico visualize as notas atribuídas pela banca");
+		
 		this.addField(this.textMinimumScore);
 		this.addField(this.textSupervisorPonderosity);
 		this.addField(this.textCompanySupervisorPonderosity);
+		this.addField(this.checkShowGradesToStudent);
 		
 		this.loadConfigurations();
 	}
 	
 	private void loadConfigurations(){
-		this.textMinimumScore.setValue(String.valueOf(this.config.getMinimumScore()));
-		this.textSupervisorPonderosity.setValue(String.valueOf(this.config.getSupervisorPonderosity()));
-		this.textCompanySupervisorPonderosity.setValue(String.valueOf(this.config.getCompanySupervisorPonderosity()));
+		this.textMinimumScore.setValue(String.format("%.2f", this.config.getMinimumScore()));
+		this.textSupervisorPonderosity.setValue(String.format("%.2f", this.config.getSupervisorPonderosity()));
+		this.textCompanySupervisorPonderosity.setValue(String.format("%.2f", this.config.getCompanySupervisorPonderosity()));
+		this.checkShowGradesToStudent.setValue(this.config.isShowGradesToStudent());
 	}
 
 	@Override
@@ -54,6 +59,7 @@ public class EditSigesWindow extends EditWindow {
 			this.config.setMinimumScore(Double.parseDouble(this.textMinimumScore.getValue()));
 			this.config.setSupervisorPonderosity(Double.parseDouble(this.textSupervisorPonderosity.getValue()));
 			this.config.setCompanySupervisorPonderosity(Double.parseDouble(this.textCompanySupervisorPonderosity.getValue()));
+			this.config.setShowGradesToStudent(this.checkShowGradesToStudent.getValue());
 			
 			bo.save(this.config);
 			

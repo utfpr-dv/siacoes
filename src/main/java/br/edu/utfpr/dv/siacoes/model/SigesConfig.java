@@ -6,12 +6,14 @@ public class SigesConfig {
 	public double minimumScore;
 	public double supervisorPonderosity;
 	public double companySupervisorPonderosity;
+	private boolean showGradesToStudent;
 	
 	public SigesConfig(){
 		this.setDepartment(new Department());
 		this.setMinimumScore(6);
 		this.setSupervisorPonderosity(1);
 		this.setCompanySupervisorPonderosity(1);
+		this.setShowGradesToStudent(false);
 	}
 	
 	public Department getDepartment() {
@@ -37,6 +39,12 @@ public class SigesConfig {
 	}
 	public void setCompanySupervisorPonderosity(double companySupervisorPonderosity) {
 		this.companySupervisorPonderosity = companySupervisorPonderosity;
+	}
+	public boolean isShowGradesToStudent() {
+		return showGradesToStudent;
+	}
+	public void setShowGradesToStudent(boolean showGradesToStudent) {
+		this.showGradesToStudent = showGradesToStudent;
 	}
 
 }

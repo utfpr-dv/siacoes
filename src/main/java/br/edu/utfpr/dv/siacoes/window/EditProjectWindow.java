@@ -32,6 +32,7 @@ import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
+import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.bo.SupervisorChangeBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
@@ -49,6 +50,7 @@ import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.Semester;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
@@ -294,83 +296,95 @@ public class EditProjectWindow extends EditWindow {
 	
 	private void loadGrades() throws Exception {
 		if(this.project.getIdProject() != 0) {
-			JuryBO bo = new JuryBO();
-			Jury jury = bo.findByProject(this.project.getIdProject());
+			SigetConfig config = new SigetConfig();
 			
-			if((jury.getIdJury() != 0) && (bo.hasScores(jury.getIdJury()))) {
-				JuryFormReport report = bo.getFormReport(jury.getIdJury());
+			if(Session.isUserStudent()) {
+				ProposalBO pbo = new ProposalBO();
+				Proposal proposal = pbo.findById(this.project.getProposal().getIdProposal());
 				
-				TabSheet tab = new TabSheet();
-				tab.setSizeFull();
+				SigetConfigBO sbo = new SigetConfigBO();
+				config = sbo.findByDepartment(proposal.getDepartment().getIdDepartment());
+			}
+			
+			if(config.isShowGradesToStudent() || Session.isUserProfessor()) {
+				JuryBO bo = new JuryBO();
+				Jury jury = bo.findByProject(this.project.getIdProject());
 				
-				Grid gridGeneral = new Grid();
-				gridGeneral.setWidth("100%");
-				gridGeneral.setHeight("150px");
-				gridGeneral.addColumn("", String.class);
-				gridGeneral.addColumn("Avaliador", String.class);
-				gridGeneral.addColumn("Escrita", Double.class);
-				gridGeneral.addColumn("Apresentação", Double.class);
-				gridGeneral.addColumn("Arguição", Double.class);
-				gridGeneral.addColumn("Total", Double.class);
-				
-				for(JuryFormAppraiserScoreReport appraiser : report.getScores()) {
-					gridGeneral.addRow(appraiser.getDescription(), appraiser.getName(), appraiser.getScoreWriting(), appraiser.getScoreOral(), appraiser.getScoreArgumentation(), (appraiser.getScoreWriting() + appraiser.getScoreOral() + appraiser.getScoreArgumentation()));
-				}
-				
-				TextField textScore = new TextField();
-				textScore.setCaption(null);
-				textScore.setEnabled(false);
-				textScore.setWidth("100px");
-				textScore.setValue(String.format("%.2f", report.getScore()));
-				
-				Label labelScore = new Label("Média Final:");
-				
-				HorizontalLayout layoutScore = new HorizontalLayout(labelScore, textScore);
-				layoutScore.setComponentAlignment(labelScore, Alignment.MIDDLE_RIGHT);
-				layoutScore.setSpacing(true);
-				
-				TextArea textComments = new TextArea("Comentários");
-				textComments.setWidth("100%");
-				textComments.setHeight("75px");
-				textComments.setEnabled(false);
-				textComments.setValue(report.getComments());
-				
-				VerticalLayout tab1 = new VerticalLayout(gridGeneral, layoutScore, textComments);
-				tab1.setComponentAlignment(layoutScore, Alignment.MIDDLE_RIGHT);
-				tab1.setSpacing(true);
-				
-				tab.addTab(tab1, "Geral");
-				
-				for(JuryFormAppraiserReport appraiser : report.getAppraisers()) {
-					TextField textAppraiser = new TextField("Avaliador:");
-					textAppraiser.setWidth("100%");
-					textAppraiser.setEnabled(false);
-					textAppraiser.setValue(appraiser.getName());
+				if((jury.getIdJury() != 0) && (bo.hasScores(jury.getIdJury()))) {
+					JuryFormReport report = bo.getFormReport(jury.getIdJury());
 					
-					Grid gridScores = new Grid();
-					gridScores.setWidth("100%");
-					gridScores.setHeight("150px");
-					gridScores.addColumn("Quesito", String.class);
-					gridScores.addColumn("Peso", Double.class);
-					gridScores.addColumn("Nota", Double.class);
+					TabSheet tab = new TabSheet();
+					tab.setSizeFull();
 					
-					for(JuryFormAppraiserDetailReport scores : appraiser.getDetail()) {
-						gridScores.addRow(scores.getEvaluationItem(), scores.getPonderosity(), scores.getScore());
+					Grid gridGeneral = new Grid();
+					gridGeneral.setWidth("100%");
+					gridGeneral.setHeight("150px");
+					gridGeneral.addColumn("", String.class);
+					gridGeneral.addColumn("Avaliador", String.class);
+					gridGeneral.addColumn("Escrita", Double.class);
+					gridGeneral.addColumn("Apresentação", Double.class);
+					gridGeneral.addColumn("Arguição", Double.class);
+					gridGeneral.addColumn("Total", Double.class);
+					
+					for(JuryFormAppraiserScoreReport appraiser : report.getScores()) {
+						gridGeneral.addRow(appraiser.getDescription(), appraiser.getName(), appraiser.getScoreWriting(), appraiser.getScoreOral(), appraiser.getScoreArgumentation(), (appraiser.getScoreWriting() + appraiser.getScoreOral() + appraiser.getScoreArgumentation()));
 					}
 					
-					TextArea textAppraiserComments = new TextArea("Comentários");
-					textAppraiserComments.setWidth("100%");
-					textAppraiserComments.setHeight("50px");
-					textAppraiserComments.setEnabled(false);
-					textAppraiserComments.setValue(appraiser.getComments());
+					TextField textScore = new TextField();
+					textScore.setCaption(null);
+					textScore.setEnabled(false);
+					textScore.setWidth("100px");
+					textScore.setValue(String.format("%.2f", report.getScore()));
 					
-					VerticalLayout tabAppraiser = new VerticalLayout(textAppraiser, gridScores, textAppraiserComments);
-					tabAppraiser.setSpacing(true);
+					Label labelScore = new Label("Média Final:");
 					
-					tab.addTab(tabAppraiser, appraiser.getDescription());
+					HorizontalLayout layoutScore = new HorizontalLayout(labelScore, textScore);
+					layoutScore.setComponentAlignment(labelScore, Alignment.MIDDLE_RIGHT);
+					layoutScore.setSpacing(true);
+					
+					TextArea textComments = new TextArea("Comentários");
+					textComments.setWidth("100%");
+					textComments.setHeight("75px");
+					textComments.setEnabled(false);
+					textComments.setValue(report.getComments());
+					
+					VerticalLayout tab1 = new VerticalLayout(gridGeneral, layoutScore, textComments);
+					tab1.setComponentAlignment(layoutScore, Alignment.MIDDLE_RIGHT);
+					tab1.setSpacing(true);
+					
+					tab.addTab(tab1, "Geral");
+					
+					for(JuryFormAppraiserReport appraiser : report.getAppraisers()) {
+						TextField textAppraiser = new TextField("Avaliador:");
+						textAppraiser.setWidth("100%");
+						textAppraiser.setEnabled(false);
+						textAppraiser.setValue(appraiser.getName());
+						
+						Grid gridScores = new Grid();
+						gridScores.setWidth("100%");
+						gridScores.setHeight("150px");
+						gridScores.addColumn("Quesito", String.class);
+						gridScores.addColumn("Peso", Double.class);
+						gridScores.addColumn("Nota", Double.class);
+						
+						for(JuryFormAppraiserDetailReport scores : appraiser.getDetail()) {
+							gridScores.addRow(scores.getEvaluationItem(), scores.getPonderosity(), scores.getScore());
+						}
+						
+						TextArea textAppraiserComments = new TextArea("Comentários");
+						textAppraiserComments.setWidth("100%");
+						textAppraiserComments.setHeight("50px");
+						textAppraiserComments.setEnabled(false);
+						textAppraiserComments.setValue(appraiser.getComments());
+						
+						VerticalLayout tabAppraiser = new VerticalLayout(textAppraiser, gridScores, textAppraiserComments);
+						tabAppraiser.setSpacing(true);
+						
+						tab.addTab(tabAppraiser, appraiser.getDescription());
+					}
+					
+					this.tabData.addTab(tab, "Avaliação");
 				}
-				
-				this.tabData.addTab(tab, "Avaliação");
 			}
 		}
 	}

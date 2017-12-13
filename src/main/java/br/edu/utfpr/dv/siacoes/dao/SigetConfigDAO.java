@@ -46,14 +46,15 @@ public class SigetConfigDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO sigetconfig(minimumScore, registerProposal, idDepartment) VALUES(?, ?, ?)");
+				stmt = conn.prepareStatement("INSERT INTO sigetconfig(minimumScore, registerProposal, showgradestostudent, idDepartment) VALUES(?, ?, ?, ?)");
 			}else{
-				stmt = conn.prepareStatement("UPDATE sigetconfig SET minimumScore=?, registerProposal=? WHERE idDepartment=?");
+				stmt = conn.prepareStatement("UPDATE sigetconfig SET minimumScore=?, registerProposal=?, showgradestostudent=? WHERE idDepartment=?");
 			}
 			
 			stmt.setDouble(1, config.getMinimumScore());
 			stmt.setInt(2, (config.isRegisterProposal() ? 1 : 0));
-			stmt.setInt(3, config.getDepartment().getIdDepartment());
+			stmt.setInt(3, config.isShowGradesToStudent() ? 1 : 0);
+			stmt.setInt(4, config.getDepartment().getIdDepartment());
 			
 			stmt.execute();
 			
@@ -72,6 +73,7 @@ public class SigetConfigDAO {
 		config.getDepartment().setIdDepartment(rs.getInt("idDepartment"));
 		config.setMinimumScore(rs.getDouble("minimumScore"));
 		config.setRegisterProposal(rs.getInt("registerProposal") == 1);
+		config.setShowGradesToStudent(rs.getInt("showgradestostudent") == 1);
 		
 		return config;
 	}

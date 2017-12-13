@@ -92,6 +92,7 @@ CREATE  TABLE `sigesconfig` (
   `minimumScore` DOUBLE NOT NULL ,
   `supervisorPonderosity` DOUBLE NOT NULL ,
   `companySupervisorPonderosity` DOUBLE NOT NULL ,
+  `showgradestostudent` TINYINT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigesconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -100,6 +101,7 @@ CREATE  TABLE `sigetconfig` (
   `iddepartment` INT NOT NULL ,
   `minimumScore` DOUBLE NOT NULL ,
   `registerProposal` TINYINT NOT NULL ,
+  `showgradestostudent` TINYINT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigetconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );

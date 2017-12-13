@@ -115,11 +115,15 @@ public class FinalDocumentBO {
 		}
 	}
 	
-	public List<FinalDocument> listByDepartment(int idDepartment) throws Exception{
+	public List<FinalDocument> listByDepartment(int idDepartment, boolean showThesis, boolean showProjects) throws Exception{
 		try{
+			if(!showThesis && !showProjects) {
+				throw new Exception("É necessário filtrar apenas por monografias, projetos, ou ambos.");
+			}
+			
 			FinalDocumentDAO dao = new FinalDocumentDAO();
 			
-			return dao.listByDepartment(idDepartment);
+			return dao.listByDepartment(idDepartment, showThesis, showProjects);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

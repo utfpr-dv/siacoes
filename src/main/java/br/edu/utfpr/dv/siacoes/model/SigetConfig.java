@@ -5,11 +5,13 @@ public class SigetConfig {
 	public Department department;
 	public double minimumScore;
 	private boolean registerProposal;
+	private boolean showGradesToStudent;
 	
 	public SigetConfig(){
 		this.setDepartment(new Department());
 		this.setMinimumScore(6);
 		this.setRegisterProposal(false);
+		this.setShowGradesToStudent(false);
 	}
 	
 	public Department getDepartment() {
@@ -29,6 +31,12 @@ public class SigetConfig {
 	}
 	public void setRegisterProposal(boolean registerProposal) {
 		this.registerProposal = registerProposal;
+	}
+	public boolean isShowGradesToStudent() {
+		return showGradesToStudent;
+	}
+	public void setShowGradesToStudent(boolean showGradesToStudent) {
+		this.showGradesToStudent = showGradesToStudent;
 	}
 
 }

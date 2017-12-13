@@ -17,6 +17,7 @@ public class EditSigetWindow extends EditWindow {
 	
 	private final TextField textMinimumScore;
 	private final CheckBox checkRegisterProposal;
+	private final CheckBox checkShowGradesToStudent;
 	
 	public EditSigetWindow(SigetConfig config, ListView parentView){
 		super("Editar Configurações", parentView);
@@ -28,15 +29,19 @@ public class EditSigetWindow extends EditWindow {
 		
 		this.checkRegisterProposal = new CheckBox("O aluno deve registrar a proposta para TCC1");
 		
+		this.checkShowGradesToStudent = new CheckBox("Permitir que o acadêmico visualize as notas atribuídas pela banca");
+		
 		this.addField(this.textMinimumScore);
 		this.addField(this.checkRegisterProposal);
+		this.addField(this.checkShowGradesToStudent);
 		
 		this.loadConfigurations();
 	}
 	
 	private void loadConfigurations(){
-		this.textMinimumScore.setValue(String.valueOf(this.config.getMinimumScore()));
+		this.textMinimumScore.setValue(String.format("%.2f", this.config.getMinimumScore()));
 		this.checkRegisterProposal.setValue(this.config.isRegisterProposal());
+		this.checkShowGradesToStudent.setValue(this.config.isShowGradesToStudent());
 	}
 
 	@Override
@@ -46,6 +51,7 @@ public class EditSigetWindow extends EditWindow {
 			
 			this.config.setMinimumScore(Double.parseDouble(this.textMinimumScore.getValue()));
 			this.config.setRegisterProposal(this.checkRegisterProposal.getValue());
+			this.config.setShowGradesToStudent(this.checkShowGradesToStudent.getValue());
 			
 			bo.save(this.config);
 			

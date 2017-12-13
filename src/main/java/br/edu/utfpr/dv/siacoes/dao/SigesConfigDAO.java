@@ -46,15 +46,16 @@ public class SigesConfigDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO sigesconfig(minimumScore, supervisorPonderosity, companySupervisorPonderosity, idDepartment) VALUES(?, ?, ?, ?)");
+				stmt = conn.prepareStatement("INSERT INTO sigesconfig(minimumScore, supervisorPonderosity, companySupervisorPonderosity, showgradestostudent, idDepartment) VALUES(?, ?, ?, ?, ?)");
 			}else{
-				stmt = conn.prepareStatement("UPDATE sigesconfig SET minimumScore=?, supervisorPonderosity=?, companySupervisorPonderosity=? WHERE idDepartment=?");
+				stmt = conn.prepareStatement("UPDATE sigesconfig SET minimumScore=?, supervisorPonderosity=?, companySupervisorPonderosity=?, showgradestostudent=? WHERE idDepartment=?");
 			}
 			
 			stmt.setDouble(1, config.getMinimumScore());
 			stmt.setDouble(2, config.getSupervisorPonderosity());
 			stmt.setDouble(3, config.getCompanySupervisorPonderosity());
-			stmt.setInt(4, config.getDepartment().getIdDepartment());
+			stmt.setInt(4, config.isShowGradesToStudent() ? 1 : 0);
+			stmt.setInt(5, config.getDepartment().getIdDepartment());
 			
 			stmt.execute();
 			
@@ -74,6 +75,7 @@ public class SigesConfigDAO {
 		config.setMinimumScore(rs.getDouble("minimumScore"));
 		config.setSupervisorPonderosity(rs.getDouble("supervisorPonderosity"));
 		config.setCompanySupervisorPonderosity(rs.getDouble("companySupervisorPonderosity"));
+		config.setShowGradesToStudent(rs.getInt("showgradestostudent") == 1);
 		
 		return config;
 	}
