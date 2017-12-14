@@ -285,9 +285,9 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		this.comboSemester.setSemester(this.submission.getSemester());
 		this.textYear.setYear(this.submission.getYear());
 		this.textSubmissionDate.setValue(this.submission.getSubmissionDate());
-		this.textAmount.setValue(String.valueOf(this.submission.getAmount()));
+		this.textAmount.setValue(String.format("%.2f", this.submission.getAmount()));
 		this.comboFeedback.setValue(this.submission.getFeedback());
-		this.textValidatedAmount.setValue(String.valueOf(this.submission.getValidatedAmount()));
+		this.textValidatedAmount.setValue(String.format("%.2f", this.submission.getValidatedAmount()));
 		this.textFeedbackDate.setValue(this.submission.getFeedbackDate());
 		this.textFeedbackUser.setValue(this.submission.getFeedbackUser().getName());
 		this.textComments.setValue(this.submission.getComments());
@@ -330,7 +330,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 				
 				this.submission.setFeedback((ActivityFeedback)this.comboFeedback.getValue());
 				this.submission.setFeedbackDate(this.textFeedbackDate.getValue());
-				this.submission.setValidatedAmount(Double.parseDouble(this.textValidatedAmount.getValue()));
+				this.submission.setValidatedAmount(Double.parseDouble(this.textValidatedAmount.getValue().replace(",", ".")));
 				
 				if(this.submission.getFeedbackDate() == null){
 					this.submission.setFeedbackDate(new Date());
@@ -340,7 +340,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			if(this.submission.getFeedback() == ActivityFeedback.NONE){
 				this.submission.setSemester(this.comboSemester.getSemester());
 				this.submission.setYear(this.textYear.getYear());
-				this.submission.setAmount(Double.parseDouble(this.textAmount.getValue()));
+				this.submission.setAmount(Double.parseDouble(this.textAmount.getValue().replace(",", ".")));
 			}
 			
 			this.submission.setActivity((Activity)this.comboActivity.getValue());

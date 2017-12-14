@@ -179,17 +179,18 @@ public class ThesisDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
 					"SELECT * FROM (SELECT thesis.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName, jury.minimumScore, " +
-					"AVG((SELECT (SUM(juryAppraiserScore.score * evaluationItem.ponderosity) / SUM(evaluationItem.ponderosity)) " +
+					"(SELECT AVG(score) FROM (SELECT juryAppraiser.idJury, SUM(juryAppraiserScore.score) AS score " +
 					"FROM juryAppraiser INNER JOIN juryAppraiserScore ON juryAppraiserScore.idJuryAppraiser = juryAppraiser.idJuryAppraiser " +
 					"INNER JOIN evaluationItem ON evaluationItem.idEvaluationItem = juryAppraiserScore.idEvaluationItem " +
-					"WHERE juryAppraiser.idJury = jury.idJury GROUP BY juryAppraiser.idJuryAppraiser)) AS score " +
+					"WHERE juryAppraiser.idJury = jury.idJury GROUP BY juryAppraiser.idJuryAppraiser) AS tableScore) AS score " +
 					"FROM thesis INNER JOIN project ON project.idProject=thesis.idThesis " +
 					"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
 					"INNER JOIN \"user\" student ON student.idUser=thesis.idStudent " + 
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=thesis.idSupervisor " +
 					"INNER JOIN jury ON jury.idThesis = thesis.idThesis " +
+					"INNER JOIN finalDocument ON finalDocument.idThesis = thesis.idThesis " +
 					"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=thesis.idCosupervisor " +
-					"WHERE thesis.idStudent = ? AND proposal.idDepartment=? AND (thesis.year < " + String.valueOf(year) + " OR (thesis.year = " + String.valueOf(year) + " AND thesis.semester < " + String.valueOf(semester) + "))) AS p WHERE p.score >= p.minimumScore ORDER BY year DESC, semester DESC");
+					"WHERE finalDocument.supervisorFeedback=1 AND thesis.idStudent = ? AND proposal.idDepartment=? AND (thesis.year < " + String.valueOf(year) + " OR (thesis.year = " + String.valueOf(year) + " AND thesis.semester < " + String.valueOf(semester) + "))) AS p WHERE p.score >= p.minimumScore ORDER BY year DESC, semester DESC");
 		
 			stmt.setInt(1, idStudent);
 			stmt.setInt(2, idDepartment);

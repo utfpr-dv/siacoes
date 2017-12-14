@@ -82,8 +82,8 @@ public class FinalDocumentView extends ListView {
 		this.getGrid().addColumn("TCC", Integer.class);
 		this.getGrid().addColumn("Semestre", Integer.class);
 		this.getGrid().addColumn("Ano", Integer.class);
-		this.getGrid().addColumn("Título", String.class);
 		this.getGrid().addColumn("Acadêmico", String.class);
+		this.getGrid().addColumn("Título", String.class);
 		this.getGrid().addColumn("Submissão", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
 		this.getGrid().addColumn("Sigilo", String.class);
 		this.getGrid().addColumn("Feedback", String.class);
@@ -113,9 +113,9 @@ public class FinalDocumentView extends ListView {
 				Object itemId = null;
 
 				if((doc.getProject() != null) && (doc.getProject().getIdProject() > 0)){
-					itemId = this.getGrid().addRow(1, doc.getProject().getSemester(), doc.getProject().getYear(), doc.getTitle(), doc.getProject().getStudent().getName(), doc.getSubmissionDate(), (doc.isPrivate() ? "Sim" : "Não"), doc.getSupervisorFeedback().toString());
+					itemId = this.getGrid().addRow(1, doc.getProject().getSemester(), doc.getProject().getYear(), doc.getProject().getStudent().getName(), doc.getTitle(), doc.getSubmissionDate(), (doc.isPrivate() ? "Sim" : "Não"), doc.getSupervisorFeedback().toString());
 				}else{
-					itemId = this.getGrid().addRow(1, doc.getThesis().getSemester(), doc.getThesis().getYear(), doc.getTitle(), doc.getThesis().getStudent().getName(), doc.getSubmissionDate(), (doc.isPrivate() ? "Sim" : "Não"), doc.getSupervisorFeedback().toString());
+					itemId = this.getGrid().addRow(1, doc.getThesis().getSemester(), doc.getThesis().getYear(), doc.getThesis().getStudent().getName(), doc.getTitle(), doc.getSubmissionDate(), (doc.isPrivate() ? "Sim" : "Não"), doc.getSupervisorFeedback().toString());
 				}
 				
 				this.addRowId(itemId, doc.getIdFinalDocument());

@@ -12,6 +12,8 @@ import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
+import br.edu.utfpr.dv.siacoes.model.Project;
+import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 
 public class ProposalBO {
@@ -28,11 +30,11 @@ public class ProposalBO {
 		}
 	}
 
-	public List<Proposal> listAll() throws Exception{
+	public List<Proposal> listAll(boolean includeInvalidated) throws Exception{
 		try {
 			ProposalDAO dao = new ProposalDAO();
 			
-			return dao.listAll();
+			return dao.listAll(includeInvalidated);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -93,6 +95,35 @@ public class ProposalBO {
 			ProposalDAO dao = new ProposalDAO();
 			
 			return dao.getProposalStage(idProposal);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public boolean invalidated(int idProposal) throws Exception{
+		ProjectBO bo = new ProjectBO();
+		Project project = bo.findByProposal(idProposal);
+		
+		if((project != null) && (project.getIdProject() != 0)) {
+			throw new Exception("Não é possível invalidar a proposta pois o projeto já foi enviado.");
+		}
+		
+		try {
+			ProposalDAO dao = new ProposalDAO();
+			
+			Proposal proposal = dao.findById(idProposal);
+			
+			proposal.setIdProposal(0);
+			proposal.setFile(null);
+			proposal.setFileType(DocumentType.UNDEFINED);
+			proposal.setTitle("A Definir");
+			proposal.setSubarea("A Definir");
+			
+			int newId = dao.save(proposal);
+			
+			return dao.invalidated(idProposal, newId);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

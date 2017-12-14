@@ -85,7 +85,7 @@ public class EditJuryAppraiserScoreWindow extends EditWindow {
 				labelPonderosity.setWidth("50px");
 				
 				TextField textScore = new TextField();
-				textScore.setValue(String.format("%4.2f", score.getScore()));
+				textScore.setValue(String.format("%.2f", score.getScore()));
 				textScore.setWidth("100px");
 				
 				this.layoutEvaluationItems.addComponent(new HorizontalLayout(labelDescription, labelPonderosity, textScore));

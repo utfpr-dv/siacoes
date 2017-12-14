@@ -29,7 +29,6 @@ import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryStudent;
 import br.edu.utfpr.dv.siacoes.model.User;
-import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
 import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
@@ -190,7 +189,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 		this.textStartTime.setValue(this.jury.getStartTime());
 		this.textEndTime.setValue(this.jury.getEndTime());
 		this.textComments.setValue(this.jury.getComments());
-		this.textCompanySupervisorScore.setValue(String.valueOf(this.jury.getCompanySupervisorScore()));
+		this.textCompanySupervisorScore.setValue(String.format("%.2f", this.jury.getCompanySupervisorScore()));
 		this.comboResult.setValue(this.jury.getResult());
 		
 		if(this.jury.getIdInternshipJury() == 0){
@@ -287,7 +286,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 			this.jury.setStartTime(this.textStartTime.getValue());
 			this.jury.setEndTime(this.textEndTime.getValue());
 			this.jury.setDate(this.textDate.getValue());
-			this.jury.setCompanySupervisorScore(Double.parseDouble(this.textCompanySupervisorScore.getValue()));
+			this.jury.setCompanySupervisorScore(Double.parseDouble(this.textCompanySupervisorScore.getValue().replace(",", ".")));
 			this.jury.setResult((JuryResult)this.comboResult.getValue());
 			
 			bo.save(this.jury);

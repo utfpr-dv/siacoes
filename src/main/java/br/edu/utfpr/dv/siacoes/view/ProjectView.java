@@ -5,15 +5,11 @@ import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 
-import com.vaadin.event.EventRouter;
-import com.vaadin.event.SelectionEvent;
-import com.vaadin.event.SelectionEvent.SelectionListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
@@ -25,18 +21,14 @@ import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
-import br.edu.utfpr.dv.siacoes.bo.JuryStudentBO;
 import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.Project;
-import br.edu.utfpr.dv.siacoes.model.StatementReport;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
-import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
-import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.window.EditJuryAppraiserFeedbackWindow;
 import br.edu.utfpr.dv.siacoes.window.EditJuryWindow;
 import br.edu.utfpr.dv.siacoes.window.EditProjectWindow;
@@ -63,7 +55,12 @@ public class ProjectView extends ListView {
 		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
-		this.buttonDownloadProject = new Button("Projeto");
+		this.buttonDownloadProject = new Button("Projeto", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadFile();
+            }
+        });
 		this.addActionButton(this.buttonDownloadProject);
 		
 		this.buttonJury = new Button("Banca", new Button.ClickListener() {
@@ -129,18 +126,10 @@ public class ProjectView extends ListView {
 		this.getGrid().addColumn("Título", String.class);
 		this.getGrid().addColumn("Acadêmico", String.class);
 		this.getGrid().addColumn("Submissão", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
-		this.getGrid().addSelectionListener(new SelectionListener() {
-			@Override
-			public void select(SelectionEvent event) {
-				prepareDownload();
-			}
-		});
 		
 		this.getGrid().getColumns().get(0).setWidth(100);
 		this.getGrid().getColumns().get(1).setWidth(100);
 		this.getGrid().getColumns().get(4).setWidth(125);
-		
-		this.prepareDownload();
 		
 		try {
 			ProjectBO bo = new ProjectBO();
@@ -249,43 +238,23 @@ public class ProjectView extends ListView {
 		}
 	}
 	
-	private void prepareDownload(){
+	private void downloadFile(){
 		Object value = getIdSelected();
 		
-		this.buttonDownloadProject.removeClickListener(this.listenerClickProject);
-		
-    	if(value != null){
-			try {
-            	ProjectBO bo = new ProjectBO();
+		if(value == null){
+			Notification.show("Download do Projeto", "Selecione um registro para baixar o projeto.", Notification.Type.WARNING_MESSAGE);
+		}else{
+			try{
+				ProjectBO bo = new ProjectBO();
             	Project p = bo.findById((int)value);
-            	
-            	new ExtensionUtils().extendToDownload(p.getTitle() + p.getFileType().getExtension(), p.getFile(), this.buttonDownloadProject);
-        	} catch (Exception e) {
-        		this.listenerClickProject = new Button.ClickListener() {
-		            @Override
-		            public void buttonClick(ClickEvent event) {
-		            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-		            	
-		            	Notification.show("Download do Projeto", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-		            }
-		        };
-		        
-        		this.buttonDownloadProject.addClickListener(this.listenerClickProject);
+				
+				this.showReport(p.getFile());
+			}catch(Exception e){
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+	        	
+	        	Notification.show("Download do Projeto", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
-    	}else{
-    		new ExtensionUtils().removeAllExtensions(this.buttonDownloadProject);
-    		
-    		this.listenerClickProject = new Button.ClickListener() {
-	            @Override
-	            public void buttonClick(ClickEvent event) {
-	            	Notification.show("Download de Projeto", "Selecione um registro para baixar o projeto.", Notification.Type.WARNING_MESSAGE);
-	            }
-	        };
-	        
-    		this.buttonDownloadProject.addClickListener(this.listenerClickProject);
-    		
-    		new ExtensionUtils().removeAllExtensions(this.buttonStatements);
-    	}
+		}
 	}
 	
 	private void juryClick(){

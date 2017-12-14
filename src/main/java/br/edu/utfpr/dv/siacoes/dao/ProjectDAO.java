@@ -177,16 +177,17 @@ public class ProjectDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
 				"SELECT * FROM (SELECT project.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName, jury.minimumScore, " +
-				"AVG((SELECT (SUM(juryAppraiserScore.score * evaluationItem.ponderosity) / SUM(evaluationItem.ponderosity)) " +
+				"(SELECT AVG(score) FROM (SELECT juryAppraiser.idJury, SUM(juryAppraiserScore.score) AS score " +
 				"FROM juryAppraiser INNER JOIN juryAppraiserScore ON juryAppraiserScore.idJuryAppraiser = juryAppraiser.idJuryAppraiser " +
 				"INNER JOIN evaluationItem ON evaluationItem.idEvaluationItem = juryAppraiserScore.idEvaluationItem " +
-				"WHERE juryAppraiser.idJury = jury.idJury GROUP BY juryAppraiser.idJuryAppraiser)) AS score " +
+				"WHERE juryAppraiser.idJury = jury.idJury GROUP BY juryAppraiser.idJuryAppraiser) AS tableScore) AS score " +
 				"FROM project INNER JOIN proposal ON proposal.idProposal=project.idProposal " + 
 				"INNER JOIN \"user\" student ON student.idUser=project.idStudent " +
 				"INNER JOIN \"user\" supervisor ON supervisor.idUser=project.idSupervisor " +
 				"INNER JOIN jury ON jury.idProject = project.idProject " +
+				"INNER JOIN finalDocument ON finalDocument.idProject = project.idProject " +
 				"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=project.idCosupervisor " +
-				"WHERE project.idStudent = ? AND proposal.idDepartment = ? AND (project.year < " + String.valueOf(year) + " OR (project.year = " + String.valueOf(year) + " AND project.semester < " + String.valueOf(semester) + "))) AS p WHERE p.score >= p.minimumScore ORDER BY year DESC, semester DESC");
+				"WHERE finalDocument.supervisorFeedback=1 AND project.idStudent = ? AND proposal.idDepartment = ? AND (project.year < " + String.valueOf(year) + " OR (project.year = " + String.valueOf(year) + " AND project.semester < " + String.valueOf(semester) + "))) AS p WHERE p.score >= p.minimumScore ORDER BY year DESC, semester DESC");
 		
 			stmt.setInt(1, idStudent);
 			stmt.setInt(2, idDepartment);

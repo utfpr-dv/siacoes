@@ -21,6 +21,7 @@ public class Proposal {
 	private int year;
 	private Date submissionDate;
 	private Department department;
+	private boolean invalidated;
 	
 	public Proposal(){
 		this.setIdProposal(0);
@@ -35,6 +36,7 @@ public class Proposal {
 		this.setYear(DateUtils.getYear());
 		this.setSubmissionDate(DateUtils.getToday().getTime());
 		this.setDepartment(new Department());
+		this.setInvalidated(false);
 	}
 	
 	public Proposal(User student){
@@ -50,6 +52,7 @@ public class Proposal {
 		this.setYear(DateUtils.getYear());
 		this.setSubmissionDate(DateUtils.getToday().getTime());
 		this.setDepartment(new Department());
+		this.setInvalidated(false);
 	}
 	
 	public int getIdProposal() {
@@ -132,6 +135,12 @@ public class Proposal {
 	}
 	public Department getDepartment(){
 		return department;
+	}
+	public boolean isInvalidated() {
+		return invalidated;
+	}
+	public void setInvalidated(boolean invalidated) {
+		this.invalidated = invalidated;
 	}
 	
 }

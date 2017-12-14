@@ -180,7 +180,7 @@ public class ProposalDAO {
 						"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 						"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
 						"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=proposal.idCosupervisor " +
-						"WHERE proposal.idStudent = ? AND proposal.idDepartment=? AND proposal.semester = ? AND proposal.year = ?");
+						"WHERE proposal.invalidated=0 AND proposal.idStudent = ? AND proposal.idDepartment=? AND proposal.semester = ? AND proposal.year = ?");
 				
 				stmt.setInt(1, idStudent);
 				stmt.setInt(2, idDepartment);
@@ -219,8 +219,8 @@ public class ProposalDAO {
 					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
 					"LEFT JOIN \"user\" cosupervisor on cosupervisor.idUser=proposal.idCosupervisor " +
-					"WHERE proposal.idStudent = ? AND proposal.idDepartment=? " +
-					"ORDER BY year DESC, semester DESC");
+					"WHERE proposal.invalidated=0 AND proposal.idStudent = ? AND proposal.idDepartment=? " +
+					"ORDER BY proposal.year DESC, proposal.semester DESC");
 		
 			stmt.setInt(1, idStudent);
 			stmt.setInt(2, idDepartment);
@@ -255,7 +255,8 @@ public class ProposalDAO {
 				"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 				"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
 				"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=proposal.idCosupervisor " +
-				"WHERE proposal.idDepartment=? AND proposal.semester = ? AND proposal.year = ? ORDER BY proposal.title");
+				"WHERE proposal.invalidated=0 AND proposal.idDepartment=? AND proposal.semester = ? AND proposal.year = ? " +
+				"ORDER BY student.name");
 		
 			stmt.setInt(1, idDepartment);
 			stmt.setInt(2, semester);
@@ -292,8 +293,8 @@ public class ProposalDAO {
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
 					"INNER JOIN proposalappraiser appraiser ON appraiser.idProposal=proposal.idProposal " +
 					"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=proposal.idCosupervisor " +
-					"WHERE appraiser.idAppraiser = ? AND semester = ? AND year = ? " +
-					"ORDER BY title");
+					"WHERE proposal.invalidated=0 AND appraiser.idAppraiser = ? AND semester = ? AND year = ? " +
+					"ORDER BY student.name");
 		
 			stmt.setInt(1, idAppraiser);
 			stmt.setInt(2, semester);
@@ -329,7 +330,8 @@ public class ProposalDAO {
 					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
 					"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=proposal.idCosupervisor " +
-					"WHERE idStudent = ? ORDER BY proposal.year DESC, proposal.semester DESC");
+					"WHERE proposal.invalidated=0 AND idStudent = ? " +
+					"ORDER BY proposal.year DESC, proposal.semester DESC, student.name");
 		
 			stmt.setInt(1, idStudent);
 			
@@ -363,7 +365,8 @@ public class ProposalDAO {
 					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
 					"LEFT JOIN \"user\" cosupervisor on cosupervisor.idUser=proposal.idCosupervisor " +
-					"WHERE proposal.idSupervisor = ? OR proposal.idCosupervisor = ? ORDER BY proposal.year DESC, proposal.semester DESC, proposal.title");
+					"WHERE proposal.invalidated=0 AND proposal.idSupervisor = ? OR proposal.idCosupervisor = ? " +
+					"ORDER BY proposal.year DESC, proposal.semester DESC, student.name");
 		
 			stmt.setInt(1, idSupervisor);
 			stmt.setInt(2, idSupervisor);
@@ -421,7 +424,7 @@ public class ProposalDAO {
 		}
 	}
 	
-	public List<Proposal> listAll() throws SQLException{
+	public List<Proposal> listAll(boolean includeInvalidated) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -435,7 +438,8 @@ public class ProposalDAO {
 					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 					"INNER JOIN \"user\" supervisor on supervisor.idUser=proposal.idSupervisor " +
 					"LEFT JOIN \"user\" cosupervisor on cosupervisor.idUser=proposal.idCosupervisor " +
-					"ORDER BY year DESC, semester DESC, title");
+					(includeInvalidated ? "" : "WHERE proposal.invalidated=0 ") +
+					"ORDER BY proposal.year DESC, proposal.semester DESC, student.name");
 			List<Proposal> list = new ArrayList<Proposal>();
 			
 			while(rs.next()){
@@ -446,6 +450,40 @@ public class ProposalDAO {
 		}finally{
 			if((rs != null) && !rs.isClosed())
 				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public boolean invalidated(int idOldProposal, int idNewProposal) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			conn.setAutoCommit(false);
+			stmt = conn.createStatement();
+			
+			stmt.execute("UPDATE attendance SET idProposal=" + String.valueOf(idNewProposal) + " WHERE idProposal=" + String.valueOf(idOldProposal));
+			
+			boolean ret = stmt.execute("UPDATE proposal SET invalidated=1 WHERE idProposal=" + String.valueOf(idOldProposal));
+			
+			conn.commit();
+			
+			return ret;
+		}catch(SQLException e){
+			conn.rollback();
+			
+			conn.setAutoCommit(true);
+			stmt.close();
+			stmt = conn.createStatement();
+			stmt.execute("DELETE FROM proposal WHERE idProposal=" + String.valueOf(idNewProposal));
+			
+			throw e;
+		}finally{
+			conn.setAutoCommit(true);
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
@@ -464,7 +502,7 @@ public class ProposalDAO {
 			boolean insert = (proposal.getIdProposal() == 0);
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO proposal(idDepartment, semester, year, title, subarea, idStudent, idSupervisor, idCosupervisor, file, fileType, submissionDate) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO proposal(idDepartment, semester, year, title, subarea, idStudent, idSupervisor, idCosupervisor, file, fileType, submissionDate, invalidated) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)", Statement.RETURN_GENERATED_KEYS);
 			}else{
 				stmt = conn.prepareStatement("UPDATE proposal SET idDepartment=?, semester=?, year=?, title=?, subarea=?, idStudent=?, idSupervisor=?, idCosupervisor=?, file=?, fileType=?, submissionDate=? WHERE idProposal=?");
 			}
@@ -561,6 +599,7 @@ public class ProposalDAO {
 		p.getDepartment().setIdDepartment(rs.getInt("idDepartment"));
 		p.getDepartment().setName(rs.getString("departmentName"));
 		p.getDepartment().getCampus().setIdCampus(rs.getInt("idCampus"));
+		p.setInvalidated(rs.getInt("invalidated") == 1);
 		
 		return p;
 	}
