@@ -1,14 +1,21 @@
 ﻿package br.edu.utfpr.dv.siacoes.bo;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.dao.InternshipFinalDocumentDAO;
+import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
+import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
+import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
+import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
 
 public class InternshipFinalDocumentBO {
 	
@@ -90,9 +97,40 @@ public class InternshipFinalDocumentBO {
 		}
 		
 		try{
+			boolean isInsert = (doc.getIdInternshipFinalDocument() == 0);
+			DocumentFeedback feedback = DocumentFeedback.NONE;
 			InternshipFinalDocumentDAO dao = new InternshipFinalDocumentDAO();
 			
-			return dao.save(doc);
+			if(!isInsert) {
+				feedback = dao.findFeedback(doc.getIdInternshipFinalDocument());
+			}
+			
+			int ret = dao.save(doc);
+			
+			try {
+				EmailMessageBO ebo = new EmailMessageBO();
+				List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+				
+				keys.add(new EmailMessageEntry<String, String>("student", internship.getStudent().getName()));
+				keys.add(new EmailMessageEntry<String, String>("company", internship.getCompany().getName()));
+				keys.add(new EmailMessageEntry<String, String>("supervisor", internship.getSupervisor().getName()));
+				keys.add(new EmailMessageEntry<String, String>("feedback", doc.getSupervisorFeedback().toString()));
+				
+				if(isInsert) {
+					ebo.sendEmail(internship.getSupervisor().getIdUser(), MessageType.INTERNSHIPFINALDOCUMENTSUBMITTED, keys);
+				} else if((doc.getSupervisorFeedback() != DocumentFeedback.NONE) && (feedback != doc.getSupervisorFeedback())) {
+					UserBO ubo = new UserBO();
+					User user = ubo.findManager(Session.getUser().getDepartment().getIdDepartment(), SystemModule.SIGES);
+					
+					keys.add(new EmailMessageEntry<String, String>("manager", user.getName()));
+					
+					ebo.sendEmail(user.getIdUser(), MessageType.INTERNSHIPFINALDOCUMENTVALIDATED, keys);
+				}
+			}catch(Exception e){
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			}
+			
+			return ret;
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

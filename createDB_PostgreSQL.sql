@@ -695,3 +695,7 @@ INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) V
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(20, 3, '', '', '{student};{title};{appraiser};{company};{date};{time};{local}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(21, 3, '', '', '{student};{title};{appraiser};{company};{date};{time};{local}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(22, 3, '', '', '{student};{title};{appraiser};{company};{date};{time};{local}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(23, 1, '', '', '{documenttype};{student};{title};{supervisor}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(24, 1, '', '', '{documenttype};{student};{title};{supervisor};{feedback};{manager}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(25, 3, '', '', '{student};{company};{supervisor}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(26, 3, '', '', '{student};{company};{supervisor};{feedback};{manager}');

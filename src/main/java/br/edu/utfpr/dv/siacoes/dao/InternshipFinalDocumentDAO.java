@@ -14,6 +14,32 @@ import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
 
 public class InternshipFinalDocumentDAO {
 	
+	public DocumentFeedback findFeedback(int id) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT supervisorFeedback FROM internshipfinaldocument WHERE idInternshipFinalDocument=" + String.valueOf(id));
+			
+			if(rs.next()) {
+				return DocumentFeedback.valueOf(rs.getInt("supervisorFeedback"));
+			} else {
+				return DocumentFeedback.NONE;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public InternshipFinalDocument findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;

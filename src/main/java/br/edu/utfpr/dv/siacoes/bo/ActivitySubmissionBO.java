@@ -147,7 +147,7 @@ public class ActivitySubmissionBO {
 			}
 			
 			if(isInsert){
-				bo.sendEmail(submission.getStudent().getIdUser(), MessageType.ACTIVITYSUBMITED, keys);
+				bo.sendEmail(submission.getStudent().getIdUser(), MessageType.ACTIVITYSUBMITTED, keys);
 			}else if(feedback != submission.getFeedback()){
 				bo.sendEmail(submission.getStudent().getIdUser(), MessageType.ACTIVITYFEEDBACK, keys);
 			}

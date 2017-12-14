@@ -2,6 +2,7 @@
 
 import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -9,12 +10,18 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.dao.FinalDocumentDAO;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.Department;
+import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument;
+import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
+import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.LibraryCoverReport;
 import br.edu.utfpr.dv.siacoes.model.LibraryReport;
+import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class FinalDocumentBO {
@@ -143,9 +150,56 @@ public class FinalDocumentBO {
 		}
 		
 		try{
+			boolean isInsert = (thesis.getIdFinalDocument() == 0);
+			DocumentFeedback feedback = DocumentFeedback.NONE;
 			FinalDocumentDAO dao = new FinalDocumentDAO();
 			
-			return dao.save(thesis);
+			if(!isInsert) {
+				feedback = dao.findFeedback(thesis.getIdFinalDocument());
+			}
+			
+			int ret = dao.save(thesis);
+			
+			try {
+				EmailMessageBO bo = new EmailMessageBO();
+				List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+				
+				if((thesis.getThesis() != null) && (thesis.getThesis().getIdThesis() != 0)) {
+					keys.add(new EmailMessageEntry<String, String>("documenttype", "Monografia de TCC 2"));
+					keys.add(new EmailMessageEntry<String, String>("student", thesis.getThesis().getStudent().getName()));
+					keys.add(new EmailMessageEntry<String, String>("title", thesis.getThesis().getTitle()));
+					keys.add(new EmailMessageEntry<String, String>("supervisor", thesis.getThesis().getSupervisor().getName()));
+				} else {
+					keys.add(new EmailMessageEntry<String, String>("documenttype", "Projeto de TCC 1"));
+					keys.add(new EmailMessageEntry<String, String>("student", thesis.getProject().getStudent().getName()));
+					keys.add(new EmailMessageEntry<String, String>("title", thesis.getProject().getTitle()));
+					keys.add(new EmailMessageEntry<String, String>("supervisor", thesis.getProject().getSupervisor().getName()));
+				}
+				keys.add(new EmailMessageEntry<String, String>("feedback", thesis.getSupervisorFeedback().toString()));
+				
+				if(isInsert) {
+					int idSupervisor = 0;
+					
+					if((thesis.getThesis() != null) && (thesis.getThesis().getIdThesis() != 0)) {
+						idSupervisor = thesis.getThesis().getSupervisor().getIdUser();
+					} else {
+						idSupervisor = thesis.getProject().getSupervisor().getIdUser();
+					}
+					
+					bo.sendEmail(idSupervisor, MessageType.FINALDOCUMENTSUBMITTED, keys);
+				} else if((thesis.getSupervisorFeedback() != DocumentFeedback.NONE) && (feedback != thesis.getSupervisorFeedback())) {
+					UserBO ubo = new UserBO();
+					User user = ubo.findManager(Session.getUser().getDepartment().getIdDepartment(), SystemModule.SIGET);
+					
+					keys.add(new EmailMessageEntry<String, String>("manager", user.getName()));
+					
+					bo.sendEmail(user.getIdUser(), MessageType.FINALDOCUMENTVALIDATED, keys);
+				}
+			}catch(Exception e){
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			}
+			
+			return ret;
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

@@ -5,7 +5,7 @@ import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 public class EmailMessage {
 	
 	public enum MessageType{
-		NONE(0), ACTIVITYSUBMITED(1), 
+		NONE(0), ACTIVITYSUBMITTED(1), 
 		ACTIVITYFEEDBACK(2),
 		INTERNSHIPINCLUDEDSTUDENT(3),
 		INTERNSHIPINCLUDEDSUPERVISOR(4),
@@ -26,7 +26,11 @@ public class EmailMessage {
 		INTERNSHIPJURYINCLUDEDAPPRAISER(19),
 		INTERNSHIPJURYCHANGEDSTUDENT(20),
 		INTERNSHIPJURYCHANGEDAPPRAISER(21),
-		INTERNSHIPJURYREMOVEDAPPRAISER(22);
+		INTERNSHIPJURYREMOVEDAPPRAISER(22),
+		FINALDOCUMENTSUBMITTED(23),
+		FINALDOCUMENTVALIDATED(24),
+		INTERNSHIPFINALDOCUMENTSUBMITTED(25),
+		INTERNSHIPFINALDOCUMENTVALIDATED(26);
 		
 		private final int value; 
 		MessageType(int value){ 
@@ -49,7 +53,7 @@ public class EmailMessage {
 		
 		public String toString(){
 			switch(this){
-				case ACTIVITYSUBMITED:
+				case ACTIVITYSUBMITTED:
 					return "Comprovante de Atividade Complementar Enviado";
 				case ACTIVITYFEEDBACK:
 					return "Comprovante de Atividade Complementar Apreciado";
@@ -93,6 +97,14 @@ public class EmailMessage {
 					return "Banca de Estágio Alterada (Avaliador)";
 				case INTERNSHIPJURYREMOVEDAPPRAISER:
 					return "Banca de Estágio (Avaliador Removido)";
+				case FINALDOCUMENTSUBMITTED:
+					return "Versão Final de TCC Submetida";
+				case FINALDOCUMENTVALIDATED:
+					return "Versão Final de TCC Validada";
+				case INTERNSHIPFINALDOCUMENTSUBMITTED:
+					return "Versão Final de Estágio Submetida";
+				case INTERNSHIPFINALDOCUMENTVALIDATED:
+					return "Versão Final de Estágio Validada";
 				default:
 					return "";
 			}
