@@ -25,16 +25,20 @@ import com.vaadin.ui.Upload.SucceededListener;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
+import br.edu.utfpr.dv.siacoes.bo.DeadlineBO;
 import br.edu.utfpr.dv.siacoes.bo.FinalDocumentBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
+import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Campus;
+import br.edu.utfpr.dv.siacoes.model.Deadline;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
@@ -142,6 +146,31 @@ public class EditFinalDocumentWindow extends EditWindow {
 		}else{
 			this.comboFeedback.setEnabled(false);
 			this.textComments.setReadOnly(true);
+		}
+		
+		if(Session.isUserStudent()){
+			try {
+				DeadlineBO dbo = new DeadlineBO();
+				Semester semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+				Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+				
+				if((this.thesis.getThesis() != null) && (this.thesis.getThesis().getIdThesis() != 0)) {
+					if(DateUtils.getToday().getTime().after(d.getThesisFinalDocumentDeadline())){
+						this.uploadFile.setEnabled(false);
+						this.setSaveButtonEnabled(false);
+					}	
+				} else {
+					if(DateUtils.getToday().getTime().after(d.getProjectFinalDocumentDeadline())){
+						this.uploadFile.setEnabled(false);
+						this.setSaveButtonEnabled(false);
+					}
+				}
+			} catch (Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				this.uploadFile.setEnabled(false);
+				this.setSaveButtonEnabled(false);
+				Notification.show("Submeter Versão Final", "Não foi possível determinar a data limite para entrega da versão final do documento.", Notification.Type.ERROR_MESSAGE);
+			}
 		}
 		
 		this.loadThesis();

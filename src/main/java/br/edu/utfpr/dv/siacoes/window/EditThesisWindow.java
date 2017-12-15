@@ -179,10 +179,12 @@ public class EditThesisWindow extends EditWindow {
 				Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 				
 				if(DateUtils.getToday().getTime().after(d.getThesisDeadline())){
-					this.setSaveButtonEnabled(false);	
+					this.uploadFile.setEnabled(false);
+					this.setSaveButtonEnabled(false);
 				}
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				this.uploadFile.setEnabled(false);
 				this.setSaveButtonEnabled(false);
 				Notification.show("Submeter Monografia", "Não foi possível determinar a data limite para entrega das monografias.", Notification.Type.ERROR_MESSAGE);
 			}
