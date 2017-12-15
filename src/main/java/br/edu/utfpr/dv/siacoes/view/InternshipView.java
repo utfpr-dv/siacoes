@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.vaadin.dialogs.ConfirmDialog;
+
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -251,10 +253,23 @@ public class InternshipView extends ListView {
     		Notification.show("Selecionar Registro", "Selecione o registro para enviar o relatório final.", Notification.Type.WARNING_MESSAGE);
     	}else{
     		try{
-    			InternshipBO bo = new InternshipBO();
-    			Internship internship = bo.findById((int)id);
+    			InternshipJuryBO jbo = new InternshipJuryBO();
+    			InternshipJury jury = jbo.findByInternship((int)id);
     			
-    			UI.getCurrent().addWindow(new InternshipUploadFinalReportWindow(internship, this));
+    			if((jury != null) && (jury.getIdInternshipJury() != 0) && (jury.getDate().before(DateUtils.getToday().getTime()))) {
+    				ConfirmDialog.show(UI.getCurrent(), "Não é possível enviar o relatório pois a banca de estágio já ocorreu.\n\nVocê deseja enviar a versão final do relatório?", new ConfirmDialog.Listener() {
+    	                public void onClose(ConfirmDialog dialog) {
+    	                    if (dialog.isConfirmed()) {
+    	                    	finalDocumentClick();
+    	                    }
+    	                }
+    	            });
+    			} else {
+    				InternshipBO bo = new InternshipBO();
+        			Internship internship = bo.findById((int)id);
+        			
+        			UI.getCurrent().addWindow(new InternshipUploadFinalReportWindow(internship, this));
+    			}
     		}catch(Exception e){
     			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
     			

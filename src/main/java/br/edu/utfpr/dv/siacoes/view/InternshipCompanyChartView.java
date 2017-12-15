@@ -19,6 +19,7 @@ import org.dussan.vaadin.dcharts.options.Legend;
 import org.dussan.vaadin.dcharts.options.Options;
 import org.dussan.vaadin.dcharts.options.Series;
 import org.dussan.vaadin.dcharts.options.SeriesDefaults;
+import org.dussan.vaadin.dcharts.options.Title;
 import org.dussan.vaadin.dcharts.renderers.legend.EnhancedLegendRenderer;
 
 import br.edu.utfpr.dv.siacoes.Session;
@@ -49,13 +50,15 @@ public class InternshipCompanyChartView extends ChartView {
         	series.addSeries(new XYseries().setLabel(item.getCompanyName()));
         }
 		
+		Title title = new Title("Estagiários por Empresa");
+		
 		Legend legend = new Legend().setShow(true).setRendererOptions(new EnhancedLegendRenderer().setSeriesToggle(SeriesToggles.SLOW).setSeriesToggleReplot(true)).setPlacement(LegendPlacements.OUTSIDE_GRID);
 
 		Axes axes = new Axes().addAxis(new XYaxis().setRenderer(AxisRenderers.CATEGORY).setTicks(new Ticks().add("")));
 
 		Highlighter highlighter = new Highlighter().setShow(true).setShowTooltip(true).setTooltipAlwaysVisible(true).setKeepTooltipInsideChart(true).setTooltipLocation(TooltipLocations.NORTH).setTooltipAxes(TooltipAxes.XY_BAR);
 
-		Options options = new Options().setSeriesDefaults(seriesDefaults).setAxes(axes).setHighlighter(highlighter).setSeries(series).setLegend(legend);
+		Options options = new Options().setTitle(title).setSeriesDefaults(seriesDefaults).setAxes(axes).setHighlighter(highlighter).setSeries(series).setLegend(legend);
 
 		DCharts chart = new DCharts().setDataSeries(dataSeries).setOptions(options);
 		

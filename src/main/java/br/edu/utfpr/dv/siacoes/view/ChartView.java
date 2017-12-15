@@ -52,7 +52,6 @@ public abstract class ChartView extends BasicView {
 		
 		this.layoutFields = new VerticalLayout();
 		this.layoutFields.setSpacing(true);
-		this.layoutFields.setSizeFull();
 		
 		Button buttonCloseChart = new Button(VaadinIcons.CLOSE);
 		buttonCloseChart.addStyleName(ValoTheme.BUTTON_QUIET);

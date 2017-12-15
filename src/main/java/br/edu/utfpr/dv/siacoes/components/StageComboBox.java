@@ -12,6 +12,7 @@ public class StageComboBox extends NativeSelect {
 	public StageComboBox(boolean showBoth){
 		super("TCC");
 		this.init();
+		this.setShowBoth(showBoth);
 	}
 	
 	private void init(){
@@ -27,7 +28,11 @@ public class StageComboBox extends NativeSelect {
 	}
 	
 	public int getStage(){
-		return (int)this.getValue();
+		if(this.isBothSelected()) {
+			return 0;
+		} else {
+			return (int)this.getValue();	
+		}
 	}
 	
 	public void setStage(int stage){

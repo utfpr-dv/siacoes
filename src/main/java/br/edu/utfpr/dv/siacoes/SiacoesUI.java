@@ -43,6 +43,7 @@ import br.edu.utfpr.dv.siacoes.view.InternshipFinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
 import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipView;
+import br.edu.utfpr.dv.siacoes.view.JurySemesterChartView;
 import br.edu.utfpr.dv.siacoes.view.LibraryView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
 import br.edu.utfpr.dv.siacoes.view.MainView;
@@ -59,6 +60,7 @@ import br.edu.utfpr.dv.siacoes.view.SupervisorChangeView;
 import br.edu.utfpr.dv.siacoes.view.SupervisorView;
 import br.edu.utfpr.dv.siacoes.view.ThemeSuggestionView;
 import br.edu.utfpr.dv.siacoes.view.ThesisView;
+import br.edu.utfpr.dv.siacoes.view.TutoredSupervisorChartView;
 import br.edu.utfpr.dv.siacoes.view.TutoredView;
 import br.edu.utfpr.dv.siacoes.view.UserView;
 
@@ -129,6 +131,8 @@ public class SiacoesUI extends UI {
         getNavigator().addView(EventCalendarView.NAME, EventCalendarView.class);
         getNavigator().addView(PDFView.NAME, PDFView.class);
         getNavigator().addView(InternshipFinalDocumentView.NAME, InternshipFinalDocumentView.class);
+        getNavigator().addView(TutoredSupervisorChartView.NAME, TutoredSupervisorChartView.class);
+        getNavigator().addView(JurySemesterChartView.NAME, JurySemesterChartView.class);
         
         //
         // We use a view change handler to ensure the user is always redirected

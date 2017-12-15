@@ -87,6 +87,7 @@ import br.edu.utfpr.dv.siacoes.view.InternshipFinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
 import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipView;
+import br.edu.utfpr.dv.siacoes.view.JurySemesterChartView;
 import br.edu.utfpr.dv.siacoes.view.LibraryView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
 import br.edu.utfpr.dv.siacoes.view.MainView;
@@ -103,6 +104,7 @@ import br.edu.utfpr.dv.siacoes.view.SupervisorChangeView;
 import br.edu.utfpr.dv.siacoes.view.SupervisorView;
 import br.edu.utfpr.dv.siacoes.view.ThemeSuggestionView;
 import br.edu.utfpr.dv.siacoes.view.ThesisView;
+import br.edu.utfpr.dv.siacoes.view.TutoredSupervisorChartView;
 import br.edu.utfpr.dv.siacoes.view.TutoredView;
 import br.edu.utfpr.dv.siacoes.view.UserView;
 import br.edu.utfpr.dv.siacoes.window.AboutWindow;
@@ -1117,6 +1119,10 @@ public class SideMenu extends CustomComponent {
 		if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
 			layout.addComponent(new MenuEntry("Relatórios", 0));
 			layout.addComponent(new MenuEntry("Reuniões de Orientação", 1, AttendanceReportView.NAME));
+			
+			layout.addComponent(new MenuEntry("Gráficos", 0));
+			layout.addComponent(new MenuEntry("Orientados por Orientador", 1, TutoredSupervisorChartView.NAME));
+			layout.addComponent(new MenuEntry("Bancas por Semestre", 1, JurySemesterChartView.NAME));
 		}
 		
 		layout.setSizeFull();

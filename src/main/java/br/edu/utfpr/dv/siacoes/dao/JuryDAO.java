@@ -13,6 +13,7 @@ import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
+import br.edu.utfpr.dv.siacoes.model.JuryBySemester;
 import br.edu.utfpr.dv.siacoes.model.JuryStudent;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
@@ -467,6 +468,55 @@ public class JuryDAO {
 		BigDecimal bd = new BigDecimal(value);
 	    bd = bd.setScale(1, RoundingMode.HALF_UP);
 	    return bd.doubleValue();
+	}
+	
+	public List<JuryBySemester> listJuryBySemester(int idDepartment, int initialYear, int finalYear) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+		
+			rs = stmt.executeQuery("SELECT semester, year, SUM(total1) AS total1, SUM(total2) AS total2 FROM (" + 
+					"SELECT project.semester, project.year, COUNT(*) AS total1, 0 AS total2 " + 
+					"FROM project INNER JOIN jury ON jury.idProject=project.idProject " +
+					"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
+					"WHERE proposal.idDepartment=" + String.valueOf(idDepartment) + " AND project.year BETWEEN " + String.valueOf(initialYear) + " AND " + String.valueOf(finalYear) +
+					" GROUP BY project.semester, project.year " + 
+					" UNION ALL " + 
+					"SELECT thesis.semester, thesis.year, 0 AS total1, COUNT(*) AS total2 " + 
+					"FROM thesis INNER JOIN jury ON jury.idThesis=thesis.idThesis " + 
+					"INNER JOIN project ON project.idProject=thesis.idProject " + 
+					"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
+					"WHERE proposal.idDepartment=" + String.valueOf(idDepartment) + " AND thesis.year BETWEEN " + String.valueOf(initialYear) + " AND " + String.valueOf(finalYear) +
+					" GROUP BY thesis.semester, thesis.year) temp " + 
+					"GROUP BY semester, year " + 
+					"ORDER BY year, semester");
+			
+			List<JuryBySemester> list = new ArrayList<JuryBySemester>();
+			
+			while(rs.next()){
+				JuryBySemester item = new JuryBySemester();
+				
+				item.setYear(rs.getInt("year"));
+				item.setSemester(rs.getInt("semester"));
+				item.setJuryStage1(rs.getInt("total1"));
+				item.setJuryStage2(rs.getInt("total2"));
+				
+				list.add(item);
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
 	}
 	
 }

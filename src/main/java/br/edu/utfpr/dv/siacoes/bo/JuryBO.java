@@ -15,6 +15,7 @@ import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserScore;
+import br.edu.utfpr.dv.siacoes.model.JuryBySemester;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserDetailReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserScoreReport;
@@ -22,6 +23,7 @@ import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.TermOfApprovalReport;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
+import br.edu.utfpr.dv.siacoes.model.TutoredBySupervisor;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.EvaluationItem.EvaluationItemType;
@@ -506,6 +508,47 @@ public class JuryBO {
 		JuryDAO dao = new JuryDAO();
 		
 		return dao.hasScores(idJury);
+	}
+	
+	public List<JuryBySemester> listJuryBySemester(int idDepartment, int initialYear, int finalYear) throws Exception{
+		try {
+			JuryDAO dao = new JuryDAO();
+			
+			List<JuryBySemester> list = dao.listJuryBySemester(idDepartment, initialYear, finalYear);
+			
+			int index = 0;
+			
+			for(int year = initialYear; year <= finalYear; year++) {
+				for(int semester = 1; semester <= 2; semester++) {
+					boolean found = false;
+					
+					for(JuryBySemester jury : list) {
+						if((jury.getYear() == year) && (jury.getSemester() == semester)) {
+							found = true;
+						}
+					}
+					
+					if(!found) {
+						JuryBySemester jury = new JuryBySemester();
+						
+						jury.setYear(year);
+						jury.setSemester(semester);
+						jury.setJuryStage1(0);
+						jury.setJuryStage2(0);
+						
+						list.add(index, jury);
+					}
+					
+					index++;
+				}
+			}
+			
+			return list;
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
 	}
 	
 }
