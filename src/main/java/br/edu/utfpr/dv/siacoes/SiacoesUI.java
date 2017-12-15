@@ -39,6 +39,7 @@ import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCalendarView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCompanyChartView;
 import br.edu.utfpr.dv.siacoes.view.InternshipEvaluationItemView;
+import br.edu.utfpr.dv.siacoes.view.InternshipFinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
 import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipView;
@@ -127,6 +128,7 @@ public class SiacoesUI extends UI {
         getNavigator().addView(InternshipCompanyChartView.NAME, InternshipCompanyChartView.class);
         getNavigator().addView(EventCalendarView.NAME, EventCalendarView.class);
         getNavigator().addView(PDFView.NAME, PDFView.class);
+        getNavigator().addView(InternshipFinalDocumentView.NAME, InternshipFinalDocumentView.class);
         
         //
         // We use a view change handler to ensure the user is always redirected

@@ -12,7 +12,9 @@ import com.vaadin.ui.renderers.DateRenderer;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.DeadlineBO;
+import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.window.EditDeadlineWindow;
@@ -33,24 +35,36 @@ public class DeadlineView extends ListView {
 	}
 	
 	protected void loadGrid(){
+		SigetConfigBO sbo = new SigetConfigBO();
+		SigetConfig sigetConfig = new SigetConfig();
+		try {
+			sigetConfig = sbo.findByDepartment(Session.getUser().getDepartment().getIdDepartment());
+		} catch (Exception e1) {
+			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
+		}
+		
 		this.getGrid().addColumn("Semestre", Integer.class);
 		this.getGrid().addColumn("Ano", Integer.class);
-		this.getGrid().addColumn("Proposta", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
+		this.getGrid().addColumn((sigetConfig.isRegisterProposal() ? "Proposta" : "Reg. Orient."), Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
 		this.getGrid().addColumn("Projeto", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
 		this.getGrid().addColumn("Monografia", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
+		this.getGrid().addColumn("Proj. Final", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
+		this.getGrid().addColumn("Monog. Final", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
 		
 		this.getGrid().getColumns().get(0).setWidth(100);
 		this.getGrid().getColumns().get(1).setWidth(100);
 		this.getGrid().getColumns().get(2).setWidth(125);
 		this.getGrid().getColumns().get(3).setWidth(125);
 		this.getGrid().getColumns().get(4).setWidth(125);
+		this.getGrid().getColumns().get(5).setWidth(125);
+		this.getGrid().getColumns().get(6).setWidth(125);
 		
 		try {
 			DeadlineBO bo = new DeadlineBO();
 	    	List<Deadline> list = bo.listByDepartment(Session.getUser().getDepartment().getIdDepartment());
 	    	
 	    	for(Deadline d : list){
-				Object itemId = this.getGrid().addRow(d.getSemester(), d.getYear(), d.getProposalDeadline(), d.getProjectDeadline(), d.getThesisDeadline());
+				Object itemId = this.getGrid().addRow(d.getSemester(), d.getYear(), d.getProposalDeadline(), d.getProjectDeadline(), d.getThesisDeadline(), d.getProjectFinalDocumentDeadline(), d.getThesisFinalDocumentDeadline());
 				this.addRowId(itemId, d.getIdDeadline());
 			}
 		} catch (Exception e) {

@@ -21,6 +21,7 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
@@ -42,7 +43,6 @@ import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
-import br.edu.utfpr.dv.siacoes.model.Document;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserDetailReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
@@ -55,7 +55,6 @@ import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
-import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditThesisWindow extends EditWindow {
@@ -134,7 +133,12 @@ public class EditThesisWindow extends EditWindow {
 		this.imageFileUploaded = new Image("", new ThemeResource("images/ok.png"));
 		this.imageFileUploaded.setVisible(false);
 		
-		this.buttonDownloadFile = new Button("Download da Monografia");
+		this.buttonDownloadFile = new Button("Download da Monografia", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadFile();
+            }
+        });
 		this.buttonDownloadFile.setVisible(false);
 		
 		VerticalLayout v1 = new VerticalLayout();
@@ -232,7 +236,6 @@ public class EditThesisWindow extends EditWindow {
 		}else{
 			if(this.thesis.getFile() != null){
 				this.buttonDownloadFile.setVisible(true);
-				this.prepareDownloadThesis();
 			}
 			
 			try {
@@ -287,15 +290,13 @@ public class EditThesisWindow extends EditWindow {
 		}
 	}
 	
-	private void prepareDownloadThesis(){
-		new ExtensionUtils().removeAllExtensions(this.buttonDownloadFile);
-		
-		if(this.thesis.getFile() != null){
-			this.buttonDownloadFile.setVisible(true);
-			
-			new ExtensionUtils().extendToDownload("Monografia_TCC_" + this.thesis.getIdThesis() + Document.DocumentType.PDF.getExtension(), this.thesis.getFile(), this.buttonDownloadFile);
-		}else{
-			this.buttonDownloadFile.setVisible(false);
+	private void downloadFile() {
+		try {
+        	this.showReport(this.thesis.getFile());
+    	} catch (Exception e) {
+        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	
+        	Notification.show("Download do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
 	
@@ -437,7 +438,6 @@ public class EditThesisWindow extends EditWindow {
 	            
 	            imageFileUploaded.setVisible(true);
 	            buttonDownloadFile.setVisible(true);
-	            prepareDownloadThesis();
 	            
 	            Notification.show("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.", Notification.Type.HUMANIZED_MESSAGE);
 	        } catch (Exception e) {

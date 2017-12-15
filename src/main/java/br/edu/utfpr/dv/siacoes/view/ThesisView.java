@@ -123,8 +123,8 @@ public class ThesisView extends ListView {
 	protected void loadGrid() {
 		this.getGrid().addColumn("Semestre", Integer.class);
 		this.getGrid().addColumn("Ano", Integer.class);
-		this.getGrid().addColumn("Título", String.class);
 		this.getGrid().addColumn("Acadêmico", String.class);
+		this.getGrid().addColumn("Título", String.class);
 		this.getGrid().addColumn("Submissão", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
 		
 		this.getGrid().getColumns().get(0).setWidth(100);
@@ -136,7 +136,7 @@ public class ThesisView extends ListView {
 	    	List<Thesis> list = bo.listBySemester(Session.getUser().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 	    	
 	    	for(Thesis p : list){
-				Object itemId = this.getGrid().addRow(p.getSemester(), p.getYear(), p.getTitle(), p.getStudent().getName(), p.getSubmissionDate());
+				Object itemId = this.getGrid().addRow(p.getSemester(), p.getYear(), p.getStudent().getName(), p.getTitle(), p.getSubmissionDate());
 				this.addRowId(itemId, p.getIdThesis());
 			}
 		} catch (Exception e) {

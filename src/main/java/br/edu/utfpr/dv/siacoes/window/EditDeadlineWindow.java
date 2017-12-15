@@ -31,6 +31,8 @@ public class EditDeadlineWindow extends EditWindow {
 	private final DateField proposalDeadline;
 	private final DateField projectDeadline;
 	private final DateField thesisDeadline;
+	private final DateField projectFinalDocumentDeadline;
+	private final DateField thesisFinalDocumentDeadline;
 	
 	public EditDeadlineWindow(Deadline deadline, ListView parentView){
 		super("Editar Datas", parentView);
@@ -73,10 +75,18 @@ public class EditDeadlineWindow extends EditWindow {
 		this.thesisDeadline = new DateField("Data Limite da Monografia");
 		this.thesisDeadline.setDateFormat("dd/MM/yyyy");
 		
+		this.projectFinalDocumentDeadline = new DateField("Data Limite da Versão Final do Projeto");
+		this.projectFinalDocumentDeadline.setDateFormat("dd/MM/yyyy");
+		
+		this.thesisFinalDocumentDeadline = new DateField("Data Limite da Versão Final da Monografia");
+		this.thesisFinalDocumentDeadline.setDateFormat("dd/MM/yyyy");
+		
 		this.addField(this.comboCampus);
 		this.addField(this.comboDepartment);
 		this.addField(new HorizontalLayout(this.semester, this.year));
-		this.addField(new HorizontalLayout(this.proposalDeadline, this.projectDeadline, this.thesisDeadline));
+		this.addField(this.proposalDeadline);
+		this.addField(new HorizontalLayout(this.projectDeadline, this.projectFinalDocumentDeadline));
+		this.addField(new HorizontalLayout(this.thesisDeadline, this.thesisFinalDocumentDeadline));
 		
 		this.loadDeadline();
 		this.semester.focus();
@@ -101,6 +111,8 @@ public class EditDeadlineWindow extends EditWindow {
 		this.proposalDeadline.setValue(this.deadline.getProposalDeadline());
 		this.projectDeadline.setValue(this.deadline.getProjectDeadline());
 		this.thesisDeadline.setValue(this.deadline.getThesisDeadline());
+		this.projectFinalDocumentDeadline.setValue(this.deadline.getProjectFinalDocumentDeadline());
+		this.thesisFinalDocumentDeadline.setValue(this.deadline.getThesisFinalDocumentDeadline());
 	}
 	
 	@Override
@@ -113,6 +125,8 @@ public class EditDeadlineWindow extends EditWindow {
 			this.deadline.setProposalDeadline(this.proposalDeadline.getValue());
 			this.deadline.setProjectDeadline(this.projectDeadline.getValue());
 			this.deadline.setThesisDeadline(this.thesisDeadline.getValue());
+			this.deadline.setProjectFinalDocumentDeadline(this.projectFinalDocumentDeadline.getValue());
+			this.deadline.setThesisFinalDocumentDeadline(this.thesisFinalDocumentDeadline.getValue());
 			
 			bo.save(deadline);
 			

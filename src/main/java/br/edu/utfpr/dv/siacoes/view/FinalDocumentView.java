@@ -115,7 +115,7 @@ public class FinalDocumentView extends ListView {
 				if((doc.getProject() != null) && (doc.getProject().getIdProject() > 0)){
 					itemId = this.getGrid().addRow(1, doc.getProject().getSemester(), doc.getProject().getYear(), doc.getProject().getStudent().getName(), doc.getTitle(), doc.getSubmissionDate(), (doc.isPrivate() ? "Sim" : "Não"), doc.getSupervisorFeedback().toString());
 				}else{
-					itemId = this.getGrid().addRow(1, doc.getThesis().getSemester(), doc.getThesis().getYear(), doc.getThesis().getStudent().getName(), doc.getTitle(), doc.getSubmissionDate(), (doc.isPrivate() ? "Sim" : "Não"), doc.getSupervisorFeedback().toString());
+					itemId = this.getGrid().addRow(2, doc.getThesis().getSemester(), doc.getThesis().getYear(), doc.getThesis().getStudent().getName(), doc.getTitle(), doc.getSubmissionDate(), (doc.isPrivate() ? "Sim" : "Não"), doc.getSupervisorFeedback().toString());
 				}
 				
 				this.addRowId(itemId, doc.getIdFinalDocument());

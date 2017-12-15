@@ -42,6 +42,12 @@ public class DeadlineBO {
 			if(deadline.getYear() <= 0){
 				throw new Exception("Informe o ano.");
 			}
+			if(deadline.getProjectFinalDocumentDeadline().before(deadline.getProjectDeadline())) {
+				throw new Exception("O prazo de entrega da versão final do projeto não pode ser anterior ao prazo de entrega do projeto.");
+			}
+			if(deadline.getThesisFinalDocumentDeadline().before(deadline.getThesisDeadline())) {
+				throw new Exception("O prazo de entrega da versão final da monografia não pode ser anterior ao prazo de entrega da monografia.");
+			}
 			
 			DeadlineDAO dao = new DeadlineDAO();
 			

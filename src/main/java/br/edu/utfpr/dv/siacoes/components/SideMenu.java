@@ -83,6 +83,7 @@ import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCalendarView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCompanyChartView;
 import br.edu.utfpr.dv.siacoes.view.InternshipEvaluationItemView;
+import br.edu.utfpr.dv.siacoes.view.InternshipFinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
 import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipView;
@@ -636,6 +637,7 @@ public class SideMenu extends CustomComponent {
 		layout.addComponent(new MenuEntry("Estágio", 0));
 		if(Session.isUserManager(SystemModule.SIGES) || Session.isUserDepartmentManager()){
 			layout.addComponent(new MenuEntry("Registro de Estágio", 1, InternshipView.NAME + "/1"));
+			layout.addComponent(new MenuEntry("Versão Final do Relatório", 1, InternshipFinalDocumentView.NAME));
 		}
 		if(Session.isUserProfessor()){
 			layout.addComponent(new MenuEntry("Meus Orientados", 1, InternshipView.NAME));
@@ -827,16 +829,19 @@ public class SideMenu extends CustomComponent {
 				@Override
 				public void menuClick() {
 					try {
+						DeadlineBO dbo = new DeadlineBO();
+						Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+						
+						if((d == null) || DateUtils.getToday().getTime().after(d.getProjectFinalDocumentDeadline())){
+							throw new Exception("A submissão da versão final dos projetos já foi encerrada.");
+						}
+												
 						FinalDocumentBO fbo = new FinalDocumentBO();
 						FinalDocument ft = fbo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 						
 						if(ft == null){
 							ProjectBO bo = new ProjectBO();
 							Project project = bo.findCurrentProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-						
-							/*if(project == null){
-								project = bo.findApprovedProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
-							}*/
 							
 							if(project == null){
 								throw new Exception("É necessário submeter o projeto para avaliação da banca antes.");
@@ -979,16 +984,20 @@ public class SideMenu extends CustomComponent {
 				@Override
 				public void menuClick() {
 					try {
+						DeadlineBO dbo = new DeadlineBO();
+						Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+						
+						if((d == null) || DateUtils.getToday().getTime().after(d.getThesisFinalDocumentDeadline())){
+							throw new Exception("A submissão da versão final das monografias já foi encerrada.");
+						}
+						
+						
 						FinalDocumentBO fbo = new FinalDocumentBO();
 						FinalDocument ft = fbo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 						
 						if(ft == null){
 							ThesisBO bo = new ThesisBO();
 							Thesis thesis = bo.findCurrentThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-						
-							/*if(thesis == null){
-								thesis = bo.findApprovedThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), DateUtils.getSemester(), DateUtils.getYear());
-							}*/
 							
 							if(thesis == null){
 								throw new Exception("É necessário submeter a monografia para avaliação da banca antes.");

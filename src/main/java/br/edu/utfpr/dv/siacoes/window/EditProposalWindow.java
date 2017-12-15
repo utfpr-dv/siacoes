@@ -3,7 +3,6 @@
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,7 +32,6 @@ import br.edu.utfpr.dv.siacoes.bo.DeadlineBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
-import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
 import br.edu.utfpr.dv.siacoes.components.ProfessorComboBox;
@@ -41,16 +39,13 @@ import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
-import br.edu.utfpr.dv.siacoes.model.Document;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
-import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
-import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditProposalWindow extends EditWindow {
@@ -217,7 +212,12 @@ public class EditProposalWindow extends EditWindow {
 		
 		this.addField(this.tab);
 		
-		this.buttonDownloadProposal = new Button("Download da Proposta");
+		this.buttonDownloadProposal = new Button("Download da Proposta", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadFile();
+            }
+        });
 		this.addButton(this.buttonDownloadProposal);
 		this.buttonDownloadProposal.setWidth("250px");
 		
@@ -263,8 +263,6 @@ public class EditProposalWindow extends EditWindow {
 				this.comboCosupervisor.setEnabled(false);
 			}
 		}
-		
-		this.prepareDownloadProposal();
 	}
 	
 	private void loadGridAppraisers(){
@@ -420,15 +418,13 @@ public class EditProposalWindow extends EditWindow {
 		this.loadGridAppraisers();
 	}
 	
-	private void prepareDownloadProposal(){
-		new ExtensionUtils().removeAllExtensions(this.buttonDownloadProposal);
-		
-		if(this.proposal.getFile() != null){
-			this.buttonDownloadProposal.setVisible(true);
-			
-			new ExtensionUtils().extendToDownload("Proposta_TCC_" + this.proposal.getIdProposal() + Document.DocumentType.PDF.getExtension(), this.proposal.getFile(), this.buttonDownloadProposal);
-		}else{
-			this.buttonDownloadProposal.setVisible(false);
+	private void downloadFile() {
+		try {
+        	this.showReport(this.proposal.getFile());
+    	} catch (Exception e) {
+        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	
+        	Notification.show("Download do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
 	

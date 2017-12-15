@@ -225,6 +225,10 @@ public class FinalDocumentBO {
 			FinalDocumentDAO dao = new FinalDocumentDAO();
 			List<LibraryReport> list = dao.getLibraryReport(idDepartment, year, semester);
 			
+			if(list.size() == 0) {
+				throw new Exception("Não há nenhuma monografia para enviar à biblioteca.");
+			}
+			
 			for(LibraryReport item : list){
 				item.setFileName(campus.getInitials() + "_" + department.getInitials() + "_" + String.valueOf(year) + "_" + 
 						String.valueOf(semester) + "_" + String.valueOf(item.getSequence()) + ".pdf");

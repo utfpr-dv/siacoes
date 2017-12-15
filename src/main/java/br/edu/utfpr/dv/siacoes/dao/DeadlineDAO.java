@@ -134,9 +134,9 @@ public class DeadlineDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO deadline(idDepartment, semester, year, proposalDeadline, projectDeadline, thesisDeadline) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO deadline(idDepartment, semester, year, proposalDeadline, projectDeadline, thesisDeadline, projectfinaldocumentdeadline, thesisfinaldocumentdeadline) VALUES(?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE deadline SET idDepartment=?, semester=?, year=?, proposalDeadline=?, projectDeadline=?, thesisDeadline=? WHERE idDeadline=?");
+				stmt = conn.prepareStatement("UPDATE deadline SET idDepartment=?, semester=?, year=?, proposalDeadline=?, projectDeadline=?, thesisDeadline=?, projectfinaldocumentdeadline=?, thesisfinaldocumentdeadline=? WHERE idDeadline=?");
 			}
 			
 			stmt.setInt(1, deadline.getDepartment().getIdDepartment());
@@ -145,9 +145,11 @@ public class DeadlineDAO {
 			stmt.setDate(4, new java.sql.Date(deadline.getProposalDeadline().getTime()));
 			stmt.setDate(5, new java.sql.Date(deadline.getProjectDeadline().getTime()));
 			stmt.setDate(6, new java.sql.Date(deadline.getThesisDeadline().getTime()));
+			stmt.setDate(7, new java.sql.Date(deadline.getProjectFinalDocumentDeadline().getTime()));
+			stmt.setDate(8, new java.sql.Date(deadline.getThesisFinalDocumentDeadline().getTime()));
 			
 			if(!insert){
-				stmt.setInt(7, deadline.getIdDeadline());
+				stmt.setInt(9, deadline.getIdDeadline());
 			}
 			
 			stmt.execute();
@@ -180,6 +182,8 @@ public class DeadlineDAO {
 		d.setProposalDeadline(rs.getDate("proposalDeadline"));
 		d.setProjectDeadline(rs.getDate("projectDeadline"));
 		d.setThesisDeadline(rs.getDate("thesisDeadline"));
+		d.setProjectFinalDocumentDeadline(rs.getDate("projectfinaldocumentdeadline"));
+		d.setThesisFinalDocumentDeadline(rs.getDate("thesisfinaldocumentdeadline"));
 		d.getDepartment().setIdDepartment(rs.getInt("idDepartment"));
 		
 		return d;

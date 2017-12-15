@@ -37,7 +37,6 @@ import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
-import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditFinalDocumentWindow extends EditWindow {
@@ -120,7 +119,12 @@ public class EditFinalDocumentWindow extends EditWindow {
 		this.comboFeedback.select(DocumentFeedback.NONE);
 		this.comboFeedback.setNullSelectionAllowed(false);
 		
-		this.buttonDownloadFile = new Button("Baixar Arquivo");
+		this.buttonDownloadFile = new Button("Baixar Arquivo", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadFile();
+            }
+        });
 		
 		this.addField(new HorizontalLayout(this.comboCampus, this.comboDepartment));
 		this.addField(this.textTitle);
@@ -177,24 +181,17 @@ public class EditFinalDocumentWindow extends EditWindow {
 		this.comboFeedback.setValue(this.thesis.getSupervisorFeedback());
 		this.textFeedbackDate.setValue(this.thesis.getSupervisorFeedbackDate());
 		this.textComments.setValue(this.thesis.getComments());
-		
-		this.prepareDownload();
 	}
 	
-	private void prepareDownload(){
+	private void downloadFile() {
 		try {
-        	new ExtensionUtils().extendToDownload(this.thesis.getIdFinalDocument() + ".pdf", this.thesis.getFile(), this.buttonDownloadFile);
+        	this.showReport(this.thesis.getFile());
     	} catch (Exception e) {
-    		this.buttonDownloadFile.addClickListener(new Button.ClickListener() {
-	            @Override
-	            public void buttonClick(ClickEvent event) {
-	            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            	
-	            	Notification.show("Download do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	            }
-	        });
+        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	
+        	Notification.show("Download do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
-    }
+	}
 	
 	@Override
 	public void save() {

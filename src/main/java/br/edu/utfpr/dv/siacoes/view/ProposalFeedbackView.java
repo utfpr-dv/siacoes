@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vaadin.event.SelectionEvent;
-import com.vaadin.event.SelectionEvent.SelectionListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
@@ -26,7 +24,6 @@ import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
-import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.window.EditProposalAppraiserWindow;
 
@@ -38,9 +35,6 @@ public class ProposalFeedbackView extends ListView {
 	private final YearField textYear;
 	private final Button buttonPrintFeedback;
 	private final Button buttonDownloadProposal;
-	
-	private Button.ClickListener listenerClickFeedback;
-	private Button.ClickListener listenerClickDownload;
 	
 	public ProposalFeedbackView(){
 		super(SystemModule.SIGET);
@@ -54,10 +48,20 @@ public class ProposalFeedbackView extends ListView {
 		
 		this.setEditCaption("Emitir Parecer");
 		
-		this.buttonPrintFeedback = new Button("Imprimir Parecer");
+		this.buttonPrintFeedback = new Button("Imprimir Parecer", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	printFeedback();
+            }
+        });
 		this.buttonPrintFeedback.setWidth("150px");
 		
-		this.buttonDownloadProposal = new Button("Down. da Proposta");
+		this.buttonDownloadProposal = new Button("Down. da Proposta", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadProposal();
+            }
+        });
 		this.buttonDownloadProposal.setWidth("150px");
 		
 		this.addActionButton(this.buttonPrintFeedback);
@@ -77,19 +81,11 @@ public class ProposalFeedbackView extends ListView {
 		this.getGrid().addColumn("Acadêmico", String.class);
 		this.getGrid().addColumn("Submissão", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
 		this.getGrid().addColumn("Parecer", String.class);
-		this.getGrid().addSelectionListener(new SelectionListener() {
-			@Override
-			public void select(SelectionEvent event) {
-				prepareDownload();
-			}
-		});
 		
 		this.getGrid().getColumns().get(0).setWidth(100);
 		this.getGrid().getColumns().get(1).setWidth(100);
 		this.getGrid().getColumns().get(4).setWidth(125);
 		this.getGrid().getColumns().get(5).setWidth(150);
-		
-		this.prepareDownload();
 		
 		try {
 			ProposalBO bo = new ProposalBO();
@@ -109,13 +105,33 @@ public class ProposalFeedbackView extends ListView {
 		}
     }
 	
-	private void prepareDownload(){
+	private void downloadProposal() {
 		Object value = getIdSelected();
 		
-		this.buttonDownloadProposal.removeClickListener(this.listenerClickDownload);
-		this.buttonPrintFeedback.removeClickListener(this.listenerClickFeedback);
-    	
-    	if(value != null){
+		if(value != null){
+			try {
+            	ProposalBO bo = new ProposalBO();
+            	Proposal p = bo.findById((int)value);
+            	
+            	if(p.getFile() != null){
+            		this.showReport(p.getFile());
+            	}else{
+            		Notification.show("Download da Proposta", "O acadêmico ainda não efetuou a submissão da proposta.", Notification.Type.WARNING_MESSAGE);
+            	}
+        	} catch (Exception e) {
+            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+            	
+            	Notification.show("Download da Proposta", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			}
+		} else {
+			Notification.show("Download da Proposta", "Selecione um registro para baixar a proposta.", Notification.Type.WARNING_MESSAGE);
+		}
+	}
+	
+	private void printFeedback() {
+		Object value = getIdSelected();
+		
+		if(value != null){
 			try {
 				ProposalAppraiserBO bo = new ProposalAppraiserBO();
 				ProposalAppraiser appraiser = bo.findByAppraiser((int)value, Session.getUser().getIdUser());
@@ -129,70 +145,15 @@ public class ProposalFeedbackView extends ListView {
 				List<ProposalAppraiser> list = new ArrayList<ProposalAppraiser>();
 				list.add(appraiser);
 				
-				new ReportUtils().prepareForPdfReport("ProposalFeedback", "Parecer", list, this.buttonPrintFeedback);
+				this.showReport(new ReportUtils().createPdfStream(list, "ProposalFeedback").toByteArray());
 			} catch (Exception e) {
-				this.listenerClickFeedback = new Button.ClickListener() {
-		            @Override
-		            public void buttonClick(ClickEvent event) {
-		            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-		            	
-		            	Notification.show("Imprimir Parecer", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-		            }
-		        };
-		        
-				this.buttonPrintFeedback.addClickListener(this.listenerClickFeedback);
-			}
-			
-			try {
-            	ProposalBO bo = new ProposalBO();
-            	Proposal p = bo.findById((int)value);
+            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
             	
-            	if(p.getFile() != null){
-            		new ExtensionUtils().extendToDownload(p.getTitle() + p.getFileType().getExtension(), p.getFile(), this.buttonDownloadProposal);	
-            	}else{
-            		this.listenerClickDownload = new Button.ClickListener() {
-    		            @Override
-    		            public void buttonClick(ClickEvent event) {
-    		            	Notification.show("Download da Proposta", "O acadêmico ainda não efetuou a submissão da proposta.", Notification.Type.WARNING_MESSAGE);
-    		            }
-    		        };
-    		        
-            		this.buttonDownloadProposal.addClickListener(this.listenerClickDownload);
-            	}
-        	} catch (Exception e) {
-        		this.listenerClickDownload = new Button.ClickListener() {
-		            @Override
-		            public void buttonClick(ClickEvent event) {
-		            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-		            	
-		            	Notification.show("Download da Proposta", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-		            }
-		        };
-		        
-        		this.buttonDownloadProposal.addClickListener(this.listenerClickDownload);
+            	Notification.show("Imprimir Parecer", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
-    	}else{
-    		new ExtensionUtils().removeAllExtensions(this.buttonDownloadProposal);
-    		new ExtensionUtils().removeAllExtensions(this.buttonPrintFeedback);
-    		
-    		this.listenerClickFeedback = new Button.ClickListener() {
-	            @Override
-	            public void buttonClick(ClickEvent event) {
-	            	Notification.show("Imprimir Parecer", "Selecione um registro para imprimir o parecer", Notification.Type.WARNING_MESSAGE);
-	            }
-	        };
-	        
-	        this.listenerClickDownload = new Button.ClickListener() {
-	            @Override
-	            public void buttonClick(ClickEvent event) {
-	            	Notification.show("Download da Proposta", "Selecione um registro para baixar a proposta.", Notification.Type.WARNING_MESSAGE);
-	            }
-	        };
-	        
-    		this.buttonPrintFeedback.addClickListener(this.listenerClickFeedback);
-    		
-    		this.buttonDownloadProposal.addClickListener(this.listenerClickDownload);
-    	}
+		} else {
+			Notification.show("Imprimir Parecer", "Selecione um registro para imprimir o parecer", Notification.Type.WARNING_MESSAGE);
+		}
 	}
 	
 	@Override

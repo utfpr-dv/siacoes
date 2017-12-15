@@ -12,6 +12,8 @@ public class Deadline {
 	private Date proposalDeadline;
 	private Date projectDeadline;
 	private Date thesisDeadline;
+	private Date projectFinalDocumentDeadline;
+	private Date thesisFinalDocumentDeadline;
 	private Department department;
 	
 	public Deadline(){
@@ -21,6 +23,8 @@ public class Deadline {
 		this.setProposalDeadline(new Date());
 		this.setProjectDeadline(new Date());
 		this.setThesisDeadline(new Date());
+		this.setProjectFinalDocumentDeadline(new Date());
+		this.setThesisFinalDocumentDeadline(new Date());
 		this.setDepartment(new Department());
 	}
 
@@ -76,6 +80,18 @@ public class Deadline {
 	}
 	public Department getDepartment(){
 		return department;
+	}
+	public Date getProjectFinalDocumentDeadline() {
+		return projectFinalDocumentDeadline;
+	}
+	public void setProjectFinalDocumentDeadline(Date projectFinalDocumentDeadline) {
+		this.projectFinalDocumentDeadline = projectFinalDocumentDeadline;
+	}
+	public Date getThesisFinalDocumentDeadline() {
+		return thesisFinalDocumentDeadline;
+	}
+	public void setThesisFinalDocumentDeadline(Date thesisFinalDocumentDeadline) {
+		this.thesisFinalDocumentDeadline = thesisFinalDocumentDeadline;
 	}
 	
 }
