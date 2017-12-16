@@ -114,7 +114,7 @@ public class DateUtils {
 		return c.getTime();
 	}
 	
-	/*public static Date getStartDate(int semester, int year){
+	public static Date getStartDate(int semester, int year){
 		Calendar cal = Calendar.getInstance();
 		
 		if(semester == 1){
@@ -136,6 +136,6 @@ public class DateUtils {
 		}
 		
 		return cal.getTime();
-	}*/
+	}
 	
 }

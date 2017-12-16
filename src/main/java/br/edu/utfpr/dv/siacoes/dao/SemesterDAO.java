@@ -95,7 +95,7 @@ public class SemesterDAO {
 			if(rs.next()){
 				return this.loadObject(rs);
 			}else{
-				return null;
+				return new Semester(idCampus, semester, year);
 			}
 		}finally{
 			if((rs != null) && !rs.isClosed())
@@ -128,7 +128,7 @@ public class SemesterDAO {
 			if(rs.next()){
 				return this.loadObject(rs);
 			}else{
-				return null;
+				return new Semester(idCampus);
 			}
 		}finally{
 			if((rs != null) && !rs.isClosed())

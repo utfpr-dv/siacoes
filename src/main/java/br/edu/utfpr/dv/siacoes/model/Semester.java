@@ -12,12 +12,30 @@ public class Semester {
 	private Date startDate;
 	private Date endDate;
 	
-	public Semester(){
+	public Semester() {
 		this.setCampus(new Campus());
 		this.setSemester(DateUtils.getSemester());
 		this.setYear(DateUtils.getYear());
-		this.setStartDate(DateUtils.getToday().getTime());
-		this.setEndDate(DateUtils.getToday().getTime());
+		this.setStartDate(DateUtils.getStartDate(this.getSemester(), this.getYear()));
+		this.setEndDate(DateUtils.getEndDate(this.getSemester(), this.getYear()));
+	}
+	
+	public Semester(int idCampus, int semester, int year) {
+		this.setCampus(new Campus());
+		this.getCampus().setIdCampus(idCampus);
+		this.setSemester(semester);
+		this.setYear(year);
+		this.setStartDate(DateUtils.getStartDate(this.getSemester(), this.getYear()));
+		this.setEndDate(DateUtils.getEndDate(this.getSemester(), this.getYear()));
+	}
+	
+	public Semester(int idCampus) {
+		this.setCampus(new Campus());
+		this.getCampus().setIdCampus(idCampus);
+		this.setSemester(DateUtils.getSemester());
+		this.setYear(DateUtils.getYear());
+		this.setStartDate(DateUtils.getStartDate(this.getSemester(), this.getYear()));
+		this.setEndDate(DateUtils.getEndDate(this.getSemester(), this.getYear()));
 	}
 	
 	public Campus getCampus() {
