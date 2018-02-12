@@ -8,6 +8,7 @@ public class Company {
 	private String cnpj;
 	private String phone;
 	private String email;
+	private String agreement;
 	
 	public Company(){
 		this.setIdCompany(0);
@@ -16,6 +17,7 @@ public class Company {
 		this.setCnpj("");
 		this.setPhone("");
 		this.setEmail("");
+		this.setAgreement("");
 	}
 	
 	public int getIdCompany() {
@@ -53,6 +55,12 @@ public class Company {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public String getAgreement() {
+		return agreement;
+	}
+	public void setAgreement(String agreement) {
+		this.agreement = agreement;
 	}
 	public String toString(){
 		return this.getName();

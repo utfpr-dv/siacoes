@@ -264,11 +264,47 @@ public class InternshipBO {
 		}
 	}
 	
-	public List<InternshipByCompany> listInternshipByCompany(int idDepartment) throws Exception {
+	public List<InternshipByCompany> listInternshipByCompany(int idDepartment, int idCountry, int idState, int idCity, int type, int status, int companyStatus) throws Exception {
 		try{
 			InternshipDAO dao = new InternshipDAO();
 			
-			return dao.listInternshipByCompany(idDepartment);
+			return dao.listInternshipByCompany(idDepartment, idCountry, idState, idCity, type, status, companyStatus);
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
+	}
+	
+	public List<InternshipByCompany> listInternshipByCity(int idDepartment, int idCountry, int idState, int type, int status, int companyStatus) throws Exception {
+		try{
+			InternshipDAO dao = new InternshipDAO();
+			
+			return dao.listInternshipByCity(idDepartment, idCountry, idState, type, status, companyStatus);
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
+	}
+	
+	public List<InternshipByCompany> listInternshipByState(int idDepartment, int idCountry, int type, int status, int companyStatus) throws Exception {
+		try{
+			InternshipDAO dao = new InternshipDAO();
+			
+			return dao.listInternshipByState(idDepartment, idCountry, type, status, companyStatus);
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
+	}
+	
+	public List<InternshipByCompany> listInternshipByCountry(int idDepartment, int type, int status, int companyStatus) throws Exception {
+		try{
+			InternshipDAO dao = new InternshipDAO();
+			
+			return dao.listInternshipByCountry(idDepartment, type, status, companyStatus);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

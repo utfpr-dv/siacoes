@@ -29,6 +29,7 @@ public class EditCompanyWindow extends EditWindow {
 	private final TextField textCnpj;
 	private final TextField textPhone;
 	private final TextField textEmail;
+	private final TextField textAgreement;
 	
 	public EditCompanyWindow(Company company, ListView parentView){
 		super("Editar Empresa", parentView);
@@ -69,12 +70,16 @@ public class EditCompanyWindow extends EditWindow {
 		this.textName.setMaxLength(100);
 		
 		this.textCnpj = new TextField("CNPJ");
-		this.textCnpj.setWidth("300px");
+		this.textCnpj.setWidth("200px");
 		this.textCnpj.setMaxLength(14);
 		
 		this.textPhone = new TextField("Telefone");
-		this.textPhone.setWidth("500px");
+		this.textPhone.setWidth("200px");
 		this.textPhone.setMaxLength(100);
+		
+		this.textAgreement = new TextField("Convênio");
+		this.textAgreement.setWidth("200px");
+		this.textAgreement.setMaxLength(50);
 		
 		this.textEmail = new TextField("E-mail");
 		this.textEmail.setWidth("810px");
@@ -83,7 +88,7 @@ public class EditCompanyWindow extends EditWindow {
 		this.addField(this.textName);
 		this.addField(new HorizontalLayout(this.comboCountry, this.comboState));
 		this.addField(this.comboCity);
-		this.addField(new HorizontalLayout(this.textCnpj, this.textPhone));
+		this.addField(new HorizontalLayout(this.textCnpj, this.textPhone, this.textAgreement));
 		this.addField(this.textEmail);
 		
 		this.loadCompany();
@@ -108,6 +113,7 @@ public class EditCompanyWindow extends EditWindow {
 		this.textCnpj.setValue(this.company.getCnpj());
 		this.textPhone.setValue(this.company.getPhone());
 		this.textEmail.setValue(this.company.getEmail());
+		this.textAgreement.setValue(this.company.getAgreement());
 	}
 	
 	@Override
@@ -120,6 +126,7 @@ public class EditCompanyWindow extends EditWindow {
 			this.company.setCnpj(this.textCnpj.getValue());
 			this.company.setPhone(this.textPhone.getValue());
 			this.company.setEmail(this.textEmail.getValue());
+			this.company.setAgreement(this.textAgreement.getValue());
 			
 			bo.save(this.company);
 			

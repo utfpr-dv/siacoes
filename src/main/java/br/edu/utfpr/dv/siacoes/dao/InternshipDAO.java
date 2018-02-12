@@ -421,7 +421,7 @@ public class InternshipDAO {
 		}
 	}
 	
-	public List<InternshipByCompany> listInternshipByCompany(int idDepartment) throws SQLException {
+	public List<InternshipByCompany> listInternshipByCompany(int idDepartment, int idCountry, int idState, int idCity, int type, int status, int companyStatus) throws SQLException {
 		ResultSet rs = null;
 		Statement stmt = null;
 		
@@ -430,7 +430,15 @@ public class InternshipDAO {
 			
 			rs = stmt.executeQuery("SELECT internship.idcompany, company.name, COUNT(*) AS total " +
 					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"LEFT JOIN city ON city.idcity=company.idcity " +
+					"LEFT JOIN state ON state.idstate=city.idstate " +
 					"WHERE internship.iddepartment=" + String.valueOf(idDepartment) +
+					(idCountry > 0 ? " AND state.idcountry=" + String.valueOf(idCountry) : "") +
+					(idState > 0 ? " AND city.idstate=" + String.valueOf(idState) : "") +
+					(idCity > 0 ? " AND company.idcity=" + String.valueOf(idCity) : "") +
+					(type == 0 || type == 1 ? " AND internship.type=" + String.valueOf(type) : "") +
+					(status == 0 ? " AND (internship.endDate IS NULL OR internship.endDate >= CURRENT_DATE)" : (status == 1 ? " AND internship.endDate < CURRENT_DATE" : "")) +
+					(companyStatus == 0 ? " AND company.agreement = ''" : (companyStatus == 1 ? " AND company.agreement <> ''" : "")) +
 					" GROUP BY internship.idcompany, company.name ORDER BY total DESC");
 			
 			List<InternshipByCompany> list = new ArrayList<InternshipByCompany>();
@@ -439,6 +447,124 @@ public class InternshipDAO {
 				InternshipByCompany item = new InternshipByCompany();
 				
 				item.setIdCompany(rs.getInt("idcompany"));
+				item.setCompanyName(rs.getString("name"));
+				item.setTotalStudents(rs.getInt("total"));
+				
+				list.add(item);
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
+	}
+	
+	public List<InternshipByCompany> listInternshipByCity(int idDepartment, int idCountry, int idState, int type, int status, int companyStatus) throws SQLException {
+		ResultSet rs = null;
+		Statement stmt = null;
+		
+		try{
+			stmt = this.conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT company.idcity, city.name, COUNT(*) AS total " +
+					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"LEFT JOIN city ON city.idcity=company.idcity " +
+					"LEFT JOIN state ON state.idstate=city.idstate " +
+					"WHERE internship.iddepartment=" + String.valueOf(idDepartment) +
+					(idCountry > 0 ? " AND state.idcountry=" + String.valueOf(idCountry) : "") +
+					(idState > 0 ? " AND city.idstate=" + String.valueOf(idState) : "") +
+					(type == 0 || type == 1 ? " AND internship.type=" + String.valueOf(type) : "") +
+					(status == 0 ? " AND (internship.endDate IS NULL OR internship.endDate >= CURRENT_DATE)" : (status == 1 ? " AND internship.endDate < CURRENT_DATE" : "")) +
+					(companyStatus == 0 ? " AND company.agreement = ''" : (companyStatus == 1 ? " AND company.agreement <> ''" : "")) +
+					" GROUP BY company.idcity, city.name ORDER BY total DESC");
+			
+			List<InternshipByCompany> list = new ArrayList<InternshipByCompany>();
+			
+			while(rs.next()){
+				InternshipByCompany item = new InternshipByCompany();
+				
+				item.setIdCompany(rs.getInt("idcity"));
+				item.setCompanyName(rs.getString("name"));
+				item.setTotalStudents(rs.getInt("total"));
+				
+				list.add(item);
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
+	}
+	
+	public List<InternshipByCompany> listInternshipByState(int idDepartment, int idCountry, int type, int status, int companyStatus) throws SQLException {
+		ResultSet rs = null;
+		Statement stmt = null;
+		
+		try{
+			stmt = this.conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT city.idstate, state.name, COUNT(*) AS total " +
+					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"LEFT JOIN city ON city.idcity=company.idcity " +
+					"LEFT JOIN state ON state.idstate=city.idstate " +
+					"WHERE internship.iddepartment=" + String.valueOf(idDepartment) +
+					(idCountry > 0 ? " AND state.idcountry=" + String.valueOf(idCountry) : "") +
+					(type == 0 || type == 1 ? " AND internship.type=" + String.valueOf(type) : "") +
+					(status == 0 ? " AND (internship.endDate IS NULL OR internship.endDate >= CURRENT_DATE)" : (status == 1 ? " AND internship.endDate < CURRENT_DATE" : "")) +
+					(companyStatus == 0 ? " AND company.agreement = ''" : (companyStatus == 1 ? " AND company.agreement <> ''" : "")) +
+					" GROUP BY city.idstate, state.name ORDER BY total DESC");
+			
+			List<InternshipByCompany> list = new ArrayList<InternshipByCompany>();
+			
+			while(rs.next()){
+				InternshipByCompany item = new InternshipByCompany();
+				
+				item.setIdCompany(rs.getInt("idstate"));
+				item.setCompanyName(rs.getString("name"));
+				item.setTotalStudents(rs.getInt("total"));
+				
+				list.add(item);
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
+	}
+	
+	public List<InternshipByCompany> listInternshipByCountry(int idDepartment, int type, int status, int companyStatus) throws SQLException {
+		ResultSet rs = null;
+		Statement stmt = null;
+		
+		try{
+			stmt = this.conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT state.idcountry, country.name, COUNT(*) AS total " +
+					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"LEFT JOIN city ON city.idcity=company.idcity " +
+					"LEFT JOIN state ON state.idstate=city.idstate " +
+					"LEFT JOIN country ON country.idcountry=state.idcountry " +
+					"WHERE internship.iddepartment=" + String.valueOf(idDepartment) +
+					(type == 0 || type == 1 ? " AND internship.type=" + String.valueOf(type) : "") +
+					(status == 0 ? " AND (internship.endDate IS NULL OR internship.endDate >= CURRENT_DATE)" : (status == 1 ? " AND internship.endDate < CURRENT_DATE" : "")) +
+					(companyStatus == 0 ? " AND company.agreement = ''" : (companyStatus == 1 ? " AND company.agreement <> ''" : "")) +
+					" GROUP BY state.idcountry, country.name ORDER BY total DESC");
+			
+			List<InternshipByCompany> list = new ArrayList<InternshipByCompany>();
+			
+			while(rs.next()){
+				InternshipByCompany item = new InternshipByCompany();
+				
+				item.setIdCompany(rs.getInt("idcountry"));
 				item.setCompanyName(rs.getString("name"));
 				item.setTotalStudents(rs.getInt("total"));
 				

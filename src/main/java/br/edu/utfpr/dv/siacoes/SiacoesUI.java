@@ -13,7 +13,9 @@ import com.vaadin.server.VaadinServlet;
 import br.edu.utfpr.dv.siacoes.model.AppConfig;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.view.ActivitySubmissionView;
+import br.edu.utfpr.dv.siacoes.view.ActivityGroupStatusChartView;
 import br.edu.utfpr.dv.siacoes.view.ActivityGroupView;
+import br.edu.utfpr.dv.siacoes.view.ActivityHighScoreChartView;
 import br.edu.utfpr.dv.siacoes.view.ActivityUnitView;
 import br.edu.utfpr.dv.siacoes.view.ActivityValidationReportView;
 import br.edu.utfpr.dv.siacoes.view.ActivityView;
@@ -133,6 +135,8 @@ public class SiacoesUI extends UI {
         getNavigator().addView(InternshipFinalDocumentView.NAME, InternshipFinalDocumentView.class);
         getNavigator().addView(TutoredSupervisorChartView.NAME, TutoredSupervisorChartView.class);
         getNavigator().addView(JurySemesterChartView.NAME, JurySemesterChartView.class);
+        getNavigator().addView(ActivityGroupStatusChartView.NAME, ActivityGroupStatusChartView.class);
+        getNavigator().addView(ActivityHighScoreChartView.NAME, ActivityHighScoreChartView.class);
         
         //
         // We use a view change handler to ensure the user is always redirected

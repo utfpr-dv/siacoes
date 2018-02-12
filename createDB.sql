@@ -138,6 +138,7 @@ CREATE TABLE `company` (
   `cnpj` varchar(20) NOT NULL,
   `phone` varchar(45) NOT NULL,
   `email` varchar(100) NOT NULL,
+  `company` varchar(50) NOT NULL,
   PRIMARY KEY (`idcompany`),
   KEY `fk_company_city_idx` (`idcity`),
   CONSTRAINT `fk_company_city` FOREIGN KEY (`idcity`) REFERENCES `city` (`idcity`) ON DELETE NO ACTION ON UPDATE NO ACTION

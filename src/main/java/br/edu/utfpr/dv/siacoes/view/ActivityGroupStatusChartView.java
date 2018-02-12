@@ -21,73 +21,68 @@ import org.dussan.vaadin.dcharts.options.SeriesDefaults;
 import org.dussan.vaadin.dcharts.options.Title;
 import org.dussan.vaadin.dcharts.renderers.legend.EnhancedLegendRenderer;
 
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.NativeSelect;
 
 import br.edu.utfpr.dv.siacoes.Session;
-import br.edu.utfpr.dv.siacoes.bo.JuryBO;
-import br.edu.utfpr.dv.siacoes.components.YearField;
-import br.edu.utfpr.dv.siacoes.model.JuryBySemester;
+import br.edu.utfpr.dv.siacoes.bo.ActivitySubmissionBO;
+import br.edu.utfpr.dv.siacoes.model.ActivityGroupStatus;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.model.StudentActivityStatusReport.StudentStage;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 
-public class JurySemesterChartView extends ChartView {
+public class ActivityGroupStatusChartView extends ChartView {
+
+	public static final String NAME = "activitygroupstatuschart";
 	
-	public static final String NAME = "jurysemesterchart";
+	private final NativeSelect comboStage;
 	
-	private final YearField textInitialYear;
-	private final YearField textFinalYear;
-	private final OptionGroup optionFilterType;
-	
-	public JurySemesterChartView() {
-		super(SystemModule.SIGET);
+	public ActivityGroupStatusChartView() {
+		super(SystemModule.SIGAC);
 		this.setProfilePerimissions(UserProfile.MANAGER);
-		this.setCaption("Gráfico de Bancas por Semestre");
+		this.setCaption("Gráfico de Pontuação Média por Grupo de Atividade");
 		
-		this.textInitialYear = new YearField();
-		this.textInitialYear.setCaption("Ano Inicial");
+		this.comboStage = new NativeSelect("Situação do Acadêmico");
+		this.comboStage.setWidth("400px");
+		this.comboStage.setNullSelectionAllowed(false);
+		this.comboStage.addItem(StudentStage.REGULAR);
+		this.comboStage.addItem(StudentStage.FINISHINGCOURSE);
+		this.comboStage.addItem(StudentStage.ALMOSTGRADUATED);
+		//this.comboStage.addItem(StudentStage.GRADUATED);
+		this.comboStage.setValue(StudentStage.REGULAR);
 		
-		this.textFinalYear = new YearField();
-		this.textFinalYear.setCaption("Ano Final");
-		
-		this.optionFilterType = new OptionGroup();
-		this.optionFilterType.addItem("Gráfico de Barras");
-		this.optionFilterType.addItem("Gráfico de Linhas");
-		this.optionFilterType.select(this.optionFilterType.getItemIds().iterator().next());
-		
-		this.addFilterField(new HorizontalLayout(this.textInitialYear, this.textFinalYear));
-		this.addFilterField(this.optionFilterType);
+		this.addFilterField(this.comboStage);
 	}
 
 	@Override
 	public DCharts generateChart() throws Exception {
-		List<JuryBySemester> list = new JuryBO().listJuryBySemester(Session.getUser().getDepartment().getIdDepartment(), this.textInitialYear.getYear(), this.textFinalYear.getYear());
+		List<ActivityGroupStatus> list = new ActivitySubmissionBO().getStudentActivityGroupStatus(Session.getUser().getDepartment().getIdDepartment(), (StudentStage)this.comboStage.getValue());
 		
 		DataSeries dataSeries = new DataSeries();
 		Series series = new Series();
 		
 		dataSeries.newSeries();
-		series.addSeries(new XYseries().setLabel("TCC 1"));
-		for(JuryBySemester item : list) {
-			dataSeries.add(String.valueOf(item.getSemester()) + "/" + String.valueOf(item.getYear()), item.getJuryStage1());
+		series.addSeries(new XYseries().setLabel("Pontuação Mínima do Grupo"));
+		for(ActivityGroupStatus item : list) {
+			dataSeries.add("Grupo " + String.valueOf(item.getGroup().getSequence()), item.getGroup().getMinimumScore());
 		}
 		
 		dataSeries.newSeries();
-		series.addSeries(new XYseries().setLabel("TCC 2"));
-		for(JuryBySemester item : list) {
-			dataSeries.add(String.valueOf(item.getSemester()) + "/" + String.valueOf(item.getYear()), item.getJuryStage2());
+		series.addSeries(new XYseries().setLabel("Pontuação Média dos Acadêmicos"));
+		for(ActivityGroupStatus item : list) {
+			dataSeries.add("Grupo " + String.valueOf(item.getGroup().getSequence()), item.getAverageScore());
 		}
 		
-		Title title = new Title("Bancas por Semestre");
+		dataSeries.newSeries();
+		series.addSeries(new XYseries().setLabel("Pontuação Máxima do Grupo"));
+		for(ActivityGroupStatus item : list) {
+			dataSeries.add("Grupo " + String.valueOf(item.getGroup().getSequence()), item.getGroup().getMaximumScore());
+		}
+		
+		Title title = new Title("Pontuação Média por Grupo");
 		
 		Legend legend = new Legend().setShow(true).setRendererOptions(new EnhancedLegendRenderer().setSeriesToggle(SeriesToggles.SLOW).setSeriesToggleReplot(true)).setPlacement(LegendPlacements.OUTSIDE_GRID);
 		
-		SeriesDefaults seriesDefaults;
-		if(this.optionFilterType.isSelected(this.optionFilterType.getItemIds().iterator().next())) {
-			seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.BAR);
-		} else {
-			seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.LINE);
-		}
+		SeriesDefaults seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.BAR);
 		
 		Axes axes = new Axes().addAxis(new XYaxis().setRenderer(AxisRenderers.CATEGORY));
 		
@@ -99,5 +94,5 @@ public class JurySemesterChartView extends ChartView {
 		
 		return chart;
 	}
-
+	
 }

@@ -1,11 +1,15 @@
 ﻿package br.edu.utfpr.dv.siacoes.bo;
 
+import java.net.ConnectException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.naming.CommunicationException;
 
 import br.edu.utfpr.dv.siacoes.dao.UserDAO;
 import br.edu.utfpr.dv.siacoes.ldap.LdapConfig;
@@ -285,28 +289,38 @@ public class UserBO {
 					LdapConfig.getInstance().getUidField());
 			
 			try{
-				ldapUtils.authenticate(login, password);
+				try {
+					ldapUtils.authenticate(login, password);
 				
-				Map<String, String> dataLdap = ldapUtils.getLdapProperties(login);
-
-				//String cnpjCpf = dataLdap.get(LdapConfig.getInstance().getCpfField());
-				//String matricula = dataLdap.get(LdapConfig.getInstance().getRegisterField());
-				String name = this.formatName(dataLdap.get(LdapConfig.getInstance().getNameField()));
-				String email = dataLdap.get(LdapConfig.getInstance().getEmailField());
-				
-				user.setPassword(hash);
-				
-				if(user.getIdUser() == 0){
-					user.setName(name);
-					user.setEmail(email);
-					user.setLogin(login.toLowerCase());
-					user.setInstitution("UTFPR");
-					user.setExternal(false);
-					if(this.loginIsStudent(login)){
-						user.setProfile(UserProfile.STUDENT);
-						user.setStudentCode(login.toLowerCase().replace("a", ""));
-					}else{
-						user.setProfile(UserProfile.PROFESSOR);
+					Map<String, String> dataLdap = ldapUtils.getLdapProperties(login);
+					
+					user.setPassword(hash);
+					
+					//String cnpjCpf = dataLdap.get(LdapConfig.getInstance().getCpfField());
+					//String matricula = dataLdap.get(LdapConfig.getInstance().getRegisterField());
+					String name = this.formatName(dataLdap.get(LdapConfig.getInstance().getNameField()));
+					String email = dataLdap.get(LdapConfig.getInstance().getEmailField());
+					
+					if(user.getIdUser() == 0){
+						user.setName(name);
+						user.setEmail(email);
+						user.setLogin(login.toLowerCase());
+						user.setInstitution("UTFPR");
+						user.setExternal(false);
+						if(this.loginIsStudent(login)){
+							user.setProfile(UserProfile.STUDENT);
+							user.setStudentCode(login.toLowerCase().replace("a", ""));
+						}else{
+							user.setProfile(UserProfile.PROFESSOR);
+						}
+					}
+				} catch (CommunicationException e) {
+					if(user.getIdUser() == 0) {
+						throw new Exception("Não foi possível conectar ao servicor LDAP.");
+					} else {
+						if(!user.getPassword().equals(hash)){
+							throw new Exception("Usuário ou senha inválidos.");
+						}
 					}
 				}
 				

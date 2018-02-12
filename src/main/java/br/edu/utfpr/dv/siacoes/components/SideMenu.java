@@ -59,7 +59,9 @@ import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
+import br.edu.utfpr.dv.siacoes.view.ActivityGroupStatusChartView;
 import br.edu.utfpr.dv.siacoes.view.ActivityGroupView;
+import br.edu.utfpr.dv.siacoes.view.ActivityHighScoreChartView;
 import br.edu.utfpr.dv.siacoes.view.ActivitySubmissionView;
 import br.edu.utfpr.dv.siacoes.view.ActivityUnitView;
 import br.edu.utfpr.dv.siacoes.view.ActivityValidationReportView;
@@ -615,6 +617,10 @@ public class SideMenu extends CustomComponent {
 			layout.addComponent(new MenuEntry("Relatórios", 0));
 			layout.addComponent(new MenuEntry("Validação de Atividades", 1, ActivityValidationReportView.NAME));
 			layout.addComponent(new MenuEntry("Situação do Acadêmico", 1, StudentActivityStatusReportView.NAME));
+			
+			layout.addComponent(new MenuEntry("Gráficos", 0));
+			layout.addComponent(new MenuEntry("Pontuação por Grupo", 1, ActivityGroupStatusChartView.NAME));
+			layout.addComponent(new MenuEntry("Atividades mais Pontuadas", 1, ActivityHighScoreChartView.NAME));
 		}
 		
 		layout.setSizeFull();

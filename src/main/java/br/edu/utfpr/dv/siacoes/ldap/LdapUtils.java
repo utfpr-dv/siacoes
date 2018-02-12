@@ -275,8 +275,7 @@ public class LdapUtils {
 	 * @throws InterruptedException
 	 */
 	@SuppressWarnings("rawtypes")
-	public String getDnByUid(String uid) throws NamingException,
-			InterruptedException {
+	public String getDnByUid(String uid) throws CommunicationException, NamingException, InterruptedException {
 		String url = this.getUrlWithoutSsl() + "/" + this.basedn;
 
 		Hashtable<String, Object> env = new Hashtable<String, Object>(11);
@@ -296,9 +295,7 @@ public class LdapUtils {
 					break;
 				} catch (CommunicationException ce) {
 					// wait 5 secs before try again
-					System.out
-							.println("ERROR COMMUNICATING WITH LDAP. RETRY IN 5 SEC. STEP "
-									+ (i + 1) + " OF 3");
+					System.out.println("ERROR COMMUNICATING WITH LDAP. RETRY IN 5 SEC. STEP " + (i + 1) + " OF 3");
 					Thread.sleep(5000);
 
 					if (i + 1 == 3) {

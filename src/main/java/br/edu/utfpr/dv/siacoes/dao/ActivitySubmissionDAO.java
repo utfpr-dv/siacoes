@@ -9,6 +9,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.model.ActivityScore;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
 import br.edu.utfpr.dv.siacoes.model.ActivityValidationReport;
@@ -59,7 +60,7 @@ public class ActivitySubmissionDAO {
 			stmt = conn.createStatement();
 		
 			rs = stmt.executeQuery("SELECT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
-					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, " +
+					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, activitygroup.idactivitygroup, " +
 					"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester " + 
 					"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
 					"INNER JOIN activity ON activity.idActivity=activitysubmission.idActivity " + 
@@ -95,7 +96,7 @@ public class ActivitySubmissionDAO {
 			stmt = conn.createStatement();
 		
 			rs = stmt.executeQuery("SELECT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
-					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, " +
+					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, activitygroup.idactivitygroup, " +
 					"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester " + 
 					"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
 					"INNER JOIN activity ON activity.idActivity=activitysubmission.idActivity " + 
@@ -132,7 +133,7 @@ public class ActivitySubmissionDAO {
 			stmt = conn.createStatement();
 		
 			rs = stmt.executeQuery("SELECT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
-					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, " +
+					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, activitygroup.idactivitygroup, " +
 					"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester " + 
 					"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
 					"INNER JOIN activity ON activity.idActivity=activitysubmission.idActivity " + 
@@ -169,7 +170,7 @@ public class ActivitySubmissionDAO {
 			stmt = conn.createStatement();
 		
 			rs = stmt.executeQuery("SELECT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
-					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, " +
+					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, activitygroup.idactivitygroup, " +
 					"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester, " +
 					"CASE WHEN finaldocument.idProject IS NOT NULL THEN 2 WHEN proposal.idProposal IS NOT NULL THEN 1 ELSE 0 END AS stage " +
 					"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
@@ -213,7 +214,7 @@ public class ActivitySubmissionDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
 				"SELECT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
-				"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, " +
+				"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, activitygroup.idactivitygroup, " +
 				"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester " + 
 				"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
 				"INNER JOIN activity ON activity.idActivity=activitysubmission.idActivity " + 
@@ -329,6 +330,7 @@ public class ActivitySubmissionDAO {
 		submission.setValidatedAmount(rs.getDouble("validatedAmount"));
 		submission.setComments(rs.getString("comments"));
 		submission.getActivity().setDescription(rs.getString("activityDescription"));
+		submission.getActivity().getGroup().setIdActivityGroup(rs.getInt("idactivitygroup"));
 		submission.getActivity().getGroup().setSequence(rs.getInt("groupSequence"));
 		submission.getActivity().setScore(rs.getDouble("score"));
 		submission.getActivity().getUnit().setFillAmount(rs.getInt("fillAmount") == 1);
@@ -443,7 +445,7 @@ public class ActivitySubmissionDAO {
 		
 			rs = stmt.executeQuery("SELECT \"user\".iduser, \"user\".name AS studentName, \"user\".registerSemester, \"user\".registerYear, \"user\".studentCode, " +
 					"CASE WHEN finaldocument.idProject IS NOT NULL THEN 2 WHEN proposal.idProposal IS NOT NULL THEN 1 ELSE 0 END AS stage " +
-					"FROM \"user\" LEFT JOIN proposal ON (proposal.idStudent=\"user\".idUser AND proposal.idDepartment=\"user\".idDepartment) " +
+					"FROM \"user\" LEFT JOIN proposal ON (proposal.idStudent=\"user\".idUser AND proposal.idDepartment=\"user\".idDepartment AND proposal.invalidated=0) " +
 					"LEFT JOIN project ON project.idProposal=proposal.idProposal " +
 					"LEFT JOIN finaldocument ON (finaldocument.idProject=project.idProject AND finaldocument.supervisorfeedback=" + String.valueOf(DocumentFeedback.APPROVED.getValue()) + ") " +
 					"WHERE \"user\".idDepartment=" + String.valueOf(idDepartment) + 
@@ -460,6 +462,45 @@ public class ActivitySubmissionDAO {
 				a.setRegisterYear(rs.getInt("registerYear"));
 				a.setStudentCode(rs.getString("studentCode"));
 				a.setStage(rs.getInt("stage"));
+				
+				list.add(a);
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public List<ActivityScore> getActivityScore(int idDepartment, int initialYear, int finalYear) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+		
+			rs = stmt.executeQuery("SELECT SUM(activitysubmission.validatedamount) AS score, activity.description, activitysubmission.idactivity FROM activitysubmission " + 
+					"INNER JOIN activity ON activity.idactivity=activitysubmission.idactivity " + 
+					"WHERE activitysubmission.iddepartment=" + String.valueOf(idDepartment) + " AND activitysubmission.feedback=" + String.valueOf(DocumentFeedback.APPROVED.getValue()) + 
+					" AND YEAR(activitysubmission.submissiondate) BETWEEN " + String.valueOf(initialYear) + " AND " + String.valueOf(finalYear) +
+					" GROUP BY activitysubmission.idactivity, activity.description " + 
+					"ORDER BY score DESC");
+			
+			List<ActivityScore> list = new ArrayList<ActivityScore>();
+			
+			while(rs.next()){
+				ActivityScore a = new ActivityScore();
+				
+				a.setIdActivity(rs.getInt("idactivity"));
+				a.setActivity(rs.getString("description"));
+				a.setScore(rs.getDouble("score"));
 				
 				list.add(a);
 			}

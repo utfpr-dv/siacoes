@@ -15,6 +15,8 @@ import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import br.edu.utfpr.dv.siacoes.dao.ActivityGroupDAO;
 import br.edu.utfpr.dv.siacoes.dao.ActivitySubmissionDAO;
 import br.edu.utfpr.dv.siacoes.model.ActivityGroup;
+import br.edu.utfpr.dv.siacoes.model.ActivityGroupStatus;
+import br.edu.utfpr.dv.siacoes.model.ActivityScore;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionDetailReport;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionFooterReport;
@@ -319,6 +321,7 @@ public class ActivitySubmissionBO {
 				if(!find){
 					ReportActivity ra = new ReportActivity();
 					ra.setIdActivity(submission.getActivity().getIdActivity());
+					ra.setIdActivityGroup(submission.getActivity().getGroup().getIdActivityGroup());
 					ra.setGroup(submission.getActivity().getGroup().getSequence());
 					ra.setSemester(submission.getSemester());
 					ra.setYear(submission.getYear());
@@ -340,13 +343,14 @@ public class ActivitySubmissionBO {
 		for(ActivityGroup group : listGroup){
 			ActivitySubmissionFooterReport footer = new ActivitySubmissionFooterReport();
 			
+			footer.setIdActivityGroup(group.getIdActivityGroup());
 			footer.setSequence(group.getSequence());
 			footer.setGroup(group.getDescription());
 			footer.setMinimum(group.getMinimumScore());
 			footer.setMaximum(group.getMaximumScore());
 			
 			for(ReportActivity ra : activities){
-				if(ra.getGroup() == group.getSequence()){
+				if(ra.getIdActivityGroup() == group.getIdActivityGroup()){
 					if((ra.getMaximumScore() > 0) && (ra.getScore() > ra.getMaximumScore())){
 						footer.setTotal(footer.getTotal() + ra.getMaximumScore());
 					}else{
@@ -405,7 +409,7 @@ public class ActivitySubmissionBO {
 		}
 	}
 	
-	public byte[] getStudentActivityStatusReport(int idDepartment, StudentStage stage) throws Exception {
+	public List<StudentActivityStatusReport> getStudentActivityStatus(int idDepartment, StudentStage stage) throws Exception {
 		try{
 			ActivitySubmissionDAO dao = new ActivitySubmissionDAO();
 			List<ActivitySubmission> list = new ArrayList<ActivitySubmission>();
@@ -435,6 +439,18 @@ public class ActivitySubmissionBO {
 				}
 			}
 			
+			return report;
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
+	}
+	
+	public byte[] getStudentActivityStatusReport(int idDepartment, StudentStage stage) throws Exception {
+		try{
+			List<StudentActivityStatusReport> report = this.getStudentActivityStatus(idDepartment, stage);
+			
 			ByteArrayOutputStream pdfReport = new ReportUtils().createPdfStream(report, "StudentActivityStatus");
 			
 			return pdfReport.toByteArray();
@@ -445,9 +461,81 @@ public class ActivitySubmissionBO {
 		}
 	}
 	
+	public List<ActivityGroupStatus> getStudentActivityGroupStatus(int idDepartment, StudentStage stage) throws Exception {
+		try{
+			List<ActivityGroup> groups = new ActivityGroupBO().listAll();
+			List<StudentActivityStatusReport> report = this.getStudentActivityStatus(idDepartment, stage);
+			List<ActivityGroupStatus> list = new ArrayList<ActivityGroupStatus>();
+			
+			for(ActivityGroup group : groups) {
+				ActivityGroupStatus status = new ActivityGroupStatus();
+				double sum = 0;
+				int count = 0;
+				
+				status.setGroup(group);
+				for(StudentActivityStatusReport student : report) {
+					for(ActivitySubmissionFooterReport score : student.getScores()) {
+						if(score.getIdActivityGroup() == group.getIdActivityGroup()) {
+							sum = sum + score.getTotal();
+							count++;
+						}
+					}
+				}
+				
+				if(count > 0) {
+					sum = sum / count;
+				}
+				
+				status.setAverageScore(sum);
+				
+				list.add(status);
+			}
+			
+			return list;
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
+	}
+	
+	public List<ActivityScore> getActivityScore(int idDepartment, int initialYear, int finalYear, int maxActivities) throws Exception {
+		try{
+			List<ActivityScore> list = new ActivitySubmissionDAO().getActivityScore(idDepartment, initialYear, finalYear);
+			
+			if(list.size() <= maxActivities) {
+				return list;
+			} else {
+				List<ActivityScore> ret = new ArrayList<ActivityScore>();
+				
+				for(int i = 0; i < maxActivities; i++) {
+					ret.add(list.get(i));
+				}
+				
+				double score = 0;
+				for(int i = maxActivities; i < list.size(); i++) {
+					score = score + list.get(i).getScore();
+				}
+				
+				ActivityScore a = new ActivityScore();
+				a.setIdActivity(0);
+				a.setActivity("Outras Atividades");
+				a.setScore(score);
+				ret.add(a);
+				
+				return ret;
+			}
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
+	}
+	
 	private class ReportActivity{
 		
 		private int idActivity;
+		private int idActivityGroup;
 		private int group;
 		private int year;
 		private int semester;
@@ -456,6 +544,7 @@ public class ActivitySubmissionBO {
 		
 		public ReportActivity(){
 			this.setIdActivity(0);
+			this.setIdActivityGroup(0);
 			this.setGroup(0);
 			this.setYear(0);
 			this.setSemester(0);
@@ -463,6 +552,12 @@ public class ActivitySubmissionBO {
 			this.setMaximumScore(0);
 		}
 		
+		public int getIdActivityGroup() {
+			return idActivityGroup;
+		}
+		public void setIdActivityGroup(int idActivityGroup) {
+			this.idActivityGroup = idActivityGroup;
+		}
 		public int getIdActivity() {
 			return idActivity;
 		}

@@ -2,6 +2,7 @@
 
 public class ActivitySubmissionFooterReport {
 	
+	private int idActivityGroup;
 	private String group;
 	private double total;
 	private int minimum;
@@ -10,6 +11,7 @@ public class ActivitySubmissionFooterReport {
 	private int sequence;
 	
 	public ActivitySubmissionFooterReport(){
+		this.setIdActivityGroup(0);
 		this.setGroup("");
 		this.setTotal(0);
 		this.setMinimum(0);
@@ -18,6 +20,12 @@ public class ActivitySubmissionFooterReport {
 		this.setSequence(0);
 	}
 	
+	public int getIdActivityGroup() {
+		return idActivityGroup;
+	}
+	public void setIdActivityGroup(int idActivityGroup) {
+		this.idActivityGroup = idActivityGroup;
+	}
 	public String getGroup() {
 		return group;
 	}

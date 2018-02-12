@@ -81,9 +81,9 @@ public class CompanyDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO company(idcity, name, cnpj, phone, email) VALUES(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO company(idcity, name, cnpj, phone, email, agreement) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE company SET idcity=?, name=?, cnpj=?, phone=?, email=? WHERE idcompany=?");
+				stmt = conn.prepareStatement("UPDATE company SET idcity=?, name=?, cnpj=?, phone=?, email=?, agreement=? WHERE idcompany=?");
 			}
 			
 			stmt.setInt(1, company.getCity().getIdCity());
@@ -91,9 +91,10 @@ public class CompanyDAO {
 			stmt.setString(3, company.getCnpj());
 			stmt.setString(4, company.getPhone());
 			stmt.setString(5, company.getEmail());
+			stmt.setString(6, company.getAgreement().trim());
 			
 			if(!insert){
-				stmt.setInt(6, company.getIdCompany());
+				stmt.setInt(7, company.getIdCompany());
 			}
 			
 			stmt.execute();
@@ -127,6 +128,7 @@ public class CompanyDAO {
 		company.setCnpj(rs.getString("cnpj"));
 		company.setPhone(rs.getString("phone"));
 		company.setEmail(rs.getString("email"));
+		company.setAgreement(rs.getString("agreement"));
 		
 		return company;
 	}

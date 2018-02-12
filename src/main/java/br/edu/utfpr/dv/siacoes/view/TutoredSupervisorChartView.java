@@ -31,6 +31,7 @@ import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.TutoredBySupervisor;
 import br.edu.utfpr.dv.siacoes.model.TutoredBySupervisor.TutoredGroupedBySupervisor;
+import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 
 public class TutoredSupervisorChartView extends ChartView {
 	
@@ -43,6 +44,7 @@ public class TutoredSupervisorChartView extends ChartView {
 
 	public TutoredSupervisorChartView(){
 		super(SystemModule.SIGET);
+		this.setProfilePerimissions(UserProfile.MANAGER);
 		this.setCaption("Gráfico de Orientados por Orientador");
 		
 		this.textInitialYear = new YearField();
