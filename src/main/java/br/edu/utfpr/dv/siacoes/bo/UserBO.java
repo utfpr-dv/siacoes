@@ -263,6 +263,10 @@ public class UserBO {
 	}
 	
 	public User validateLogin(String login, String password) throws Exception{
+		if(login.trim().isEmpty() || password.trim().isEmpty()) {
+    		throw new Exception("Informe o usuário e a senha.");
+    	}
+		
 		String hash = StringUtils.generateSHA3Hash(password);
 		
 		if(login.contains("@")){
