@@ -157,7 +157,7 @@ public class SiacoesUI extends UI {
                 } else if (!isLoggedIn && !isLoginView) {
                     // Redirect to login view always if a user has not yet
                     // logged in
-                    getNavigator().navigateTo(LoginView.NAME);
+                    getNavigator().navigateTo(LoginView.NAME + "/" + event.getViewName());
                     return false;
                 } else if (isLoggedIn && isLoginView) {
                     // If someone tries to access to login view while logged in,

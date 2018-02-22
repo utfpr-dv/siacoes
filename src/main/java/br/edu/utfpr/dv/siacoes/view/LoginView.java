@@ -39,6 +39,8 @@ public class LoginView extends CustomComponent implements View {
     private final Button loginButton;
     private final Panel panelLogin;
     
+    private String redirect;
+    
     public LoginView(){
     	this.setCaption(SystemModule.GENERAL.getDescription());
     	this.setResponsive(true);
@@ -101,11 +103,21 @@ public class LoginView extends CustomComponent implements View {
         fields.setResponsive(true);
         fields.setSpacing(true);
 
-        setCompositionRoot(fields);
+        this.setCompositionRoot(fields);
+        
+        this.redirect = "";
     }
 	
     @Override
     public void enter(ViewChangeEvent event) {
+    	if(event.getParameters() != null){
+			String page = event.getParameters();
+			
+			if((page != null) && (!page.trim().isEmpty())) {
+				this.redirect = page.trim();
+			}
+		}
+    	
         user.focus();
     }
     
@@ -125,7 +137,12 @@ public class LoginView extends CustomComponent implements View {
         	}
         	
         	Session.setUser(user);
-            getUI().getNavigator().navigateTo(MainView.NAME);
+        	
+        	if(!this.redirect.isEmpty()) {
+        		getUI().getNavigator().navigateTo(this.redirect);
+        	} else {
+        		getUI().getNavigator().navigateTo(MainView.NAME);
+        	}
         }catch(Exception e){
         	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
