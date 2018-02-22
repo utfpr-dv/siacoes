@@ -95,7 +95,7 @@ public class SemesterDAO {
 			if(rs.next()){
 				return this.loadObject(rs);
 			}else{
-				return new Semester(idCampus, semester, year);
+				return null;
 			}
 		}finally{
 			if((rs != null) && !rs.isClosed())

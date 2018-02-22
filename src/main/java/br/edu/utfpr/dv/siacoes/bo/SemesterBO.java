@@ -39,7 +39,13 @@ public class SemesterBO {
 		try{
 			SemesterDAO dao = new SemesterDAO();
 			
-			return dao.findBySemester(idCampus, semester, year);
+			Semester s = dao.findBySemester(idCampus, semester, year);
+			
+			if(s == null) {
+				return new Semester(idCampus, semester, year);
+			} else {
+				return s;
+			}
 		} catch(SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
