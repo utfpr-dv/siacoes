@@ -115,8 +115,9 @@ public class ProjectView extends ListView {
 		this.addFilterField(new HorizontalLayout(this.comboSemester, this.textYear));
 		
 		this.setAddVisible(false);
-		this.setEditVisible(false);
 		this.setDeleteVisible(false);
+		
+		this.setEditCaption("Visualizar");
 	}
 	
 	@Override

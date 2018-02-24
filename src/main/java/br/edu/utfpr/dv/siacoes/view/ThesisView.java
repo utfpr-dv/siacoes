@@ -109,8 +109,9 @@ public class ThesisView extends ListView {
 		}
 		
 		this.setAddVisible(false);
-		this.setEditVisible(false);
 		this.setDeleteVisible(false);
+		
+		this.setEditCaption("Visualizar");
 		
 		this.comboSemester = new SemesterComboBox();
 		

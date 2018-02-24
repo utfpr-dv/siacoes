@@ -191,6 +191,9 @@ public class EditProjectWindow extends EditWindow {
 		this.loadProject();
 		this.textTitle.focus();
 		
+		this.setSaveButtonEnabled(this.project.getStudent().getIdUser() == Session.getUser().getIdUser());
+		this.uploadFile.setEnabled(this.project.getStudent().getIdUser() == Session.getUser().getIdUser());
+		
 		this.addButton(this.buttonDownloadFile);
 	}
 	

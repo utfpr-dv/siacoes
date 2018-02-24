@@ -193,6 +193,9 @@ public class EditThesisWindow extends EditWindow {
 		this.loadThesis();
 		this.textTitle.focus();
 		
+		this.setSaveButtonEnabled(this.thesis.getStudent().getIdUser() == Session.getUser().getIdUser());
+		this.uploadFile.setEnabled(this.thesis.getStudent().getIdUser() == Session.getUser().getIdUser());
+		
 		this.addButton(this.buttonDownloadFile);
 	}
 	
