@@ -1074,7 +1074,8 @@ public class SideMenu extends CustomComponent {
 				public void menuClick() {
 					try {
         	        	ProposalBO bo = new ProposalBO();
-						Proposal proposal = bo.findCurrentProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+						//Proposal proposal = bo.findCurrentProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+        	        	Proposal proposal = bo.findLastProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment());
 						
 						/*DeadlineBO dbo = new DeadlineBO();
 						Deadline d;
