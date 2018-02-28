@@ -114,6 +114,9 @@ public class ActivitySubmissionBO {
 		if(submission.getDescription().trim().isEmpty()){
 			throw new Exception("Informe a descrição da atividade.");
 		}
+		if((submission.getAmount() <= 0) && (new ActivityBO().needsFillAmount(submission.getActivity().getIdActivity()))) {
+			throw new Exception("Informe a quantidade a ser validada para a atividade (horas, etc.).");
+		}
 		if((submission.getFeedback() == ActivityFeedback.APPROVED) && (submission.getValidatedAmount() <= 0)){
 			submission.setValidatedAmount(submission.getAmount());
 		}

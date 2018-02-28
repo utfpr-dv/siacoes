@@ -10,6 +10,18 @@ import br.edu.utfpr.dv.siacoes.model.Activity;
 
 public class ActivityBO {
 	
+	public boolean needsFillAmount(int idActivity) throws Exception{
+		try{
+			ActivityDAO dao = new ActivityDAO();
+			
+			return dao.needsFillAmount(idActivity);
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
+	}
+	
 	public List<Activity> listAll() throws Exception{
 		try{
 			ActivityDAO dao = new ActivityDAO();

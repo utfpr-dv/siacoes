@@ -12,6 +12,34 @@ import br.edu.utfpr.dv.siacoes.model.Activity;
 
 public class ActivityDAO {
 	
+	public boolean needsFillAmount(int idActivity) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT activityunit.fillamount FROM activityunit " +
+					"INNER JOIN activity ON activity.idactivityunit=activityunit.idactivityunit " +
+					"WHERE activity.idactivity=" + String.valueOf(idActivity));
+			
+			if(rs.next()){
+				return (rs.getInt("fillamount") == 1);
+			}else {
+				return false;	
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public List<Activity> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
