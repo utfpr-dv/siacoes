@@ -98,6 +98,7 @@ public class ActivitySubmissionBO {
 		boolean isInsert = (submission.getIdActivitySubmission() == 0);
 		ActivitySubmissionDAO dao = new ActivitySubmissionDAO();
 		ActivityFeedback feedback = dao.getFeedback(submission.getIdActivitySubmission());
+		boolean fillAmount = new ActivityBO().needsFillAmount(submission.getActivity().getIdActivity());
 		
 		if((submission.getStudent() == null) || (submission.getStudent().getIdUser() == 0)){
 			throw new Exception("Informe o acadêmico.");
@@ -114,11 +115,17 @@ public class ActivitySubmissionBO {
 		if(submission.getDescription().trim().isEmpty()){
 			throw new Exception("Informe a descrição da atividade.");
 		}
-		if((submission.getAmount() <= 0) && (new ActivityBO().needsFillAmount(submission.getActivity().getIdActivity()))) {
+		if((submission.getAmount() <= 0) && fillAmount) {
 			throw new Exception("Informe a quantidade a ser validada para a atividade (horas, etc.).");
+		}
+		if(!fillAmount) {
+			submission.setAmount(1);
 		}
 		if((submission.getFeedback() == ActivityFeedback.APPROVED) && (submission.getValidatedAmount() <= 0)){
 			submission.setValidatedAmount(submission.getAmount());
+		}
+		if(new FinalSubmissionBO().studentHasSubmission(submission.getStudent().getIdUser(), submission.getDepartment().getIdDepartment())) {
+			throw new Exception("Não é possível incluir ou editar a atividade pois o acadêmico já foi sinalizado como Aprovado.");
 		}
 		
 		try{
@@ -172,6 +179,9 @@ public class ActivitySubmissionBO {
 	public boolean delete(ActivitySubmission submission) throws Exception{
 		if(submission.getFeedback() != ActivityFeedback.NONE){
 			throw new Exception("Não é possível excluir a atividade pois o parecer para ela já foi emitido.");
+		}
+		if(new FinalSubmissionBO().studentHasSubmission(submission.getStudent().getIdUser(), submission.getDepartment().getIdDepartment())) {
+			throw new Exception("Não é possível excluir a atividade pois o acadêmico já foi sinalizado como Aprovado.");
 		}
 		
 		try{

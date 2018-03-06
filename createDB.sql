@@ -392,6 +392,23 @@ CREATE TABLE `activitysubmission` (
   CONSTRAINT `fk_activitysubmission_feedbackuser` FOREIGN KEY (`idfeedbackuser`) REFERENCES `user` (`iduser`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
+CREATE TABLE `finalsubmission` (
+    `idfinalsubmission` INT NOT NULL AUTO_INCREMENT,
+    `iddepartment` INT NOT NULL,
+    `idstudent` INT NOT NULL,
+    `idfeedbackuser` INT NOT NULL,
+	`finalscore` double NOT NULL,
+    `date` DATE NOT NULL,
+    `report` mediumblob NOT NULL,
+    PRIMARY KEY (`idfinalsubmission`),
+	KEY `fk_finalsubmission_department_idx` (`iddepartment`),
+	KEY `fk_finalsubmission_student_idx` (`idStudent`),
+	KEY `fk_finalsubmission_feedbackuser_idx` (`idfeedbackuser`),
+    CONSTRAINT `fk_finalsubmission_department` FOREIGN KEY (`iddepartment`) REFERENCES `department` (`iddepartment`) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT `fk_finalsubmission_student` FOREIGN KEY (`idstudent`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT `fk_finalsubmission_feedbackuser` FOREIGN KEY (`idfeedbackuser`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
 CREATE TABLE `document` (
   `iddocument` int(11) NOT NULL AUTO_INCREMENT,
   `idDepartment` int(11) NOT NULL,

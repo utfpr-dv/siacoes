@@ -38,6 +38,7 @@ import br.edu.utfpr.dv.siacoes.view.EmailMessageView;
 import br.edu.utfpr.dv.siacoes.view.EvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.EventCalendarView;
 import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
+import br.edu.utfpr.dv.siacoes.view.FinalSubmissionView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCalendarView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCompanyChartView;
 import br.edu.utfpr.dv.siacoes.view.InternshipEvaluationItemView;
@@ -137,6 +138,7 @@ public class SiacoesUI extends UI {
         getNavigator().addView(JurySemesterChartView.NAME, JurySemesterChartView.class);
         getNavigator().addView(ActivityGroupStatusChartView.NAME, ActivityGroupStatusChartView.class);
         getNavigator().addView(ActivityHighScoreChartView.NAME, ActivityHighScoreChartView.class);
+        getNavigator().addView(FinalSubmissionView.NAME, FinalSubmissionView.class);
         
         //
         // We use a view change handler to ensure the user is always redirected

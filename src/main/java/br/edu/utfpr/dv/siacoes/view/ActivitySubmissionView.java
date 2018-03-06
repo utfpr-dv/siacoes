@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.vaadin.dialogs.ConfirmDialog;
+
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -16,13 +18,16 @@ import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.renderers.HtmlRenderer;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ActivitySubmissionBO;
+import br.edu.utfpr.dv.siacoes.bo.FinalSubmissionBO;
 import br.edu.utfpr.dv.siacoes.components.StudentComboBox;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionFooterReport;
+import br.edu.utfpr.dv.siacoes.model.FinalSubmission;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
 import br.edu.utfpr.dv.siacoes.window.EditActivitySubmissionWindow;
@@ -34,6 +39,7 @@ public class ActivitySubmissionView extends ListView {
 	private final OptionGroup optionFilterType;
 	private final StudentComboBox comboStudent;
 	private final Button buttonFinalReport;
+	private final Button buttonFinalSubmission;
 	
 	private final Panel panelScore;
 	private final Panel panelLabel;
@@ -51,6 +57,13 @@ public class ActivitySubmissionView extends ListView {
 		this.comboStudent = new StudentComboBox("Acadêmico");
 		
 		this.buttonFinalReport = new Button("Relatório Final");
+		
+		this.buttonFinalSubmission = new Button("Finalizar Processo", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	finalSubmission();
+            }
+        });
 		
 		this.panelScore = new Panel("Pontos Validados");
 		
@@ -88,17 +101,36 @@ public class ActivitySubmissionView extends ListView {
 			
 			this.addFilterField(new HorizontalLayout(this.optionFilterType, this.comboStudent));
 		}else{
+			boolean allowAdd = false;
 			this.setFiltersVisible(false);
+			
+			try {
+				allowAdd = !new FinalSubmissionBO().studentHasSubmission(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			this.setAddVisible(allowAdd);
+			this.setDeleteVisible(allowAdd);
+			
+			if(!allowAdd) {
+				this.setEditCaption("Visualizar");
+			}
 		}
 		
 		this.addActionButton(this.buttonFinalReport);
+		
+		if(Session.isUserManager(this.getModule())) {
+			this.addActionButton(this.buttonFinalSubmission);
+		}
+		
 		this.addActionPanel(this.panelScore);
 		this.addActionPanel(this.panelLabel);
 	}
 	
 	@Override
 	protected void loadGrid() {
-		this.getGrid().addColumn("Aluno", String.class);
+		this.getGrid().addColumn("Acadêmico", String.class);
 		this.getGrid().addColumn("Sem.", Integer.class);
 		this.getGrid().addColumn("Ano", Integer.class);
 		this.getGrid().addColumn("Grupo", Integer.class);
@@ -118,6 +150,7 @@ public class ActivitySubmissionView extends ListView {
 		
 		new ExtensionUtils().removeAllExtensions(this.buttonFinalReport);
 		this.buttonFinalReport.setEnabled(true);
+		this.buttonFinalSubmission.setEnabled(true);
 		this.panelScore.setVisible(true);
 		this.panelLabel.setVisible(false);
 		
@@ -131,6 +164,7 @@ public class ActivitySubmissionView extends ListView {
 				if(this.optionFilterType.isSelected(this.optionFilterType.getItemIds().iterator().next())){
 					list = bo.listWithNoFeedback2(Session.getUser().getDepartment().getIdDepartment());
 					this.buttonFinalReport.setEnabled(false);
+					this.buttonFinalSubmission.setEnabled(false);
 					this.panelScore.setVisible(false);
 					this.panelLabel.setVisible(true);
 				}else{
@@ -198,6 +232,26 @@ public class ActivitySubmissionView extends ListView {
 		}
 		
 		this.panelScore.setContent(v);
+	}
+	
+	private void finalSubmission() {
+		ConfirmDialog.show(UI.getCurrent(), "Confirma a aprovação do acadêmico em Atividades Complementares?\n\nEsta operação não poderá ser desfeita.", new ConfirmDialog.Listener() {
+            public void onClose(ConfirmDialog dialog) {
+                if (dialog.isConfirmed()) {
+                	try {
+                		FinalSubmissionBO bo = new FinalSubmissionBO();
+                		
+                		FinalSubmission submission = bo.registerFinalSubmission(comboStudent.getStudent().getIdUser(), Session.getUser().getDepartment().getIdDepartment());
+                		
+                		Notification.show("Finalizar Processo", "O processo de aprovação do acadêmico foi realizado com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+					} catch (Exception e) {
+						e.printStackTrace();
+						
+						Notification.show("Finalizar Processo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+					}
+                }
+            }
+        });
 	}
 
 	@Override

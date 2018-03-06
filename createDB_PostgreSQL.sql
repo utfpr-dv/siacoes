@@ -392,6 +392,23 @@ CREATE INDEX fk_activitysubmission_department_idx ON activitysubmission (iddepar
 CREATE INDEX fk_activitysubmission_activity_idx ON activitysubmission (idActivity);
 CREATE INDEX fk_activitysubmission_feedbackuser_idx ON activitysubmission (idfeedbackuser);
 
+CREATE TABLE finalsubmission (
+    idfinalsubmission SERIAL NOT NULL,
+    iddepartment INT NOT NULL,
+    idstudent INT NOT NULL,
+    idfeedbackuser INT NOT NULL,
+    date DATE NOT NULL,
+	finalscore REAL NOT NULL,
+    report BYTEA NOT NULL,
+    PRIMARY KEY (idfinalsubmission),
+    CONSTRAINT fk_finalsubmission_department FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT fk_finalsubmission_student FOREIGN KEY (idstudent) REFERENCES "user" (iduser) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT fk_finalsubmission_feedbackuser FOREIGN KEY (idfeedbackuser) REFERENCES "user" (iduser) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+CREATE INDEX fk_finalsubmission_department_idx ON finalsubmission (iddepartment);
+CREATE INDEX fk_finalsubmission_student_idx ON finalsubmission (idStudent);
+CREATE INDEX fk_finalsubmission_feedbackuser_idx ON finalsubmission (idfeedbackuser);
+
 CREATE TABLE document (
   iddocument SERIAL NOT NULL,
   idDepartment INT NOT NULL,

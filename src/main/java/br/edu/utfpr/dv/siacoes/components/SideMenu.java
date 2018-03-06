@@ -82,6 +82,7 @@ import br.edu.utfpr.dv.siacoes.view.EmailMessageView;
 import br.edu.utfpr.dv.siacoes.view.EvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.EventCalendarView;
 import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
+import br.edu.utfpr.dv.siacoes.view.FinalSubmissionView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCalendarView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCompanyChartView;
 import br.edu.utfpr.dv.siacoes.view.InternshipEvaluationItemView;
@@ -596,6 +597,10 @@ public class SideMenu extends CustomComponent {
 			layout.addComponent(new MenuEntry("Registro de Atividades", 0));
 			
 			layout.addComponent(new MenuEntry((Session.isUserManager(SystemModule.SIGAC) ? "Validar Atividades" : (Session.isUserStudent() ? "Atividades Registradas" : "Atividades Submetidas")), 1, ActivitySubmissionView.NAME));
+			
+			if(Session.isUserManager(SystemModule.SIGAC) || Session.isUserDepartmentManager()) {
+				layout.addComponent(new MenuEntry("Acadêmicos Aprovados", 1, FinalSubmissionView.NAME));
+			}
 		}
 		if(Session.isUserAdministrator() || Session.isUserManager(SystemModule.SIGAC)){
 			layout.addComponent(new MenuEntry("Administração", 0));

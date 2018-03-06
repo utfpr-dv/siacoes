@@ -36,6 +36,7 @@ import br.edu.utfpr.dv.siacoes.bo.ActivityBO;
 import br.edu.utfpr.dv.siacoes.bo.ActivityGroupBO;
 import br.edu.utfpr.dv.siacoes.bo.ActivitySubmissionBO;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
+import br.edu.utfpr.dv.siacoes.bo.FinalSubmissionBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
@@ -291,6 +292,16 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		this.textFeedbackDate.setValue(this.submission.getFeedbackDate());
 		this.textFeedbackUser.setValue(this.submission.getFeedbackUser().getName());
 		this.textComments.setValue(this.submission.getComments());
+		
+		boolean allowEdit = false;
+		
+		try {
+			allowEdit = !new FinalSubmissionBO().studentHasSubmission(this.submission.getStudent().getIdUser(), this.submission.getDepartment().getIdDepartment());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		this.setSaveButtonEnabled(allowEdit);
 	}
 	
 	private void loadCertificate(){
