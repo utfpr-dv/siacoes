@@ -147,6 +147,7 @@ public class EditProposalWindow extends EditWindow {
 		if(this.submitProposal && Session.isUserStudent()){
 			h4 = new HorizontalLayout(this.uploadFile, this.imageFileUploaded, this.comboSemester, this.textYear, this.textSubmissionDate);
 		}else{
+			this.uploadFile.setVisible(false);
 			h4 = new HorizontalLayout(this.comboSemester, this.textYear, this.textSubmissionDate);
 		}
 		h4.setSpacing(true);
@@ -265,6 +266,8 @@ public class EditProposalWindow extends EditWindow {
 				this.comboCosupervisor.setEnabled(false);
 			}
 		}
+		
+		this.buttonDownloadProposal.setVisible(this.uploadFile.isVisible() && (this.proposal.getFile() != null));
 	}
 	
 	private void loadGridAppraisers(){

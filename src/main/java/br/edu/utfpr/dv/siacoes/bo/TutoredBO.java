@@ -10,6 +10,7 @@ import br.edu.utfpr.dv.siacoes.dao.TutoredDAO;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.Semester;
+import br.edu.utfpr.dv.siacoes.model.SupervisorChange;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.Tutored;
 import br.edu.utfpr.dv.siacoes.model.TutoredBySupervisor;
@@ -147,6 +148,55 @@ public class TutoredBO {
 					t.setYear(th.getYear());
 					t.setStage(2);
 				}
+			}
+		}
+		
+		SupervisorChangeBO sbo = new SupervisorChangeBO();
+		List<SupervisorChange> changes = sbo.list(idSupervisor);
+		
+		for(SupervisorChange ch : changes) {
+			boolean find = false;
+			
+			for(Tutored t : list) {
+				if(t.getProposal().getIdProposal() == ch.getProposal().getIdProposal()) {
+					find = true;
+				}
+			}
+			
+			if(!find) {
+				Tutored t = new Tutored();
+				
+				t.setProposal(ch.getProposal());
+				t.setStudent(ch.getProposal().getStudent());
+				t.setSupervisor(ch.getNewSupervisor());
+				t.setCosupervisor(ch.getNewCosupervisor());
+				t.setTitle(ch.getProposal().getTitle());
+				t.setStage(1);
+				
+				Thesis th = new ThesisBO().findByProposal(ch.getProposal().getIdProposal());
+				if(th != null) {
+					t.setThesis(th);
+					t.setTitle(th.getTitle());
+					t.setSemester(th.getSemester());
+					t.setYear(th.getYear());
+					t.setStage(2);
+				} else {
+					Project p = new ProjectBO().findByProposal(ch.getProposal().getIdProposal());
+					
+					if(p != null) {
+						t.setTitle(p.getTitle());
+						t.setSemester(p.getSemester());
+						t.setYear(p.getYear());
+						
+						Semester semester = new SemesterBO().findByDate(new ProjectBO().findIdCampus(p.getIdProject()), DateUtils.getToday().getTime());
+						
+						if((p.getYear() < semester.getYear()) || ((p.getYear() == semester.getYear()) && (p.getSemester() < semester.getSemester()))){
+							t.setStage(2);
+						}
+					}
+				}
+				
+				list.add(t);
 			}
 		}
 		

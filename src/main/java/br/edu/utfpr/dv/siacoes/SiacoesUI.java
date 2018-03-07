@@ -35,6 +35,8 @@ import br.edu.utfpr.dv.siacoes.view.DeadlineView;
 import br.edu.utfpr.dv.siacoes.view.DepartmentView;
 import br.edu.utfpr.dv.siacoes.view.DocumentView;
 import br.edu.utfpr.dv.siacoes.view.EmailMessageView;
+import br.edu.utfpr.dv.siacoes.view.Error403View;
+import br.edu.utfpr.dv.siacoes.view.Error404View;
 import br.edu.utfpr.dv.siacoes.view.EvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.EventCalendarView;
 import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
@@ -139,6 +141,10 @@ public class SiacoesUI extends UI {
         getNavigator().addView(ActivityGroupStatusChartView.NAME, ActivityGroupStatusChartView.class);
         getNavigator().addView(ActivityHighScoreChartView.NAME, ActivityHighScoreChartView.class);
         getNavigator().addView(FinalSubmissionView.NAME, FinalSubmissionView.class);
+        getNavigator().addView(Error403View.NAME, Error403View.class);
+        getNavigator().addView(Error404View.NAME, Error404View.class);
+        
+        getNavigator().setErrorView(Error404View.class);
         
         //
         // We use a view change handler to ensure the user is always redirected
@@ -170,10 +176,13 @@ public class SiacoesUI extends UI {
                 		BasicView view = (BasicView)event.getNewView();
                     	
                     	if((view.getProfilePermissions() == UserProfile.ADMINISTRATOR) && (!Session.isUserAdministrator())){
+                    		getNavigator().navigateTo(Error403View.NAME);
                     		return false;
                     	} else if((view.getProfilePermissions() == UserProfile.MANAGER) && !Session.isUserManager(view.getModule()) && !Session.isUserDepartmentManager()){
+                    		getNavigator().navigateTo(Error403View.NAME);
                     		return false;
                     	} else if((view.getProfilePermissions() == UserProfile.PROFESSOR) && (!Session.isUserProfessor())) {
+                    		getNavigator().navigateTo(Error403View.NAME);
                     		return false;
                     	}
                 	}

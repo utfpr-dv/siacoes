@@ -93,6 +93,18 @@ public class SupervisorChangeBO {
 		}
 	}
 	
+	public List<SupervisorChange> list(int idSupervisor) throws Exception{
+		try {
+			SupervisorChangeDAO dao = new SupervisorChangeDAO();
+			
+			return dao.list(idSupervisor);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public SupervisorChange findById(int id) throws Exception{
 		try {
 			SupervisorChangeDAO dao = new SupervisorChangeDAO();
