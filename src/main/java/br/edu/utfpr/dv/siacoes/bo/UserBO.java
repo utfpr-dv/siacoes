@@ -1,9 +1,7 @@
 ﻿package br.edu.utfpr.dv.siacoes.bo;
 
-import java.net.ConnectException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -275,6 +273,10 @@ public class UserBO {
 		
 		login = login.toLowerCase().trim();
 		
+		if(this.loginIsStudent(login)){
+			login = "a" + String.valueOf(Long.parseLong(login.replace("a", "")));
+		}
+		
 		User user = this.findByLogin(login);
 		
 		if(user == null){
@@ -313,7 +315,7 @@ public class UserBO {
 						user.setExternal(false);
 						if(this.loginIsStudent(login)){
 							user.setProfile(UserProfile.STUDENT);
-							user.setStudentCode(login.toLowerCase().replace("a", ""));
+							user.setStudentCode(login.replace("a", ""));
 						}else{
 							user.setProfile(UserProfile.PROFESSOR);
 						}
