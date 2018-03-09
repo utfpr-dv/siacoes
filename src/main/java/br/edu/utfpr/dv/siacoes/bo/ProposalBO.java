@@ -296,4 +296,16 @@ public class ProposalBO {
 		}
 	}
 	
+	public long getCurrentProposals() throws Exception{
+		try {
+			ProposalDAO dao = new ProposalDAO();
+			
+			return dao.getCurrentProposals();
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 }

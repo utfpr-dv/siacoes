@@ -17,6 +17,7 @@ import br.edu.utfpr.dv.siacoes.model.JuryBySemester;
 import br.edu.utfpr.dv.siacoes.model.JuryStudent;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
+import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 
 public class JuryDAO {
 	
@@ -509,6 +510,32 @@ public class JuryDAO {
 			}
 			
 			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public long getTotalJury() throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT SUM(total) AS total FROM(SELECT COUNT(idjury) AS total FROM jury UNION ALL SELECT COUNT(idinternshipjury) AS total FROM internshipjury) AS temp");
+			
+			if(rs.next()) {
+				return rs.getLong("total");
+			} else {
+				return 0;
+			}
 		}finally{
 			if((rs != null) && !rs.isClosed())
 				rs.close();

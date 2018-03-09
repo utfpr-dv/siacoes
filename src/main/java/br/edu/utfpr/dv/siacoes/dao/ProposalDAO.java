@@ -603,5 +603,35 @@ public class ProposalDAO {
 		
 		return p;
 	}
+	
+	public long getCurrentProposals() throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT COUNT(proposal.idproposal) AS total FROM proposal WHERE proposal.invalidated=0 " + 
+					"AND NOT EXISTS(SELECT idfinaldocument FROM finaldocument " + 
+						"INNER JOIN thesis ON thesis.idthesis=finaldocument.idfinaldocument " + 
+						"INNER JOIN project ON project.idproject=thesis.idproject " + 
+						"WHERE project.idproposal=proposal.idproposal)");
+			
+			if(rs.next()) {
+				return rs.getLong("total");
+			} else {
+				return 0;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
 
 }

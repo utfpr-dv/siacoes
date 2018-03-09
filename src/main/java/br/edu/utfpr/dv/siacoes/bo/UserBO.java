@@ -388,4 +388,28 @@ public class UserBO {
 		return dao.findEmails(ids);
 	}
 	
+	public long getActiveStudents() throws Exception{
+		try {
+			UserDAO dao = new UserDAO();
+			
+			return dao.getActiveStudents();
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public long getActiveProfessors() throws Exception{
+		try {
+			UserDAO dao = new UserDAO();
+			
+			return dao.getActiveProfessors();
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 }

@@ -312,4 +312,28 @@ public class InternshipBO {
 		}
 	}
 	
+	public long getCurrentInternships() throws Exception{
+		try {
+			InternshipDAO dao = new InternshipDAO();
+			
+			return dao.getCurrentInternships();
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public long getFinishedInternships() throws Exception{
+		try {
+			InternshipDAO dao = new InternshipDAO();
+			
+			return dao.getFinishedInternships();
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 }

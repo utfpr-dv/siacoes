@@ -52,5 +52,29 @@ public class CompanyBO {
 			throw new Exception(e);
 		}
 	}
+	
+	public long getActiveCompanies() throws Exception{
+		try {
+			CompanyDAO dao = new CompanyDAO();
+			
+			return dao.getActiveCompanies();
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public long getActiveCompaniesWithAgreement() throws Exception{
+		try {
+			CompanyDAO dao = new CompanyDAO();
+			
+			return dao.getActiveCompaniesWithAgreement();
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
 
 }

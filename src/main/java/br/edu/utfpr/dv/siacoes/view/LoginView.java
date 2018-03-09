@@ -10,6 +10,8 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
@@ -20,7 +22,13 @@ import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.ui.Button.ClickEvent;
 
 import br.edu.utfpr.dv.siacoes.Session;
+import br.edu.utfpr.dv.siacoes.bo.ActivitySubmissionBO;
+import br.edu.utfpr.dv.siacoes.bo.CompanyBO;
 import br.edu.utfpr.dv.siacoes.bo.DepartmentBO;
+import br.edu.utfpr.dv.siacoes.bo.FinalDocumentBO;
+import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
+import br.edu.utfpr.dv.siacoes.bo.JuryBO;
+import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Department;
@@ -38,6 +46,7 @@ public class LoginView extends CustomComponent implements View {
     private final PasswordField password;
     private final Button loginButton;
     private final Panel panelLogin;
+    private final GridLayout layoutStats;
     
     private String redirect;
     
@@ -45,20 +54,17 @@ public class LoginView extends CustomComponent implements View {
     	this.setCaption(SystemModule.GENERAL.getDescription());
     	this.setResponsive(true);
     	
-    	this.label = new Label("Sistema Integrado de Atividades Complementares, Orientações e Estágios");
-    	this.label.setWidth("800px");
+    	this.label = new Label("SIACOES - Sistema Integrado de Atividades Complementares, Orientações e Estágios");
     	this.label.setStyleName("Title");
     	
     	this.info = new Label("Para acessar o SIACOES, efetue o login.");
+    	this.info.setWidth("300px");
     	
     	this.infoAluno = new Label("- Se você for aluno, no campo usuário coloque a letra \"a\" e o número do seu R.A. (por exemplo: a1234567 ou a1423599) e no campo senha insira a mesma senha do Sistema Acadêmico.");
+    	this.infoAluno.setWidth("300px");
     	
     	this.infoServidor = new Label("- Se você for servidor, no campo usuário coloque o seu nome de usuário utilizado para acessar os sistemas da UTFPR, e no campo senha informe a sua senha utilizada para acessar os sistemas da UTFPR.");
-    	
-    	VerticalLayout layoutInfo = new VerticalLayout(this.info, this.infoAluno, this.infoServidor);
-    	layoutInfo.setSizeFull();
-    	layoutInfo.setWidth("800px");
-    	layoutInfo.setSpacing(true);
+    	this.infoServidor.setWidth("300px");
     	
     	this.user = new TextField("Usuário");
     	this.user.setWidth("300px");
@@ -85,27 +91,87 @@ public class LoginView extends CustomComponent implements View {
     	this.loginButton.setWidth("300px");
     	this.loginButton.setClickShortcut(KeyCode.ENTER);
         
-        VerticalLayout layoutLogin = new VerticalLayout(this.user, this.password, this.loginButton);
+        VerticalLayout layoutLogin = new VerticalLayout(this.user, this.password, this.loginButton, this.info, this.infoAluno, this.infoServidor);
         layoutLogin.setSizeUndefined();
         layoutLogin.setResponsive(true);
         layoutLogin.setSpacing(true);
         layoutLogin.setMargin(true);
         
         this.panelLogin = new Panel("Acesso ao Sistema");
-        this.panelLogin.setSizeUndefined();
+        this.panelLogin.setSizeFull();
+        this.panelLogin.setWidth("325px");
         this.panelLogin.setContent(layoutLogin);
-                        
-        VerticalLayout fields = new VerticalLayout(this.label, this.panelLogin, layoutInfo);
-        fields.setComponentAlignment(this.label, Alignment.MIDDLE_CENTER);
-        fields.setComponentAlignment(layoutInfo, Alignment.MIDDLE_CENTER);
-        fields.setComponentAlignment(this.panelLogin, Alignment.MIDDLE_CENTER);
-        fields.setSizeFull();
-        fields.setResponsive(true);
-        fields.setSpacing(true);
+        
+        this.layoutStats = new GridLayout();
+        this.layoutStats.setColumns(3);
+        this.layoutStats.setSizeFull();
+        this.layoutStats.setSpacing(true);
+        
+        HorizontalLayout h = new HorizontalLayout(this.layoutStats, this.panelLogin);
+        h.setSpacing(true);
+        h.setSizeFull();
+        h.setExpandRatio(this.layoutStats, 1);
+        
+        VerticalLayout mainLayout = new VerticalLayout(this.label, h);
+        mainLayout.setSpacing(true);
+        mainLayout.setSizeFull();
+        mainLayout.setExpandRatio(h, 1);
+        mainLayout.setMargin(true);
 
-        this.setCompositionRoot(fields);
+        this.setCompositionRoot(mainLayout);
+        
+        this.loadStats();
         
         this.redirect = "";
+    }
+    
+    private void loadStats() {
+    	try {
+    		UserBO ubo = new UserBO();
+    		
+			this.layoutStats.addComponent(this.createPanelStat("Acadêmicos Ativos", String.valueOf(ubo.getActiveStudents())));
+			this.layoutStats.addComponent(this.createPanelStat("Professores Ativos", String.valueOf(ubo.getActiveProfessors())));
+			
+			ActivitySubmissionBO abo = new ActivitySubmissionBO();
+			
+			this.layoutStats.addComponent(this.createPanelStat("Atividades Complementares Submetidas", String.valueOf(abo.getTotalSubmissions())));
+			
+			CompanyBO cbo = new CompanyBO();
+			
+			this.layoutStats.addComponent(this.createPanelStat("Empresas Concedentes de Estágio", String.valueOf(cbo.getActiveCompanies())));
+			this.layoutStats.addComponent(this.createPanelStat("UCE's Conveniadas", String.valueOf(cbo.getActiveCompaniesWithAgreement())));
+			
+			InternshipBO ibo = new InternshipBO();
+			
+			this.layoutStats.addComponent(this.createPanelStat("Estágios em Andamento", String.valueOf(ibo.getCurrentInternships())));
+			this.layoutStats.addComponent(this.createPanelStat("Estágios Finalizados", String.valueOf(ibo.getFinishedInternships())));
+			
+			ProposalBO pbo = new ProposalBO();
+			
+			this.layoutStats.addComponent(this.createPanelStat("TCC's em Andamento", String.valueOf(pbo.getCurrentProposals())));
+			
+			FinalDocumentBO fbo = new FinalDocumentBO();
+			
+			this.layoutStats.addComponent(this.createPanelStat("TCC's Publicados", String.valueOf(fbo.getTotalFinalThesis())));
+			
+			JuryBO jbo = new JuryBO();
+			
+			this.layoutStats.addComponent(this.createPanelStat("Bancas Realizadas (Estágio e TCC)", String.valueOf(jbo.getTotalJury())));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    private Panel createPanelStat(String title, String value) {
+    	Panel panel = new Panel(title);
+    	Label label = new Label(value);
+    	
+    	label.setStyleName("Title");
+    	
+    	panel.setContent(label);
+    	
+    	return panel;
     }
 	
     @Override

@@ -2,7 +2,6 @@
 
 import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -263,6 +262,18 @@ public class FinalDocumentBO {
 			
 			return ret.toByteArray();
 		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public long getTotalFinalThesis() throws Exception{
+		try {
+			FinalDocumentDAO dao = new FinalDocumentDAO();
+			
+			return dao.getTotalFinalThesis();
+		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			throw new Exception(e.getMessage());

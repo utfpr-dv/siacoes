@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 
@@ -629,6 +630,58 @@ public class UserDAO {
 				return (String[])emails.toArray();
 			}else
 				return null;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public long getActiveStudents() throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT COUNT(idUser) AS total FROM \"user\" WHERE active=1 AND profile=" + String.valueOf(UserProfile.STUDENT.getValue()));
+			
+			if(rs.next()) {
+				return rs.getLong("total");
+			} else {
+				return 0;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public long getActiveProfessors() throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT COUNT(idUser) AS total FROM \"user\" WHERE active=1 AND profile=" + String.valueOf(UserProfile.PROFESSOR.getValue()));
+			
+			if(rs.next()) {
+				return rs.getLong("total");
+			} else {
+				return 0;
+			}
 		}finally{
 			if((rs != null) && !rs.isClosed())
 				rs.close();

@@ -545,6 +545,18 @@ public class ActivitySubmissionBO {
 		}
 	}
 	
+	public long getTotalSubmissions() throws Exception{
+		try {
+			ActivitySubmissionDAO dao = new ActivitySubmissionDAO();
+			
+			return dao.getTotalSubmissions();
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	private class ReportActivity{
 		
 		private int idActivity;

@@ -11,6 +11,7 @@ import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.FinalDocument;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
+import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.model.LibraryReport;
 import br.edu.utfpr.dv.siacoes.model.User;
 
@@ -589,6 +590,32 @@ public class FinalDocumentDAO {
 			}
 			
 			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public long getTotalFinalThesis() throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT COUNT(idfinaldocument) AS total FROM finaldocument WHERE supervisorFeedback=1 AND idthesis IS NOT NULL");
+			
+			if(rs.next()) {
+				return rs.getLong("total");
+			} else {
+				return 0;
+			}
 		}finally{
 			if((rs != null) && !rs.isClosed())
 				rs.close();
