@@ -613,7 +613,7 @@ public class ProposalDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT COUNT(proposal.idproposal) AS total FROM proposal WHERE proposal.invalidated=0 " + 
+			rs = stmt.executeQuery("SELECT COUNT(DISTINCT proposal.idstudent) AS total FROM proposal WHERE proposal.invalidated=0 " + 
 					"AND NOT EXISTS(SELECT idfinaldocument FROM finaldocument " + 
 						"INNER JOIN thesis ON thesis.idthesis=finaldocument.idfinaldocument " + 
 						"INNER JOIN project ON project.idproject=thesis.idproject " + 
