@@ -1,10 +1,13 @@
 ﻿package br.edu.utfpr.dv.siacoes.bo;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,9 +24,12 @@ import br.edu.utfpr.dv.siacoes.model.InternshipJuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserDetailReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserScoreReport;
+import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
+import br.edu.utfpr.dv.siacoes.model.JuryStudentReport;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class InternshipJuryBO {
 	
@@ -421,6 +427,64 @@ public class InternshipJuryBO {
 		InternshipJuryDAO dao = new InternshipJuryDAO();
 		
 		return dao.hasScores(idInternshipJury);
+	}
+	
+	public List<JuryStudentReport> listJuryStudentReport(int idDepartment, int idInternshipJury, Date startDate, Date endDate, boolean orderByDate) throws Exception {
+		try {
+			InternshipJuryDAO dao = new InternshipJuryDAO();
+			
+			if(idInternshipJury <= 0) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(startDate);
+				cal.set(Calendar.HOUR_OF_DAY, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				startDate = cal.getTime();
+				
+				cal = Calendar.getInstance();
+				cal.setTime(endDate);
+				cal.set(Calendar.HOUR_OF_DAY, 23);
+				cal.set(Calendar.MINUTE, 59);
+				cal.set(Calendar.SECOND, 59);
+				endDate = cal.getTime();
+			}
+			
+			return dao.listJuryStudentReport(idDepartment, idInternshipJury, startDate, endDate, orderByDate);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public byte[] getJuryStudentReport(int idDepartment, int idInternshipJury, Date startDate, Date endDate, boolean groupByJury) throws Exception {
+		List<JuryStudentReport> list = this.listJuryStudentReport(idDepartment, idInternshipJury, startDate, endDate, groupByJury);
+		
+		ByteArrayOutputStream report;
+		
+		if(groupByJury) {
+			report = new ReportUtils().createPdfStream(list, "JuryParticipantsListGrouped");
+		} else {
+			report = new ReportUtils().createPdfStream(list, "JuryParticipantsList");
+		}
+		
+		return report.toByteArray();
+	}
+	
+	public byte[] getJuryParticipantsSignature(int idInternshipJury) throws Exception {
+		InternshipJuryFormReport report = this.getFormReport(idInternshipJury);
+		
+		JuryFormReport report2 = new JuryFormReport();
+		
+		report2.setTitle(report.getCompany());
+		report2.setStage(0);
+		report2.setStudent(report.getStudent());
+		report2.setDate(report.getDate());
+		
+		List<JuryFormReport> list = new ArrayList<JuryFormReport>();
+		list.add(report2);
+		
+		return new ReportUtils().createPdfStream(list, "JuryParticipants").toByteArray();
 	}
 
 }

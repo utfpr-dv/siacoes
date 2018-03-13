@@ -8,12 +8,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryStudent;
+import br.edu.utfpr.dv.siacoes.model.JuryStudentReport;
 import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
 
 public class InternshipJuryDAO {
@@ -417,6 +419,63 @@ public class InternshipJuryDAO {
 		BigDecimal bd = new BigDecimal(value);
 	    bd = bd.setScale(1, RoundingMode.HALF_UP);
 	    return bd.doubleValue();
+	}
+	
+	public List<JuryStudentReport> listJuryStudentReport(int idDepartment, int idInternshipJury, Date startDate, Date endDate, boolean orderByDate) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String filter = "internshipjury.idInternshipJury=" + String.valueOf(idInternshipJury);
+		
+		if(idInternshipJury <= 0) {
+			filter = "internship.idDepartment=" + String.valueOf(idDepartment) + " AND internshipjury.date BETWEEN ? AND ?";
+		}
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT internshipjurystudent.idInternshipJury, internshipjurystudent.idStudent, student.name AS studentName, student.studentCode, " + 
+					"internshipjury.date, internshipjury.starttime, internshipjury.endtime, internship.idStudent AS idJuryStudent, student2.name AS juryStudentName " + 
+					"FROM internshipjurystudent INNER JOIN \"user\" student ON student.idUser=internshipjurystudent.idStudent " + 
+					"INNER JOIN internshipjury ON internshipjury.idInternshipJury=internshipjurystudent.idInternshipJury " + 
+					"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " + 
+					"INNER JOIN \"user\" student2 ON student2.idUser=internship.idStudent " + 
+					"WHERE " + filter + " ORDER BY " + (orderByDate ? "internshipjury.date, internshipjury.startTime, student.name" : "student.name, internshipjury.date, internshipjury.startTime"));
+			
+			if(idInternshipJury <= 0) {
+				stmt.setDate(1, new java.sql.Date(startDate.getTime()));
+				stmt.setDate(2, new java.sql.Date(endDate.getTime()));
+			}
+			
+			rs = stmt.executeQuery();
+			
+			List<JuryStudentReport> list = new ArrayList<JuryStudentReport>();
+			
+			while(rs.next()) {
+				JuryStudentReport item = new JuryStudentReport();
+				
+				item.setIdJury(rs.getInt("idInternshipJury"));
+				item.setIdStudent(rs.getInt("idStudent"));
+				item.setIdJuryStudent(rs.getInt("idJuryStudent"));
+				item.setStudentName(rs.getString("studentName"));
+				item.setStudentCode(rs.getString("studentCode"));
+				item.setJuryStudentName(rs.getString("juryStudentName"));
+				item.setDate(rs.getDate("date"));
+				item.setStartTime(rs.getTime("startTime"));
+				item.setEndTime(rs.getTime("endTime"));
+				item.setStage(0);
+				
+				list.add(item);
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
 	}
 
 }

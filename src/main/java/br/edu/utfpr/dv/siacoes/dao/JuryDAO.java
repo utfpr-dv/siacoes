@@ -15,9 +15,9 @@ import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryBySemester;
 import br.edu.utfpr.dv.siacoes.model.JuryStudent;
+import br.edu.utfpr.dv.siacoes.model.JuryStudentReport;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
-import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 
 public class JuryDAO {
 	
@@ -536,6 +536,65 @@ public class JuryDAO {
 			} else {
 				return 0;
 			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public List<JuryStudentReport> listJuryStudentReport(int idDepartment, int idJury, int semester, int year, boolean orderByDate) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		String filter = "jury.idJury=" + String.valueOf(idJury);
+		
+		if(idJury <= 0) {
+			filter = "(proposal.idDepartment=" + String.valueOf(idDepartment) + " OR proposal2.idDepartment=" + String.valueOf(idDepartment) + 
+					") AND (project.semester=" + String.valueOf(semester) + " OR thesis.semester=" + String.valueOf(semester) + 
+					") AND (project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + ")";
+		}
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT jurystudent.idJury, jurystudent.idStudent, student.name AS studentName, student.studentCode, " + 
+					"jury.date, jury.starttime, jury.endtime, COALESCE(project.idStudent, thesis.idStudent) AS idJuryStudent, COALESCE(student2.name, student3.name) AS juryStudentName " + 
+					"FROM jurystudent INNER JOIN \"user\" student ON student.idUser=jurystudent.idStudent " + 
+					"INNER JOIN jury ON jury.idJury=jurystudent.idJury " + 
+					"LEFT JOIN project ON project.idProject=jury.idProject " + 
+					"LEFT JOIN \"user\" student2 ON student2.idUser=project.idStudent " + 
+					"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
+					"LEFT JOIN \"user\" student3 ON student3.idUser=thesis.idStudent " +
+					"LEFT JOIN project project2 ON project2.idProject=thesis.idProject " +
+					"LEFT JOIN proposal ON proposal.idProposal=project.idProposal " +
+					"LEFT JOIN proposal proposal2 ON proposal2.idProposal=project2.idProposal " +
+					"WHERE " + filter + " ORDER BY " + (orderByDate ? "jury.date, jury.startTime, student.name" : "student.name, jury.date, jury.startTime"));
+			
+			List<JuryStudentReport> list = new ArrayList<JuryStudentReport>();
+			
+			while(rs.next()) {
+				JuryStudentReport item = new JuryStudentReport();
+				
+				item.setIdJury(rs.getInt("idJury"));
+				item.setIdStudent(rs.getInt("idStudent"));
+				item.setIdJuryStudent(rs.getInt("idJuryStudent"));
+				item.setStudentName(rs.getString("studentName"));
+				item.setStudentCode(rs.getString("studentCode"));
+				item.setJuryStudentName(rs.getString("juryStudentName"));
+				item.setDate(rs.getDate("date"));
+				item.setStartTime(rs.getTime("startTime"));
+				item.setEndTime(rs.getTime("endTime"));
+				item.setStage(1);
+				
+				list.add(item);
+			}
+			
+			return list;
 		}finally{
 			if((rs != null) && !rs.isClosed())
 				rs.close();

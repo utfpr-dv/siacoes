@@ -36,7 +36,7 @@ public class MainView extends BasicView {
     public MainView(){
     	this.setCaption(SystemModule.GENERAL.getDescription());
     	
-    	this.label = new Label("Sistema Integrado de Atividades Complementares, Orientações e Estágios");
+    	this.label = new Label("SIACOES - Sistema Integrado de Atividades Complementares, Orientações e Estágios");
     	this.label.setStyleName("Title");
     	
     	this.logoES = new Link();

@@ -21,6 +21,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
@@ -49,6 +50,8 @@ public class EditInternshipJuryWindow extends EditWindow {
 	private final Button buttonAddParticipant;
 	private final Button buttonRemoveParticipant;
 	private final Button buttonParticipantStatement;
+	private final Button buttonParticipants;
+	private final Button buttonParticipantsReport;
 	private final TimeField textStartTime;
 	private final TimeField textEndTime;
 	private final TextArea textComments;
@@ -140,6 +143,20 @@ public class EditInternshipJuryWindow extends EditWindow {
             }
         });
 		
+		this.buttonParticipants = new Button("Lista de Presença", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadParticipants();
+            }
+        });
+		
+		this.buttonParticipantsReport = new Button("Lista de Ouvintes", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadParticipantsReport();
+            }
+        });
+		
 		HorizontalLayout layoutGridButtons = new HorizontalLayout(this.buttonAddAppraiser, this.buttonRemoveAppraiser, this.buttonAppraiserScore, this.buttonAppraiserStatement);
 		layoutGridButtons.setSpacing(true);
 		
@@ -168,7 +185,7 @@ public class EditInternshipJuryWindow extends EditWindow {
             }
         });
 		
-		HorizontalLayout layoutGridButtons2 = new HorizontalLayout(this.buttonAddParticipant, this.buttonRemoveParticipant, this.buttonParticipantStatement);
+		HorizontalLayout layoutGridButtons2 = new HorizontalLayout(this.buttonAddParticipant, this.buttonRemoveParticipant, this.buttonParticipantStatement, this.buttonParticipants, this.buttonParticipantsReport);
 		layoutGridButtons2.setSpacing(true);
 		
 		VerticalLayout tab3 = new VerticalLayout(this.layoutParticipants, layoutGridButtons2);
@@ -436,6 +453,30 @@ public class EditInternshipJuryWindow extends EditWindow {
 	        	
 	        	Notification.show("Gerar Declaração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
+		}
+	}
+	
+	private void downloadParticipants(){
+		try{
+			InternshipJuryBO bo = new InternshipJuryBO();
+			
+			this.showReport(bo.getJuryParticipantsSignature(this.jury.getIdInternshipJury()));
+		}catch(Exception e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	
+        	Notification.show("Imprimir Lista de Presença", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		}
+	}
+	
+	private void downloadParticipantsReport(){
+		try{
+			InternshipJuryBO bo = new InternshipJuryBO();
+			
+			this.showReport(bo.getJuryStudentReport(Session.getUser().getDepartment().getIdDepartment(), this.jury.getIdInternshipJury(), null, null, true));
+		}catch(Exception e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	
+        	Notification.show("Imprimir Lista de Acadêmicos Ouvintes", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
 	

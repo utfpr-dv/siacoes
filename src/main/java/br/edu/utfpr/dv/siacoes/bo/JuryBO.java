@@ -1,5 +1,6 @@
 ﻿package br.edu.utfpr.dv.siacoes.bo;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
@@ -20,6 +21,7 @@ import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserDetailReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserScoreReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
+import br.edu.utfpr.dv.siacoes.model.JuryStudentReport;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.TermOfApprovalReport;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
@@ -27,6 +29,7 @@ import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.EvaluationItem.EvaluationItemType;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class JuryBO {
 	
@@ -560,6 +563,41 @@ public class JuryBO {
 			
 			throw new Exception(e.getMessage());
 		}
+	}
+	
+	public List<JuryStudentReport> listJuryStudentReport(int idDepartment, int idJury, int semester, int year, boolean orderByDate) throws Exception {
+		try {
+			JuryDAO dao = new JuryDAO();
+			
+			return dao.listJuryStudentReport(idDepartment, idJury, semester, year, orderByDate);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public byte[] getJuryStudentReport(int idDepartment, int idJury, int semester, int year, boolean groupByJury) throws Exception {
+		List<JuryStudentReport> list = this.listJuryStudentReport(idDepartment, idJury, semester, year, groupByJury);
+		
+		ByteArrayOutputStream report;
+		
+		if(groupByJury) {
+			report = new ReportUtils().createPdfStream(list, "JuryParticipantsListGrouped");
+		} else {
+			report = new ReportUtils().createPdfStream(list, "JuryParticipantsList");
+		}
+		
+		return report.toByteArray();
+	}
+	
+	public byte[] getJuryParticipantsSignature(int idJury) throws Exception {
+		JuryFormReport report = this.getFormReport(idJury);
+		
+		List<JuryFormReport> list = new ArrayList<JuryFormReport>();
+		list.add(report);
+		
+		return new ReportUtils().createPdfStream(list, "JuryParticipants").toByteArray();
 	}
 	
 }

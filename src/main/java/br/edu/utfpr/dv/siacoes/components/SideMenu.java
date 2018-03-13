@@ -69,7 +69,7 @@ import br.edu.utfpr.dv.siacoes.view.ActivityView;
 import br.edu.utfpr.dv.siacoes.view.AttendanceReportView;
 import br.edu.utfpr.dv.siacoes.view.AttendanceView;
 import br.edu.utfpr.dv.siacoes.view.BugReportView;
-import br.edu.utfpr.dv.siacoes.view.CalendarView;
+import br.edu.utfpr.dv.siacoes.view.JuryView;
 import br.edu.utfpr.dv.siacoes.view.CampusView;
 import br.edu.utfpr.dv.siacoes.view.CityView;
 import br.edu.utfpr.dv.siacoes.view.CompanySupervisorView;
@@ -83,13 +83,15 @@ import br.edu.utfpr.dv.siacoes.view.EvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.EventCalendarView;
 import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.FinalSubmissionView;
-import br.edu.utfpr.dv.siacoes.view.InternshipCalendarView;
+import br.edu.utfpr.dv.siacoes.view.InternshipJuryView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCompanyChartView;
 import br.edu.utfpr.dv.siacoes.view.InternshipEvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.InternshipFinalDocumentView;
+import br.edu.utfpr.dv.siacoes.view.InternshipJuryParticipantsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
 import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipView;
+import br.edu.utfpr.dv.siacoes.view.JuryParticipantsReportView;
 import br.edu.utfpr.dv.siacoes.view.JurySemesterChartView;
 import br.edu.utfpr.dv.siacoes.view.LibraryView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
@@ -659,8 +661,8 @@ public class SideMenu extends CustomComponent {
 		}
 		
 		layout.addComponent(new MenuEntry("Bancas", 0));
-		layout.addComponent(new MenuEntry("Agenda de Bancas", 1, InternshipCalendarView.NAME + "/1"));
-		layout.addComponent(new MenuEntry((Session.isUserProfessor() ? "Minhas Bancas" : "Bancas que Assisti"), 1, InternshipCalendarView.NAME));
+		layout.addComponent(new MenuEntry("Agenda de Bancas", 1, InternshipJuryView.NAME + "/1"));
+		layout.addComponent(new MenuEntry((Session.isUserProfessor() ? "Minhas Bancas" : "Bancas que Assisti"), 1, InternshipJuryView.NAME));
 		
 		if(Session.isUserManager(SystemModule.SIGES)){
 			layout.addComponent(new MenuEntry("Administração", 0));
@@ -676,6 +678,7 @@ public class SideMenu extends CustomComponent {
 		if(Session.isUserManager(SystemModule.SIGES) || Session.isUserDepartmentManager()){
 			layout.addComponent(new MenuEntry("Relatórios", 0));
 			layout.addComponent(new MenuEntry("Documentos Faltantes", 1, InternshipMissingDocumentsReportView.NAME));
+			layout.addComponent(new MenuEntry("Participação em Bancas", 1, InternshipJuryParticipantsReportView.NAME));
 			
 			layout.addComponent(new MenuEntry("Gráficos", 0));
 			layout.addComponent(new MenuEntry("Estagiários por Empresa", 1, InternshipCompanyChartView.NAME));
@@ -1112,8 +1115,8 @@ public class SideMenu extends CustomComponent {
 		layout.addComponent(new MenuEntry("Registro de Reuniões", 1, AttendanceView.NAME));
 		
 		layout.addComponent(new MenuEntry("Bancas", 0));
-		layout.addComponent(new MenuEntry("Agenda de Bancas", 1, CalendarView.NAME + "/1"));
-		layout.addComponent(new MenuEntry((Session.isUserProfessor() ? "Minhas Bancas" : "Bancas que Assisti"), 1, CalendarView.NAME));
+		layout.addComponent(new MenuEntry("Agenda de Bancas", 1, JuryView.NAME + "/1"));
+		layout.addComponent(new MenuEntry((Session.isUserProfessor() ? "Minhas Bancas" : "Bancas que Assisti"), 1, JuryView.NAME));
 		
 		if(Session.isUserManager(SystemModule.SIGET)){
 			layout.addComponent(new MenuEntry("Administração", 0));
@@ -1131,6 +1134,7 @@ public class SideMenu extends CustomComponent {
 		if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
 			layout.addComponent(new MenuEntry("Relatórios", 0));
 			layout.addComponent(new MenuEntry("Reuniões de Orientação", 1, AttendanceReportView.NAME));
+			layout.addComponent(new MenuEntry("Participação em Bancas", 1, JuryParticipantsReportView.NAME));
 			
 			layout.addComponent(new MenuEntry("Gráficos", 0));
 			layout.addComponent(new MenuEntry("Orientados por Orientador", 1, TutoredSupervisorChartView.NAME));

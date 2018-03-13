@@ -24,7 +24,7 @@ import br.edu.utfpr.dv.siacoes.view.AttendanceView;
 import br.edu.utfpr.dv.siacoes.view.AuthenticateView;
 import br.edu.utfpr.dv.siacoes.view.BasicView;
 import br.edu.utfpr.dv.siacoes.view.BugReportView;
-import br.edu.utfpr.dv.siacoes.view.CalendarView;
+import br.edu.utfpr.dv.siacoes.view.JuryView;
 import br.edu.utfpr.dv.siacoes.view.CampusView;
 import br.edu.utfpr.dv.siacoes.view.CertificateView;
 import br.edu.utfpr.dv.siacoes.view.CityView;
@@ -41,13 +41,15 @@ import br.edu.utfpr.dv.siacoes.view.EvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.EventCalendarView;
 import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.FinalSubmissionView;
-import br.edu.utfpr.dv.siacoes.view.InternshipCalendarView;
+import br.edu.utfpr.dv.siacoes.view.InternshipJuryView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCompanyChartView;
 import br.edu.utfpr.dv.siacoes.view.InternshipEvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.InternshipFinalDocumentView;
+import br.edu.utfpr.dv.siacoes.view.InternshipJuryParticipantsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
 import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipView;
+import br.edu.utfpr.dv.siacoes.view.JuryParticipantsReportView;
 import br.edu.utfpr.dv.siacoes.view.JurySemesterChartView;
 import br.edu.utfpr.dv.siacoes.view.LibraryView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
@@ -100,7 +102,7 @@ public class SiacoesUI extends UI {
         getNavigator().addView(ThesisView.NAME, ThesisView.class);
         getNavigator().addView(SupervisorView.NAME, SupervisorView.class);
         getNavigator().addView(EvaluationItemView.NAME, EvaluationItemView.class);
-        getNavigator().addView(CalendarView.NAME, CalendarView.class);
+        getNavigator().addView(JuryView.NAME, JuryView.class);
         getNavigator().addView(ActivityGroupView.NAME, ActivityGroupView.class);
         getNavigator().addView(ActivityUnitView.NAME, ActivityUnitView.class);
         getNavigator().addView(ActivityView.NAME, ActivityView.class);
@@ -121,7 +123,7 @@ public class SiacoesUI extends UI {
         getNavigator().addView(StudentView.NAME, StudentView.class);
         getNavigator().addView(AuthenticateView.NAME, AuthenticateView.class);
         getNavigator().addView(CertificateView.NAME, CertificateView.class);
-        getNavigator().addView(InternshipCalendarView.NAME, InternshipCalendarView.class);
+        getNavigator().addView(InternshipJuryView.NAME, InternshipJuryView.class);
         getNavigator().addView(InternshipEvaluationItemView.NAME, InternshipEvaluationItemView.class);
         getNavigator().addView(FinalDocumentView.NAME, FinalDocumentView.class);
         getNavigator().addView(InternshipLibraryView.NAME, InternshipLibraryView.class);
@@ -143,6 +145,8 @@ public class SiacoesUI extends UI {
         getNavigator().addView(FinalSubmissionView.NAME, FinalSubmissionView.class);
         getNavigator().addView(Error403View.NAME, Error403View.class);
         getNavigator().addView(Error404View.NAME, Error404View.class);
+        getNavigator().addView(JuryParticipantsReportView.NAME, JuryParticipantsReportView.class);
+        getNavigator().addView(InternshipJuryParticipantsReportView.NAME, InternshipJuryParticipantsReportView.class);
         
         getNavigator().setErrorView(Error404View.class);
         

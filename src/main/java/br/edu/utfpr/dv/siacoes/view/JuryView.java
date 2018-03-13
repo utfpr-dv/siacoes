@@ -21,47 +21,51 @@ import com.vaadin.ui.renderers.DateRenderer;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
-import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
-import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserBO;
-import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
-import br.edu.utfpr.dv.siacoes.bo.InternshipJuryStudentBO;
+import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserBO;
+import br.edu.utfpr.dv.siacoes.bo.JuryBO;
+import br.edu.utfpr.dv.siacoes.bo.JuryStudentBO;
+import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
+import br.edu.utfpr.dv.siacoes.bo.ThesisBO;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.CalendarReport;
-import br.edu.utfpr.dv.siacoes.model.Internship;
-import br.edu.utfpr.dv.siacoes.model.InternshipJury;
-import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
-import br.edu.utfpr.dv.siacoes.model.InternshipJuryFormReport;
-import br.edu.utfpr.dv.siacoes.model.InternshipJuryStudent;
+import br.edu.utfpr.dv.siacoes.model.Jury;
+import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
+import br.edu.utfpr.dv.siacoes.model.JuryStudent;
+import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Semester;
+import br.edu.utfpr.dv.siacoes.model.TermOfApprovalReport;
+import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
-import br.edu.utfpr.dv.siacoes.window.EditInternshipJuryAppraiserFeedbackWindow;
-import br.edu.utfpr.dv.siacoes.window.EditInternshipJuryWindow;
+import br.edu.utfpr.dv.siacoes.window.EditJuryAppraiserFeedbackWindow;
+import br.edu.utfpr.dv.siacoes.window.EditJuryWindow;
 
-public class InternshipCalendarView extends ListView {
-
-	public static final String NAME = "internshipcalendar";
+public class JuryView extends ListView {
+	
+	public static final String NAME = "jury";
 	
 	private final SemesterComboBox comboSemester;
 	private final YearField textYear;
 	private final Button buttonFile;
 	private final Button buttonForm;
+	private final Button buttonTerm;
 	private final Button buttonCalendar;
 	private final Button buttonStatements;
 	private final Button buttonSingleStatement;
 	private final Button buttonSendFeedback;
 	private final Button buttonParticipants;
+	private final Button buttonParticipantsReport;
 	
 	private boolean listAll = false;
-	
-	public InternshipCalendarView(){
-		super(SystemModule.SIGES);
+
+	public JuryView(){
+		super(SystemModule.SIGET);
 		
-		this.setCaption("Agenda de Bancas de Estágio");
+		this.setCaption("Agenda de Bancas de TCC");
 		
 		Semester semester;
 		try {
@@ -82,7 +86,7 @@ public class InternshipCalendarView extends ListView {
 		this.setEditVisible(false);
 		this.setDeleteVisible(false);
 		
-		this.buttonFile = new Button("Down. do Relatório", new Button.ClickListener() {
+		this.buttonFile = new Button("Down. do Trabalho", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
             	downloadFile();
@@ -100,6 +104,20 @@ public class InternshipCalendarView extends ListView {
             @Override
             public void buttonClick(ClickEvent event) {
             	downloadParticipants();
+            }
+        });
+		
+		this.buttonParticipantsReport = new Button("Lista de Ouvintes", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadParticipantsReport();
+            }
+        });
+		
+		this.buttonTerm = new Button("Termo de Aprovação", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadTerm();
             }
         });
 		
@@ -130,6 +148,8 @@ public class InternshipCalendarView extends ListView {
 		this.addActionButton(this.buttonFile);
 		this.addActionButton(this.buttonForm);
 		this.addActionButton(this.buttonParticipants);
+		this.addActionButton(this.buttonParticipantsReport);
+		this.addActionButton(this.buttonTerm);
 		this.addActionButton(this.buttonSendFeedback);
 		this.addActionButton(this.buttonSingleStatement);
 		
@@ -143,15 +163,19 @@ public class InternshipCalendarView extends ListView {
 	private void configureButtons(){
 		if(this.listAll){
 			this.buttonSendFeedback.setVisible(false);
+			this.buttonTerm.setVisible(Session.isUserManager(this.getModule()));
 			this.buttonForm.setVisible(Session.isUserManager(this.getModule()));
 			this.buttonParticipants.setVisible(Session.isUserManager(this.getModule()));
+			this.buttonParticipantsReport.setVisible(Session.isUserManager(this.getModule()));
 			this.buttonSingleStatement.setVisible(false);
 			this.buttonFile.setVisible(Session.isUserManager(this.getModule()));
 		}else{
 			this.buttonSendFeedback.setVisible(true);
+			this.buttonTerm.setVisible(false);
 			this.buttonFile.setVisible(Session.isUserProfessor());
 			this.buttonForm.setVisible(Session.isUserProfessor());
 			this.buttonParticipants.setVisible(Session.isUserProfessor());
+			this.buttonParticipantsReport.setVisible(Session.isUserProfessor());
 			this.buttonSendFeedback.setVisible(Session.isUserProfessor());
 			this.buttonStatements.setVisible(false);
 			this.buttonCalendar.setVisible(Session.isUserProfessor());
@@ -162,13 +186,15 @@ public class InternshipCalendarView extends ListView {
 	protected void loadGrid() {
 		this.getGrid().addColumn("Data e Hora", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy HH:mm")));
 		this.getGrid().addColumn("Local", String.class);
+		this.getGrid().addColumn("TCC", Integer.class);
 		this.getGrid().addColumn("Acadêmico", String.class);
-		this.getGrid().addColumn("Empresa", String.class);
+		this.getGrid().addColumn("Título", String.class);
 		this.getGrid().getColumns().get(0).setWidth(165);
+		this.getGrid().getColumns().get(2).setWidth(65);
 		
 		try {
-			InternshipJuryBO bo = new InternshipJuryBO();
-			List<InternshipJury> list;
+			JuryBO bo = new JuryBO();
+			List<Jury> list;
 			List<CalendarReport> report = null;
 			
 			if(this.listAll){
@@ -184,15 +210,29 @@ public class InternshipCalendarView extends ListView {
 			}
 			
 			if(this.listAll || Session.isUserProfessor()){
-				new ReportUtils().prepareForPdfReport("InternshipCalendar", "Agenda de Defesas", report, this.buttonCalendar);
+				new ReportUtils().prepareForPdfReport("Calendar", "Agenda de Defesas", report, this.buttonCalendar);
 			}
 			
-	    	for(InternshipJury jury : list){
-	    		InternshipBO ibo = new InternshipBO();
-	    		Internship internship = ibo.findById(jury.getInternship().getIdInternship());
+	    	for(Jury jury : list){
+	    		String title = "";
+	    		String student = "";
 	    		
-				Object itemId = this.getGrid().addRow(jury.getDate(), jury.getLocal(), internship.getStudent().getName(), internship.getCompany().getName());
-				this.addRowId(itemId, jury.getIdInternshipJury());
+	    		if((jury.getThesis() != null) && (jury.getThesis().getIdThesis() != 0)){
+	    			ThesisBO tbo = new ThesisBO();
+	    			Thesis thesis = tbo.findById(jury.getThesis().getIdThesis());
+	    			
+	    			title = thesis.getTitle();
+	    			student = thesis.getStudent().getName();
+	    		}else{
+	    			ProjectBO pbo = new ProjectBO();
+	    			Project project = pbo.findById(jury.getProject().getIdProject());
+	    			
+	    			title = project.getTitle();
+	    			student = project.getStudent().getName();
+	    		}
+	    		
+				Object itemId = this.getGrid().addRow(jury.getDate(), jury.getLocal(), jury.getStage(), student, title);
+				this.addRowId(itemId, jury.getIdJury());
 			}
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
@@ -207,20 +247,51 @@ public class InternshipCalendarView extends ListView {
 		if(value == null){
 			Notification.show("Download do Trabalho", "Selecione uma banca para fazer o download do trabalho.", Notification.Type.WARNING_MESSAGE);
 		}else{
-			try {
-				InternshipJuryBO bo = new InternshipJuryBO();
-				InternshipJury jury = bo.findById((int)value);
+			try{
+				JuryBO bo = new JuryBO();
+				Jury jury = bo.findById((int)value);
 				
-				InternshipBO ibo = new InternshipBO();
-				Internship internship = ibo.findById(jury.getInternship().getIdInternship());
+				byte[] file = null;
 				
-				if(internship.getFinalReport() == null){
-					Notification.show("Download do Trabalho", "O relatório final do estágio não foi anexado ao cadastro.", Notification.Type.WARNING_MESSAGE);
-				}else{
-					this.showReport(internship.getFinalReport());
-				}
-        	} catch (Exception e) {
-        		Notification.show("Download do Trabalho", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				if((jury.getThesis() != null) && (jury.getThesis().getIdThesis() != 0)){
+	    			ThesisBO tbo = new ThesisBO();
+	    			Thesis thesis = tbo.findById(jury.getThesis().getIdThesis());
+	    			
+	    			file = thesis.getFile();
+	    		}else{
+	    			ProjectBO pbo = new ProjectBO();
+	    			Project project = pbo.findById(jury.getProject().getIdProject());
+	    			
+	    			file = project.getFile();
+	    		}
+				
+				this.showReport(file);
+			}catch(Exception e){
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+	        	
+	        	Notification.show("Download do Trabalho", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			}
+		}
+	}
+	
+	private void downloadTerm(){
+		Object value = getIdSelected();
+		
+		if(value == null){
+			Notification.show("Imprimir Termo de Aprovação", "Selecione uma banca para gerar o termo de aprovação.", Notification.Type.WARNING_MESSAGE);
+		}else{
+			try{
+				JuryBO bo = new JuryBO();
+				TermOfApprovalReport report = bo.getTermOfApprovalReport((int)value);
+				
+				List<TermOfApprovalReport> list = new ArrayList<TermOfApprovalReport>();
+				list.add(report);
+				
+				this.showReport(new ReportUtils().createPdfStream(list, "TermOfApproval").toByteArray());
+			}catch(Exception e){
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+	        	
+	        	Notification.show("Imprimir Termo de Aprovação", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
 		}
 	}
@@ -232,13 +303,13 @@ public class InternshipCalendarView extends ListView {
 			Notification.show("Imprimir Ficha de Avaliação", "Selecione uma banca para gerar a ficha de avaliação.", Notification.Type.WARNING_MESSAGE);
 		}else{
 			try{
-				InternshipJuryBO bo = new InternshipJuryBO();
-				InternshipJuryFormReport report = bo.getFormReport((int)value);
+				JuryBO bo = new JuryBO();
+				JuryFormReport report = bo.getFormReport((int)value);
 				
-				List<InternshipJuryFormReport> list = new ArrayList<InternshipJuryFormReport>();
+				List<JuryFormReport> list = new ArrayList<JuryFormReport>();
 				list.add(report);
-
-				this.showReport(new ReportUtils().createPdfStream(list, "InternshipJuryForm").toByteArray());
+				
+				this.showReport(new ReportUtils().createPdfStream(list, "JuryForm").toByteArray());
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
@@ -254,24 +325,31 @@ public class InternshipCalendarView extends ListView {
 			Notification.show("Imprimir Lista de Presença", "Selecione uma banca para gerar a lista de presença.", Notification.Type.WARNING_MESSAGE);
 		}else{
 			try{
-				InternshipJuryBO bo = new InternshipJuryBO();
-				InternshipJuryFormReport report = bo.getFormReport((int)value);
+				JuryBO bo = new JuryBO();
 				
-				JuryFormReport report2 = new JuryFormReport();
-				
-				report2.setTitle(report.getCompany());
-				report2.setStage(0);
-				report2.setStudent(report.getStudent());
-				report2.setDate(report.getDate());
-				
-				List<JuryFormReport> list = new ArrayList<JuryFormReport>();
-				list.add(report2);
-				
-				this.showReport(new ReportUtils().createPdfStream(list, "JuryParticipants").toByteArray());
+				this.showReport(bo.getJuryParticipantsSignature((int)value));
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
 	        	Notification.show("Imprimir Lista de Presença", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			}
+		}
+	}
+	
+	private void downloadParticipantsReport(){
+		Object value = getIdSelected();
+		
+		if(value == null){
+			Notification.show("Imprimir Lista de Acadêmicos Ouvintes", "Selecione uma banca para gerar a lista de acadêmicos ouvintes.", Notification.Type.WARNING_MESSAGE);
+		}else{
+			try{
+				JuryBO bo = new JuryBO();
+				
+				this.showReport(bo.getJuryStudentReport(Session.getUser().getDepartment().getIdDepartment(), (int)value, 0, 0, true));
+			}catch(Exception e){
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+	        	
+	        	Notification.show("Imprimir Lista de Acadêmicos Ouvintes", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
 		}
 	}
@@ -283,12 +361,12 @@ public class InternshipCalendarView extends ListView {
     		Notification.show("Selecionar Registro", "Selecione o registro para enviar o feedback.", Notification.Type.WARNING_MESSAGE);
     	}else{
     		try {
-    			InternshipJuryAppraiserBO bo = new InternshipJuryAppraiserBO();
+    			JuryAppraiserBO bo = new JuryAppraiserBO();
     			
-    			InternshipJuryAppraiser appraiser = bo.findByAppraiser((int)id, Session.getUser().getIdUser());
+    			JuryAppraiser appraiser = bo.findByAppraiser((int)id, Session.getUser().getIdUser());
     			
     			if(appraiser != null){
-    				UI.getCurrent().addWindow(new EditInternshipJuryAppraiserFeedbackWindow(appraiser));
+    				UI.getCurrent().addWindow(new EditJuryAppraiserFeedbackWindow(appraiser));
     			}else{
     				Notification.show("Enviar Feedback", "É necessário ser membro da banca para enviar o feedback.", Notification.Type.WARNING_MESSAGE);
     			}
@@ -311,15 +389,15 @@ public class InternshipCalendarView extends ListView {
 				byte[] report;
 				
 				if(Session.isUserProfessor()){
-					InternshipJuryAppraiserBO jbo = new InternshipJuryAppraiserBO();
-					InternshipJuryAppraiser appraiser = jbo.findByAppraiser((int)value, Session.getUser().getIdUser());
+					JuryAppraiserBO jbo = new JuryAppraiserBO();
+					JuryAppraiser appraiser = jbo.findByAppraiser((int)value, Session.getUser().getIdUser());
 					
-					report = bo.getInternshipJuryProfessorStatement(appraiser);
+					report = bo.getJuryProfessorStatement(appraiser);
 				}else{
-					InternshipJuryStudentBO jbo = new InternshipJuryStudentBO();
-					InternshipJuryStudent student = jbo.findByStudent((int)value, Session.getUser().getIdUser());
+					JuryStudentBO jbo = new JuryStudentBO();
+					JuryStudent student = jbo.findByStudent((int)value, Session.getUser().getIdUser());
 					
-					report = bo.getInternshipJuryStudentStatement(student);
+					report = bo.getJuryStudentStatement(student);
 				}
 				
 				if(report != null){
@@ -348,13 +426,13 @@ public class InternshipCalendarView extends ListView {
 				
 				CertificateBO bo = new CertificateBO();
 
-				byte[] reportProfessor = bo.getInternshipJuryProfessorStatementReportList((int)value);
+				byte[] reportProfessor = bo.getJuryProfessorStatementReportList((int)value);
 				
 				if(reportProfessor != null){
 					pdfMerge.addSource(new ByteArrayInputStream(reportProfessor));
 				}
 				
-				byte[] reportStudent = bo.getInternshipJuryStudentStatementReportList((int)value);
+				byte[] reportStudent = bo.getJuryStudentStatementReportList((int)value);
 				
 				if(reportStudent != null){
 					pdfMerge.addSource(new ByteArrayInputStream(reportStudent));
@@ -386,10 +464,10 @@ public class InternshipCalendarView extends ListView {
 	@Override
 	public void editClick(Object id) {
 		try {
-			InternshipJuryBO bo = new InternshipJuryBO();
-			InternshipJury jury = bo.findById((int)id);
+			JuryBO bo = new JuryBO();
+			Jury jury = bo.findById((int)id);
 			
-			UI.getCurrent().addWindow(new EditInternshipJuryWindow(jury, this));
+			UI.getCurrent().addWindow(new EditJuryWindow(jury, this));
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

@@ -156,7 +156,7 @@ public class LoginView extends CustomComponent implements View {
 			
 			JuryBO jbo = new JuryBO();
 			
-			this.layoutStats.addComponent(this.createPanelStat("Bancas Realizadas (Estágio e TCC)", String.valueOf(jbo.getTotalJury())));
+			this.layoutStats.addComponent(this.createPanelStat("Bancas Realizadas (Estágio Obrigatório e TCC)", String.valueOf(jbo.getTotalJury())));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
