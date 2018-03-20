@@ -24,7 +24,7 @@ import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipFinalDocumentBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
 import br.edu.utfpr.dv.siacoes.components.CompanyComboBox;
-import br.edu.utfpr.dv.siacoes.components.ProfessorComboBox;
+import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.components.StudentComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Internship;
@@ -33,6 +33,7 @@ import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
 import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.window.DownloadInternshipFeedbackWindow;
@@ -48,7 +49,7 @@ public class InternshipView extends ListView {
 	
 	private final YearField textYear;
 	private final StudentComboBox comboStudent;
-	private final ProfessorComboBox comboProfessor;
+	private final SupervisorComboBox comboProfessor;
 	private final CompanyComboBox comboCompany;
 	private final NativeSelect comboStatus;
 	private final NativeSelect comboType;
@@ -69,7 +70,7 @@ public class InternshipView extends ListView {
 		
 		this.comboStudent = new StudentComboBox("Aluno");
 		
-		this.comboProfessor = new ProfessorComboBox("Orientador");
+		this.comboProfessor = new SupervisorComboBox("Orientador", Session.getUser().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		
 		this.comboCompany = new CompanyComboBox();
 		

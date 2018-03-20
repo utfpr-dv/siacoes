@@ -1,5 +1,6 @@
 ﻿package br.edu.utfpr.dv.siacoes.view;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,7 +62,8 @@ public class StudentView extends ListView {
 	public void addClick() {
 		User user = new User();
 		
-		user.setProfile(UserProfile.STUDENT);
+		user.setProfiles(new ArrayList<UserProfile>());
+		user.getProfiles().add(UserProfile.STUDENT);
 		user.setActive(true);
 		user.setExternal(false);
 		user.setDepartment(Session.getUser().getDepartment());

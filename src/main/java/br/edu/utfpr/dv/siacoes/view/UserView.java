@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
@@ -17,13 +15,10 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 
 import br.edu.utfpr.dv.siacoes.Session;
-import br.edu.utfpr.dv.siacoes.bo.DocumentBO;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
-import br.edu.utfpr.dv.siacoes.model.Document;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
-import br.edu.utfpr.dv.siacoes.window.EditDocumentWindow;
 import br.edu.utfpr.dv.siacoes.window.EditUserWindow;
 
 public class UserView extends ListView {
@@ -48,8 +43,10 @@ public class UserView extends ListView {
 		this.comboProfile.setNullSelectionAllowed(false);
 		this.comboProfile.addItem(UserProfile.STUDENT);
 		this.comboProfile.addItem(UserProfile.PROFESSOR);
-		this.comboProfile.addItem(UserProfile.ADMINISTRATOR);
+		this.comboProfile.addItem(UserProfile.SUPERVISOR);
 		this.comboProfile.addItem(UserProfile.COMPANYSUPERVISOR);
+		this.comboProfile.addItem(UserProfile.ADMINISTRATIVE);
+		this.comboProfile.addItem(UserProfile.ADMINISTRATOR);
 		this.comboProfile.addItem("Todos");
 		this.comboProfile.select("Todos");
 		
@@ -97,7 +94,7 @@ public class UserView extends ListView {
 	    	List<User> list = bo.list(this.textName.getValue(), profile, this.checkActive.getValue(), this.checkExternal.getValue());
 	    	
 	    	for(User u : list){
-				Object itemId = this.getGrid().addRow(u.getLogin(), u.getName(), u.getEmail(), u.getProfile().toString());
+				Object itemId = this.getGrid().addRow(u.getLogin(), u.getName(), u.getEmail(), u.getProfilesString());
 				this.addRowId(itemId, u.getIdUser());
 			}
 		} catch (Exception e) {

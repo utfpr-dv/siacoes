@@ -1,5 +1,7 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
+
 public class SigesConfig {
 	
 	public Department department;
@@ -7,6 +9,7 @@ public class SigesConfig {
 	public double supervisorPonderosity;
 	public double companySupervisorPonderosity;
 	private boolean showGradesToStudent;
+	private SupervisorFilter supervisorFilter;
 	
 	public SigesConfig(){
 		this.setDepartment(new Department());
@@ -14,6 +17,7 @@ public class SigesConfig {
 		this.setSupervisorPonderosity(1);
 		this.setCompanySupervisorPonderosity(1);
 		this.setShowGradesToStudent(false);
+		this.setSupervisorFilter(SupervisorFilter.DEPARTMENT);
 	}
 	
 	public Department getDepartment() {
@@ -46,5 +50,11 @@ public class SigesConfig {
 	public void setShowGradesToStudent(boolean showGradesToStudent) {
 		this.showGradesToStudent = showGradesToStudent;
 	}
-
+	public SupervisorFilter getSupervisorFilter() {
+		return supervisorFilter;
+	}
+	public void setSupervisorFilter(SupervisorFilter supervisorFilter) {
+		this.supervisorFilter = supervisorFilter;
+	}
+	
 }

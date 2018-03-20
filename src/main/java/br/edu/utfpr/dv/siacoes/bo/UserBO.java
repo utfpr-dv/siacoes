@@ -67,6 +67,54 @@ public class UserBO {
 		}
 	}
 	
+	public List<User> listAllSupervisors(boolean onlyActives) throws Exception{
+		try {
+			UserDAO dao = new UserDAO();
+			
+			return dao.listAllSupervisors(onlyActives);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public List<User> listInstitutionalSupervisors(boolean onlyActives) throws Exception{
+		try {
+			UserDAO dao = new UserDAO();
+			
+			return dao.listInstitutionalSupervisors(onlyActives);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public List<User> listSupervisorsByDepartment(int idDepartment, boolean onlyActives) throws Exception{
+		try {
+			UserDAO dao = new UserDAO();
+			
+			return dao.listSupervisorsByDepartment(idDepartment, onlyActives);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public List<User> listSupervisorsByCampus(int idCampus, boolean onlyActives) throws Exception{
+		try {
+			UserDAO dao = new UserDAO();
+			
+			return dao.listSupervisorsByCampus(idCampus, onlyActives);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public List<User> listAllStudents(boolean onlyActives) throws Exception{
 		try {
 			UserDAO dao = new UserDAO();
@@ -153,16 +201,19 @@ public class UserBO {
 	
 	public int save(User user) throws Exception{
 		try {
-			if((user.getProfile() != UserProfile.COMPANYSUPERVISOR) && (user.getLogin().isEmpty())){
+			if((user.getProfiles() == null) || (user.getProfiles().size() == 0)){
+				throw new Exception("Informe ao menos um perfil para o usuário.");
+			}
+			if((!user.hasProfile(UserProfile.COMPANYSUPERVISOR) || (user.getProfiles().size() > 1)) && (user.getLogin().isEmpty())){
 				throw new Exception("Informe o login.");
 			}
-			if((user.getProfile() != UserProfile.COMPANYSUPERVISOR) && (user.getPassword().isEmpty())){
+			if((!user.hasProfile(UserProfile.COMPANYSUPERVISOR) || (user.getProfiles().size() > 1)) && (user.getPassword().isEmpty())){
 				throw new Exception("Informe a senha.");
 			}
 			if(user.getName().isEmpty()){
 				throw new Exception("Informe o nome.");
 			}
-			if((user.getProfile() == UserProfile.COMPANYSUPERVISOR) && ((user.getCompany() == null) || (user.getCompany().getIdCompany() == 0))){
+			if(user.hasProfile(UserProfile.COMPANYSUPERVISOR) && ((user.getCompany() == null) || (user.getCompany().getIdCompany() == 0))){
 				throw new Exception("Informe a empresa.");
 			}
 			
@@ -314,10 +365,12 @@ public class UserBO {
 						user.setInstitution("UTFPR");
 						user.setExternal(false);
 						if(this.loginIsStudent(login)){
-							user.setProfile(UserProfile.STUDENT);
+							user.setProfiles(new ArrayList<UserProfile>());
+							user.getProfiles().add(UserProfile.STUDENT);
 							user.setStudentCode(login.replace("a", ""));
 						}else{
-							user.setProfile(UserProfile.PROFESSOR);
+							user.setProfiles(new ArrayList<UserProfile>());
+							user.getProfiles().add(UserProfile.PROFESSOR);
 						}
 					}
 				} catch (CommunicationException e) {

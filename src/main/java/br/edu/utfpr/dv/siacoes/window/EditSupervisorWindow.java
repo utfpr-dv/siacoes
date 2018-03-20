@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vaadin.server.Page;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
@@ -18,8 +16,9 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import br.edu.utfpr.dv.siacoes.Session;
+import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.bo.SupervisorChangeBO;
-import br.edu.utfpr.dv.siacoes.components.ProfessorComboBox;
+import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.SupervisorChange;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
@@ -36,8 +35,8 @@ public class EditSupervisorWindow extends EditWindow {
 	private TextField textTitle;
 	private TextField textCurrentSupervisor;
 	private TextField textCurrentCosupervisor;
-	private ProfessorComboBox comboNewSupervisor;
-	private ProfessorComboBox comboNewCosupervisor;
+	private SupervisorComboBox comboNewSupervisor;
+	private SupervisorComboBox comboNewCosupervisor;
 	private TextArea textComments;
 	private NativeSelect comboApproved;
 	private Label labelDateApproved;
@@ -104,9 +103,9 @@ public class EditSupervisorWindow extends EditWindow {
 		this.textCurrentCosupervisor.setWidth("390px");
 		this.textCurrentCosupervisor.setEnabled(false);
 		
-		this.comboNewSupervisor = new ProfessorComboBox("Novo Orientador");
+		this.comboNewSupervisor = new SupervisorComboBox("Novo Orientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getSupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
 		
-		this.comboNewCosupervisor = new ProfessorComboBox("Novo Co-orientador");
+		this.comboNewCosupervisor = new SupervisorComboBox("Novo Co-orientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getCosupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
 		this.comboNewCosupervisor.setNullSelectionAllowed(true);
 		
 		this.textComments = new TextArea("Motivo/Observações");

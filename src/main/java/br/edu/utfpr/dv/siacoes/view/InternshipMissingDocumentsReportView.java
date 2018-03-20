@@ -8,12 +8,13 @@ import com.vaadin.ui.VerticalLayout;
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.components.CompanyComboBox;
-import br.edu.utfpr.dv.siacoes.components.ProfessorComboBox;
+import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.components.StudentComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipStatus;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 
 public class InternshipMissingDocumentsReportView extends ReportView {
@@ -22,7 +23,7 @@ public class InternshipMissingDocumentsReportView extends ReportView {
 
 	private final YearField textYear;
 	private final StudentComboBox comboStudent;
-	private final ProfessorComboBox comboProfessor;
+	private final SupervisorComboBox comboProfessor;
 	private final CompanyComboBox comboCompany;
 	private final NativeSelect comboStatus;
 	private final NativeSelect comboType;
@@ -38,7 +39,7 @@ public class InternshipMissingDocumentsReportView extends ReportView {
 		
 		this.comboStudent = new StudentComboBox("Aluno");
 		
-		this.comboProfessor = new ProfessorComboBox("Orientador");
+		this.comboProfessor = new SupervisorComboBox("Orientador", Session.getUser().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		
 		this.comboCompany = new CompanyComboBox();
 		

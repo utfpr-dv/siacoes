@@ -62,9 +62,6 @@ CREATE TABLE `department` (
   `site` varchar(255) NOT NULL,
   `logo` mediumblob,
   `active` tinyint(4) NOT NULL,
-  `sigacMinimumScore` double NOT NULL,
-  `sigetMinimumScore` double NOT NULL,
-  `sigetRegisterProposal` tinyint(4) NOT NULL,
   PRIMARY KEY (`iddepartment`),
   KEY `fk_department_campus_idx` (`idcampus`),
   CONSTRAINT `fk_department_campus` FOREIGN KEY (`idcampus`) REFERENCES `campus` (`idcampus`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -93,6 +90,7 @@ CREATE  TABLE `sigesconfig` (
   `supervisorPonderosity` DOUBLE NOT NULL ,
   `companySupervisorPonderosity` DOUBLE NOT NULL ,
   `showgradestostudent` TINYINT NOT NULL ,
+  `supervisorfilter` SMALLINT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigesconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -102,6 +100,8 @@ CREATE  TABLE `sigetconfig` (
   `minimumScore` DOUBLE NOT NULL ,
   `registerProposal` TINYINT NOT NULL ,
   `showgradestostudent` TINYINT NOT NULL ,
+  `supervisorfilter` SMALLINT NOT NULL ,
+  `cosupervisorfilter` SMALLINT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigetconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -173,6 +173,14 @@ CREATE TABLE `user` (
   KEY `fk_user_company_idx` (`idcompany`),
   CONSTRAINT `fk_user_department` FOREIGN KEY (`idDepartment`) REFERENCES `department` (`iddepartment`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_user_company` FOREIGN KEY (`idcompany` ) REFERENCES `company` (`idcompany` ) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+CREATE TABLE `userprofile` (
+    `iduser` integer NOT NULL,
+    `profile` smallint NOT NULL,
+    PRIMARY KEY (`iduser`, `profile`),
+	KEY `fk_userprofile_user_idx` (`iduser`),
+    CONSTRAINT `fk_userprofile_user` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
 CREATE TABLE `certificate` (

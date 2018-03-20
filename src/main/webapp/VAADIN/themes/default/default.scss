@@ -36,6 +36,10 @@ $v-font-size: 13px;
   // Insert your own theme rules here
 }
 
+.v-menubar-menuitem-beverages .v-menubar-submenu-indicator + .v-menubar-menuitem-caption:after {
+      content: none;
+}
+
 .InvisibleButton {
   display: none;
 }

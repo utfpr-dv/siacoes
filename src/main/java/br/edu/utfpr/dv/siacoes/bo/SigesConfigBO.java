@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.SigesConfigDAO;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 
 public class SigesConfigBO {
 
@@ -50,6 +51,16 @@ public class SigesConfigBO {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			throw new Exception(e);
+		}
+	}
+	
+	public SupervisorFilter getSupervisorFilter(int idDepartment) {
+		try {
+			return this.findByDepartment(idDepartment).getSupervisorFilter();
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			return SupervisorFilter.DEPARTMENT;
 		}
 	}
 	

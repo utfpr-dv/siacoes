@@ -34,7 +34,7 @@ public class UserDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, conn);
 			}else{
 				return null;
 			}
@@ -66,7 +66,7 @@ public class UserDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, conn);
 			}else{
 				return null;
 			}
@@ -107,7 +107,7 @@ public class UserDAO {
 					sql += " AND 1=2 ";
 			}
 			
-			sql += " ORDER BY \"user\".profile";
+			//sql += " ORDER BY \"user\".profile";
 			
 			stmt = conn.prepareStatement(sql);
 		
@@ -116,7 +116,7 @@ public class UserDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, conn);
 			}else{
 				return null;
 			}
@@ -148,7 +148,7 @@ public class UserDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, conn);
 			}else{
 				return null;
 			}
@@ -206,7 +206,7 @@ public class UserDAO {
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, conn));			
 			}
 			
 			return list;
@@ -229,14 +229,15 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT \"user\".*, company.name AS companyName, department.idCampus " +
-						"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
+						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
 						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-						"WHERE \"user\".login <> 'admin' AND \"user\".profile IN (1, 2) " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+						"WHERE \"user\".login <> 'admin' AND userprofile.profile = 1 " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, conn));			
 			}
 			
 			return list;
@@ -259,14 +260,15 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT \"user\".*, company.name AS companyName, department.idCampus " +
-						"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
+						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
 						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-						"WHERE \"user\".login <> 'admin' AND \"user\".idDepartment=" + String.valueOf(idDepartment) + " AND \"user\".profile IN (1, 2) " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+						"WHERE \"user\".login <> 'admin' AND \"user\".idDepartment=" + String.valueOf(idDepartment) + " AND userprofile.profile = 1 " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, conn));			
 			}
 			
 			return list;
@@ -289,14 +291,139 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT \"user\".*, company.name AS companyName, department.idCampus " +
-					"FROM \"user\" INNER JOIN department ON department.idDepartment=\"user\".idDepartment " + 
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+					"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
+					"INNER JOIN department ON department.idDepartment=\"user\".idDepartment " + 
 					"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-					"WHERE \"user\".login <> 'admin' AND idCampus=" + String.valueOf(idCampus) + " AND \"user\".profile IN (1, 2) " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+					"WHERE \"user\".login <> 'admin' AND idCampus=" + String.valueOf(idCampus) + " AND userprofile.profile = 1 " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, conn));			
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public List<User> listAllSupervisors(boolean onlyActives) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
+						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
+						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
+						"WHERE \"user\".login <> 'admin' AND userprofile.profile IN (1, 5) " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+			List<User> list = new ArrayList<User>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs, conn));			
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public List<User> listInstitutionalSupervisors(boolean onlyActives) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
+						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
+						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
+						"WHERE \"user\".login <> 'admin' AND \"user\".external = 0 AND userprofile.profile IN (1, 5) " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+			List<User> list = new ArrayList<User>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs, conn));			
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public List<User> listSupervisorsByDepartment(int idDepartment, boolean onlyActives) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
+						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
+						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
+						"WHERE \"user\".login <> 'admin' AND \"user\".idDepartment=" + String.valueOf(idDepartment) + " AND userprofile.profile IN (1, 5) " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+			List<User> list = new ArrayList<User>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs, conn));			
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public List<User> listSupervisorsByCampus(int idCampus, boolean onlyActives) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+					"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
+					"INNER JOIN department ON department.idDepartment=\"user\".idDepartment " + 
+					"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
+					"WHERE \"user\".login <> 'admin' AND idCampus=" + String.valueOf(idCampus) + " AND userprofile.profile IN (1, 5) " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+			List<User> list = new ArrayList<User>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs, conn));			
 			}
 			
 			return list;
@@ -319,14 +446,15 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT \"user\".*, company.name AS companyName, department.idCampus " +
-						"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
+						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
 						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-						"WHERE \"user\".login <> 'admin' AND \"user\".profile = 0 " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+						"WHERE \"user\".login <> 'admin' AND userprofile.profile = 0 " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, conn));			
 			}
 			
 			return list;
@@ -349,14 +477,15 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT \"user\".*, company.name AS companyName, department.idCampus " +
-						"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
+						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
 						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-						"WHERE \"user\".login <> 'admin' AND \"user\".profile = 4 " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+						"WHERE \"user\".login <> 'admin' AND userprofile.profile = 4 " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, conn));			
 			}
 			
 			return list;
@@ -379,14 +508,15 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT \"user\".*, company.name AS companyName, department.idCampus " +
-						"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
+						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
 						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-						"WHERE \"user\".login <> 'admin' AND \"user\".profile = 4 AND \"user\".idcompany=" + String.valueOf(idCompany) + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+						"WHERE \"user\".login <> 'admin' AND userprofile.profile = 4 AND \"user\".idcompany=" + String.valueOf(idCompany) + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, conn));			
 			}
 			
 			return list;
@@ -411,20 +541,20 @@ public class UserDAO {
 			
 			rs = stmt.executeQuery("SELECT \"user\".*, department.idCampus FROM \"user\" INNER JOIN proposal ON proposal.idStudent=\"user\".idUser " +
 					"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-					"WHERE \"user\".profile=0 AND (proposal.idSupervisor=" + String.valueOf(idSupervisor) + " OR proposal.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
+					"WHERE (proposal.idSupervisor=" + String.valueOf(idSupervisor) + " OR proposal.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
 					" UNION " +
 					"SELECT \"user\".*, department.idCampus FROM \"user\" INNER JOIN project ON project.idStudent=\"user\".idUser " + 
 					"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-					"WHERE \"user\".profile=0 AND (project.idSupervisor=" + String.valueOf(idSupervisor) + " OR project.idCosupervisor=" + String.valueOf(idSupervisor) + ") " + 
+					"WHERE (project.idSupervisor=" + String.valueOf(idSupervisor) + " OR project.idCosupervisor=" + String.valueOf(idSupervisor) + ") " + 
 					" UNION " +
 					"SELECT \"user\".*, department.idCampus FROM \"user\" INNER JOIN thesis ON thesis.idStudent=\"user\".idUser " + 
 					"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-					"WHERE \"user\".profile=0 AND (thesis.idSupervisor=" + String.valueOf(idSupervisor) + " OR thesis.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
+					"WHERE (thesis.idSupervisor=" + String.valueOf(idSupervisor) + " OR thesis.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
 					"ORDER BY name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, conn));			
 			}
 			
 			return list;
@@ -446,12 +576,13 @@ public class UserDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			
-			String sql = "SELECT \"user\".*, company.name AS companyName, department.idCampus " +
-						"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
+			String sql = "SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
+						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
 						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
 						"WHERE login <> 'admin' " + 
 						(!name.isEmpty() ? " AND \"user\".name ILIKE ? " : "") +
-						(profile >= 0 ? " AND \"user\".profile = ? " : "") +
+						(profile >= 0 ? " AND userprofile.profile = ? " : "") +
 						(onlyActives ? " AND \"user\".active = 1 " : "") +
 						(onlyExternal ? " AND \"user\".external = 1 " : "") +
 						"ORDER BY \"user\".name";
@@ -471,7 +602,7 @@ public class UserDAO {
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, conn));
 			}
 			
 			return list;
@@ -493,50 +624,50 @@ public class UserDAO {
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
+			conn.setAutoCommit(false);
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO \"user\"(name, login, password, email, profile, institution, research, lattes, external, active, area, idDepartment, sigacManager, sigesManager, sigetManager, departmentManager, studentCode, registerSemester, registerYear, phone, idcompany, photo) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO \"user\"(name, login, password, email, institution, research, lattes, external, active, area, idDepartment, sigacManager, sigesManager, sigetManager, departmentManager, studentCode, registerSemester, registerYear, phone, idcompany, photo) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE \"user\" SET name=?, login=?, password=?, email=?, profile=?, institution=?, research=?, lattes=?, external=?, active=?, area=?, idDepartment=?, sigacManager=?, sigesManager=?, sigetManager=?, departmentManager=?, studentCode=?, registerSemester=?, registerYear=?, phone=?, idcompany=?, photo=? WHERE idUser=?");
+				stmt = conn.prepareStatement("UPDATE \"user\" SET name=?, login=?, password=?, email=?, institution=?, research=?, lattes=?, external=?, active=?, area=?, idDepartment=?, sigacManager=?, sigesManager=?, sigetManager=?, departmentManager=?, studentCode=?, registerSemester=?, registerYear=?, phone=?, idcompany=?, photo=? WHERE idUser=?");
 			}
 			
 			stmt.setString(1, user.getName());
 			stmt.setString(2, user.getLogin());
 			stmt.setString(3, user.getPassword());
 			stmt.setString(4, user.getEmail());
-			stmt.setInt(5, user.getProfile().getValue());
-			stmt.setString(6, user.getInstitution());
-			stmt.setString(7, user.getResearch());
-			stmt.setString(8, user.getLattes());
-			stmt.setInt(9, user.isExternal() ? 1 : 0);
-			stmt.setInt(10, user.isActive() ? 1 : 0);
-			stmt.setString(11, user.getArea());
+			stmt.setString(5, user.getInstitution());
+			stmt.setString(6, user.getResearch());
+			stmt.setString(7, user.getLattes());
+			stmt.setInt(8, user.isExternal() ? 1 : 0);
+			stmt.setInt(9, user.isActive() ? 1 : 0);
+			stmt.setString(10, user.getArea());
 			if((user.getDepartment() == null) || (user.getDepartment().getIdDepartment() == 0)){
-				stmt.setNull(12, Types.INTEGER);
+				stmt.setNull(11, Types.INTEGER);
 			}else{
-				stmt.setInt(12, user.getDepartment().getIdDepartment());	
+				stmt.setInt(11, user.getDepartment().getIdDepartment());	
 			}
-			stmt.setInt(13, (user.isSigacManager() ? 1 : 0));
-			stmt.setInt(14, (user.isSigesManager() ? 1 : 0));
-			stmt.setInt(15, (user.isSigetManager() ? 1 : 0));
-			stmt.setInt(16, (user.isDepartmentManager() ? 1 : 0));
-			stmt.setString(17, user.getStudentCode());
-			stmt.setInt(18, user.getRegisterSemester());
-			stmt.setInt(19, user.getRegisterYear());
-			stmt.setString(20, user.getPhone());
+			stmt.setInt(12, (user.isSigacManager() ? 1 : 0));
+			stmt.setInt(13, (user.isSigesManager() ? 1 : 0));
+			stmt.setInt(14, (user.isSigetManager() ? 1 : 0));
+			stmt.setInt(15, (user.isDepartmentManager() ? 1 : 0));
+			stmt.setString(16, user.getStudentCode());
+			stmt.setInt(17, user.getRegisterSemester());
+			stmt.setInt(18, user.getRegisterYear());
+			stmt.setString(19, user.getPhone());
 			if((user.getCompany() == null) || (user.getCompany().getIdCompany() == 0)){
-				stmt.setNull(21, Types.INTEGER);
+				stmt.setNull(20, Types.INTEGER);
 			}else{
-				stmt.setInt(21, user.getCompany().getIdCompany());	
+				stmt.setInt(20, user.getCompany().getIdCompany());	
 			}
 			if(user.getPhoto() == null){
-				stmt.setNull(22, Types.BINARY);
+				stmt.setNull(21, Types.BINARY);
 			}else{
-				stmt.setBytes(22, user.getPhoto());	
+				stmt.setBytes(21, user.getPhoto());	
 			}
 			
 			if(!insert){
-				stmt.setInt(23, user.getIdUser());
+				stmt.setInt(22, user.getIdUser());
 			}
 			
 			stmt.execute();
@@ -549,8 +680,28 @@ public class UserDAO {
 				}
 			}
 			
+			stmt.close();
+			stmt = conn.prepareStatement("DELETE FROM userprofile WHERE idUser=" + String.valueOf(user.getIdUser()));
+			stmt.execute();
+					
+			for(UserProfile p : user.getProfiles()) {
+				stmt.close();
+				stmt = conn.prepareStatement("INSERT INTO userprofile(idUser, profile) VALUES(?, ?)");
+				
+				stmt.setInt(1, user.getIdUser());
+				stmt.setInt(2, p.getValue());
+				
+				stmt.execute();
+			}
+			
+			conn.commit();
+			
 			return user.getIdUser();
-		}finally{
+		} catch(SQLException ex) {
+			conn.rollback();
+			
+			throw ex;
+		} finally {
 			if((rs != null) && !rs.isClosed())
 				rs.close();
 			if((stmt != null) && !stmt.isClosed())
@@ -560,7 +711,7 @@ public class UserDAO {
 		}
 	}
 	
-	private User loadObject(ResultSet rs) throws SQLException{
+	private User loadObject(ResultSet rs, Connection conn) throws SQLException{
 		User user = new User();
 		
 		user.setIdUser(rs.getInt("iduser"));
@@ -572,7 +723,6 @@ public class UserDAO {
 		user.setInstitution(rs.getString("institution"));
 		user.setResearch(rs.getString("research"));
 		user.setLattes(rs.getString("lattes"));
-		user.setProfile(User.UserProfile.valueOf(rs.getInt("profile")));
 		user.setExternal(rs.getInt("external") == 1);
 		user.setActive(rs.getInt("active") == 1);
 		user.setArea(rs.getString("area"));
@@ -597,6 +747,25 @@ public class UserDAO {
 		user.setRegisterSemester(rs.getInt("registerSemester"));
 		user.setRegisterYear(rs.getInt("registerYear"));
 		user.setPhoto(rs.getBytes("photo"));
+		
+		Statement stmt = null;
+		ResultSet rs2 = null;
+		
+		try {
+			stmt = conn.createStatement();
+			
+			rs2 = stmt.executeQuery("SELECT * FROM userprofile WHERE iduser=" + String.valueOf(user.getIdUser()) + " ORDER BY profile");
+			
+			user.setProfiles(new ArrayList<UserProfile>());
+			while(rs2.next()) {
+				user.getProfiles().add(UserProfile.valueOf(rs2.getInt("profile")));
+			}
+		} finally {
+			if((rs2 != null) && !rs2.isClosed())
+				rs2.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
 		
 		return user;
 	}

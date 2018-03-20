@@ -14,6 +14,10 @@ $v-font-size: 13px;
 
 @import "../valo/valo";
 
+.v-menubar-menuitem-beverages .v-menubar-submenu-indicator + .v-menubar-menuitem-caption:after {
+      content: none;
+}
+
 .light .valo-menu .valo-menu-title {
   background: $v-app-background-color;
   color: $v-selection-color;

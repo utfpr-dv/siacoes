@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,7 +57,6 @@ public class EditUserWindow extends EditWindow {
 	private final TextField textArea;
 	private final TextArea textResearch;
 	private final TextField textLattes;
-	private final NativeSelect comboProfile;
 	private final CheckBox checkExternal;
 	private final CheckBox checkActive;
 	private final CheckBox checkSigacManager;
@@ -68,11 +68,19 @@ public class EditUserWindow extends EditWindow {
 	private final YearField textYear;
 	private final Upload uploadPhoto;
 	private final Image imagePhoto;
+	private final CheckBox checkStudent;
+	private final CheckBox checkProfessor;
+	private final CheckBox checkCompanySupervisor;
+	private final CheckBox checkSupervisor;
+	private final CheckBox checkAdministrative;
+	private final CheckBox checkAdministrator;
 	
 	private final TabSheet tab;
-	private final VerticalLayout tab1;
-	private final VerticalLayout tab2;
-	private final VerticalLayout tab3;
+	private final VerticalLayout tabData;
+	private final VerticalLayout tabProfessional;
+	private final VerticalLayout tabCustomization;
+	private final VerticalLayout tabProfile;
+	private final VerticalLayout tabStudent;
 
 	public EditUserWindow(User user, ListView parentView){
 		super("Editar Usuário", parentView);
@@ -130,20 +138,6 @@ public class EditUserWindow extends EditWindow {
 		this.textLattes.setWidth("400px");
 		this.textLattes.setMaxLength(100);
 		
-		this.comboProfile = new NativeSelect("Perfil");
-		this.comboProfile.setWidth("400px");
-		this.comboProfile.setNullSelectionAllowed(false);
-		this.comboProfile.addItem(UserProfile.STUDENT);
-		this.comboProfile.addItem(UserProfile.PROFESSOR);
-		this.comboProfile.addItem(UserProfile.ADMINISTRATOR);
-		this.comboProfile.addItem(UserProfile.COMPANYSUPERVISOR);
-		this.comboProfile.addValueChangeListener(new ValueChangeListener() {
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				configureProfile((UserProfile) comboProfile.getValue());
-			}
-		});
-		
 		this.checkSigacManager = new CheckBox("Responsável por Atividades Complementares");
 		
 		this.checkSigesManager = new CheckBox("Responsável por Estágios");
@@ -182,56 +176,106 @@ public class EditUserWindow extends EditWindow {
 		this.imagePhoto.setStyleName("ImagePhoto");
 		this.imagePhoto.setSizeUndefined();
 		
-		this.tab1 = new VerticalLayout();
-		this.tab1.setSpacing(true);
+		this.tabData = new VerticalLayout();
+		this.tabData.setSpacing(true);
 		
 		if(Session.isUserAdministrator()){
 			HorizontalLayout h = new HorizontalLayout(this.textLogin, new VerticalLayout(this.checkActive, this.checkExternal));
 			h.setSpacing(true);
-			this.tab1.addComponent(h);
+			this.tabData.addComponent(h);
 		}else{
 			this.textName.setEnabled(false);
 		}
 		HorizontalLayout h1 = new HorizontalLayout(this.textName, this.textEmail);
 		h1.setSpacing(true);
-		this.tab1.addComponent(h1);
+		this.tabData.addComponent(h1);
 		
 		HorizontalLayout h2 = new HorizontalLayout(this.comboCampus, this.comboDepartment);
 		h2.setSpacing(true);
-		this.tab1.addComponent(h2);
-		
-		HorizontalLayout h3 = new HorizontalLayout(this.textStudentCode, this.comboSemester, this.textYear);
-		h3.setSpacing(true);
-		this.tab1.addComponent(h3);
+		this.tabData.addComponent(h2);
 		
 		if(Session.isUserAdministrator()){
-			HorizontalLayout h = new HorizontalLayout(this.comboProfile, new VerticalLayout(this.checkDepartmentManager, this.checkSigacManager, this.checkSigesManager, this.checkSigetManager));
-			h.setSpacing(true);
-			this.tab1.addComponent(h);
+			this.tabData.addComponent(this.checkDepartmentManager);
+			this.tabData.addComponent(this.checkSigacManager);
+			this.tabData.addComponent(this.checkSigesManager);
+			this.tabData.addComponent(this.checkSigetManager);
 		}
 		
 		this.tab = new TabSheet();
 		this.tab.setWidth("820px");
-		this.tab.addTab(this.tab1, "Dados Gerais");
+		this.tab.setHeight("350px");
+		this.tab.addTab(this.tabData, "Dados Gerais");
+		
+		this.checkStudent = new CheckBox("Acadêmico");
+		this.checkStudent.addValueChangeListener(new ValueChangeListener() {
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				configureProfile();
+			}
+		});
+		this.checkProfessor = new CheckBox("Professor");
+		this.checkProfessor.addValueChangeListener(new ValueChangeListener() {
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				if(checkProfessor.getValue()) {
+					checkSupervisor.setValue(true);
+				}
+				configureProfile();
+			}
+		});
+		this.checkSupervisor = new CheckBox("Orientador");
+		this.checkSupervisor.addValueChangeListener(new ValueChangeListener() {
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				configureProfile();
+			}
+		});
+		this.checkCompanySupervisor = new CheckBox("Supervisor de Empresa");
+		this.checkCompanySupervisor.addValueChangeListener(new ValueChangeListener() {
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				configureProfile();
+			}
+		});
+		this.checkAdministrative = new CheckBox("Técnico Administrativo");
+		this.checkAdministrator = new CheckBox("Administrador");
+		
+		this.tabProfile = new VerticalLayout(this.checkStudent, this.checkProfessor, this.checkSupervisor, this.checkCompanySupervisor, this.checkAdministrative, this.checkAdministrator);
+		this.tabProfile.setSpacing(true);
+		
+		this.tab.addTab(this.tabProfile, "Perfil");
+		if(!Session.isUserAdministrator()){
+			this.tab.getTab(1).setVisible(false);
+		}
+		
+		this.tabStudent = new VerticalLayout();
+		this.tabStudent.setSpacing(true);
+		
+		HorizontalLayout h3 = new HorizontalLayout(this.textStudentCode, this.comboSemester, this.textYear);
+		h3.setSpacing(true);
+		this.tabStudent.addComponent(h3);
+		
+		this.tab.addTab(this.tabStudent, "Acadêmico");
 				
-		this.tab2 = new VerticalLayout();
-		this.tab2.setSpacing(true);
+		this.tabProfessional = new VerticalLayout();
+		this.tabProfessional.setSpacing(true);
 		
 		HorizontalLayout h = new HorizontalLayout(this.textInstitution, this.textLattes);
 		h.setSpacing(true);
-		this.tab2.addComponent(h);
+		this.tabProfessional.addComponent(h);
 		
-		this.tab2.addComponent(this.textArea);
-		this.tab2.addComponent(this.textResearch);
+		this.tabProfessional.addComponent(this.textArea);
+		this.tabProfessional.addComponent(this.textResearch);
 		
-		this.tab.addTab(this.tab2, "Profissional");
+		this.tab.addTab(this.tabProfessional, "Profissional");
 		
 		HorizontalLayout layoutPhoto = new HorizontalLayout(this.imagePhoto, this.uploadPhoto);
 		layoutPhoto.setSpacing(true);
 		
-		this.tab3 = new VerticalLayout(layoutPhoto);
+		this.tabCustomization = new VerticalLayout(layoutPhoto);
+		this.tabCustomization.setSpacing(true);
 		
-		this.tab.addTab(this.tab3, "Personalização");
+		this.tab.addTab(this.tabCustomization, "Personalização");
 		
 		this.addField(this.tab);
 		
@@ -239,19 +283,17 @@ public class EditUserWindow extends EditWindow {
 		this.textLogin.focus();
 	}
 	
-	private void configureProfile(UserProfile profile){
-		this.textStudentCode.setVisible(profile == UserProfile.STUDENT);
-		this.comboSemester.setVisible(profile == UserProfile.STUDENT);
-		this.textYear.setVisible(profile == UserProfile.STUDENT);
+	private void configureProfile(){
+		this.tab.getTab(2).setVisible(this.checkStudent.getValue());
 		
-		this.tab.getTab(1).setVisible((profile == UserProfile.PROFESSOR) || (profile == UserProfile.ADMINISTRATOR));
+		this.tab.getTab(3).setVisible(this.checkProfessor.getValue() || this.checkSupervisor.getValue());
 		
-		this.checkDepartmentManager.setVisible((profile == UserProfile.PROFESSOR) || (profile == UserProfile.ADMINISTRATOR));
-		this.checkSigacManager.setVisible((profile == UserProfile.PROFESSOR) || (profile == UserProfile.ADMINISTRATOR));
-		this.checkSigesManager.setVisible((profile == UserProfile.PROFESSOR) || (profile == UserProfile.ADMINISTRATOR));
-		this.checkSigetManager.setVisible((profile == UserProfile.PROFESSOR) || (profile == UserProfile.ADMINISTRATOR));
+		this.checkDepartmentManager.setVisible(this.checkProfessor.getValue());
+		this.checkSigacManager.setVisible(this.checkProfessor.getValue());
+		this.checkSigesManager.setVisible(this.checkProfessor.getValue());
+		this.checkSigetManager.setVisible(this.checkProfessor.getValue());
 		
-		if((profile != UserProfile.PROFESSOR) && (profile != UserProfile.ADMINISTRATOR)){
+		if(!this.checkProfessor.getValue()){
 			this.checkDepartmentManager.setValue(false);
 			this.checkSigacManager.setValue(false);
 			this.checkSigesManager.setValue(false);
@@ -290,7 +332,6 @@ public class EditUserWindow extends EditWindow {
 		
 		if(Session.isUserAdministrator()){
 			this.textLogin.setValue(this.user.getLogin());
-			this.comboProfile.setValue(this.user.getProfile());
 			this.checkExternal.setValue(this.user.isExternal());
 			this.checkActive.setValue(this.user.isActive());
 			this.checkSigacManager.setValue(this.user.isSigacManager());
@@ -299,8 +340,15 @@ public class EditUserWindow extends EditWindow {
 			this.checkDepartmentManager.setValue(this.user.isDepartmentManager());
 		}
 		
+		this.checkStudent.setValue(this.user.hasProfile(UserProfile.STUDENT));
+		this.checkProfessor.setValue(this.user.hasProfile(UserProfile.PROFESSOR));
+		this.checkSupervisor.setValue(this.user.hasProfile(UserProfile.SUPERVISOR) || this.user.hasProfile(UserProfile.PROFESSOR));
+		this.checkCompanySupervisor.setValue(this.user.hasProfile(UserProfile.COMPANYSUPERVISOR));
+		this.checkAdministrative.setValue(this.user.hasProfile(UserProfile.ADMINISTRATIVE));
+		this.checkAdministrator.setValue(this.user.hasProfile(UserProfile.ADMINISTRATOR));
+		
 		this.configureExternal(this.user.isExternal());
-		this.configureProfile(this.user.getProfile());
+		this.configureProfile();
 		
 		this.loadPhoto();
 	}
@@ -347,7 +395,6 @@ public class EditUserWindow extends EditWindow {
 			
 			if(Session.isUserAdministrator()){
 				this.user.setLogin(this.textLogin.getValue());
-				this.user.setProfile((UserProfile)this.comboProfile.getValue());
 				this.user.setExternal(this.checkExternal.getValue());
 				this.user.setActive(this.checkActive.getValue());
 				this.user.setSigacManager(this.checkSigacManager.getValue());
@@ -358,6 +405,14 @@ public class EditUserWindow extends EditWindow {
 				if(this.user.getPassword().isEmpty()){
 					this.user.setPassword(StringUtils.generateSHA3Hash(this.user.getLogin()));
 				}
+				
+				this.user.setProfiles(new ArrayList<UserProfile>());
+				if(this.checkStudent.getValue()) this.user.getProfiles().add(UserProfile.STUDENT);
+				if(this.checkProfessor.getValue()) this.user.getProfiles().add(UserProfile.PROFESSOR);
+				if(this.checkSupervisor.getValue() && !this.checkProfessor.getValue()) this.user.getProfiles().add(UserProfile.SUPERVISOR);
+				if(this.checkCompanySupervisor.getValue()) this.user.getProfiles().add(UserProfile.COMPANYSUPERVISOR);
+				if(this.checkAdministrative.getValue()) this.user.getProfiles().add(UserProfile.ADMINISTRATIVE);
+				if(this.checkAdministrator.getValue()) this.user.getProfiles().add(UserProfile.ADMINISTRATOR);
 			}
 			
 			bo.save(user);

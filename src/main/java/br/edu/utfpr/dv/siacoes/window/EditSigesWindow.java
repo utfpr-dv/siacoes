@@ -4,11 +4,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
 import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditSigesWindow extends EditWindow {
@@ -19,6 +21,7 @@ public class EditSigesWindow extends EditWindow {
 	private final TextField textSupervisorPonderosity;
 	private final TextField textCompanySupervisorPonderosity;
 	private final CheckBox checkShowGradesToStudent;
+	private final NativeSelect comboSupervisorFilter;
 	
 	public EditSigesWindow(SigesConfig config, ListView parentView){
 		super("Editar Configurações", parentView);
@@ -36,10 +39,19 @@ public class EditSigesWindow extends EditWindow {
 		
 		this.checkShowGradesToStudent = new CheckBox("Permitir que o acadêmico visualize as notas atribuídas pela banca");
 		
+		this.comboSupervisorFilter = new NativeSelect("Orientador deve pertencer ao");
+		this.comboSupervisorFilter.setWidth("400px");
+		this.comboSupervisorFilter.setNullSelectionAllowed(false);
+		this.comboSupervisorFilter.addItem(SupervisorFilter.DEPARTMENT);
+		this.comboSupervisorFilter.addItem(SupervisorFilter.CAMPUS);
+		this.comboSupervisorFilter.addItem(SupervisorFilter.INSTITUTION);
+		this.comboSupervisorFilter.addItem(SupervisorFilter.EVERYONE);
+		
 		this.addField(this.textMinimumScore);
 		this.addField(this.textSupervisorPonderosity);
 		this.addField(this.textCompanySupervisorPonderosity);
 		this.addField(this.checkShowGradesToStudent);
+		this.addField(this.comboSupervisorFilter);
 		
 		this.loadConfigurations();
 	}
@@ -49,6 +61,7 @@ public class EditSigesWindow extends EditWindow {
 		this.textSupervisorPonderosity.setValue(String.format("%.2f", this.config.getSupervisorPonderosity()));
 		this.textCompanySupervisorPonderosity.setValue(String.format("%.2f", this.config.getCompanySupervisorPonderosity()));
 		this.checkShowGradesToStudent.setValue(this.config.isShowGradesToStudent());
+		this.comboSupervisorFilter.setValue(this.config.getSupervisorFilter());
 	}
 
 	@Override
@@ -60,6 +73,7 @@ public class EditSigesWindow extends EditWindow {
 			this.config.setSupervisorPonderosity(Double.parseDouble(this.textSupervisorPonderosity.getValue()));
 			this.config.setCompanySupervisorPonderosity(Double.parseDouble(this.textCompanySupervisorPonderosity.getValue()));
 			this.config.setShowGradesToStudent(this.checkShowGradesToStudent.getValue());
+			this.config.setSupervisorFilter((SupervisorFilter)this.comboSupervisorFilter.getValue());
 			
 			bo.save(this.config);
 			

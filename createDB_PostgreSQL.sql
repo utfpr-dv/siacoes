@@ -62,9 +62,6 @@ CREATE TABLE department (
   site VARCHAR(255) NOT NULL,
   logo BYTEA,
   active SMALLINT NOT NULL,
-  sigacMinimumScore REAL NOT NULL,
-  sigetMinimumScore REAL NOT NULL,
-  sigetRegisterProposal SMALLINT NOT NULL,
   PRIMARY KEY (iddepartment),
   CONSTRAINT fk_department_campus FOREIGN KEY (idcampus) REFERENCES campus (idcampus) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -93,6 +90,7 @@ CREATE  TABLE sigesconfig (
   supervisorPonderosity REAL NOT NULL ,
   companySupervisorPonderosity REAL NOT NULL ,
   showgradestostudent SMALLINT NOT NULL ,
+  supervisorfilter SMALLINT NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigesconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -102,6 +100,8 @@ CREATE  TABLE sigetconfig (
   minimumScore REAL NOT NULL ,
   registerProposal SMALLINT NOT NULL ,
   showgradestostudent SMALLINT NOT NULL ,
+  supervisorfilter SMALLINT NOT NULL ,
+  cosupervisorfilter SMALLINT NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigetconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -174,6 +174,14 @@ CREATE TABLE "user" (
 );
 CREATE INDEX fk_user_department_idx ON "user" (idDepartment);
 CREATE INDEX fk_user_company_idx ON "user" (idcompany);
+
+CREATE TABLE userprofile (
+    iduser integer NOT NULL,
+    profile smallint NOT NULL,
+    PRIMARY KEY (iduser, profile),
+    CONSTRAINT fk_userprofile_user FOREIGN KEY (iduser) REFERENCES "user" (iduser) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+CREATE INDEX fk_userprofile_user_idx ON userprofile (iduser);
 
 CREATE TABLE certificate (
   idcertificate SERIAL NOT NULL,

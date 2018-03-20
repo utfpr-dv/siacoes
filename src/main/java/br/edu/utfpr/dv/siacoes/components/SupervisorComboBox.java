@@ -6,17 +6,22 @@ import java.util.logging.Logger;
 
 import com.vaadin.ui.ComboBox;
 
+import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 import br.edu.utfpr.dv.siacoes.model.User;
 
-public class ProfessorComboBox extends ComboBox {
+public class SupervisorComboBox extends ComboBox {
 	
 	private List<User> list;
 	private int idCampus;
+	private int idDepartment;
+	private SupervisorFilter filter;
 	
-	public ProfessorComboBox(String caption){
+	public SupervisorComboBox(String caption, int idDepartment, SupervisorFilter filter){
 		super(caption);
-		this.setIdCampus(0);
+		this.setIdDepartment(idDepartment);
+		this.setFilter(filter);
 		this.setNullSelectionAllowed(false);
 		this.setWidth("400px");
 		this.loadComboProfessor();
@@ -31,6 +36,28 @@ public class ProfessorComboBox extends ComboBox {
 		return this.idCampus;
 	}
 	
+	public int getIdDepartment() {
+		return idDepartment;
+	}
+
+	public void setIdDepartment(int idDepartment) {
+		this.idDepartment = idDepartment;
+		try {
+			this.setIdCampus(new CampusBO().findByDepartment(idDepartment).getIdCampus());
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+		}
+	}
+
+	public SupervisorFilter getFilter() {
+		return filter;
+	}
+
+	public void setFilter(SupervisorFilter filter) {
+		this.filter = filter;
+		this.loadComboProfessor();
+	}
+
 	public User getProfessor(){
 		return (User)this.getValue();
 	}
@@ -68,10 +95,14 @@ public class ProfessorComboBox extends ComboBox {
 		try {
 			UserBO bo = new UserBO();
 			
-			if(this.getIdCampus() == 0){
-				this.list = bo.listAllProfessors(true);
-			}else{
-				this.list = bo.listProfessorsByCampus(this.getIdCampus(), true);
+			if(this.getFilter() == SupervisorFilter.DEPARTMENT) {
+				this.list = bo.listSupervisorsByDepartment(this.getIdDepartment(), true);
+			} else if(this.getFilter() == SupervisorFilter.CAMPUS) {
+				this.list = bo.listSupervisorsByCampus(this.getIdCampus(), true);
+			} else if(this.getFilter() == SupervisorFilter.INSTITUTION) {
+				this.list = bo.listInstitutionalSupervisors(true);
+			} else {
+				this.list = bo.listAllSupervisors(true);
 			}
 			
 			this.removeAllItems();

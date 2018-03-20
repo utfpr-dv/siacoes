@@ -57,6 +57,7 @@ import br.edu.utfpr.dv.siacoes.model.SupervisorFeedbackReport;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.view.ActivityGroupStatusChartView;
@@ -357,6 +358,23 @@ public class SideMenu extends CustomComponent {
 	            }
 	        });
         }
+        if(Session.getUser().getProfiles().size() > 1) {
+        	settingsItem.addSeparator();
+        	MenuItem profile = settingsItem.addItem("Perfil", null);
+        	
+        	for(UserProfile p : Session.getUser().getProfiles()) {
+        		if(p != Session.getSelectedProfile()) {
+        			profile.addItem(p.toString(), new Command() {
+                        @Override
+                        public void menuSelected(final MenuItem selectedItem) {
+                            Session.setSelectedProfile(p);
+                            
+                            getUI().getNavigator().navigateTo(MainView.NAME);
+                        }
+                    });
+        		}
+        	}
+        }
         if(Session.isLoggedAs()){
         	settingsItem.addSeparator();
             settingsItem.addItem("Logoff de " + Session.getUser().getName(), new Command() {
@@ -474,7 +492,7 @@ public class SideMenu extends CustomComponent {
 		MenuBar settings = this.buildUserMenu();
 		settings.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
 		settings.addStyleName(ValoTheme.MENUBAR_SMALL);
-		settings.addStyleName("withouarrow");
+		settings.addStyleName("beverages");
 		settings.setHeight("50px");
 		settings.setWidth("50px");
 		settings.getItems().get(0).setIcon(new ThemeResource("images/user.png"));

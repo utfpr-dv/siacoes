@@ -85,19 +85,20 @@ public class ProposalView extends ListView {
 		this.getGrid().addColumn("Semestre", Integer.class);
 		this.getGrid().addColumn("Ano", Integer.class);
 		this.getGrid().addColumn("Acadêmico", String.class);
+		this.getGrid().addColumn("Orientador", String.class);
 		this.getGrid().addColumn("Título", String.class);
 		this.getGrid().addColumn("Submissão", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
 		
 		this.getGrid().getColumns().get(0).setWidth(100);
 		this.getGrid().getColumns().get(1).setWidth(100);
-		this.getGrid().getColumns().get(4).setWidth(125);
+		this.getGrid().getColumns().get(5).setWidth(125);
 		
 		try {
 			ProposalBO bo = new ProposalBO();
 	    	List<Proposal> list = bo.listBySemester(Session.getUser().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 	    	
 	    	for(Proposal p : list){
-				Object itemId = this.getGrid().addRow(p.getSemester(), p.getYear(), p.getStudent().getName(), p.getTitle(), p.getSubmissionDate());
+				Object itemId = this.getGrid().addRow(p.getSemester(), p.getYear(), p.getStudent().getName(), p.getSupervisor().getName(), p.getTitle(), p.getSubmissionDate());
 				this.addRowId(itemId, p.getIdProposal());
 			}
 		} catch (Exception e) {

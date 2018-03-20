@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 
 public class SigesConfigDAO {
 
@@ -46,16 +47,17 @@ public class SigesConfigDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO sigesconfig(minimumScore, supervisorPonderosity, companySupervisorPonderosity, showgradestostudent, idDepartment) VALUES(?, ?, ?, ?, ?)");
+				stmt = conn.prepareStatement("INSERT INTO sigesconfig(minimumScore, supervisorPonderosity, companySupervisorPonderosity, showgradestostudent, supervisorfilter, idDepartment) VALUES(?, ?, ?, ?, ?, ?)");
 			}else{
-				stmt = conn.prepareStatement("UPDATE sigesconfig SET minimumScore=?, supervisorPonderosity=?, companySupervisorPonderosity=?, showgradestostudent=? WHERE idDepartment=?");
+				stmt = conn.prepareStatement("UPDATE sigesconfig SET minimumScore=?, supervisorPonderosity=?, companySupervisorPonderosity=?, showgradestostudent=?, supervisorfilter=? WHERE idDepartment=?");
 			}
 			
 			stmt.setDouble(1, config.getMinimumScore());
 			stmt.setDouble(2, config.getSupervisorPonderosity());
 			stmt.setDouble(3, config.getCompanySupervisorPonderosity());
 			stmt.setInt(4, config.isShowGradesToStudent() ? 1 : 0);
-			stmt.setInt(5, config.getDepartment().getIdDepartment());
+			stmt.setInt(5, config.getSupervisorFilter().getValue());
+			stmt.setInt(6, config.getDepartment().getIdDepartment());
 			
 			stmt.execute();
 			
@@ -76,6 +78,7 @@ public class SigesConfigDAO {
 		config.setSupervisorPonderosity(rs.getDouble("supervisorPonderosity"));
 		config.setCompanySupervisorPonderosity(rs.getDouble("companySupervisorPonderosity"));
 		config.setShowGradesToStudent(rs.getInt("showgradestostudent") == 1);
+		config.setSupervisorFilter(SupervisorFilter.valueOf(rs.getInt("supervisorfilter")));
 		
 		return config;
 	}

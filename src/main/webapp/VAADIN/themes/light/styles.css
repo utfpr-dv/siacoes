@@ -1567,6 +1567,10 @@ div.v-layout.v-horizontal.v-widget {
 	vertical-align: top;
 }
 
+.v-menubar-menuitem-beverages .v-menubar-submenu-indicator + .v-menubar-menuitem-caption:after {
+	content: none;
+}
+
 .light .valo-menu .valo-menu-title {
 	background: #fff;
 	color: #4783eb;

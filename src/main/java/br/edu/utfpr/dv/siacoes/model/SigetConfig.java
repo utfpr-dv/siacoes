@@ -2,16 +2,58 @@
 
 public class SigetConfig {
 	
+	public enum SupervisorFilter {
+		DEPARTMENT(0), CAMPUS(1), INSTITUTION(2), EVERYONE(3);
+		
+		private final int value; 
+		SupervisorFilter(int value){ 
+			this.value = value; 
+		}
+		
+		public int getValue(){ 
+			return value;
+		}
+		
+		public static SupervisorFilter valueOf(int value){
+			for(SupervisorFilter u : SupervisorFilter.values()){
+				if(u.getValue() == value){
+					return u;
+				}
+			}
+			
+			return null;
+		}
+		
+		public String toString(){
+			switch(this){
+				case DEPARTMENT:
+					return "Departamento/Coordenação";
+				case CAMPUS:
+					return "Câmpus";
+				case INSTITUTION:
+					return "Instituição";
+				case EVERYONE:
+					return "Todos";
+				default:
+					return "";
+			}
+		}
+	}
+	
 	public Department department;
 	public double minimumScore;
 	private boolean registerProposal;
 	private boolean showGradesToStudent;
+	private SupervisorFilter supervisorFilter;
+	private SupervisorFilter cosupervisorFilter;
 	
 	public SigetConfig(){
 		this.setDepartment(new Department());
 		this.setMinimumScore(6);
 		this.setRegisterProposal(false);
 		this.setShowGradesToStudent(false);
+		this.setSupervisorFilter(SupervisorFilter.DEPARTMENT);
+		this.setCosupervisorFilter(SupervisorFilter.DEPARTMENT);
 	}
 	
 	public Department getDepartment() {
@@ -37,6 +79,18 @@ public class SigetConfig {
 	}
 	public void setShowGradesToStudent(boolean showGradesToStudent) {
 		this.showGradesToStudent = showGradesToStudent;
+	}
+	public SupervisorFilter getSupervisorFilter() {
+		return supervisorFilter;
+	}
+	public void setSupervisorFilter(SupervisorFilter supervisorFilter) {
+		this.supervisorFilter = supervisorFilter;
+	}
+	public SupervisorFilter getCosupervisorFilter() {
+		return cosupervisorFilter;
+	}
+	public void setCosupervisorFilter(SupervisorFilter cosupervisorFilter) {
+		this.cosupervisorFilter = cosupervisorFilter;
 	}
 
 }

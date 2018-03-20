@@ -5,20 +5,22 @@ import java.util.logging.Logger;
 
 import com.vaadin.ui.Notification;
 
-import br.edu.utfpr.dv.siacoes.components.ProfessorComboBox;
+import br.edu.utfpr.dv.siacoes.Session;
+import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 
 public class EditInternshipJuryAppraiserWindow extends EditWindow {
 	
 	private final EditInternshipJuryWindow parentWindow;
 	
-	private final ProfessorComboBox comboProfessor;
+	private final SupervisorComboBox comboProfessor;
 	
 	public EditInternshipJuryAppraiserWindow(EditInternshipJuryWindow parentWindow){
 		super("Adicionar Membro", null);
 		
 		this.parentWindow = parentWindow;
 		
-		this.comboProfessor = new ProfessorComboBox("Membro");
+		this.comboProfessor = new SupervisorComboBox("Membro", Session.getUser().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		
 		this.addField(this.comboProfessor);
 	}

@@ -3,6 +3,7 @@
 import com.vaadin.server.VaadinSession;
 
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 
 public class Session {
@@ -13,6 +14,11 @@ public class Session {
 
 	public static void setUser(User user){
 		VaadinSession.getCurrent().setAttribute("user", user);
+		if((user != null) && (user.getProfiles() != null) && (user.getProfiles().size() > 0)) {
+			Session.setSelectedProfile(user.getProfiles().get(0));	
+		} else {
+			Session.setSelectedProfile(null);
+		}
 	}
 	
 	public static User getUser(){
@@ -20,6 +26,22 @@ public class Session {
 			return new User();
 		}else{
 			return (User)VaadinSession.getCurrent().getAttribute("user");
+		}
+	}
+	
+	public static void setSelectedProfile(UserProfile profile){
+		VaadinSession.getCurrent().setAttribute("profile", profile);
+	}
+	
+	public static UserProfile getSelectedProfile(){
+		if(VaadinSession.getCurrent().getAttribute("profile") == null) {
+			if(Session.getUser().getProfiles().size() > 0) {
+				return Session.getUser().getProfiles().get(0);	
+			} else {
+				return UserProfile.STUDENT;
+			}
+		} else {
+			return (UserProfile)VaadinSession.getCurrent().getAttribute("profile");
 		}
 	}
 	
@@ -65,7 +87,7 @@ public class Session {
 		if(VaadinSession.getCurrent().getAttribute("user") == null){
 			return false;
 		}else{
-			return ((Session.getUser().getProfile() == User.UserProfile.PROFESSOR) || (Session.getUser().getProfile() == User.UserProfile.ADMINISTRATOR));
+			return (Session.getSelectedProfile() == User.UserProfile.PROFESSOR);
 		}
 	}
 	
@@ -73,7 +95,7 @@ public class Session {
 		if(VaadinSession.getCurrent().getAttribute("user") == null){
 			return false;
 		}else{
-			return (Session.getUser().getProfile() == User.UserProfile.ADMINISTRATOR);
+			return (Session.getSelectedProfile() == User.UserProfile.ADMINISTRATOR);
 		}
 	}
 	
@@ -81,11 +103,30 @@ public class Session {
 		if(VaadinSession.getCurrent().getAttribute("user") == null){
 			return false;
 		}else{
-			return (Session.getUser().getProfile() == User.UserProfile.STUDENT);
+			return (Session.getSelectedProfile() == User.UserProfile.STUDENT);
+		}
+	}
+	
+	public static boolean isUserSupervisor(){
+		if(VaadinSession.getCurrent().getAttribute("user") == null){
+			return false;
+		}else{
+			return ((Session.getSelectedProfile() == User.UserProfile.SUPERVISOR) || (Session.getSelectedProfile() == User.UserProfile.PROFESSOR));
+		}
+	}
+	
+	public static boolean isUserCompanySupervisor(){
+		if(VaadinSession.getCurrent().getAttribute("user") == null){
+			return false;
+		}else{
+			return (Session.getSelectedProfile() == User.UserProfile.COMPANYSUPERVISOR);
 		}
 	}
 	
 	public static boolean isUserManager(SystemModule module){
+		if(Session.isUserAdministrator()) {
+			return true;
+		}
 		if(!Session.isUserProfessor()){
 			return false;
 		}
@@ -104,6 +145,9 @@ public class Session {
 	}
 	
 	public static boolean isUserDepartmentManager(){
+		if(Session.isUserAdministrator()) {
+			return true;
+		}
 		if(!Session.isUserProfessor()){
 			return false;
 		}

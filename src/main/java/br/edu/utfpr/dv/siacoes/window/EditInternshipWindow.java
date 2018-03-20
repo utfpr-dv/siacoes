@@ -49,7 +49,7 @@ import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.CompanyComboBox;
 import br.edu.utfpr.dv.siacoes.components.CompanySupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
-import br.edu.utfpr.dv.siacoes.components.ProfessorComboBox;
+import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.components.StudentComboBox;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.Document;
@@ -62,6 +62,7 @@ import br.edu.utfpr.dv.siacoes.model.InternshipReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserDetailReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
@@ -75,7 +76,7 @@ public class EditInternshipWindow extends EditWindow {
 	private final CampusComboBox comboCampus;
 	private final DepartmentComboBox comboDepartment;
 	private final StudentComboBox comboStudent;
-	private final ProfessorComboBox comboSupervisor;
+	private final SupervisorComboBox comboSupervisor;
 	private final CompanyComboBox comboCompany;
 	private final CompanySupervisorComboBox comboCompanySupervisor;
 	private final NativeSelect comboType;
@@ -128,7 +129,7 @@ public class EditInternshipWindow extends EditWindow {
 		
 		this.comboStudent = new StudentComboBox("Aluno");
 		
-		this.comboSupervisor = new ProfessorComboBox("Orientador");
+		this.comboSupervisor = new SupervisorComboBox("Orientador", Session.getUser().getDepartment().getIdDepartment(), new SigesConfigBO().getSupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
 		
 		this.comboCompanySupervisor = new CompanySupervisorComboBox();
 		

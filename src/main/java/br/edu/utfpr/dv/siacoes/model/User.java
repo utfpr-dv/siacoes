@@ -1,11 +1,14 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class User {
 	
 	public enum UserProfile{
-		STUDENT(0), PROFESSOR(1), ADMINISTRATOR(2), MANAGER(3), COMPANYSUPERVISOR(4);
+		STUDENT(0), PROFESSOR(1), ADMINISTRATOR(2), MANAGER(3), COMPANYSUPERVISOR(4), SUPERVISOR(5), ADMINISTRATIVE(6);
 		
 		private final int value; 
 		UserProfile(int value){ 
@@ -38,6 +41,10 @@ public class User {
 					return "Aluno";
 				case COMPANYSUPERVISOR:
 					return "Supervisor";
+				case SUPERVISOR:
+					return "Orientador";
+				case ADMINISTRATIVE:
+					return "Técnico Administrativo";
 				default:
 					return "";
 			}
@@ -56,7 +63,7 @@ public class User {
 	private String research;
 	private String area;
 	private String lattes;
-	private UserProfile profile;
+	private List<UserProfile> profiles;
 	private boolean external;
 	private boolean active;
 	private boolean sigacManager;
@@ -81,7 +88,7 @@ public class User {
 		this.setResearch("");
 		this.setArea("");
 		this.setLattes("");
-		this.setProfile(UserProfile.STUDENT);
+		this.setProfiles(new ArrayList<UserProfile>());
 		this.setExternal(true);
 		this.setActive(true);
 		this.setSigacManager(false);
@@ -130,11 +137,20 @@ public class User {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public UserProfile getProfile(){
-		return profile;
+	public List<UserProfile> getProfiles(){
+		return profiles;
 	}
-	public void setProfile(UserProfile profile){
-		this.profile = profile;
+	public void setProfiles(List<UserProfile> profiles){
+		this.profiles = profiles;
+	}
+	public boolean hasProfile(UserProfile profile) {
+		for(UserProfile p : this.profiles) {
+			if(p == profile) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	public void setInstitution(String institution){
 		this.institution = institution;
@@ -236,6 +252,18 @@ public class User {
 	@Override
 	public String toString(){
 		return this.getName();
+	}
+	
+	public String getProfilesString() {
+		String ret = "";
+		
+		if(this.getProfiles() != null) {
+			for(UserProfile p : this.getProfiles()) {
+				ret = ret + p.toString() + ", ";
+			}
+		}
+		
+		return ret;
 	}
 	
 	@Override

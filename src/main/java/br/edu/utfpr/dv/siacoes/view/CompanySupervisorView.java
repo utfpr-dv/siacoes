@@ -1,5 +1,6 @@
 ﻿package br.edu.utfpr.dv.siacoes.view;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,7 +56,8 @@ public class CompanySupervisorView extends ListView {
 	@Override
 	public void addClick() {
 		User user = new User();
-		user.setProfile(UserProfile.COMPANYSUPERVISOR);
+		user.setProfiles(new ArrayList<UserProfile>());
+		user.getProfiles().add(UserProfile.COMPANYSUPERVISOR);
 		UI.getCurrent().addWindow(new EditCompanySupervisorWindow(user, this));
 	}
 

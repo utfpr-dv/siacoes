@@ -10,10 +10,11 @@ import com.vaadin.ui.TextArea;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ProposalAppraiserBO;
-import br.edu.utfpr.dv.siacoes.components.ProfessorComboBox;
+import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditProposalAppraiserWindow extends EditWindow {
@@ -21,7 +22,7 @@ public class EditProposalAppraiserWindow extends EditWindow {
 	private final ProposalAppraiser appraiser;
 	private final EditProposalWindow editProposalWindow;
 	
-	private final ProfessorComboBox comboAppraiser;
+	private final SupervisorComboBox comboAppraiser;
 	private final NativeSelect comboFeedback;
 	private final TextArea textComments;
 	private final CheckBox checkAllowEditing;
@@ -37,7 +38,7 @@ public class EditProposalAppraiserWindow extends EditWindow {
 		
 		this.editProposalWindow = editProposalWindow;
 		
-		this.comboAppraiser = new ProfessorComboBox("Avaliador");
+		this.comboAppraiser = new SupervisorComboBox("Avaliador", Session.getUser().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		this.comboFeedback = new NativeSelect("Parecer");
 		this.textComments = new TextArea("Observações");
 		this.checkAllowEditing = new CheckBox("Permite edição");
@@ -56,7 +57,7 @@ public class EditProposalAppraiserWindow extends EditWindow {
 		
 		this.editProposalWindow = null;
 		
-		this.comboAppraiser = new ProfessorComboBox("Avaliador");
+		this.comboAppraiser = new SupervisorComboBox("Avaliador", Session.getUser().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		this.comboFeedback = new NativeSelect("Parecer");
 		this.textComments = new TextArea("Observações");
 		this.checkAllowEditing = new CheckBox("Permite edição");

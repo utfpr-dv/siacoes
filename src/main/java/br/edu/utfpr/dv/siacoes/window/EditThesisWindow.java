@@ -38,7 +38,7 @@ import br.edu.utfpr.dv.siacoes.bo.SupervisorChangeBO;
 import br.edu.utfpr.dv.siacoes.bo.ThesisBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
-import br.edu.utfpr.dv.siacoes.components.ProfessorComboBox;
+import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Campus;
@@ -66,8 +66,8 @@ public class EditThesisWindow extends EditWindow {
 	private final TextField textTitle;
 	private final TextField textSubarea;
 	private final TextField textStudent;
-	private final ProfessorComboBox comboSupervisor;
-	private final ProfessorComboBox comboCosupervisor;
+	private final SupervisorComboBox comboSupervisor;
+	private final SupervisorComboBox comboCosupervisor;
 	private final SemesterComboBox comboSemester;
 	private final YearField textYear;
 	private final DateField textSubmissionDate;
@@ -107,10 +107,10 @@ public class EditThesisWindow extends EditWindow {
 		this.textStudent.setEnabled(false);
 		this.textStudent.setWidth("800px");
 		
-		this.comboSupervisor = new ProfessorComboBox("Orientador");
+		this.comboSupervisor = new SupervisorComboBox("Orientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getSupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
 		this.comboSupervisor.setEnabled(false);
 		
-		this.comboCosupervisor = new ProfessorComboBox("Co-orientador");
+		this.comboCosupervisor = new SupervisorComboBox("Co-orientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getCosupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
 		this.comboCosupervisor.setNullSelectionAllowed(true);
 		this.comboCosupervisor.setEnabled(false);
 		

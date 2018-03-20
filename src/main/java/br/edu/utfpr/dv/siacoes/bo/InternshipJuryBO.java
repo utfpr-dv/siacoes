@@ -387,7 +387,7 @@ public class InternshipJuryBO {
 			UserBO bo = new UserBO();
 			User user = bo.findById(idUser);
 			
-			if((user.getProfile() == UserProfile.PROFESSOR) || (user.getProfile() == UserProfile.ADMINISTRATOR)){
+			if(user.hasProfile(UserProfile.PROFESSOR)){
 				list = this.listByAppraiser(idUser, semester, year);	
 			}else{
 				list = this.listByStudent(idUser, semester, year);
