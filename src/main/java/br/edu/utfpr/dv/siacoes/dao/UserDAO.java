@@ -818,7 +818,7 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT COUNT(idUser) AS total FROM \"user\" WHERE active=1 AND profile=" + String.valueOf(UserProfile.STUDENT.getValue()));
+			rs = stmt.executeQuery("SELECT COUNT(DISTINCT \"user\".idUser) AS total FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser WHERE \"user\".active=1 AND userprofile.profile=" + String.valueOf(UserProfile.STUDENT.getValue()));
 			
 			if(rs.next()) {
 				return rs.getLong("total");
@@ -844,7 +844,7 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT COUNT(idUser) AS total FROM \"user\" WHERE active=1 AND profile=" + String.valueOf(UserProfile.PROFESSOR.getValue()));
+			rs = stmt.executeQuery("SELECT COUNT(DISTINCT \"user\".idUser) AS total FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser WHERE \"user\".active=1 AND userprofile.profile=" + String.valueOf(UserProfile.PROFESSOR.getValue()));
 			
 			if(rs.next()) {
 				return rs.getLong("total");

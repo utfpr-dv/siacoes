@@ -18,7 +18,6 @@ import com.vaadin.server.StreamResource;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
-import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
@@ -33,6 +32,7 @@ import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
+import br.edu.utfpr.dv.siacoes.components.CompanyComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
@@ -42,7 +42,6 @@ import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.StringUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
-import br.edu.utfpr.dv.siacoes.window.EditCampusWindow.DocumentUploader;
 
 public class EditUserWindow extends EditWindow {
 	
@@ -74,6 +73,7 @@ public class EditUserWindow extends EditWindow {
 	private final CheckBox checkSupervisor;
 	private final CheckBox checkAdministrative;
 	private final CheckBox checkAdministrator;
+	private final CompanyComboBox comboCompany;
 	
 	private final TabSheet tab;
 	private final VerticalLayout tabData;
@@ -137,6 +137,8 @@ public class EditUserWindow extends EditWindow {
 		this.textLattes = new TextField("Link do Lattes");
 		this.textLattes.setWidth("400px");
 		this.textLattes.setMaxLength(100);
+		
+		this.comboCompany = new CompanyComboBox();
 		
 		this.checkSigacManager = new CheckBox("Responsável por Atividades Complementares");
 		
@@ -266,6 +268,7 @@ public class EditUserWindow extends EditWindow {
 		
 		this.tabProfessional.addComponent(this.textArea);
 		this.tabProfessional.addComponent(this.textResearch);
+		this.tabProfessional.addComponent(this.comboCompany);
 		
 		this.tab.addTab(this.tabProfessional, "Profissional");
 		
@@ -286,12 +289,19 @@ public class EditUserWindow extends EditWindow {
 	private void configureProfile(){
 		this.tab.getTab(2).setVisible(this.checkStudent.getValue());
 		
-		this.tab.getTab(3).setVisible(this.checkProfessor.getValue() || this.checkSupervisor.getValue());
+		this.tab.getTab(3).setVisible(this.checkProfessor.getValue() || this.checkSupervisor.getValue() || this.checkCompanySupervisor.getValue());
 		
 		this.checkDepartmentManager.setVisible(this.checkProfessor.getValue());
 		this.checkSigacManager.setVisible(this.checkProfessor.getValue());
 		this.checkSigesManager.setVisible(this.checkProfessor.getValue());
 		this.checkSigetManager.setVisible(this.checkProfessor.getValue());
+		
+		this.comboCompany.setVisible(this.checkCompanySupervisor.getValue());
+		
+		this.textInstitution.setVisible(this.checkProfessor.getValue() || this.checkSupervisor.getValue());
+		this.textLattes.setVisible(this.checkProfessor.getValue() || this.checkSupervisor.getValue());
+		this.textArea.setVisible(this.checkProfessor.getValue() || this.checkSupervisor.getValue());
+		this.textResearch.setVisible(this.checkProfessor.getValue() || this.checkSupervisor.getValue());
 		
 		if(!this.checkProfessor.getValue()){
 			this.checkDepartmentManager.setValue(false);
@@ -323,6 +333,7 @@ public class EditUserWindow extends EditWindow {
 		this.textStudentCode.setValue(this.user.getStudentCode());
 		this.comboSemester.setSemester(this.user.getRegisterSemester());
 		this.textYear.setYear(this.user.getRegisterYear());
+		this.comboCompany.setCompany(this.user.getCompany());
 		
 		if(Session.isUserProfessor()){
 			this.textArea.setValue(this.user.getArea());
@@ -385,6 +396,7 @@ public class EditUserWindow extends EditWindow {
 			this.user.setStudentCode(this.textStudentCode.getValue());
 			this.user.setRegisterSemester(this.comboSemester.getSemester());
 			this.user.setRegisterYear(this.textYear.getYear());
+			this.user.setCompany(this.comboCompany.getCompany());
 			
 			if(Session.isUserProfessor()){
 				this.user.setInstitution(this.textInstitution.getValue());

@@ -36,7 +36,7 @@ public class CompanySupervisorView extends ListView {
 		this.getGrid().addColumn("Telefone", String.class);
 		this.getGrid().addColumn("E-mail", String.class);
 		
-		this.getGrid().getColumns().get(1).setWidth(100);
+		this.getGrid().getColumns().get(2).setWidth(150);
 		
 		try{
 			UserBO bo = new UserBO();
