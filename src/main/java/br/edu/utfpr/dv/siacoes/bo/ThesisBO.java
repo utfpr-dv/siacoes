@@ -1,14 +1,20 @@
 ﻿package br.edu.utfpr.dv.siacoes.bo;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.ThesisDAO;
+import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
+import br.edu.utfpr.dv.siacoes.model.Deadline;
+import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.SupervisorFeedbackReport;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
+import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class ThesisBO {
 	
@@ -162,6 +168,61 @@ public class ThesisBO {
 			
 			throw new Exception(e.getMessage());
 		}
+	}
+	
+	public Thesis prepareThesis(int idUser, int idDepartment, int semester, int year) throws Exception {
+		Thesis thesis = this.findCurrentThesis(idUser, idDepartment, semester, year);
+		
+		if(thesis == null){
+			DeadlineBO dbo = new DeadlineBO();
+			Deadline d = dbo.findBySemester(idDepartment, semester, year);
+			
+			if((d == null) || DateUtils.getToday().getTime().after(d.getThesisDeadline())){
+				throw new Exception("A submissão de monografias já foi encerrada.");
+			}
+			
+			ProjectBO pbo = new ProjectBO();
+			Project project = pbo.findApprovedProject(idUser, idDepartment, semester, year);
+			
+			if(project == null){
+				throw new Exception("Não foi encontrada a submissão do projeto. É necessário submeter primeiramente o projeto.");
+			}
+			
+			thesis = new Thesis(new UserBO().findById(idUser), project);
+		}
+		
+		return thesis;
+	}
+	
+	public List<byte[]> prepareDocuments(int idUser, int idDepartment, int semester, int year) throws Exception {
+		List<byte[]> ret = new ArrayList<byte[]>();
+		Thesis thesis = this.findCurrentThesis(idUser, idDepartment, semester, year);
+		
+		if(thesis == null){
+			thesis = this.findLastThesis(idUser, idDepartment, semester, year);
+		}
+		
+		if(thesis == null){
+			throw new Exception("É necessário submeter a monografia para imprimir os documentos.");
+		}else{
+			ProjectBO pbo = new ProjectBO();
+			Project project = pbo.findById(thesis.getProject().getIdProject());
+			
+			AttendanceBO abo = new AttendanceBO();
+			AttendanceReport attendance = abo.getReport(idUser, project.getProposal().getIdProposal(), thesis.getSupervisor().getIdUser(), 2);
+			
+			List<AttendanceReport> list = new ArrayList<AttendanceReport>();
+			list.add(attendance);
+			
+			ret.add(new ReportUtils().createPdfStream(list, "Attendances").toByteArray());
+			
+			List<SupervisorFeedbackReport> list2 = new ArrayList<SupervisorFeedbackReport>();
+			list2.add(this.getSupervisorFeedbackReport(thesis));
+			
+			ret.add(new ReportUtils().createPdfStream(list2, "SupervisorFeedback").toByteArray());
+		}
+		
+		return ret;
 	}
 	
 	public SupervisorFeedbackReport getSupervisorFeedbackReport(int idThesis) throws Exception{

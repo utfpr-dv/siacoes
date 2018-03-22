@@ -12,15 +12,20 @@ import java.util.zip.ZipOutputStream;
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.dao.FinalDocumentDAO;
 import br.edu.utfpr.dv.siacoes.model.Campus;
+import br.edu.utfpr.dv.siacoes.model.Deadline;
 import br.edu.utfpr.dv.siacoes.model.Department;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument;
+import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.LibraryCoverReport;
 import br.edu.utfpr.dv.siacoes.model.LibraryReport;
+import br.edu.utfpr.dv.siacoes.model.Project;
+import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class FinalDocumentBO {
@@ -266,6 +271,72 @@ public class FinalDocumentBO {
 			
 			throw new Exception(e.getMessage());
 		}
+	}
+	
+	public FinalDocument prepareFinalProject(int idUser, int idDepartment, int semester, int year) throws Exception {
+		DeadlineBO dbo = new DeadlineBO();
+		Deadline d = dbo.findBySemester(idDepartment, semester, year);
+		
+		if((d == null) || DateUtils.getToday().getTime().after(d.getProjectFinalDocumentDeadline())){
+			throw new Exception("A submissão da versão final dos projetos já foi encerrada.");
+		}
+		
+		FinalDocument ft = this.findCurrentProject(idUser, idDepartment, semester, year);
+		
+		if(ft == null){
+			ProjectBO bo = new ProjectBO();
+			Project project = bo.findCurrentProject(idUser, idDepartment, semester, year);
+			
+			if(project == null){
+				throw new Exception("É necessário submeter o projeto para avaliação da banca antes.");
+			}else{
+				JuryBO jbo = new JuryBO();
+				Jury jury = jbo.findByProject(project.getIdProject());
+				
+				if((jury == null) || (jury.getIdJury() == 0) || jury.getDate().after(DateUtils.getNow().getTime())){
+					throw new Exception("A versão final do projeto só pode ser enviada após a realização da banca.");
+				}else{
+					ft = new FinalDocument();
+					ft.setTitle(project.getTitle());
+					ft.setProject(project);	
+				}
+			}
+		}
+		
+		return ft;
+	}
+	
+	public FinalDocument prepareFinalThesis(int idUser, int idDepartment, int semester, int year) throws Exception {
+		DeadlineBO dbo = new DeadlineBO();
+		Deadline d = dbo.findBySemester(idDepartment, semester, year);
+		
+		if((d == null) || DateUtils.getToday().getTime().after(d.getThesisFinalDocumentDeadline())){
+			throw new Exception("A submissão da versão final das monografias já foi encerrada.");
+		}
+		
+		FinalDocument ft = this.findCurrentThesis(idUser, idDepartment, semester, year);
+		
+		if(ft == null){
+			ThesisBO bo = new ThesisBO();
+			Thesis thesis = bo.findCurrentThesis(idUser, idDepartment, semester, year);
+			
+			if(thesis == null){
+				throw new Exception("É necessário submeter a monografia para avaliação da banca antes.");
+			}else{
+				JuryBO jbo = new JuryBO();
+				Jury jury = jbo.findByThesis(thesis.getIdThesis());
+				
+				if((jury == null) || (jury.getIdJury() == 0) || jury.getDate().after(DateUtils.getNow().getTime())){
+					throw new Exception("A versão final da monografia só pode ser enviada após a realização da banca.");
+				}else{
+					ft = new FinalDocument();
+					ft.setTitle(thesis.getTitle());
+					ft.setThesis(thesis);
+				}
+			}
+		}
+		
+		return ft;
 	}
 	
 	public long getTotalFinalThesis() throws Exception{

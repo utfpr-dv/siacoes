@@ -81,7 +81,7 @@ public class JuryBO {
 		}
 	}
 	
-	public Jury findByProject(int idProject) throws Exception{
+	public Jury findByProject(int idProject) throws Exception {
 		try {
 			JuryDAO dao = new JuryDAO();
 			
@@ -93,7 +93,28 @@ public class JuryBO {
 		}
 	}
 	
-	public Jury findByThesis(int idThesis) throws Exception{
+	public Jury findByProject(int idUser, int idDepartment, int semester, int year) throws Exception {
+		ProjectBO bo = new ProjectBO();
+		Project p = bo.findCurrentProject(idUser, idDepartment, semester, year);
+		
+		if(p == null){
+			p = bo.findLastProject(idUser, idDepartment, semester, year);
+		}
+		
+		if(p == null){
+			throw new Exception("É necessário submeter o projeto para obter o feedback da banca examinadora.");
+		}else{
+			Jury jury = this.findByProject(p.getIdProject());
+			
+			if(jury == null){
+				throw new Exception("A banca examinadora do projeto ainda não foi agendada.");
+			}
+			
+			return jury;
+		}
+	}
+	
+	public Jury findByThesis(int idThesis) throws Exception {
 		try {
 			JuryDAO dao = new JuryDAO();
 			
@@ -102,6 +123,27 @@ public class JuryBO {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public Jury findByThesis(int idUser, int idDepartment, int semester, int year) throws Exception {
+		ThesisBO bo = new ThesisBO();
+		Thesis thesis = bo.findCurrentThesis(idUser, idDepartment, semester, year);
+		
+		if(thesis == null){
+			thesis = bo.findLastThesis(idUser, idDepartment, semester, year);
+		}
+		
+		if(thesis == null){
+			throw new Exception("É necessário submeter o projeto para obter o feedback da banca examinadora.");
+		}else{
+			Jury jury = this.findByThesis(thesis.getIdThesis());
+			
+			if(jury == null){
+				throw new Exception("A banca examinadora do projeto ainda não foi agendada.");
+			}
+			
+			return jury;
 		}
 	}
 	

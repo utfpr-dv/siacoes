@@ -1,14 +1,21 @@
 ﻿package br.edu.utfpr.dv.siacoes.bo;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.dao.ProjectDAO;
+import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
+import br.edu.utfpr.dv.siacoes.model.Deadline;
 import br.edu.utfpr.dv.siacoes.model.Project;
+import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.SupervisorFeedbackReport;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
+import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class ProjectBO {
 	
@@ -189,6 +196,63 @@ public class ProjectBO {
 		feedback.setSupervisor(project.getSupervisor().getName());
 		
 		return feedback;
+	}
+	
+	public Project prepareProject(int idUser, int idDepartment, int semester, int year) throws Exception {
+		ProjectBO bo = new ProjectBO();
+		Project p = bo.findCurrentProject(idUser, idDepartment, semester, year);
+		
+		if(p == null){
+			DeadlineBO dbo = new DeadlineBO();
+			Deadline d = dbo.findBySemester(idDepartment, semester, year);
+			
+			if((d == null) || DateUtils.getToday().getTime().after(d.getProjectDeadline())){
+				throw new Exception("A submissão de projetos já foi encerrada.");
+			}
+			
+			ProposalBO pbo = new ProposalBO();
+			Proposal proposal = pbo.findCurrentProposal(idUser, idDepartment, semester, year);
+			
+			if(proposal == null){
+				if(new SigetConfigBO().findByDepartment(idDepartment).isRegisterProposal()){
+					throw new Exception("Não foi encontrada a submissão da proposta. É necessário primeiramente submeter a proposta.");
+				}else{
+					throw new Exception("Não foi encontrada o registro de orientação. É necessário primeiramente registrar a orientação.");
+				}
+			}
+			
+			p = new Project(Session.getUser(), proposal);
+		}
+		
+		return p;
+	}
+	
+	public List<byte[]> prepareDocuments(int idUser, int idDepartment, int semester, int year) throws Exception {
+		List<byte[]> ret = new ArrayList<byte[]>();
+		Project p = this.findCurrentProject(idUser, idDepartment, semester, year);
+		
+		if(p == null){
+			p = this.findLastProject(idUser, idDepartment, semester, year);
+		}
+		
+		if(p == null){
+			throw new Exception("É necessário submeter o projeto para imprimir os documentos.");
+		}else{
+			AttendanceBO abo = new AttendanceBO();
+			AttendanceReport attendance = abo.getReport(idUser, p.getProposal().getIdProposal(), p.getSupervisor().getIdUser(), 1);
+			
+			List<AttendanceReport> list = new ArrayList<AttendanceReport>();
+			list.add(attendance);
+			
+			ret.add(new ReportUtils().createPdfStream(list, "Attendances").toByteArray());
+			
+			List<SupervisorFeedbackReport> list2 = new ArrayList<SupervisorFeedbackReport>();
+			list2.add(this.getSupervisorFeedbackReport(p));
+			
+			ret.add(new ReportUtils().createPdfStream(list2, "SupervisorFeedback").toByteArray());
+		}
+		
+		return ret;
 	}
 
 }

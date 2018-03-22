@@ -11,10 +11,12 @@ import br.edu.utfpr.dv.siacoes.dao.ProposalDAO;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.Deadline;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class ProposalBO {
 	
@@ -294,6 +296,27 @@ public class ProposalBO {
 			
 			throw new Exception(e.getMessage());
 		}
+	}
+	
+	public Proposal prepareProposal(int idUser, int idDepartment, int semester, int year, boolean onlyRegister) throws Exception {
+		Proposal p = this.findCurrentProposal(idUser, idDepartment, semester, year);
+		
+		if(p == null){
+			DeadlineBO dbo = new DeadlineBO();
+			Deadline d = dbo.findBySemester(idDepartment, semester, year);
+			
+			if((d == null) || DateUtils.getToday().getTime().after(d.getProposalDeadline())) {
+				if(onlyRegister) {
+					throw new Exception("O registro de orientações já foi encerrado.");
+				} else {
+					throw new Exception("A submissão de propostas já foi encerrada.");	
+				}
+			}
+			
+			p = new Proposal(new UserBO().findById(idUser));
+		}
+		
+		return p;
 	}
 	
 	public long getCurrentProposals() throws Exception{
