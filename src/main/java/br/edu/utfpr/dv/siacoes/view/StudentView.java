@@ -19,7 +19,7 @@ import br.edu.utfpr.dv.siacoes.window.EditStudentWindow;
 
 public class StudentView extends ListView {
 	
-	public static final String NAME = "students";
+	public static final String NAME = "student";
 	
 	private final TextField textName;
 	

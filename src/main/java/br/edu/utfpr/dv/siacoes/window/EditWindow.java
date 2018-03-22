@@ -14,7 +14,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
-public abstract class EditWindow extends Window {
+public abstract class EditWindow extends BasicWindow {
 
 	private final ListView parentView;
 	private final Button buttonSave;
@@ -89,13 +89,5 @@ public abstract class EditWindow extends Window {
 	}
 	
 	public abstract void save();
-	
-	protected void showReport(byte[] pdfReport){
-    	String id = UUID.randomUUID().toString();
-    	
-    	Session.putReport(pdfReport, id);
-		
-		getUI().getPage().open("#!" + PDFView.NAME + "/session/" + id, "_blank");
-    }
 	
 }

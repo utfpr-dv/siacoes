@@ -188,6 +188,15 @@ public class SiacoesUI extends UI {
                     	} else if((view.getProfilePermissions() == UserProfile.PROFESSOR) && (!Session.isUserProfessor())) {
                     		getNavigator().navigateTo(Error403View.NAME);
                     		return false;
+                    	} else if((view.getProfilePermissions() == UserProfile.SUPERVISOR) && (!Session.isUserProfessor() && !Session.isUserSupervisor())) {
+                    		getNavigator().navigateTo(Error403View.NAME);
+                    		return false;
+                    	} else if((view.getProfilePermissions() == UserProfile.COMPANYSUPERVISOR) && (!Session.isUserCompanySupervisor())) {
+                    		getNavigator().navigateTo(Error403View.NAME);
+                    		return false;
+                    	} else if((view.getProfilePermissions() == UserProfile.ADMINISTRATIVE) && (!Session.isUserAdministrative())) {
+                    		getNavigator().navigateTo(Error403View.NAME);
+                    		return false;
                     	}
                 	}
                 }

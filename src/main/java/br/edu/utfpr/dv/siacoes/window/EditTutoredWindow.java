@@ -1,5 +1,8 @@
 ﻿package br.edu.utfpr.dv.siacoes.window;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
@@ -13,12 +16,15 @@ import com.vaadin.ui.Button.ClickEvent;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.FinalDocumentBO;
+import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
+import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.bo.ThesisBO;
 import br.edu.utfpr.dv.siacoes.model.Document;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument;
+import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.Semester;
@@ -45,6 +51,7 @@ public class EditTutoredWindow extends EditWindow {
 	private final TextField textProposalSemester;
 	private final DateField textProposalSubmissionDate;
 	private final Button buttonProposalDownloadFile;
+	private final Button buttonProposalFeedback;
 	
 	private final TextField textProjectTitle;
 	private final TextField textProjectSubarea;
@@ -54,6 +61,7 @@ public class EditTutoredWindow extends EditWindow {
 	private final DateField textProjectSubmissionDate;
 	private final Button buttonProjectDownloadFile;
 	private final Button buttonProjectFinalDocument;
+	private final Button buttonProjectFeedback;
 	private final TextArea textProjectAbstract;
 	
 	private final TextField textThesisTitle;
@@ -64,6 +72,7 @@ public class EditTutoredWindow extends EditWindow {
 	private final DateField textThesisSubmissionDate;
 	private final Button buttonThesisDownloadFile;
 	private final Button buttonThesisFinalDocument;
+	private final Button buttonThesisFeedback;
 	private final TextArea textThesisAbstract;
 	
 	private final TabSheet tab;
@@ -171,9 +180,28 @@ public class EditTutoredWindow extends EditWindow {
 		this.textProposalSubmissionDate.setEnabled(false);
 		this.textProposalSubmissionDate.setDateFormat("dd/MM/yyyy");
 		
-		this.buttonProposalDownloadFile = new Button("Download da Proposta");
+		this.buttonProposalDownloadFile = new Button("Download da Proposta", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadProposal();
+            }
+        });
+		try {
+			this.buttonProposalDownloadFile.setVisible(new SigetConfigBO().findByDepartment(Session.getUser().getDepartment().getIdDepartment()).isRegisterProposal());
+		} catch (Exception e) {
+			this.buttonProposalDownloadFile.setVisible(false);
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+		}
 		
-		HorizontalLayout h3 = new HorizontalLayout(this.textProposalSemester, this.textProposalSubmissionDate, this.buttonProposalDownloadFile);
+		this.buttonProposalFeedback = new Button("Feedback da Proposta", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	openProposalFeedback();
+            }
+        });
+		this.buttonProposalFeedback.setVisible(this.buttonProposalDownloadFile.isVisible());
+		
+		HorizontalLayout h3 = new HorizontalLayout(this.textProposalSemester, this.textProposalSubmissionDate, this.buttonProposalDownloadFile, this.buttonProposalFeedback);
 		h3.setSpacing(true);
 		
 		VerticalLayout tab1 = new VerticalLayout(h1, h2, h3);
@@ -209,7 +237,19 @@ public class EditTutoredWindow extends EditWindow {
 		this.textProjectSubmissionDate.setEnabled(false);
 		this.textProjectSubmissionDate.setDateFormat("dd/MM/yyyy");
 		
-		this.buttonProjectDownloadFile = new Button("Download do Projeto");
+		this.buttonProjectDownloadFile = new Button("Download do Projeto", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadProject();
+            }
+        });
+		
+		this.buttonProjectFeedback = new Button("Feedback do Projeto", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	openProjectFeedback();
+            }
+        });
 		
 		this.buttonProjectFinalDocument = new Button("Validar Versão Final", new Button.ClickListener() {
             @Override
@@ -219,7 +259,7 @@ public class EditTutoredWindow extends EditWindow {
         });
 		this.buttonProjectFinalDocument.setVisible((this.projectFinalDocument != null) && (this.projectFinalDocument.getIdFinalDocument() != 0) && (this.projectFinalDocument.getProject().getSemester() == semester.getSemester()) && (this.projectFinalDocument.getProject().getYear() == semester.getYear()));
 		
-		HorizontalLayout h6 = new HorizontalLayout(this.textProjectSemester, this.textProjectSubmissionDate, this.buttonProjectDownloadFile, this.buttonProjectFinalDocument);
+		HorizontalLayout h6 = new HorizontalLayout(this.textProjectSemester, this.textProjectSubmissionDate, this.buttonProjectDownloadFile, this.buttonProjectFeedback, this.buttonProjectFinalDocument);
 		h6.setSpacing(true);
 		
 		this.textProjectAbstract = new TextArea("Resumo");
@@ -260,7 +300,19 @@ public class EditTutoredWindow extends EditWindow {
 		this.textThesisSubmissionDate.setEnabled(false);
 		this.textThesisSubmissionDate.setDateFormat("dd/MM/yyyy");
 		
-		this.buttonThesisDownloadFile = new Button("Download da Monografia");
+		this.buttonThesisDownloadFile = new Button("Download da Monografia", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadThesis();
+            }
+        });
+		
+		this.buttonThesisFeedback = new Button("Feedback da Monografia", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	openThesisFeedback();
+            }
+        });
 		
 		this.buttonThesisFinalDocument = new Button("Validar Versão Final", new Button.ClickListener() {
             @Override
@@ -270,7 +322,7 @@ public class EditTutoredWindow extends EditWindow {
         });
 		this.buttonThesisFinalDocument.setVisible((this.thesisFinalDocument != null) && (this.thesisFinalDocument.getIdFinalDocument() != 0) && (this.thesisFinalDocument.getThesis().getSemester() == semester.getSemester()) && (this.thesisFinalDocument.getThesis().getYear() == semester.getYear()));
 		
-		HorizontalLayout h9 = new HorizontalLayout(this.textThesisSemester, this.textThesisSubmissionDate, this.buttonThesisDownloadFile, this.buttonThesisFinalDocument);
+		HorizontalLayout h9 = new HorizontalLayout(this.textThesisSemester, this.textThesisSubmissionDate, this.buttonThesisDownloadFile, this.buttonThesisFeedback, this.buttonThesisFinalDocument);
 		h9.setSpacing(true);
 		
 		this.textThesisAbstract = new TextArea("Resumo");
@@ -306,7 +358,11 @@ public class EditTutoredWindow extends EditWindow {
 		this.textProposalCosupervisor.setValue(this.proposal.getCosupervisor().getName());
 		this.textProposalSemester.setValue(String.valueOf(this.proposal.getSemester()) + "/" + String.valueOf(this.proposal.getYear()));
 		this.textProposalSubmissionDate.setValue(this.proposal.getSubmissionDate());
-		this.prepareDownloadProposal();
+		
+		if(this.proposal.getFile() == null) {
+			this.buttonProposalDownloadFile.setVisible(false);
+			this.buttonProposalFeedback.setVisible(false);
+		}
 		
 		if((this.project != null) && (this.project.getIdProject() != 0)){
 			this.textProjectTitle.setValue(this.project.getTitle());
@@ -316,7 +372,6 @@ public class EditTutoredWindow extends EditWindow {
 			this.textProjectSemester.setValue(String.valueOf(this.project.getSemester()) + "/" + String.valueOf(this.project.getYear()));
 			this.textProjectSubmissionDate.setValue(this.project.getSubmissionDate());
 			this.textProjectAbstract.setValue(this.project.getAbstract());
-			this.prepareDownloadProject();
 		}
 		
 		if((this.thesis != null) && (this.thesis.getIdThesis() != 0)){
@@ -327,46 +382,77 @@ public class EditTutoredWindow extends EditWindow {
 			this.textThesisSemester.setValue(String.valueOf(this.thesis.getSemester()) + "/" + String.valueOf(this.thesis.getYear()));
 			this.textThesisSubmissionDate.setValue(this.thesis.getSubmissionDate());
 			this.textThesisAbstract.setValue(this.thesis.getAbstract());
-			this.prepareDownloadThesis();
 		}
 	}
 	
-	private void prepareDownloadProposal(){
-		new ExtensionUtils().removeAllExtensions(this.buttonProposalDownloadFile);
-		
-		if(this.proposal.getFile() != null){
-			this.buttonProposalDownloadFile.setVisible(true);
-			
-			new ExtensionUtils().extendToDownload("Proposta_TCC_" + this.proposal.getIdProposal() + Document.DocumentType.PDF.getExtension(), this.proposal.getFile(), this.buttonProposalDownloadFile);
-		}else{
-			this.buttonProposalDownloadFile.setVisible(false);
+	private void downloadProposal() {
+		try {
+        	this.showReport(this.proposal.getFile());
+    	} catch (Exception e) {
+        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	
+        	Notification.show("Download do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
 	
-	private void prepareDownloadProject(){
-		new ExtensionUtils().removeAllExtensions(this.buttonProjectDownloadFile);
-		
-		if(this.project.getFile() != null){
-			this.buttonProjectDownloadFile.setVisible(true);
-			
-			new ExtensionUtils().extendToDownload("Projeto_TCC_" + this.project.getIdProject() + Document.DocumentType.PDF.getExtension(), this.project.getFile(), this.buttonProjectDownloadFile);
-		}else{
-			this.buttonProjectDownloadFile.setVisible(false);
+	private void downloadProject() {
+		try {
+        	this.showReport(this.project.getFile());
+    	} catch (Exception e) {
+        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	
+        	Notification.show("Download do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
 	
-	private void prepareDownloadThesis(){
-		new ExtensionUtils().removeAllExtensions(this.buttonThesisDownloadFile);
-		
-		if(this.thesis.getFile() != null){
-			this.buttonThesisDownloadFile.setVisible(true);
-			
-			new ExtensionUtils().extendToDownload("Monografia_TCC_" + this.thesis.getIdThesis() + Document.DocumentType.PDF.getExtension(), this.thesis.getFile(), this.buttonThesisDownloadFile);
-		}else{
-			this.buttonThesisDownloadFile.setVisible(false);
+	private void downloadThesis() {
+		try {
+        	this.showReport(this.thesis.getFile());
+    	} catch (Exception e) {
+        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	
+        	Notification.show("Download do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
-
+	
+	private void openProposalFeedback() {
+		UI.getCurrent().addWindow(new DownloadProposalFeedbackWindow(this.proposal));
+	}
+	
+	private void openProjectFeedback() {
+		try {
+			JuryBO jbo = new JuryBO();
+			Jury jury = jbo.findByProject(this.project.getIdProject());
+			
+			if(jury == null){
+				Notification.show("Feedback da Banca", "A banca examinadora do projeto ainda não foi agendada.", Notification.Type.ERROR_MESSAGE);
+			}else{
+				UI.getCurrent().addWindow(new DownloadFeedbackWindow(jury));
+			}
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			Notification.show("Feedback da Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		}
+	}
+	
+	private void openThesisFeedback() {
+		try {
+			JuryBO jbo = new JuryBO();
+			Jury jury = jbo.findByThesis(this.thesis.getIdThesis());
+			
+			if(jury == null){
+				Notification.show("Feedback da Banca", "A banca examinadora da monografia ainda não foi agendada.", Notification.Type.ERROR_MESSAGE);
+			}else{
+				UI.getCurrent().addWindow(new DownloadFeedbackWindow(jury));
+			}
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			Notification.show("Feedback da Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		}
+	}
+	
 	@Override
 	public void save() {
 		// TODO Auto-generated method stub

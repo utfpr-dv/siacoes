@@ -42,10 +42,14 @@ public class SupervisorComboBox extends ComboBox {
 
 	public void setIdDepartment(int idDepartment) {
 		this.idDepartment = idDepartment;
-		try {
-			this.setIdCampus(new CampusBO().findByDepartment(idDepartment).getIdCampus());
-		} catch (Exception e) {
-			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+		if(idDepartment > 0) {
+			try {
+				this.setIdCampus(new CampusBO().findByDepartment(idDepartment).getIdCampus());
+			} catch (Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			}
+		} else {
+			this.setIdCampus(0);
 		}
 	}
 

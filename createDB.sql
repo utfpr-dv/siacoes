@@ -151,7 +151,6 @@ CREATE TABLE `user` (
   `name` varchar(255) NOT NULL,
   `login` varchar(50) NOT NULL,
   `password` varchar(500) NOT NULL,
-  `profile` tinyint(4) NOT NULL,
   `email` varchar(100) NOT NULL,
   `phone` VARCHAR(100) NOT NULL,
   `institution` varchar(100) NOT NULL,

@@ -151,7 +151,6 @@ CREATE TABLE "user" (
   name VARCHAR(255) NOT NULL,
   login VARCHAR(50) NOT NULL,
   password VARCHAR(500) NOT NULL,
-  profile SMALLINT NOT NULL,
   email VARCHAR(100) NOT NULL,
   phone VARCHAR(100) NOT NULL,
   institution VARCHAR(100) NOT NULL,

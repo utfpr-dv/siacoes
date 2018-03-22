@@ -28,7 +28,7 @@ import br.edu.utfpr.dv.siacoes.window.EditProposalWindow;
 
 public class ProposalView extends ListView {
 
-	public static final String NAME = "proposals";
+	public static final String NAME = "proposal";
 	
 	private final SemesterComboBox comboSemester;
 	private final YearField textYear;

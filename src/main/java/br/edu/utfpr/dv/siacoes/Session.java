@@ -123,6 +123,14 @@ public class Session {
 		}
 	}
 	
+	public static boolean isUserAdministrative(){
+		if(VaadinSession.getCurrent().getAttribute("user") == null){
+			return false;
+		}else{
+			return (Session.getSelectedProfile() == User.UserProfile.ADMINISTRATIVE);
+		}
+	}
+	
 	public static boolean isUserManager(SystemModule module){
 		if(Session.isUserAdministrator()) {
 			return true;

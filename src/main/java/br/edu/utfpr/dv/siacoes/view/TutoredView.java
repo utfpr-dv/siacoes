@@ -29,7 +29,7 @@ public class TutoredView extends ListView {
 		
 		this.setCaption("Orientações de TCC");
 		
-		this.setProfilePerimissions(UserProfile.PROFESSOR);
+		this.setProfilePerimissions(UserProfile.SUPERVISOR);
 		
 		this.buttonStatementStage1 = new Button("Declaração TCC 1", new Button.ClickListener() {
             @Override

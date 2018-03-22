@@ -7,16 +7,21 @@ import java.util.logging.Logger;
 
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.window.EditCompanySupervisorWindow;
+import br.edu.utfpr.dv.siacoes.window.RegisterProfessorWindow;
 
 public class CompanySupervisorView extends ListView {
 	
 	public static final String NAME = "companysupervisor";
+	
+	public final Button buttonRegisterProfessor;
 	
 	public CompanySupervisorView(){
 		super(SystemModule.SIGES);
@@ -25,8 +30,16 @@ public class CompanySupervisorView extends ListView {
 		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
+		this.buttonRegisterProfessor = new Button("Registrar Professor", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	registerProfessor();
+            }
+        });
+		
 		this.setFiltersVisible(false);
 		this.setDeleteVisible(false);
+		this.addActionButton(this.buttonRegisterProfessor);
 	}
 
 	@Override
@@ -73,6 +86,10 @@ public class CompanySupervisorView extends ListView {
 			
 			Notification.show("Editar Empresa", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
+	}
+	
+	private void registerProfessor() {
+		UI.getCurrent().addWindow(new RegisterProfessorWindow(this));
 	}
 
 	@Override

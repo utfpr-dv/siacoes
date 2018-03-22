@@ -23,7 +23,7 @@ import br.edu.utfpr.dv.siacoes.window.EditUserWindow;
 
 public class UserView extends ListView {
 	
-	public static final String NAME = "users";
+	public static final String NAME = "user";
 	
 	private final NativeSelect comboProfile;
 	private final TextField textName;
