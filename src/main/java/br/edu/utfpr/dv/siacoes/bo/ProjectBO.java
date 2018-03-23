@@ -19,6 +19,18 @@ import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class ProjectBO {
 	
+	public int findIdProposal(int idProject) throws Exception{
+		try {
+			ProjectDAO dao = new ProjectDAO();
+			
+			return dao.findIdProposal(idProject);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public int findIdJury(int idProject) throws Exception{
 		try {
 			ProjectDAO dao = new ProjectDAO();

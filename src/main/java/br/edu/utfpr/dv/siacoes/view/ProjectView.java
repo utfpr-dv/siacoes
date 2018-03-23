@@ -46,8 +46,6 @@ public class ProjectView extends ListView {
 	private final Button buttonSupervisorStatement;
 	private final Button buttonCosupervisorStatement;
 	
-	private Button.ClickListener listenerClickProject;
-	
 	public ProjectView(){
 		super(SystemModule.SIGET);
 		

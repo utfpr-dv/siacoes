@@ -18,6 +18,18 @@ import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class ThesisBO {
 	
+	public int findIdProject(int idThesis) throws Exception{
+		try {
+			ThesisDAO dao = new ThesisDAO();
+			
+			return dao.findIdProject(idThesis);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public int findIdJury(int idThesis) throws Exception{
 		try {
 			ThesisDAO dao = new ThesisDAO();

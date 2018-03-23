@@ -188,41 +188,31 @@ public class EditJuryWindow extends EditWindow {
 		this.textEndTime.setValue(this.jury.getEndTime());
 		this.textComments.setValue(this.jury.getComments());
 		
-		if(this.jury.getIdJury() == 0){
-			JuryAppraiser appraiser = new JuryAppraiser();
-			appraiser.setAppraiser(this.jury.getSupervisor());
-			
-			this.jury.setAppraisers(new ArrayList<JuryAppraiser>());
-			this.jury.getAppraisers().add(appraiser);
-			
-			this.jury.setParticipants(new ArrayList<JuryStudent>());
-		}else {
-			if(this.jury.getAppraisers() == null){
-				try {
-					JuryAppraiserBO bo = new JuryAppraiserBO();
-					
-					this.jury.setAppraisers(bo.listAppraisers(this.jury.getIdJury()));
-				} catch (Exception e) {
-					this.jury.setAppraisers(null);
-					
-					Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-					
-					Notification.show("Carregar Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-				}
+		if(this.jury.getAppraisers() == null){
+			try {
+				JuryAppraiserBO bo = new JuryAppraiserBO();
+				
+				this.jury.setAppraisers(bo.listAppraisers(this.jury.getIdJury()));
+			} catch (Exception e) {
+				this.jury.setAppraisers(null);
+				
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				
+				Notification.show("Carregar Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
-			
-			if(this.jury.getParticipants() == null){
-				try{
-					JuryStudentBO bo = new JuryStudentBO();
-					
-					this.jury.setParticipants(bo.listByJury(this.jury.getIdJury()));
-				} catch (Exception e) {
-					this.jury.setParticipants(null);
-					
-					Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-					
-					Notification.show("Carregar Participantes", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-				}
+		}
+		
+		if(this.jury.getParticipants() == null){
+			try{
+				JuryStudentBO bo = new JuryStudentBO();
+				
+				this.jury.setParticipants(bo.listByJury(this.jury.getIdJury()));
+			} catch (Exception e) {
+				this.jury.setParticipants(null);
+				
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				
+				Notification.show("Carregar Participantes", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
 		}
 		

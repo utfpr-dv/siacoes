@@ -21,8 +21,10 @@ import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserDetailReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserScoreReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
+import br.edu.utfpr.dv.siacoes.model.JuryStudent;
 import br.edu.utfpr.dv.siacoes.model.JuryStudentReport;
 import br.edu.utfpr.dv.siacoes.model.Project;
+import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.TermOfApprovalReport;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
@@ -84,8 +86,36 @@ public class JuryBO {
 	public Jury findByProject(int idProject) throws Exception {
 		try {
 			JuryDAO dao = new JuryDAO();
+			Jury jury = dao.findByProject(idProject);
 			
-			return dao.findByProject(idProject);
+			if(jury == null) {
+				jury = new Jury();
+				
+				jury.setProject(new Project());
+				jury.getProject().setIdProject(idProject);
+				jury.setAppraisers(new ArrayList<JuryAppraiser>());
+				jury.setParticipants(new ArrayList<JuryStudent>());
+				
+				JuryAppraiser appraiser = new JuryAppraiser();
+				appraiser.setAppraiser(jury.getSupervisor());
+				
+				jury.getAppraisers().add(appraiser);
+				
+				List<ProposalAppraiser> appraisers = new ProposalAppraiserBO().listAppraisers(new ProjectBO().findIdProposal(idProject));
+				for(ProposalAppraiser a : appraisers) {
+					try {
+						if(this.canAddAppraiser(jury, a.getAppraiser())) {
+							JuryAppraiser ja = new JuryAppraiser();
+							
+							ja.setAppraiser(a.getAppraiser());
+							
+							jury.getAppraisers().add(ja);
+						}
+					} catch (Exception ex) { }
+				}
+			}
+			
+			return jury;
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -104,9 +134,9 @@ public class JuryBO {
 		if(p == null){
 			throw new Exception("É necessário submeter o projeto para obter o feedback da banca examinadora.");
 		}else{
-			Jury jury = this.findByProject(p.getIdProject());
+			Jury jury = new JuryDAO().findByProject(p.getIdProject());
 			
-			if(jury == null){
+			if((jury == null) || (jury.getIdJury() == 0)) {
 				throw new Exception("A banca examinadora do projeto ainda não foi agendada.");
 			}
 			
@@ -117,8 +147,39 @@ public class JuryBO {
 	public Jury findByThesis(int idThesis) throws Exception {
 		try {
 			JuryDAO dao = new JuryDAO();
+			Jury jury = dao.findByThesis(idThesis);
 			
-			return dao.findByThesis(idThesis);
+			if(jury == null) {
+				jury = new Jury();
+				
+				jury.setThesis(new Thesis());
+				jury.getThesis().setIdThesis(idThesis);
+				jury.setAppraisers(new ArrayList<JuryAppraiser>());
+				jury.setParticipants(new ArrayList<JuryStudent>());
+				
+				JuryAppraiser appraiser = new JuryAppraiser();
+				appraiser.setAppraiser(jury.getSupervisor());
+				
+				jury.getAppraisers().add(appraiser);
+				
+				int idJury = new ProjectBO().findIdJury(new ThesisBO().findIdProject(idThesis));
+				if(idJury > 0) {
+					List<JuryAppraiser> appraisers = new JuryAppraiserBO().listAppraisers(idJury);
+					for(JuryAppraiser a : appraisers) {
+						try {
+							if(this.canAddAppraiser(jury, a.getAppraiser())) {
+								JuryAppraiser ja = new JuryAppraiser();
+								
+								ja.setAppraiser(a.getAppraiser());
+								
+								jury.getAppraisers().add(ja);
+							}
+						} catch (Exception ex) { }
+					}
+				}
+			}
+			
+			return jury;
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -137,9 +198,9 @@ public class JuryBO {
 		if(thesis == null){
 			throw new Exception("É necessário submeter o projeto para obter o feedback da banca examinadora.");
 		}else{
-			Jury jury = this.findByThesis(thesis.getIdThesis());
+			Jury jury = new JuryDAO().findByThesis(thesis.getIdThesis());
 			
-			if(jury == null){
+			if((jury == null) || (jury.getIdJury() == 0)) {
 				throw new Exception("A banca examinadora do projeto ainda não foi agendada.");
 			}
 			

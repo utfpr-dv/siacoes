@@ -16,8 +16,6 @@ import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryBySemester;
 import br.edu.utfpr.dv.siacoes.model.JuryStudent;
 import br.edu.utfpr.dv.siacoes.model.JuryStudentReport;
-import br.edu.utfpr.dv.siacoes.model.Project;
-import br.edu.utfpr.dv.siacoes.model.Thesis;
 
 public class JuryDAO {
 	
@@ -65,12 +63,7 @@ public class JuryDAO {
 			if(rs.next()){
 				return this.loadObject(rs);
 			}else{
-				Jury jury = new Jury();
-				
-				jury.setProject(new Project());
-				jury.getProject().setIdProject(idProject);
-				
-				return jury;
+				return null;
 			}
 		}finally{
 			if((rs != null) && !rs.isClosed())
@@ -98,12 +91,7 @@ public class JuryDAO {
 			if(rs.next()){
 				return this.loadObject(rs);
 			}else{
-				Jury jury = new Jury();
-				
-				jury.setThesis(new Thesis());
-				jury.getThesis().setIdThesis(idThesis);
-				
-				return jury;
+				return null;
 			}
 		}finally{
 			if((rs != null) && !rs.isClosed())
