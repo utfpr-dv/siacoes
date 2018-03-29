@@ -69,9 +69,9 @@ public class EditSigesWindow extends EditWindow {
 		try{
 			SigesConfigBO bo = new SigesConfigBO();
 			
-			this.config.setMinimumScore(Double.parseDouble(this.textMinimumScore.getValue()));
-			this.config.setSupervisorPonderosity(Double.parseDouble(this.textSupervisorPonderosity.getValue()));
-			this.config.setCompanySupervisorPonderosity(Double.parseDouble(this.textCompanySupervisorPonderosity.getValue()));
+			this.config.setMinimumScore(Double.parseDouble(this.textMinimumScore.getValue().replace(",", ".")));
+			this.config.setSupervisorPonderosity(Double.parseDouble(this.textSupervisorPonderosity.getValue().replace(",", ".")));
+			this.config.setCompanySupervisorPonderosity(Double.parseDouble(this.textCompanySupervisorPonderosity.getValue().replace(",", ".")));
 			this.config.setShowGradesToStudent(this.checkShowGradesToStudent.getValue());
 			this.config.setSupervisorFilter((SupervisorFilter)this.comboSupervisorFilter.getValue());
 			

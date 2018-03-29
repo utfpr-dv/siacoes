@@ -102,6 +102,9 @@ CREATE  TABLE sigetconfig (
   showgradestostudent SMALLINT NOT NULL ,
   supervisorfilter SMALLINT NOT NULL ,
   cosupervisorfilter SMALLINT NOT NULL ,
+  supervisorindication SMALLINT NOT NULL ,
+  maxtutoredstage1 SMALLINT NOT NULL ,
+  maxtutoredstage2 SMALLINT NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigetconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -474,6 +477,7 @@ CREATE TABLE proposalappraiser (
   feedback SMALLINT NOT NULL,
   comments text NOT NULL,
   allowEditing SMALLINT NOT NULL,
+  supervisorindication SMALLINT NOT NULL ,
   PRIMARY KEY (idproposalAppraiser),
   CONSTRAINT fk_proposalappraiser_appraiser FOREIGN KEY (idAppraiser) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_proposalappraiser_proposal FOREIGN KEY (idProposal) REFERENCES proposal (idproposal) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -708,7 +712,7 @@ INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) V
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(8, 1, '', '', '{student};{supervisor};{cosupervisor};{title};{subarea}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(9, 1, '', '', '{student};{supervisor};{cosupervisor};{title};{subarea}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(10, 1, '', '', '{student};{supervisor};{cosupervisor};{title};{subarea}');
-INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(11, 1, '', '', '{student};{supervisor};{cosupervisor};{title};{subarea};{appraiser}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(11, 1, '', '', '{student};{supervisor};{cosupervisor};{title};{subarea};{appraiser};{manager};{availabledate}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(12, 1, '', '', '{student};{supervisor};{cosupervisor};{title};{subarea};{appraiser};{feedback};{comments}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(13, 1, '', '', '{student};{title};{appraiser};{date};{time};{local};{stage}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(14, 1, '', '', '{student};{title};{appraiser};{date};{time};{local};{stage}');
@@ -724,3 +728,4 @@ INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) V
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(24, 1, '', '', '{documenttype};{student};{title};{supervisor};{feedback};{manager}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(25, 3, '', '', '{student};{company};{supervisor}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(26, 3, '', '', '{student};{company};{supervisor};{feedback};{manager}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(27, 1, '', '', '{student};{supervisor};{cosupervisor};{title};{subarea};{appraiser};{manager};{availabledate}');

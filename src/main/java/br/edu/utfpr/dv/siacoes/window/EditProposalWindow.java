@@ -45,7 +45,6 @@ import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
-import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
@@ -275,9 +274,12 @@ public class EditProposalWindow extends EditWindow {
 	private void loadGridAppraisers(){
 		this.gridAppraisers = new Grid();
 		this.gridAppraisers.addColumn("Avaliador", String.class);
+		this.gridAppraisers.addColumn("Indicação", String.class);
 		this.gridAppraisers.addColumn("Parecer", String.class);
 		this.gridAppraisers.setWidth("800px");
 		this.gridAppraisers.setHeight("300px");
+		this.gridAppraisers.getColumns().get(1).setWidth(150);
+		this.gridAppraisers.getColumns().get(2).setWidth(150);
 		
 		try {
 			if(this.proposal.getAppraisers() == null){
@@ -286,7 +288,7 @@ public class EditProposalWindow extends EditWindow {
 			}
 			
 	    	for(ProposalAppraiser p : this.proposal.getAppraisers()){
-				this.gridAppraisers.addRow(p.getAppraiser().getName(), p.getFeedback().toString());
+				this.gridAppraisers.addRow(p.getAppraiser().getName(), (p.isSupervisorIndication() ? "Orientador" : "Resp. TCC"), p.getFeedback().toString());
 			}
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);

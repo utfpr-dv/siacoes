@@ -11,16 +11,22 @@ import com.vaadin.ui.Button.ClickEvent;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
+import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
+import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.bo.TutoredBO;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Tutored;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.window.EditSupervisorIndicationWindow;
 import br.edu.utfpr.dv.siacoes.window.EditTutoredWindow;
 
 public class TutoredView extends ListView {
 	
 	public static final String NAME = "tutored";
 	
+	private final Button buttonSupervisorIndication;
 	private final Button buttonStatementStage1;
 	private final Button buttonStatementStage2;
 	
@@ -30,6 +36,13 @@ public class TutoredView extends ListView {
 		this.setCaption("Orientações de TCC");
 		
 		this.setProfilePerimissions(UserProfile.SUPERVISOR);
+		
+		this.buttonSupervisorIndication = new Button("Indicar Avaliador", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	supervisorIndication();
+            }
+        });
 		
 		this.buttonStatementStage1 = new Button("Declaração TCC 1", new Button.ClickListener() {
             @Override
@@ -48,6 +61,16 @@ public class TutoredView extends ListView {
 		this.setFiltersVisible(false);
 		this.setAddVisible(false);
 		this.setDeleteVisible(false);
+		
+		try {
+			SigetConfig config = new SigetConfigBO().findByDepartment(Session.getUser().getDepartment().getIdDepartment());
+			
+			if(config.getSupervisorIndication() > 0) {
+				this.addActionButton(this.buttonSupervisorIndication);
+			}
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+		}
 		
 		this.addActionButton(this.buttonStatementStage1);
 		this.addActionButton(this.buttonStatementStage2);
@@ -98,6 +121,28 @@ public class TutoredView extends ListView {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
 	        	Notification.show("Gerar Declaração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			}
+		}
+	}
+	
+	public void supervisorIndication() {
+		Object value = getIdSelected();
+		
+		if(value == null){
+			Notification.show("Indicar Avaliadores", "Selecione um registro para indicar os avaliadores.", Notification.Type.WARNING_MESSAGE);
+		}else{
+			try{
+				Proposal proposal = new ProposalBO().findById((int)value);
+
+				if(proposal.getSupervisor().getIdUser() != Session.getUser().getIdUser()) {
+					Notification.show("Indicar Avaliadores", "Apenas o orientador pode fazer a indicação de avaliadores.", Notification.Type.WARNING_MESSAGE);
+				} else {
+					UI.getCurrent().addWindow(new EditSupervisorIndicationWindow(proposal, this));	
+				}
+			}catch(Exception e){
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+	        	
+	        	Notification.show("Indicar Avaliadores", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
 		}
 	}

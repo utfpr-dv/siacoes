@@ -11,6 +11,7 @@ import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
@@ -74,6 +75,17 @@ public class ProposalAppraiserBO {
 			if((appraiser.getAppraiser() == null) || (appraiser.getAppraiser().getIdUser() == 0)){
 				throw new Exception("Informe o avaliador.");
 			}
+			Proposal proposal = new ProposalBO().findById(appraiser.getProposal().getIdProposal());
+			if(appraiser.getAppraiser().getIdUser() == proposal.getSupervisor().getIdUser()) {
+				throw new Exception("O avaliador da proposta não deve ser orientador do trabalho.");
+			}
+			if((proposal.getCosupervisor() != null) && (appraiser.getAppraiser().getIdUser() == proposal.getCosupervisor().getIdUser())) {
+				throw new Exception("O avaliador da proposta não deve ser co-orientador do trabalho.");
+			}
+			ProposalAppraiser a = dao.findByAppraiser(appraiser.getProposal().getIdProposal(), appraiser.getAppraiser().getIdUser());
+			if((a != null) && (a.getIdProposalAppraiser() != appraiser.getIdProposalAppraiser())) {
+				throw new Exception("O avaliador " + appraiser.getAppraiser().getName() + " já foi indicado para avaliação deste trabalho.");
+			}
 			
 			ret = dao.save(appraiser);
 		} catch (SQLException e) {
@@ -82,8 +94,31 @@ public class ProposalAppraiserBO {
 			throw new Exception(e.getMessage());
 		}
 		
-		if(!isInsert && (oldFeedback != appraiser.getFeedback())){
-			try{
+		try{
+			if(isInsert) {
+				EmailMessageBO bo = new EmailMessageBO();
+				List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+				Proposal proposal = new ProposalBO().findById(appraiser.getProposal().getIdProposal());
+				
+				keys.add(new EmailMessageEntry<String, String>("student", proposal.getStudent().getName()));
+				keys.add(new EmailMessageEntry<String, String>("supervisor", proposal.getSupervisor().getName()));
+				if(proposal.getCosupervisor() == null){
+					keys.add(new EmailMessageEntry<String, String>("cosupervisor", ""));
+				}else{
+					keys.add(new EmailMessageEntry<String, String>("cosupervisor", proposal.getCosupervisor().getName()));	
+				}
+				keys.add(new EmailMessageEntry<String, String>("title", proposal.getTitle()));
+				keys.add(new EmailMessageEntry<String, String>("subarea", proposal.getSubarea()));
+				keys.add(new EmailMessageEntry<String, String>("appraiser", appraiser.getAppraiser().getName()));
+				keys.add(new EmailMessageEntry<String, String>("manager", new UserBO().findManager(proposal.getDepartment().getIdDepartment(), SystemModule.SIGET).getName()));
+				keys.add(new EmailMessageEntry<String, String>("availabledate", DateUtils.format(DateUtils.addDay(new DeadlineBO().findBySemester(proposal.getDepartment().getIdDepartment(), proposal.getSemester(), proposal.getYear()).getProposalDeadline(), 1), "dd/MM/yyyy")));
+				
+				if(appraiser.isSupervisorIndication()) {
+					bo.sendEmail(appraiser.getAppraiser().getIdUser(), MessageType.PROPOSALAPPRAISERSUPERVISORINDICATION, keys);
+				} else {
+					bo.sendEmail(appraiser.getAppraiser().getIdUser(), MessageType.PROPOSALAPPRAISERREGISTER, keys);	
+				}
+			} else if(!isInsert && (oldFeedback != appraiser.getFeedback())) {
 				ProposalBO pbo = new ProposalBO();
 				Proposal proposal = pbo.findById(appraiser.getProposal().getIdProposal());
 				
@@ -110,9 +145,9 @@ public class ProposalAppraiserBO {
 					
 					bo.sendEmail(user.getIdUser(), MessageType.PROPOSALAPPRAISERFEEDBACK, keys);
 				}
-			}catch(Exception e){
-				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			}
+		}catch(Exception e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 		}
 		
 		return ret;

@@ -552,11 +552,9 @@ public class ProposalDAO {
 					ids = ids + String.valueOf(paId) + ",";
 				}
 				
-				if(!ids.isEmpty()){
-					Statement st = conn.createStatement();
-					st.execute("DELETE FROM proposalappraiser WHERE idProposal=" + String.valueOf(proposal.getIdProposal()) + " AND idProposalAppraiser NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")");
-					st.close();
-				}
+				Statement st = conn.createStatement();
+				st.execute("DELETE FROM proposalappraiser WHERE idProposal=" + String.valueOf(proposal.getIdProposal()) + (!ids.isEmpty() ? " AND idProposalAppraiser NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")" : ""));
+				st.close();
 			}
 			
 			conn.commit();
@@ -621,6 +619,36 @@ public class ProposalDAO {
 			
 			if(rs.next()) {
 				return rs.getLong("total");
+			} else {
+				return 0;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public int getCountTutored(int idProposal, int idDepartment, int idSupervisor, int semester, int year) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT COUNT(idProposal) AS total FROM proposal " +
+					"WHERE idProposal != " + String.valueOf(idProposal) + 
+					" AND idDepartment = " + String.valueOf(idDepartment) +
+					" AND idSupervisor = " + String.valueOf(idSupervisor) + 
+					" AND semester = " + String.valueOf(semester) + " AND year = " + String.valueOf(year));
+			
+			if(rs.next()) {
+				return rs.getInt("total");
 			} else {
 				return 0;
 			}

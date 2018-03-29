@@ -83,6 +83,10 @@ public abstract class EditWindow extends BasicWindow {
 		this.layoutFields.addComponent(c);
 	}
 	
+	public Component getField(int index) {
+		return this.layoutFields.getComponent(index);
+	}
+	
 	public void addButton(Component c){
 		c.setWidth("150px");
 		this.layoutButtons.addComponent(c);

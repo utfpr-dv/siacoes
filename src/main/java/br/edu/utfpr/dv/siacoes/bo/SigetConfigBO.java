@@ -30,11 +30,19 @@ public class SigetConfigBO {
 	}
 	
 	public int save(SigetConfig config) throws Exception{
-		if((config.getDepartment() == null) || (config.getDepartment().getIdDepartment() == 0)){
+		if((config.getDepartment() == null) || (config.getDepartment().getIdDepartment() == 0)) {
 			throw new Exception("Informe o departamento.");
 		}
-		if(config.getMinimumScore() <= 0){
+		if(config.getMinimumScore() <= 0) {
 			throw new Exception("A nota mínima para aprovação deve ser superior a zero.");
+		}
+		if(config.getSupervisorIndication() < 0) {
+			config.setSupervisorIndication(0);
+		} else if(config.getSupervisorIndication() > 10) {
+			config.setSupervisorIndication(10);
+		}
+		if((config.getMaxTutoredStage1() < 1) || (config.getMaxTutoredStage2() < 1)) {
+			throw new Exception("O número máximo de orientados não deve ser inferior a 1.");
 		}
 		
 		try{

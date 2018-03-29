@@ -46,6 +46,9 @@ public class SigetConfig {
 	private boolean showGradesToStudent;
 	private SupervisorFilter supervisorFilter;
 	private SupervisorFilter cosupervisorFilter;
+	private int supervisorIndication;
+	private int maxTutoredStage1;
+	private int maxTutoredStage2;
 	
 	public SigetConfig(){
 		this.setDepartment(new Department());
@@ -54,6 +57,9 @@ public class SigetConfig {
 		this.setShowGradesToStudent(false);
 		this.setSupervisorFilter(SupervisorFilter.DEPARTMENT);
 		this.setCosupervisorFilter(SupervisorFilter.DEPARTMENT);
+		this.setSupervisorIndication(0);
+		this.setMaxTutoredStage1(0);
+		this.setMaxTutoredStage2(0);
 	}
 	
 	public Department getDepartment() {
@@ -91,6 +97,24 @@ public class SigetConfig {
 	}
 	public void setCosupervisorFilter(SupervisorFilter cosupervisorFilter) {
 		this.cosupervisorFilter = cosupervisorFilter;
+	}
+	public int getSupervisorIndication() {
+		return supervisorIndication;
+	}
+	public void setSupervisorIndication(int supervisorIndication) {
+		this.supervisorIndication = supervisorIndication;
+	}
+	public int getMaxTutoredStage1() {
+		return maxTutoredStage1;
+	}
+	public void setMaxTutoredStage1(int maxTutoredStage1) {
+		this.maxTutoredStage1 = maxTutoredStage1;
+	}
+	public int getMaxTutoredStage2() {
+		return maxTutoredStage2;
+	}
+	public void setMaxTutoredStage2(int maxTutoredStage2) {
+		this.maxTutoredStage2 = maxTutoredStage2;
 	}
 
 }

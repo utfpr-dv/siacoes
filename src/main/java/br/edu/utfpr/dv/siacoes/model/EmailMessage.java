@@ -30,7 +30,8 @@ public class EmailMessage {
 		FINALDOCUMENTSUBMITTED(23),
 		FINALDOCUMENTVALIDATED(24),
 		INTERNSHIPFINALDOCUMENTSUBMITTED(25),
-		INTERNSHIPFINALDOCUMENTVALIDATED(26);
+		INTERNSHIPFINALDOCUMENTVALIDATED(26),
+		PROPOSALAPPRAISERSUPERVISORINDICATION(27);
 		
 		private final int value; 
 		MessageType(int value){ 
@@ -74,7 +75,7 @@ public class EmailMessage {
 				case PROPOSALCHANGESUPERVISOR:
 					return "Ressubmissão de Proposta de TCC 1 (Orientador)";
 				case PROPOSALAPPRAISERREGISTER:
-					return "Cadastro de Avaliador da Proposta de TCC 1";
+					return "Indicação de Avaliador da Proposta de TCC 1 (Responsável TCC)";
 				case PROPOSALAPPRAISERFEEDBACK:
 					return "Feedback da Proposta de TCC 1";
 				case JURYINCLUDEDSTUDENT:
@@ -105,6 +106,8 @@ public class EmailMessage {
 					return "Versão Final de Estágio Submetida";
 				case INTERNSHIPFINALDOCUMENTVALIDATED:
 					return "Versão Final de Estágio Validada";
+				case PROPOSALAPPRAISERSUPERVISORINDICATION:
+					return "Indicação de Avaliador da Proposta de TCC 1 (Orientador)";
 				default:
 					return "";
 			}

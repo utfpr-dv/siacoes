@@ -129,9 +129,9 @@ public class ProposalAppraiserDAO {
 		
 		try{
 			if(insert){
-				stmt = this.conn.prepareStatement("INSERT INTO proposalappraiser(idProposal, idAppraiser, feedback, comments, allowEditing) VALUES(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = this.conn.prepareStatement("INSERT INTO proposalappraiser(idProposal, idAppraiser, feedback, comments, allowEditing, supervisorIndication) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = this.conn.prepareStatement("UPDATE proposalappraiser SET idProposal=?, idAppraiser=?, feedback=?, comments=?, allowEditing=? WHERE idProposalAppraiser=?");
+				stmt = this.conn.prepareStatement("UPDATE proposalappraiser SET idProposal=?, idAppraiser=?, feedback=?, comments=?, allowEditing=?, supervisorIndication=? WHERE idProposalAppraiser=?");
 			}
 			
 			stmt.setInt(1, appraiser.getProposal().getIdProposal());
@@ -139,9 +139,10 @@ public class ProposalAppraiserDAO {
 			stmt.setInt(3, appraiser.getFeedback().getValue());
 			stmt.setString(4, appraiser.getComments());
 			stmt.setInt(5, (appraiser.isAllowEditing() ? 1 : 0));
+			stmt.setInt(6, (appraiser.isSupervisorIndication() ? 1 : 0));
 			
 			if(!insert){
-				stmt.setInt(6, appraiser.getIdProposalAppraiser());
+				stmt.setInt(7, appraiser.getIdProposalAppraiser());
 			}
 			
 			stmt.execute();
@@ -173,6 +174,7 @@ public class ProposalAppraiserDAO {
 		p.setComments(rs.getString("comments"));
 		p.setFeedback(ProposalFeedback.valueOf(rs.getInt("feedback")));
 		p.setAllowEditing(rs.getInt("allowEditing") == 1);
+		p.setSupervisorIndication(rs.getInt("supervisorIndication") == 1);
 		
 		return p;
 	}

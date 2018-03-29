@@ -46,6 +46,7 @@ public class ProposalAppraiser {
 	private ProposalFeedback feedback;
 	private String comments;
 	private boolean allowEditing;
+	private boolean supervisorIndication;
 	
 	public ProposalAppraiser(){
 		this.setIdProposalAppraiser(0);
@@ -54,54 +55,50 @@ public class ProposalAppraiser {
 		this.setFeedback(ProposalFeedback.NONE);
 		this.setComments("");
 		this.setAllowEditing(true);
+		this.setSupervisorIndication(false);
 	}
 
 	public int getIdProposalAppraiser() {
 		return idProposalAppraiser;
 	}
-
 	public void setIdProposalAppraiser(int idProposalAppraiser) {
 		this.idProposalAppraiser = idProposalAppraiser;
 	}
-
 	public Proposal getProposal() {
 		return proposal;
 	}
-
 	public void setProposal(Proposal proposal) {
 		this.proposal = proposal;
 	}
-
 	public User getAppraiser() {
 		return appraiser;
 	}
-
 	public void setAppraiser(User appraiser) {
 		this.appraiser = appraiser;
 	}
-
 	public ProposalFeedback getFeedback() {
 		return feedback;
 	}
-
 	public void setFeedback(ProposalFeedback feedback) {
 		this.feedback = feedback;
 	}
-
 	public String getComments() {
 		return comments;
 	}
-
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
-
 	public boolean isAllowEditing() {
 		return allowEditing;
 	}
-
 	public void setAllowEditing(boolean allowEditing) {
 		this.allowEditing = allowEditing;
+	}
+	public boolean isSupervisorIndication() {
+		return supervisorIndication;
+	}
+	public void setSupervisorIndication(boolean supervisorIndication) {
+		this.supervisorIndication = supervisorIndication;
 	}
 		
 }

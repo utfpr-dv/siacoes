@@ -38,7 +38,7 @@ public class EditSigacWindow extends EditWindow {
 		try{
 			SigacConfigBO bo = new SigacConfigBO();
 			
-			this.config.setMinimumScore(Double.parseDouble(this.textMinimumScore.getValue()));
+			this.config.setMinimumScore(Double.parseDouble(this.textMinimumScore.getValue().replace(",", ".")));
 			
 			bo.save(this.config);
 			

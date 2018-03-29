@@ -10,12 +10,14 @@ import java.util.logging.Logger;
 import br.edu.utfpr.dv.siacoes.dao.ProposalDAO;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
+import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class ProposalBO {
@@ -149,6 +151,22 @@ public class ProposalBO {
 		if((proposal.getSemester() == 0) || (proposal.getYear() == 0)){
 			throw new Exception("Informe o ano e semestre da proposta.");
 		}
+		SigetConfig config = new SigetConfigBO().findByDepartment(proposal.getDepartment().getIdDepartment());
+		if(this.getCountTutored(proposal.getIdProposal(), proposal.getDepartment().getIdDepartment(), proposal.getSupervisor().getIdUser(), proposal.getSemester(), proposal.getYear()) >= config.getMaxTutoredStage1()) {
+			throw new Exception("O orientador " + proposal.getSupervisor().getName() + " já atingiu o limite de " + config.getMaxTutoredStage1() + " orientados para o TCC 1.");
+		}
+	}
+	
+	public int getCountTutored(int idProposal, int idDepartment, int idSupervisor, int semester, int year) throws Exception { 
+		try {
+			ProposalDAO dao = new ProposalDAO();
+			
+			return dao.getCountTutored(idProposal, idDepartment, idSupervisor, semester, year);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
 	}
 	
 	public int save(Proposal proposal) throws Exception{
@@ -224,20 +242,25 @@ public class ProposalBO {
 			}
 			
 			if(proposal.getAppraisers() != null){
+				User manager = new UserBO().findManager(proposal.getDepartment().getIdDepartment(), SystemModule.SIGET);
+				String availableDate = DateUtils.format(DateUtils.addDay(new DeadlineBO().findBySemester(proposal.getDepartment().getIdDepartment(), proposal.getSemester(), proposal.getYear()).getProposalDeadline(), 1), "dd/MM/yyyy");
+				
 				for(int i = 0; i < proposal.getAppraisers().size(); i++){
 					if(listEmail.get(i)){
 						keys = new ArrayList<EmailMessageEntry<String, String>>();
 						
 						keys.add(new EmailMessageEntry<String, String>("student", proposal.getStudent().getName()));
 						keys.add(new EmailMessageEntry<String, String>("supervisor", proposal.getSupervisor().getName()));
-						if(proposal.getCosupervisor() == null){
+						if(proposal.getCosupervisor() == null) {
 							keys.add(new EmailMessageEntry<String, String>("cosupervisor", ""));
-						}else{
+						} else {
 							keys.add(new EmailMessageEntry<String, String>("cosupervisor", proposal.getCosupervisor().getName()));	
 						}
 						keys.add(new EmailMessageEntry<String, String>("title", proposal.getTitle()));
 						keys.add(new EmailMessageEntry<String, String>("subarea", proposal.getSubarea()));
 						keys.add(new EmailMessageEntry<String, String>("appraiser", proposal.getAppraisers().get(i).getAppraiser().getName()));
+						keys.add(new EmailMessageEntry<String, String>("manager", manager.getName()));
+						keys.add(new EmailMessageEntry<String, String>("availabledate", availableDate));
 						
 						bo.sendEmail(proposal.getAppraisers().get(i).getAppraiser().getIdUser(), MessageType.PROPOSALAPPRAISERREGISTER, keys);
 					}

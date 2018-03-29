@@ -47,9 +47,9 @@ public class SigetConfigDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO sigetconfig(minimumScore, registerProposal, showgradestostudent, supervisorfilter, cosupervisorfilter, idDepartment) VALUES(?, ?, ?, ?, ?, ?)");
+				stmt = conn.prepareStatement("INSERT INTO sigetconfig(minimumScore, registerProposal, showgradestostudent, supervisorfilter, cosupervisorfilter, supervisorIndication, maxTutoredStage1, maxTutoredStage2, idDepartment) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}else{
-				stmt = conn.prepareStatement("UPDATE sigetconfig SET minimumScore=?, registerProposal=?, showgradestostudent=?, supervisorfilter=?, cosupervisorfilter=? WHERE idDepartment=?");
+				stmt = conn.prepareStatement("UPDATE sigetconfig SET minimumScore=?, registerProposal=?, showgradestostudent=?, supervisorfilter=?, cosupervisorfilter=?, supervisorIndication=?, maxTutoredStage1=?, maxTutoredStage2=? WHERE idDepartment=?");
 			}
 			
 			stmt.setDouble(1, config.getMinimumScore());
@@ -57,7 +57,10 @@ public class SigetConfigDAO {
 			stmt.setInt(3, config.isShowGradesToStudent() ? 1 : 0);
 			stmt.setInt(4, config.getSupervisorFilter().getValue());
 			stmt.setInt(5, config.getCosupervisorFilter().getValue());
-			stmt.setInt(6, config.getDepartment().getIdDepartment());
+			stmt.setInt(6, config.getSupervisorIndication());
+			stmt.setInt(7, config.getMaxTutoredStage1());
+			stmt.setInt(8, config.getMaxTutoredStage2());
+			stmt.setInt(9, config.getDepartment().getIdDepartment());
 			
 			stmt.execute();
 			
@@ -79,6 +82,9 @@ public class SigetConfigDAO {
 		config.setShowGradesToStudent(rs.getInt("showgradestostudent") == 1);
 		config.setSupervisorFilter(SupervisorFilter.valueOf(rs.getInt("supervisorFilter")));
 		config.setCosupervisorFilter(SupervisorFilter.valueOf(rs.getInt("cosupervisorFilter")));
+		config.setSupervisorIndication(rs.getInt("supervisorIndication"));
+		config.setMaxTutoredStage1(rs.getInt("maxTutoredStage1"));
+		config.setMaxTutoredStage2(rs.getInt("maxTutoredStage2"));
 		
 		return config;
 	}
