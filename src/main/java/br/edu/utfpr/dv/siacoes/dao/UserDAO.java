@@ -702,6 +702,7 @@ public class UserDAO {
 			
 			throw ex;
 		} finally {
+			conn.setAutoCommit(true);
 			if((rs != null) && !rs.isClosed())
 				rs.close();
 			if((stmt != null) && !stmt.isClosed())
