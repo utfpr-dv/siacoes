@@ -13,6 +13,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
@@ -28,6 +29,7 @@ import br.edu.utfpr.dv.siacoes.components.StudentComboBox;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionFooterReport;
 import br.edu.utfpr.dv.siacoes.model.FinalSubmission;
+import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
 import br.edu.utfpr.dv.siacoes.window.EditActivitySubmissionWindow;
@@ -38,6 +40,7 @@ public class ActivitySubmissionView extends ListView {
 	
 	private final OptionGroup optionFilterType;
 	private final StudentComboBox comboStudent;
+	private final NativeSelect comboFeedback;
 	private final Button buttonFinalReport;
 	private final Button buttonFinalSubmission;
 	
@@ -55,6 +58,15 @@ public class ActivitySubmissionView extends ListView {
 		this.optionFilterType.select(this.optionFilterType.getItemIds().iterator().next());
 		
 		this.comboStudent = new StudentComboBox("Acadêmico");
+		
+		this.comboFeedback = new NativeSelect("Parecer");
+		this.comboFeedback.setWidth("200px");
+		this.comboFeedback.setNullSelectionAllowed(false);
+		this.comboFeedback.addItem(ActivityFeedback.NONE);
+		this.comboFeedback.addItem(ActivityFeedback.APPROVED);
+		this.comboFeedback.addItem(ActivityFeedback.DISAPPROVED);
+		this.comboFeedback.addItem("(Todos)");
+		this.comboFeedback.select("(Todos)");
 		
 		this.buttonFinalReport = new Button("Relatório Final");
 		
@@ -99,10 +111,9 @@ public class ActivitySubmissionView extends ListView {
 			
 			this.panelLabel.setContent(layout);
 			
-			this.addFilterField(new HorizontalLayout(this.optionFilterType, this.comboStudent));
+			this.addFilterField(new HorizontalLayout(this.optionFilterType, this.comboStudent, this.comboFeedback));
 		}else{
 			boolean allowAdd = false;
-			this.setFiltersVisible(false);
 			
 			try {
 				allowAdd = !new FinalSubmissionBO().studentHasSubmission(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment());
@@ -116,6 +127,8 @@ public class ActivitySubmissionView extends ListView {
 			if(!allowAdd) {
 				this.setEditCaption("Visualizar");
 			}
+			
+			this.addFilterField(this.comboFeedback);
 		}
 		
 		this.addActionButton(this.buttonFinalReport);
@@ -159,6 +172,11 @@ public class ActivitySubmissionView extends ListView {
 			List<ActivitySubmission> list = new ArrayList<ActivitySubmission>();
 			ByteArrayOutputStream report = new ByteArrayOutputStream();
 			List<ActivitySubmissionFooterReport> scores = new ArrayList<ActivitySubmissionFooterReport>();
+			int feedback = -1;
+			
+			if(!this.comboFeedback.getValue().equals("(Todos)")) {
+				feedback = ((ActivityFeedback)this.comboFeedback.getValue()).getValue();
+			}
 			
 			if(Session.isUserManager(this.getModule()) || Session.isUserDepartmentManager()){
 				if(this.optionFilterType.isSelected(this.optionFilterType.getItemIds().iterator().next())){
@@ -168,14 +186,30 @@ public class ActivitySubmissionView extends ListView {
 					this.panelScore.setVisible(false);
 					this.panelLabel.setVisible(true);
 				}else{
-					list = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), Session.getUser().getDepartment().getIdDepartment());
-					report = bo.getReport(list, this.comboStudent.getStudent(), Session.getUser().getDepartment().getIdDepartment());
-					scores = bo.getFooterReport(list);
+					list = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), feedback);
+					List<ActivitySubmission> listReport;
+					
+					if(feedback == ActivityFeedback.APPROVED.getValue()) {
+						listReport = list;
+					} else {
+						listReport = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), ActivityFeedback.APPROVED.getValue());
+					}
+					
+					report = bo.getReport(listReport, this.comboStudent.getStudent(), Session.getUser().getDepartment().getIdDepartment());
+					scores = bo.getFooterReport(listReport);
 				}
 			}else{
-				list = bo.listByStudent(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment());
-				report = bo.getReport(list, Session.getUser(), Session.getUser().getDepartment().getIdDepartment());
-				scores = bo.getFooterReport(list);
+				list = bo.listByStudent(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), feedback);
+				List<ActivitySubmission> listReport;
+				
+				if(feedback == ActivityFeedback.APPROVED.getValue()) {
+					listReport = list;
+				} else {
+					listReport = bo.listByStudent(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), ActivityFeedback.APPROVED.getValue());
+				}
+				
+				report = bo.getReport(listReport, Session.getUser(), Session.getUser().getDepartment().getIdDepartment());
+				scores = bo.getFooterReport(listReport);
 			}
 			
 			this.buildPanelScores(scores);

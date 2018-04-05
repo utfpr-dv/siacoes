@@ -325,8 +325,7 @@ public class ProposalBO {
 		Proposal p = this.findCurrentProposal(idUser, idDepartment, semester, year);
 		
 		if(p == null){
-			DeadlineBO dbo = new DeadlineBO();
-			Deadline d = dbo.findBySemester(idDepartment, semester, year);
+			Deadline d = new DeadlineBO().findBySemester(idDepartment, semester, year);
 			
 			if((d == null) || DateUtils.getToday().getTime().after(d.getProposalDeadline())) {
 				if(onlyRegister) {
@@ -334,6 +333,11 @@ public class ProposalBO {
 				} else {
 					throw new Exception("A submissão de propostas já foi encerrada.");	
 				}
+			}
+			
+			if(new ProjectBO().findApprovedProject(idUser, idDepartment, semester, year) != null) {
+				throw new Exception("Você já foi aprovado na disciplina de TCC 1 e não pode fazer " +
+						(onlyRegister ? "o registro de uma nova orientação." : "a submissão de uma nova proposta."));
 			}
 			
 			p = new Proposal(new UserBO().findById(idUser));

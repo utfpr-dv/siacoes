@@ -27,17 +27,21 @@ public class DocumentView extends ListView {
 	public static final String NAME = "documents";
 	
 	private final Button buttonDownload;
+	private final Button buttonDownloadAll;
 	private final Button buttonMoveUp;
 	private final Button buttonMoveDown;
 	
 	private Button.ClickListener listenerClickDownload;
+	private Button.ClickListener listenerClickDownloadAll;
     
     public DocumentView(){
     	super(SystemModule.GENERAL);
     	
     	this.setCaption("Regulamentos e Anexos");
 		
-    	this.buttonDownload = new Button("Download");
+    	this.buttonDownload = new Button("Baixar Arquivo");
+    	
+    	this.buttonDownloadAll = new Button("Baixar Todos");
     	
     	this.buttonMoveUp = new Button("Para Cima", new Button.ClickListener() {
             @Override
@@ -54,6 +58,7 @@ public class DocumentView extends ListView {
         });
     	
     	this.addActionButton(this.buttonDownload);
+    	this.addActionButton(this.buttonDownloadAll);
     	
     	//if(Session.isUserStudent()){
     		this.setFiltersVisible(false);	
@@ -72,6 +77,7 @@ public class DocumentView extends ListView {
 		});
 		
 		this.prepareDownload();
+		this.prepareDownloadAll();
 		
 		try {
 			DocumentBO bo = new DocumentBO();
@@ -86,6 +92,26 @@ public class DocumentView extends ListView {
 			
 			Notification.show("Listar Documentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
+    }
+    
+    private void prepareDownloadAll() {
+    	this.buttonDownloadAll.removeClickListener(this.listenerClickDownloadAll);
+    	new ExtensionUtils().removeAllExtensions(this.buttonDownloadAll);
+    	
+    	try {
+    		new ExtensionUtils().extendToDownload(this.getModule().getShortDescription() + ".zip", new DocumentBO().downloadAllDocuments(Session.getUser().getDepartment().getIdDepartment(), this.getModule()), this.buttonDownloadAll);
+    	} catch (Exception e) {
+    		this.listenerClickDownloadAll = new Button.ClickListener() {
+	            @Override
+	            public void buttonClick(ClickEvent event) {
+	            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+	            	
+	            	Notification.show("Download dos Arquivos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+	            }
+	        };
+	        
+    		this.buttonDownloadAll.addClickListener(this.listenerClickDownloadAll);
+    	}
     }
     
     private void prepareDownload(){

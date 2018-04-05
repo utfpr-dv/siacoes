@@ -1,9 +1,12 @@
 ﻿package br.edu.utfpr.dv.siacoes.bo;
 
+import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import br.edu.utfpr.dv.siacoes.dao.DocumentDAO;
 import br.edu.utfpr.dv.siacoes.model.Document;
@@ -112,6 +115,25 @@ public class DocumentBO {
 	
 	public void moveDown(Document document) throws Exception{
 		this.moveDown(document.getIdDocument());
+	}
+	
+	public byte[] downloadAllDocuments(int idDepartment, SystemModule module) throws Exception{
+		List<Document> list = this.listByModule(idDepartment, module);
+		ByteArrayOutputStream ret = new ByteArrayOutputStream();
+		ZipOutputStream out = new ZipOutputStream(ret);
+		
+		for(Document doc : list){
+			ZipEntry e = new ZipEntry(doc.getName() + doc.getType().getExtension());
+			out.putNextEntry(e);
+			
+			out.write(doc.getFile(), 0, doc.getFile().length);
+			out.closeEntry();
+		}
+		
+		out.flush();
+		out.close();
+		
+		return ret.toByteArray();
 	}
 	
 }

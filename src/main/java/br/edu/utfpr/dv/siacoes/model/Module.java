@@ -41,6 +41,19 @@ public class Module {
 			}
 		}
 		
+		public String getShortDescription(){
+			switch(this){
+				case SIGAC:
+					return "Atividades Complementares";
+				case SIGES:
+					return "Estágios";
+				case SIGET:
+					return "TCC";
+				default:
+					return "Geral";
+			}
+		}
+		
 	}
 
 }

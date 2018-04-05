@@ -86,7 +86,7 @@ public class ActivitySubmissionDAO {
 		}
 	}
 	
-	public List<ActivitySubmission> listByStudent(int idStudent, int idDepartment) throws SQLException{
+	public List<ActivitySubmission> listByStudent(int idStudent, int idDepartment, int feedback) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -103,7 +103,8 @@ public class ActivitySubmissionDAO {
 					"INNER JOIN activitygroup ON activitygroup.idActivityGroup=activity.idActivityGroup " +
 					"INNER JOIN activityunit ON activityunit.idActivityUnit=activity.idActivityUnit " +
 					"LEFT JOIN \"user\" feedbackUser ON feedbackUser.idUser=activitysubmission.idfeedbackuser " +
-					"WHERE activitysubmission.idDepartment=" + String.valueOf(idDepartment) + " AND activitysubmission.idStudent=" + String.valueOf(idStudent) + 
+					"WHERE activitysubmission.idDepartment=" + String.valueOf(idDepartment) + " AND activitysubmission.idStudent=" + String.valueOf(idStudent) +
+					((feedback < 0) ? "" : " AND activitysubmission.feedback=" + String.valueOf(feedback)) +
 					" ORDER BY activitysubmission.year DESC, activitysubmission.semester DESC");
 			
 			List<ActivitySubmission> list = new ArrayList<ActivitySubmission>();
