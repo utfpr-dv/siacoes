@@ -1,12 +1,7 @@
 ﻿package br.edu.utfpr.dv.siacoes.window;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -22,11 +17,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Upload.Receiver;
-import com.vaadin.ui.Upload.SucceededEvent;
-import com.vaadin.ui.Upload.SucceededListener;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
@@ -34,10 +25,13 @@ import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.CompanyComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
+import br.edu.utfpr.dv.siacoes.components.FileUploader;
+import br.edu.utfpr.dv.siacoes.components.FileUploaderListener;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.StringUtils;
@@ -65,7 +59,7 @@ public class EditUserWindow extends EditWindow {
 	private final TextField textStudentCode;
 	private final SemesterComboBox comboSemester;
 	private final YearField textYear;
-	private final Upload uploadPhoto;
+	private final FileUploader uploadPhoto;
 	private final Image imagePhoto;
 	private final CheckBox checkStudent;
 	private final CheckBox checkProfessor;
@@ -82,13 +76,13 @@ public class EditUserWindow extends EditWindow {
 	private final VerticalLayout tabProfile;
 	private final VerticalLayout tabStudent;
 
-	public EditUserWindow(User user, ListView parentView){
+	public EditUserWindow(User u, ListView parentView){
 		super("Editar Usuário", parentView);
 		
-		if(user == null){
+		if(u == null){
 			this.user = new User();
 		}else{
-			this.user = user;
+			this.user = u;
 		}
 		
 		this.textLogin = new TextField("Login");
@@ -168,11 +162,20 @@ public class EditUserWindow extends EditWindow {
 		this.textYear = new YearField();
 		this.textYear.setCaption("Ano de Ingresso");
 		
-		DocumentUploader listener = new DocumentUploader();
-		this.uploadPhoto = new Upload("Enviar Foto", listener);
-		this.uploadPhoto.addSucceededListener(listener);
-		this.uploadPhoto.setButtonCaption("Enviar");
-		this.uploadPhoto.setImmediate(true);
+		this.uploadPhoto = new FileUploader("Enviar Foto");
+		this.uploadPhoto.getAcceptedDocumentTypes().add(DocumentType.JPEG);
+		this.uploadPhoto.getAcceptedDocumentTypes().add(DocumentType.PNG);
+		this.uploadPhoto.setMaxBytesLength(300 * 1024);
+		this.uploadPhoto.setFileUploadListener(new FileUploaderListener() {
+			@Override
+			public void uploadSucceeded() {
+				if(uploadPhoto.getFileUploadListener() != null) {
+					user.setPhoto(uploadPhoto.getUploadedFile());
+				}
+				
+				loadPhoto();
+			}
+		});
 		
 		this.imagePhoto = new Image();
 		this.imagePhoto.setStyleName("ImagePhoto");
@@ -392,6 +395,10 @@ public class EditUserWindow extends EditWindow {
 				this.user.setDepartment(this.comboDepartment.getDepartment());	
 			}
 			
+			if(this.uploadPhoto.getFileUploadListener() != null) {
+				this.user.setPhoto(this.uploadPhoto.getUploadedFile());
+			}
+			
 			this.user.setEmail(this.textEmail.getValue());
 			this.user.setStudentCode(this.textStudentCode.getValue());
 			this.user.setRegisterSemester(this.comboSemester.getSemester());
@@ -453,49 +460,6 @@ public class EditUserWindow extends EditWindow {
 			resource.setCacheTime(0);
 		    this.imagePhoto.setSource(resource);
 		}
-	}
-
-	@SuppressWarnings("serial")
-	class DocumentUploader implements Receiver, SucceededListener {
-		private File tempFile;
-		
-		@Override
-		public OutputStream receiveUpload(String filename, String mimeType) {
-			try {
-				if(!mimeType.equals("image/jpeg") && !mimeType.equals("image/png")){
-					throw new Exception("O arquivo enviado é inválido. São aceitos apenas arquivos JPG e PNG.");
-				}
-				
-	            tempFile = File.createTempFile(filename, "tmp");
-	            tempFile.deleteOnExit();
-	            return new FileOutputStream(tempFile);
-	        } catch (Exception e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	        }
-
-	        return null;
-		}
-		
-		@Override
-		public void uploadSucceeded(SucceededEvent event) {
-			try {
-	            FileInputStream input = new FileInputStream(tempFile);
-	            byte[] buffer = new byte[input.available()];
-	            
-	            input.read(buffer);
-	            
-	            user.setPhoto(buffer);
-	            
-	            loadPhoto();
-	        } catch (IOException e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	        }
-		}
-
 	}
 	
 }

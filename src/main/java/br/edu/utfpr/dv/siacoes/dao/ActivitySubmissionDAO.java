@@ -255,9 +255,9 @@ public class ActivitySubmissionDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO activitysubmission(idStudent, idDepartment, idActivity, semester, year, submissionDate, file, fileType, amount, feedback, feedbackDate, validatedAmount, idfeedbackuser, comments, description) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO activitysubmission(idStudent, idDepartment, idActivity, semester, year, submissionDate, file, fileType, amount, feedback, feedbackDate, validatedAmount, idfeedbackuser, comments, description, feedbackreason) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE activitysubmission SET idStudent=?, idDepartment=?, idActivity=?, semester=?, year=?, submissionDate=?, file=?, fileType=?, amount=?, feedback=?, feedbackDate=?, validatedAmount=?, idfeedbackuser=?, comments=?, description=? WHERE idActivitySubmission=?");
+				stmt = conn.prepareStatement("UPDATE activitysubmission SET idStudent=?, idDepartment=?, idActivity=?, semester=?, year=?, submissionDate=?, file=?, fileType=?, amount=?, feedback=?, feedbackDate=?, validatedAmount=?, idfeedbackuser=?, comments=?, description=?, feedbackreason=? WHERE idActivitySubmission=?");
 			}
 	
 			stmt.setInt(1, submission.getStudent().getIdUser());
@@ -283,9 +283,10 @@ public class ActivitySubmissionDAO {
 			}
 			stmt.setString(14, submission.getComments());
 			stmt.setString(15, submission.getDescription());
+			stmt.setString(16, submission.getFeedbackReason());
 			
 			if(!insert){
-				stmt.setInt(16, submission.getIdActivitySubmission());
+				stmt.setInt(17, submission.getIdActivitySubmission());
 			}
 			
 			stmt.execute();
@@ -332,6 +333,7 @@ public class ActivitySubmissionDAO {
 		submission.setFeedbackDate(rs.getDate("feedbackDate"));
 		submission.setValidatedAmount(rs.getDouble("validatedAmount"));
 		submission.setComments(rs.getString("comments"));
+		submission.setFeedbackReason(rs.getString("feedbackreason"));
 		submission.getActivity().setDescription(rs.getString("activityDescription"));
 		submission.getActivity().getGroup().setIdActivityGroup(rs.getInt("idactivitygroup"));
 		submission.getActivity().getGroup().setSequence(rs.getInt("groupSequence"));

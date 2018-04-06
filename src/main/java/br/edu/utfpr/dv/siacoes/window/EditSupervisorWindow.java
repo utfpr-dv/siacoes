@@ -99,13 +99,13 @@ public class EditSupervisorWindow extends EditWindow {
 		this.textCurrentSupervisor.setWidth("390px");
 		this.textCurrentSupervisor.setEnabled(false);
 		
-		this.textCurrentCosupervisor = new TextField("Co-orientador Atual");
+		this.textCurrentCosupervisor = new TextField("Coorientador Atual");
 		this.textCurrentCosupervisor.setWidth("390px");
 		this.textCurrentCosupervisor.setEnabled(false);
 		
 		this.comboNewSupervisor = new SupervisorComboBox("Novo Orientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getSupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
 		
-		this.comboNewCosupervisor = new SupervisorComboBox("Novo Co-orientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getCosupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
+		this.comboNewCosupervisor = new SupervisorComboBox("Novo Coorientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getCosupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
 		this.comboNewCosupervisor.setNullSelectionAllowed(true);
 		
 		this.textComments = new TextArea("Motivo/Observações");

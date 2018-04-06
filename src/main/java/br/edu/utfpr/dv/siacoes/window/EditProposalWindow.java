@@ -1,29 +1,19 @@
 ﻿package br.edu.utfpr.dv.siacoes.window;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.vaadin.dialogs.ConfirmDialog;
 
-import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.Upload;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Upload.Receiver;
-import com.vaadin.ui.Upload.SucceededEvent;
-import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.VerticalLayout;
 
 import br.edu.utfpr.dv.siacoes.Session;
@@ -35,6 +25,8 @@ import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
+import br.edu.utfpr.dv.siacoes.components.FileUploader;
+import br.edu.utfpr.dv.siacoes.components.FileUploaderListener;
 import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
@@ -64,8 +56,7 @@ public class EditProposalWindow extends EditWindow {
 	private final SemesterComboBox comboSemester;
 	private final YearField textYear;
 	private final DateField textSubmissionDate;
-	private final Upload uploadFile;
-	private final Image imageFileUploaded;
+	private final FileUploader uploadFile;
 	private final HorizontalLayout layoutAppraisers;
 	private Grid gridAppraisers;
 	private final Button buttonAddAppraiser;
@@ -74,7 +65,7 @@ public class EditProposalWindow extends EditWindow {
 	private final Button buttonDownloadProposal;
 	private final TabSheet tab;
 	
-	public EditProposalWindow(Proposal proposal, ListView parentView, boolean submitProposal){
+	public EditProposalWindow(Proposal p, ListView parentView, boolean submitProposal){
 		super("Editar Proposta", parentView);
 		
 		this.submitProposal = submitProposal;
@@ -83,11 +74,11 @@ public class EditProposalWindow extends EditWindow {
 			this.setCaption("Registrar Orientação");
 		}
 		
-		if(proposal == null){
+		if(p == null){
 			this.proposal = new Proposal();
 			this.proposal.setDepartment(Session.getUser().getDepartment());
 		}else{
-			this.proposal = proposal;
+			this.proposal = p;
 		}
 		
 		this.comboCampus = new CampusComboBox();
@@ -110,7 +101,7 @@ public class EditProposalWindow extends EditWindow {
 		
 		this.comboSupervisor = new SupervisorComboBox("Orientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getSupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
 		
-		this.comboCosupervisor = new SupervisorComboBox("Co-orientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getCosupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
+		this.comboCosupervisor = new SupervisorComboBox("Coorientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getCosupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
 		this.comboCosupervisor.setNullSelectionAllowed(true);
 		
 		this.comboSemester = new SemesterComboBox();
@@ -123,14 +114,20 @@ public class EditProposalWindow extends EditWindow {
 		this.textSubmissionDate.setEnabled(false);
 		this.textSubmissionDate.setDateFormat("dd/MM/yyyy");
 		
-		DocumentUploader listener = new DocumentUploader();
-		this.uploadFile = new Upload("(Formato PDF, Tam. Máx. 5 MB)", listener);
-		this.uploadFile.addSucceededListener(listener);
-		this.uploadFile.setButtonCaption("Enviar Arquivo");
-		this.uploadFile.setImmediate(true);
-		
-		this.imageFileUploaded = new Image("", new ThemeResource("images/ok.png"));
-		this.imageFileUploaded.setVisible(false);
+		this.uploadFile = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
+		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);
+		this.uploadFile.setMaxBytesLength(6 * 1024 * 1024);
+		this.uploadFile.setFileUploadListener(new FileUploaderListener() {
+			@Override
+			public void uploadSucceeded() {
+				if(uploadFile.getUploadedFile() != null) {
+					proposal.setFile(uploadFile.getUploadedFile());
+					proposal.setFileType(uploadFile.getFileType());
+				}
+				
+				buttonDownloadProposal.setVisible(true);
+			}
+		});
 		
 		VerticalLayout tab1 = new VerticalLayout();
 		tab1.setSpacing(true);
@@ -146,7 +143,7 @@ public class EditProposalWindow extends EditWindow {
 		
 		HorizontalLayout h4;
 		if(this.submitProposal && Session.isUserStudent()){
-			h4 = new HorizontalLayout(this.uploadFile, this.imageFileUploaded, this.comboSemester, this.textYear, this.textSubmissionDate);
+			h4 = new HorizontalLayout(this.uploadFile, this.comboSemester, this.textYear, this.textSubmissionDate);
 		}else{
 			this.uploadFile.setVisible(false);
 			h4 = new HorizontalLayout(this.comboSemester, this.textYear, this.textSubmissionDate);
@@ -302,7 +299,12 @@ public class EditProposalWindow extends EditWindow {
 	
 	@Override
 	public void save() {
-		if(Session.isUserStudent()){
+		if(Session.isUserStudent()) {
+			if(this.uploadFile.getUploadedFile() != null) {
+				this.proposal.setFile(this.uploadFile.getUploadedFile());
+				this.proposal.setFileType(this.uploadFile.getFileType());
+			}
+			
 			if(this.submitProposal && (this.proposal.getFile() == null)){
 				if(this.proposal.getFile() == null){
 					Notification.show("Submeter Proposta", "É necessário enviar o arquivo da proposta.", Notification.Type.ERROR_MESSAGE);
@@ -437,56 +439,4 @@ public class EditProposalWindow extends EditWindow {
 		}
 	}
 	
-	@SuppressWarnings("serial")
-	class DocumentUploader implements Receiver, SucceededListener {
-		private File tempFile;
-		
-		@Override
-		public OutputStream receiveUpload(String filename, String mimeType) {
-			try {
-				imageFileUploaded.setVisible(false);
-				
-				if(DocumentType.fromMimeType(mimeType) != DocumentType.PDF){
-					throw new Exception("O arquivo precisa estar no formato PDF.");
-				}
-				
-				proposal.setFileType(DocumentType.fromMimeType(mimeType));
-	            tempFile = File.createTempFile(filename, "tmp");
-	            tempFile.deleteOnExit();
-	            return new FileOutputStream(tempFile);
-	        } catch (Exception e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	        }
-
-	        return null;
-		}
-		
-		@Override
-		public void uploadSucceeded(SucceededEvent event) {
-			try {
-	            FileInputStream input = new FileInputStream(tempFile);
-	            
-	            if(input.available() > (10 * 1024 * 1024)){
-					throw new Exception("O arquivo precisa ter um tamanho máximo de 5 MB.");
-	            }
-	            
-	            byte[] buffer = new byte[input.available()];
-	            
-	            input.read(buffer);
-	            
-	            proposal.setFile(buffer);
-	            
-	            imageFileUploaded.setVisible(true);
-	            
-	            Notification.show("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.", Notification.Type.HUMANIZED_MESSAGE);
-	        } catch (Exception e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	        }
-		}
-	}
-
 }

@@ -167,6 +167,10 @@ public abstract class ListView extends BasicView {
     	this.layoutGrid.setExpandRatio(v1, 1);
     	
     	this.labelGridRecords.setCaption("Listando " + String.valueOf(this.gridRowCount) + " registro(s).");
+    	
+    	if(this.gridRowCount <= 0) {
+    		Notification.show("Listar Registros", "Não há registros para serem exibidos.", Notification.Type.WARNING_MESSAGE);
+    	}
     }
     
     public void addFilterField(Component c){

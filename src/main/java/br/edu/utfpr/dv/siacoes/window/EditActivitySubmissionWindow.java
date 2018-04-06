@@ -1,11 +1,7 @@
 ﻿package br.edu.utfpr.dv.siacoes.window;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -14,21 +10,15 @@ import java.util.logging.Logger;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.StreamResource;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Upload;
-import com.vaadin.ui.Upload.Receiver;
-import com.vaadin.ui.Upload.SucceededEvent;
-import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.VerticalLayout;
 
 import br.edu.utfpr.dv.siacoes.Session;
@@ -39,6 +29,8 @@ import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.bo.FinalSubmissionBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
+import br.edu.utfpr.dv.siacoes.components.FileUploader;
+import br.edu.utfpr.dv.siacoes.components.FileUploaderListener;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Activity;
@@ -63,26 +55,26 @@ public class EditActivitySubmissionWindow extends EditWindow {
 	private final TextField textAmount;
 	private final NativeSelect comboGroup;
 	private final NativeSelect comboActivity;
-	private final Upload uploadFile;
-	private final Image imageFileUploaded;
+	private final FileUploader uploadFile;
 	private final NativeSelect comboFeedback;
 	private final DateField textFeedbackDate;
 	private final TextField textValidatedAmount;
 	private final TextArea textComments;
 	private final TextField textFeedbackUser;
 	private final TextField textDescription;
+	private final TextField textFeedbackReason;
 	private final TabSheet tabContainer;
 	private final VerticalLayout tab3;
 	
-	public EditActivitySubmissionWindow(ActivitySubmission submission, ListView parentView){
+	public EditActivitySubmissionWindow(ActivitySubmission s, ListView parentView){
 		super("Editar Submissão", parentView);
 		
-		if(submission == null){
+		if(s == null){
 			this.submission = new ActivitySubmission();
 			this.submission.setStudent(Session.getUser());
 			this.submission.setDepartment(Session.getUser().getDepartment());
 		}else{
-			this.submission = submission;
+			this.submission = s;
 		}
 		
 		this.comboCampus = new CampusComboBox();
@@ -125,14 +117,20 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		this.comboActivity.setWidth("810px");
 		this.comboActivity.setNullSelectionAllowed(false);
 		
-		DocumentUploader listener = new DocumentUploader();
-		this.uploadFile = new Upload("(Formato PDF, Tam. Máx. 200 KB)", listener);
-		this.uploadFile.addSucceededListener(listener);
-		this.uploadFile.setButtonCaption("Enviar Arquivo");
-		this.uploadFile.setImmediate(true);
-		
-		this.imageFileUploaded = new Image("", new ThemeResource("images/ok.png"));
-		this.imageFileUploaded.setVisible(false);
+		this.uploadFile = new FileUploader("(Formato PDF, Tam. Máx. 200 KB)");
+		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);
+		this.uploadFile.setMaxBytesLength(300 * 1024);
+		this.uploadFile.setFileUploadListener(new FileUploaderListener() {
+			@Override
+			public void uploadSucceeded() {
+				if(uploadFile.getUploadedFile() != null) {
+					submission.setFile(uploadFile.getUploadedFile());
+					submission.setFileType(uploadFile.getFileType());
+				}
+				
+				loadCertificate();
+			}
+		});
 		
 		this.comboFeedback = new NativeSelect("Parecer");
 		this.comboFeedback.setWidth("200px");
@@ -152,7 +150,14 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		
 		this.textFeedbackUser = new TextField("Validado por");
 		this.textFeedbackUser.setEnabled(false);
-		this.textFeedbackUser.setWidth("250px");
+		this.textFeedbackUser.setWidth("810px");
+		
+		this.textFeedbackReason = new TextField("Motivo da recusa da atividade");
+		this.textFeedbackReason.setWidth("810px");
+
+		this.textComments = new TextArea();
+		this.textComments.setWidth("810px");
+		this.textComments.setHeight("300px");
 		
 		if(Session.isUserDepartmentManager() && !Session.isUserManager(SystemModule.SIGAC)){
 			this.setSaveButtonEnabled(false);
@@ -162,14 +167,17 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			this.textAmount.setEnabled(false);
 			this.comboSemester.setEnabled(false);
 			this.textYear.setEnabled(false);
+			this.textComments.setEnabled(false);
 		}else if(Session.isUserManager(SystemModule.SIGAC)){
 			this.uploadFile.setVisible(false);
 			this.textAmount.setEnabled(false);
 			this.comboSemester.setEnabled(false);
 			this.textYear.setEnabled(false);
+			this.textComments.setEnabled(false);
 		}else{
 			this.comboFeedback.setEnabled(false);
 			this.textValidatedAmount.setEnabled(false);
+			this.textFeedbackReason.setEnabled(false);
 			
 			if(this.submission.getFeedback() != ActivityFeedback.NONE){
 				this.setSaveButtonEnabled(false);
@@ -183,30 +191,29 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		HorizontalLayout h4 = new HorizontalLayout(this.textStudent, this.textDescription);
 		h4.setSpacing(true);
 		
-		HorizontalLayout h2 = new HorizontalLayout(this.comboSemester, this.textYear, this.textAmount, this.textSubmissionDate);
-		if(!Session.isUserManager(SystemModule.SIGAC)){
-			h2.addComponent(this.uploadFile);
-			h2.addComponent(this.imageFileUploaded);
-		}
+		HorizontalLayout h2 = new HorizontalLayout(this.comboSemester, this.textYear, this.textAmount, this.textSubmissionDate, this.uploadFile);
 		h2.setSpacing(true);
 		
-		HorizontalLayout h3 = new HorizontalLayout(this.comboFeedback, this.textValidatedAmount, this.textFeedbackDate, this.textFeedbackUser);
-		h3.setSpacing(true);
-		
-		VerticalLayout tab1 = new VerticalLayout(h1, h4, this.comboGroup, this.comboActivity, h2, h3);
+		VerticalLayout tab1 = new VerticalLayout(h1, h4, this.comboGroup, this.comboActivity, h2);
 		tab1.setSpacing(true);
 		
-		this.textComments = new TextArea();
-		this.textComments.setWidth("810px");
-		this.textComments.setHeight("370px");
-		
 		this.tab3 = new VerticalLayout();
-		this.tab3.setHeight("370px");
+		this.tab3.setHeight("300px");
+		
+		HorizontalLayout h3 = new HorizontalLayout(this.comboFeedback, this.textValidatedAmount, this.textFeedbackDate);
+		h3.setSpacing(true);
+		
+		VerticalLayout v1 = new VerticalLayout(h3, this.textFeedbackUser, this.textFeedbackReason);
+		v1.setSpacing(true);
+		
+		VerticalLayout tabFeedback = new VerticalLayout(v1);
+		tabFeedback.setHeight("300px");
 		
 		this.tabContainer = new TabSheet();
 		this.tabContainer.setWidth("820px");
 		this.tabContainer.addTab(tab1, "Atividade");
 		this.tabContainer.addTab(this.textComments, "Observações");
+		this.tabContainer.addTab(tabFeedback, "Parecer");
 		this.tabContainer.addTab(this.tab3, "Comprovante");
 		
 		this.addField(this.tabContainer);
@@ -292,8 +299,13 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		this.textFeedbackDate.setValue(this.submission.getFeedbackDate());
 		this.textFeedbackUser.setValue(this.submission.getFeedbackUser().getName());
 		this.textComments.setValue(this.submission.getComments());
+		this.textFeedbackReason.setValue(this.submission.getFeedbackReason());
 		
 		boolean allowEdit = false;
+		
+		if(this.submission.getIdActivitySubmission() == 0) {
+			this.tabContainer.getTab(2).setVisible(false);
+		}
 		
 		try {
 			allowEdit = !new FinalSubmissionBO().studentHasSubmission(this.submission.getStudent().getIdUser(), this.submission.getDepartment().getIdDepartment());
@@ -305,7 +317,12 @@ public class EditActivitySubmissionWindow extends EditWindow {
 	}
 	
 	private void loadCertificate(){
-		this.tabContainer.getTab(2).setVisible(false);
+		this.tabContainer.getTab(3).setVisible(false);
+		
+		if(this.uploadFile.getUploadedFile() != null) {
+			this.submission.setFile(this.uploadFile.getUploadedFile());
+			this.submission.setFileType(this.uploadFile.getFileType());
+		}
 		
 		if(submission.getFile() != null){
 			this.tab3.removeAllComponents();
@@ -325,7 +342,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			e.setSizeFull();
 			
 			this.tab3.addComponent(e);
-			this.tabContainer.getTab(2).setVisible(true);
+			this.tabContainer.getTab(3).setVisible(true);
 		}
 	}
 
@@ -342,6 +359,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 				this.submission.setFeedback((ActivityFeedback)this.comboFeedback.getValue());
 				this.submission.setFeedbackDate(this.textFeedbackDate.getValue());
 				this.submission.setValidatedAmount(Double.parseDouble(this.textValidatedAmount.getValue().replace(",", ".")));
+				this.submission.setFeedbackReason(this.textFeedbackReason.getValue());
 				
 				if(this.submission.getFeedbackDate() == null){
 					this.submission.setFeedbackDate(new Date());
@@ -359,6 +377,11 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			this.submission.getActivity().setGroup((ActivityGroup)this.comboGroup.getValue());
 			this.submission.setComments(this.textComments.getValue());
 			
+			if(this.uploadFile.getUploadedFile() != null) {
+				this.submission.setFile(this.uploadFile.getUploadedFile());
+				this.submission.setFileType(this.uploadFile.getFileType());
+			}
+			
 			bo.save(this.submission);
 			
 			Notification.show("Salvar Submissão", "Submissão salva com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
@@ -369,60 +392,6 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			Notification.show("Salvar Submissão", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-		}
-	}
-
-	@SuppressWarnings("serial")
-	class DocumentUploader implements Receiver, SucceededListener {
-		private File tempFile;
-		
-		@Override
-		public OutputStream receiveUpload(String filename, String mimeType) {
-			try {
-				imageFileUploaded.setVisible(false);
-				
-				if(DocumentType.fromMimeType(mimeType) != DocumentType.PDF){
-					throw new Exception("O arquivo precisa estar no formato PDF.");
-				}
-
-				submission.setFileType(DocumentType.fromMimeType(mimeType));
-	            tempFile = File.createTempFile(filename, "tmp");
-	            tempFile.deleteOnExit();
-	            return new FileOutputStream(tempFile);
-	        } catch (Exception e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	        }
-
-	        return null;
-		}
-		
-		@Override
-		public void uploadSucceeded(SucceededEvent event) {
-			try {
-	            FileInputStream input = new FileInputStream(tempFile);
-	            
-	            if(input.available() > (300 * 1024)){
-					throw new Exception("O arquivo precisa ter um tamanho máximo de 200 KB.");
-	            }
-	            
-	            byte[] buffer = new byte[input.available()];
-	            
-	            input.read(buffer);
-	            
-	            submission.setFile(buffer);
-	            
-	            imageFileUploaded.setVisible(true);
-	            
-	            loadCertificate();
-	            
-	            Notification.show("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.", Notification.Type.HUMANIZED_MESSAGE);
-	        } catch (Exception e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	        }
 		}
 	}
 

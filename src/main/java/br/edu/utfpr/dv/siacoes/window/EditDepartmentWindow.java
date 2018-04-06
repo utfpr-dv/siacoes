@@ -1,12 +1,7 @@
 ﻿package br.edu.utfpr.dv.siacoes.window;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,14 +12,13 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Upload;
-import com.vaadin.ui.Upload.Receiver;
-import com.vaadin.ui.Upload.SucceededEvent;
-import com.vaadin.ui.Upload.SucceededListener;
 
 import br.edu.utfpr.dv.siacoes.bo.DepartmentBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
+import br.edu.utfpr.dv.siacoes.components.FileUploader;
+import br.edu.utfpr.dv.siacoes.components.FileUploaderListener;
 import br.edu.utfpr.dv.siacoes.model.Department;
+import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
@@ -36,18 +30,18 @@ public class EditDepartmentWindow extends EditWindow {
 	private final TextField textName;
 	private final TextField textFullName;
 	private final CheckBox checkActive;
-	private final Upload uploadLogo;
+	private final FileUploader uploadLogo;
 	private final Image imageLogo;
 	private final TextField textSite;
 	private final TextField textInitials;
 
-	public EditDepartmentWindow(Department department, ListView parentView){
+	public EditDepartmentWindow(Department d, ListView parentView){
 		super("Editar Departamento", parentView);
 		
-		if(department == null){
+		if(d == null){
 			this.department = new Department();
 		}else{
-			this.department = department;
+			this.department = d;
 		}
 		
 		this.comboCampus = new CampusComboBox();
@@ -71,11 +65,20 @@ public class EditDepartmentWindow extends EditWindow {
 		
 		this.checkActive = new CheckBox("Ativo");
 		
-		DocumentUploader listener = new DocumentUploader();
-		this.uploadLogo = new Upload("Enviar Logotipo", listener);
-		this.uploadLogo.addSucceededListener(listener);
-		this.uploadLogo.setButtonCaption("Enviar");
-		this.uploadLogo.setImmediate(true);
+		this.uploadLogo = new FileUploader("Enviar Logotipo");
+		this.uploadLogo.getAcceptedDocumentTypes().add(DocumentType.JPEG);
+		this.uploadLogo.getAcceptedDocumentTypes().add(DocumentType.PNG);
+		this.uploadLogo.setMaxBytesLength(300 * 1024);
+		this.uploadLogo.setFileUploadListener(new FileUploaderListener() {
+			@Override
+			public void uploadSucceeded() {
+				if(uploadLogo.getFileUploadListener() != null) {
+					department.setLogo(uploadLogo.getUploadedFile());
+				}
+				
+				loadLogo();
+			}
+		});
 		
 		this.imageLogo = new Image();
 		this.imageLogo.setStyleName("ImageLogo");
@@ -129,6 +132,10 @@ public class EditDepartmentWindow extends EditWindow {
 			this.department.setFullName(this.textFullName.getValue());
 			this.department.setInitials(this.textInitials.getValue());
 			
+			if(this.uploadLogo.getFileUploadListener() != null) {
+				this.department.setLogo(this.uploadLogo.getUploadedFile());
+			}
+			
 			bo.save(this.department);
 			
 			Notification.show("Salvar Departamento", "Departamento salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
@@ -142,46 +149,4 @@ public class EditDepartmentWindow extends EditWindow {
 		}
 	}
 	
-	@SuppressWarnings("serial")
-	class DocumentUploader implements Receiver, SucceededListener {
-		private File tempFile;
-		
-		@Override
-		public OutputStream receiveUpload(String filename, String mimeType) {
-			try {
-				if(!mimeType.equals("image/jpeg") && !mimeType.equals("image/png")){
-					throw new Exception("O arquivo enviado é inválido. São aceitos apenas arquivos JPG e PNG.");
-				}
-				
-	            tempFile = File.createTempFile(filename, "tmp");
-	            tempFile.deleteOnExit();
-	            return new FileOutputStream(tempFile);
-	        } catch (Exception e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	        }
-
-	        return null;
-		}
-		
-		@Override
-		public void uploadSucceeded(SucceededEvent event) {
-			try {
-	            FileInputStream input = new FileInputStream(tempFile);
-	            byte[] buffer = new byte[input.available()];
-	            
-	            input.read(buffer);
-	            
-	            department.setLogo(buffer);
-	            
-	            loadLogo();
-	        } catch (IOException e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	        }
-		}
-	}
-
 }

@@ -47,7 +47,7 @@ public class EditSigetWindow extends EditWindow {
 		this.comboSupervisorFilter.addItem(SupervisorFilter.INSTITUTION);
 		this.comboSupervisorFilter.addItem(SupervisorFilter.EVERYONE);
 		
-		this.comboCosupervisorFilter = new NativeSelect("Co-orientador deve pertencer ao");
+		this.comboCosupervisorFilter = new NativeSelect("Coorientador deve pertencer ao");
 		this.comboCosupervisorFilter.setWidth("400px");
 		this.comboCosupervisorFilter.setNullSelectionAllowed(false);
 		this.comboCosupervisorFilter.addItem(SupervisorFilter.DEPARTMENT);

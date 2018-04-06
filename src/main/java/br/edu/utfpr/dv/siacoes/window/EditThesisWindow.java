@@ -38,6 +38,8 @@ import br.edu.utfpr.dv.siacoes.bo.SupervisorChangeBO;
 import br.edu.utfpr.dv.siacoes.bo.ThesisBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
+import br.edu.utfpr.dv.siacoes.components.FileUploader;
+import br.edu.utfpr.dv.siacoes.components.FileUploaderListener;
 import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
@@ -71,19 +73,18 @@ public class EditThesisWindow extends EditWindow {
 	private final SemesterComboBox comboSemester;
 	private final YearField textYear;
 	private final DateField textSubmissionDate;
-	private final Upload uploadFile;
-	private final Image imageFileUploaded;
+	private final FileUploader uploadFile;
 	private final Button buttonDownloadFile;
 	private final TextArea textAbstract;
 	private final TabSheet tabData;
 	
-	public EditThesisWindow(Thesis thesis, ListView parentView){
+	public EditThesisWindow(Thesis t, ListView parentView){
 		super("Editar Monografia", parentView);
 		
-		if(thesis == null){
+		if(t == null){
 			this.thesis = new Thesis();
 		}else{
-			this.thesis = thesis;
+			this.thesis = t;
 		}
 		
 		this.tabData = new TabSheet();
@@ -110,7 +111,7 @@ public class EditThesisWindow extends EditWindow {
 		this.comboSupervisor = new SupervisorComboBox("Orientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getSupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
 		this.comboSupervisor.setEnabled(false);
 		
-		this.comboCosupervisor = new SupervisorComboBox("Co-orientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getCosupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
+		this.comboCosupervisor = new SupervisorComboBox("Coorientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getCosupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
 		this.comboCosupervisor.setNullSelectionAllowed(true);
 		this.comboCosupervisor.setEnabled(false);
 		
@@ -124,14 +125,20 @@ public class EditThesisWindow extends EditWindow {
 		this.textSubmissionDate.setEnabled(false);
 		this.textSubmissionDate.setDateFormat("dd/MM/yyyy");
 		
-		DocumentUploader listener = new DocumentUploader();
-		this.uploadFile = new Upload("(Formato PDF, Tam. Máx. 5 MB)", listener);
-		this.uploadFile.addSucceededListener(listener);
-		this.uploadFile.setButtonCaption("Enviar Arquivo");
-		this.uploadFile.setImmediate(true);
-		
-		this.imageFileUploaded = new Image("", new ThemeResource("images/ok.png"));
-		this.imageFileUploaded.setVisible(false);
+		this.uploadFile = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
+		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);
+		this.uploadFile.setMaxBytesLength(6 * 1024 * 1024);
+		this.uploadFile.setFileUploadListener(new FileUploaderListener() {
+			@Override
+			public void uploadSucceeded() {
+				if(uploadFile.getUploadedFile() != null) {
+					thesis.setFile(uploadFile.getUploadedFile());
+					thesis.setFileType(uploadFile.getFileType());
+				}
+				
+				buttonDownloadFile.setVisible(true);
+			}
+		});
 		
 		this.buttonDownloadFile = new Button("Download da Monografia", new Button.ClickListener() {
             @Override
@@ -153,7 +160,7 @@ public class EditThesisWindow extends EditWindow {
 		HorizontalLayout h3 = new HorizontalLayout(this.comboSupervisor, this.comboCosupervisor);
 		h3.setSpacing(true);
 		
-		HorizontalLayout h4 = new HorizontalLayout(this.uploadFile, this.imageFileUploaded, this.comboSemester, this.textYear, this.textSubmissionDate);
+		HorizontalLayout h4 = new HorizontalLayout(this.uploadFile, this.comboSemester, this.textYear, this.textSubmissionDate);
 		h4.setSpacing(true);
 		
 		v1.addComponent(h1);
@@ -276,6 +283,11 @@ public class EditThesisWindow extends EditWindow {
 			
 			if(Session.isUserStudent()){
 				this.thesis.setSubmissionDate(DateUtils.getToday().getTime());
+				
+				if(this.uploadFile.getUploadedFile() != null) {
+					this.thesis.setFile(this.uploadFile.getUploadedFile());
+					this.thesis.setFileType(this.uploadFile.getFileType());
+				}
 			}
 			
 			this.thesis.setTitle(this.textTitle.getValue());
@@ -400,57 +412,4 @@ public class EditThesisWindow extends EditWindow {
 		}
 	}
 	
-	@SuppressWarnings("serial")
-	class DocumentUploader implements Receiver, SucceededListener {
-		private File tempFile;
-		
-		@Override
-		public OutputStream receiveUpload(String filename, String mimeType) {
-			try {
-				imageFileUploaded.setVisible(false);
-				
-				if(DocumentType.fromMimeType(mimeType) != DocumentType.PDF){
-					throw new Exception("O arquivo precisa estar no formato PDF.");
-				}
-				
-				thesis.setFileType(DocumentType.fromMimeType(mimeType));
-	            tempFile = File.createTempFile(filename, "tmp");
-	            tempFile.deleteOnExit();
-	            return new FileOutputStream(tempFile);
-	        } catch (Exception e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	        }
-
-	        return null;
-		}
-		
-		@Override
-		public void uploadSucceeded(SucceededEvent event) {
-			try {
-	            FileInputStream input = new FileInputStream(tempFile);
-	            
-	            if(input.available() > (10 * 1024 * 1024)){
-					throw new Exception("O arquivo precisa ter um tamanho máximo de 5 MB.");
-	            }
-	            
-	            byte[] buffer = new byte[input.available()];
-	            
-	            input.read(buffer);
-	            
-	            thesis.setFile(buffer);
-	            
-	            imageFileUploaded.setVisible(true);
-	            buttonDownloadFile.setVisible(true);
-	            
-	            Notification.show("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.", Notification.Type.HUMANIZED_MESSAGE);
-	        } catch (Exception e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	        }
-		}
-	}
-
 }

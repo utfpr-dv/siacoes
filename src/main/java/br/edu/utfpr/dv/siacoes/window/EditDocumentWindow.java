@@ -1,31 +1,19 @@
 ﻿package br.edu.utfpr.dv.siacoes.window;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vaadin.server.ThemeResource;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Upload;
-import com.vaadin.ui.Upload.Receiver;
-import com.vaadin.ui.Upload.SucceededEvent;
-import com.vaadin.ui.Upload.SucceededListener;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.bo.DocumentBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
+import br.edu.utfpr.dv.siacoes.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.Document;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditDocumentWindow extends EditWindow {
@@ -35,8 +23,7 @@ public class EditDocumentWindow extends EditWindow {
 	private final CampusComboBox comboCampus;
 	private final DepartmentComboBox comboDepartment;
 	private final TextField textName;
-	private final Upload uploadFile;
-	private final Image imageFileUploaded;
+	private final FileUploader uploadFile;
 	
 	public EditDocumentWindow(Document document, ListView parentView){
 		super("Editar Documento", parentView);
@@ -58,19 +45,12 @@ public class EditDocumentWindow extends EditWindow {
 		this.textName.setWidth("400px");
 		this.textName.setMaxLength(100);
 		
-		DocumentUploader listener = new DocumentUploader();
-		this.uploadFile = new Upload("", listener);
-		this.uploadFile.addSucceededListener(listener);
-		this.uploadFile.setButtonCaption("Enviar Arquivo");
-		this.uploadFile.setImmediate(true);
-		
-		this.imageFileUploaded = new Image("", new ThemeResource("images/ok.png"));
-		this.imageFileUploaded.setVisible(false);
+		this.uploadFile = new FileUploader("");
 		
 		this.addField(this.comboCampus);
 		this.addField(this.comboDepartment);
 		this.addField(this.textName);
-		this.addField(new HorizontalLayout(this.uploadFile, this.imageFileUploaded));
+		this.addField(this.uploadFile);
 		
 		this.loadDocument();
 		this.textName.focus();
@@ -91,10 +71,6 @@ public class EditDocumentWindow extends EditWindow {
 		}
 		
 		this.textName.setValue(this.document.getName());
-		
-		if(this.document.getFile() != null){
-			this.imageFileUploaded.setVisible(true);
-		}
 	}
 
 	@Override
@@ -103,6 +79,11 @@ public class EditDocumentWindow extends EditWindow {
 		
 		try {
 			this.document.setName(this.textName.getValue());
+			
+			if(this.uploadFile.getUploadedFile() != null) {
+				this.document.setFile(this.uploadFile.getUploadedFile());
+				this.document.setType(this.uploadFile.getFileType());
+			}
 			
 			bo.save(this.document);
 			
@@ -115,48 +96,6 @@ public class EditDocumentWindow extends EditWindow {
 			
 			Notification.show("Salvar Documento", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
-	}
-	
-	@SuppressWarnings("serial")
-	class DocumentUploader implements Receiver, SucceededListener {
-		private File tempFile;
-		
-		@Override
-		public OutputStream receiveUpload(String filename, String mimeType) {
-			try {
-				imageFileUploaded.setVisible(false);
-				document.setType(DocumentType.fromMimeType(mimeType));
-	            tempFile = File.createTempFile(filename, "tmp");
-	            tempFile.deleteOnExit();
-	            return new FileOutputStream(tempFile);
-	        } catch (IOException e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	        }
-
-	        return null;
-		}
-		
-		@Override
-		public void uploadSucceeded(SucceededEvent event) {
-			try {
-	            FileInputStream input = new FileInputStream(tempFile);
-	            byte[] buffer = new byte[input.available()];
-	            
-	            input.read(buffer);
-	            
-	            document.setFile(buffer);
-	            imageFileUploaded.setVisible(true);
-	            
-	            Notification.show("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.", Notification.Type.HUMANIZED_MESSAGE);
-	        } catch (IOException e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	        }
-		}
-
 	}
 	
 }

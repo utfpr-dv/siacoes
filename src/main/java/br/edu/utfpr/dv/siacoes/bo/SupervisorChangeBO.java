@@ -21,7 +21,7 @@ public class SupervisorChangeBO {
 			throw new Exception("Informe o novo orientador.");
 		}
 		if((change.getNewCosupervisor() != null) && (change.getNewSupervisor().getIdUser() == change.getNewCosupervisor().getIdUser())){
-			throw new Exception("O orientador e co-orientador não devem ser as mesmas pessoas.");
+			throw new Exception("O orientador e coorientador não devem ser as mesmas pessoas.");
 		}
 		
 		if(change.getNewSupervisor().getIdUser() == change.getOldSupervisor().getIdUser()){

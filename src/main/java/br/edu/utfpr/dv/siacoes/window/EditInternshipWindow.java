@@ -14,16 +14,10 @@ import org.vaadin.dialogs.ConfirmDialog;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.event.SelectionEvent;
-import com.vaadin.event.SelectionEvent.SelectionListener;
-import com.vaadin.server.ThemeResource;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
@@ -49,10 +43,11 @@ import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.CompanyComboBox;
 import br.edu.utfpr.dv.siacoes.components.CompanySupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
+import br.edu.utfpr.dv.siacoes.components.FileUploader;
+import br.edu.utfpr.dv.siacoes.components.FileUploaderListener;
 import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.components.StudentComboBox;
 import br.edu.utfpr.dv.siacoes.model.Campus;
-import br.edu.utfpr.dv.siacoes.model.Document;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
@@ -62,11 +57,9 @@ import br.edu.utfpr.dv.siacoes.model.InternshipReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserDetailReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
-import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
-import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditInternshipWindow extends EditWindow {
@@ -85,11 +78,9 @@ public class EditInternshipWindow extends EditWindow {
 	private final DateField endDate;
 	private final TextField textTotalHours;
 	private final TextField textReportTitle;
-	private final Upload uploadInternshipPlan;
-	private final Image imageInternshipPlanUploaded;
+	private final FileUploader uploadInternshipPlan;
 	private final Button buttonDownloadInternshipPlan;
-	private final Upload uploadFinalReport;
-	private final Image imageFinalReportUploaded;
+	private final FileUploader uploadFinalReport;
 	private final Button buttonDownloadFinalReport;
 	private final TabSheet tabContainer;
 	private Grid gridStudentReport;
@@ -108,17 +99,13 @@ public class EditInternshipWindow extends EditWindow {
 	private final Button buttonDeleteSupervisorReport;
 	private final Button buttonDeleteCompanySupervisorReport;
 	
-	private Button.ClickListener listenerStudentReportDownload;
-	private Button.ClickListener listenerSupervisorReportDownload;
-	private Button.ClickListener listenerCompanySupervisorReportDownload;
-	
-	public EditInternshipWindow(Internship internship, ListView parentView){
+	public EditInternshipWindow(Internship i, ListView parentView){
 		super("Editar Estágio", parentView);
 		
-		if(internship == null){
+		if(i == null){
 			this.internship = new Internship();
 		}else{
-			this.internship = internship;
+			this.internship = i;
 		}
 		
 		this.comboCampus = new CampusComboBox();
@@ -163,27 +150,47 @@ public class EditInternshipWindow extends EditWindow {
 		this.textReportTitle = new TextField("Título do Relatório Final");
 		this.textReportTitle.setWidth("810px");
 		
-		InternshipPlanUploader internshipPlanListener = new InternshipPlanUploader();
-		this.uploadInternshipPlan = new Upload("(Formato PDF, Tam. Máx. 5 MB)", internshipPlanListener);
-		this.uploadInternshipPlan.addSucceededListener(internshipPlanListener);
-		this.uploadInternshipPlan.setButtonCaption("Plano de Estágio");
-		this.uploadInternshipPlan.setImmediate(true);
+		this.uploadInternshipPlan = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
+		this.uploadInternshipPlan.getAcceptedDocumentTypes().add(DocumentType.PDF);
+		this.uploadInternshipPlan.setMaxBytesLength(6 * 1024 * 1024);
+		this.uploadInternshipPlan.setFileUploadListener(new FileUploaderListener() {
+			@Override
+			public void uploadSucceeded() {
+				if(uploadInternshipPlan.getUploadedFile() != null) {
+					internship.setInternshipPlan(uploadInternshipPlan.getUploadedFile());
+				}
+				
+				buttonDownloadInternshipPlan.setVisible(true);
+			}
+		});
 		
-		this.imageInternshipPlanUploaded = new Image("", new ThemeResource("images/ok.png"));
-		this.imageInternshipPlanUploaded.setVisible(false);
+		this.buttonDownloadInternshipPlan = new Button("Baixar Plano de Estágio", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadInternshipPlan();
+            }
+        });
 		
-		this.buttonDownloadInternshipPlan = new Button("Baixar Plano de Estágio");
+		this.uploadFinalReport = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
+		this.uploadFinalReport.getAcceptedDocumentTypes().add(DocumentType.PDF);
+		this.uploadFinalReport.setMaxBytesLength(6 * 1024 * 1024);
+		this.uploadFinalReport.setFileUploadListener(new FileUploaderListener() {
+			@Override
+			public void uploadSucceeded() {
+				if(uploadFinalReport.getUploadedFile() != null) {
+					internship.setFinalReport(uploadFinalReport.getUploadedFile());
+				}
+				
+				buttonDownloadFinalReport.setVisible(true);
+			}
+		});
 		
-		FinalReportUploader finalReportUploader = new FinalReportUploader();
-		this.uploadFinalReport = new Upload("(Formato PDF, Tam. Máx. 5 MB)", finalReportUploader);
-		this.uploadFinalReport.addSucceededListener(finalReportUploader);
-		this.uploadFinalReport.setButtonCaption("Relatório Final");
-		this.uploadFinalReport.setImmediate(true);
-		
-		this.imageFinalReportUploaded = new Image("", new ThemeResource("images/ok.png"));
-		this.imageFinalReportUploaded.setVisible(false);
-		
-		this.buttonDownloadFinalReport = new Button("Baixar Relatório Final");
+		this.buttonDownloadFinalReport = new Button("Baixar Relatório Final", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadFinalReport();
+            }
+        });
 		
 		this.textComments = new TextArea();
 		this.textComments.setWidth("810px");
@@ -201,7 +208,7 @@ public class EditInternshipWindow extends EditWindow {
 		HorizontalLayout h4 = new HorizontalLayout(this.comboType, this.startDate, this.endDate, this.textTotalHours);
 		h4.setSpacing(true);
 		
-		HorizontalLayout h5 = new HorizontalLayout(this.uploadInternshipPlan, this.imageInternshipPlanUploaded, this.uploadFinalReport, this.imageFinalReportUploaded);
+		HorizontalLayout h5 = new HorizontalLayout(this.uploadInternshipPlan, this.uploadFinalReport);
 		
 		VerticalLayout tab1 = new VerticalLayout(h1, h2, h3, h4, this.textReportTitle);
 		if(Session.isUserManager(SystemModule.SIGES)){
@@ -218,7 +225,12 @@ public class EditInternshipWindow extends EditWindow {
 		this.uploadStudentReport.setWidth("150px");
 		this.uploadStudentReport.setImmediate(true);
 		
-		this.buttonDownloadStudentReport = new Button("Download");
+		this.buttonDownloadStudentReport = new Button("Download", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadStudentReport();
+            }
+        });
 		this.buttonDownloadStudentReport.setWidth("150px");
 		
 		this.buttonDeleteStudentReport = new Button("Excluir", new Button.ClickListener() {
@@ -244,7 +256,12 @@ public class EditInternshipWindow extends EditWindow {
 		this.uploadSupervisorReport.setWidth("150px");
 		this.uploadSupervisorReport.setImmediate(true);
 		
-		this.buttonDownloadSupervisorReport = new Button("Download");
+		this.buttonDownloadSupervisorReport = new Button("Download", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadSupervisorReport();
+            }
+        });
 		this.buttonDownloadSupervisorReport.setWidth("150px");
 		
 		this.buttonDeleteSupervisorReport = new Button("Excluir", new Button.ClickListener() {
@@ -270,7 +287,12 @@ public class EditInternshipWindow extends EditWindow {
 		this.uploadCompanySupervisorReport.setWidth("150px");
 		this.uploadCompanySupervisorReport.setImmediate(true);
 		
-		this.buttonDownloadCompanySupervisorReport = new Button("Download");
+		this.buttonDownloadCompanySupervisorReport = new Button("Download", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadCompanySupervisorReport();
+            }
+        });
 		this.buttonDownloadCompanySupervisorReport.setWidth("150px");
 		
 		this.buttonDeleteCompanySupervisorReport = new Button("Excluir", new Button.ClickListener() {
@@ -350,13 +372,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.textComments.setValue(this.internship.getComments());
 		this.textReportTitle.setValue(this.internship.getReportTitle());
 		
-		this.imageInternshipPlanUploaded.setVisible(this.internship.getInternshipPlan() != null);
-		this.imageFinalReportUploaded.setVisible(this.internship.getFinalReport() != null);
-		
 		this.internship.setReports(null);
-		
-		this.prepareDownloadInternshipPlan();
-		this.prepareDownloadFinalReport();
 		
 		this.loadReports();
 		
@@ -376,36 +392,18 @@ public class EditInternshipWindow extends EditWindow {
 		this.gridStudentReport.addColumn("Data de Upload", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
 		this.gridStudentReport.setWidth("810px");
 		this.gridStudentReport.setHeight("300px");
-		this.gridStudentReport.addSelectionListener(new SelectionListener() {
-			@Override
-			public void select(SelectionEvent event) {
-				prepareStudentReportDownload();
-			}
-		});
 		
 		this.gridSupervisorReport = new Grid();
 		this.gridSupervisorReport.addColumn("Relatório", Integer.class);
 		this.gridSupervisorReport.addColumn("Data de Upload", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
 		this.gridSupervisorReport.setWidth("810px");
 		this.gridSupervisorReport.setHeight("300px");
-		this.gridSupervisorReport.addSelectionListener(new SelectionListener() {
-			@Override
-			public void select(SelectionEvent event) {
-				prepareSupervisorReportDownload();
-			}
-		});
 		
 		this.gridCompanySupervisorReport = new Grid();
 		this.gridCompanySupervisorReport.addColumn("Relatório", Integer.class);
 		this.gridCompanySupervisorReport.addColumn("Data de Upload", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
 		this.gridCompanySupervisorReport.setWidth("810px");
 		this.gridCompanySupervisorReport.setHeight("300px");
-		this.gridCompanySupervisorReport.addSelectionListener(new SelectionListener() {
-			@Override
-			public void select(SelectionEvent event) {
-				prepareCompanySupervisorReportDownload();
-			}
-		});
 		
 		if(this.internship.getReports() == null){
 			try {
@@ -445,33 +443,25 @@ public class EditInternshipWindow extends EditWindow {
 		
 		this.layoutCompanySupervisorReport.removeAllComponents();
 		this.layoutCompanySupervisorReport.addComponent(this.gridCompanySupervisorReport);
-		
-		this.prepareStudentReportDownload();
-		this.prepareSupervisorReportDownload();
-		this.prepareCompanySupervisorReportDownload();
 	}
 	
-	private void prepareDownloadInternshipPlan(){
-		new ExtensionUtils().removeAllExtensions(this.buttonDownloadInternshipPlan);
-		
-		if(this.internship.getInternshipPlan() != null){
-			this.buttonDownloadInternshipPlan.setVisible(true);
-			
-			new ExtensionUtils().extendToDownload("Plano_de_Estagio_" + this.internship.getIdInternship() + Document.DocumentType.PDF.getExtension(), this.internship.getInternshipPlan(), this.buttonDownloadInternshipPlan);
-		}else{
-			this.buttonDownloadInternshipPlan.setVisible(false);
+	private void downloadInternshipPlan() {
+		try {
+        	this.showReport(this.internship.getInternshipPlan());
+    	} catch (Exception e) {
+        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	
+        	Notification.show("Download do Plano de Estágio", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
 	
-	private void prepareDownloadFinalReport(){
-		new ExtensionUtils().removeAllExtensions(this.buttonDownloadFinalReport);
-		
-		if(this.internship.getFinalReport() != null){
-			this.buttonDownloadFinalReport.setVisible(true);
-			
-			new ExtensionUtils().extendToDownload("Relatorio_Final_" + this.internship.getIdInternship() + Document.DocumentType.PDF.getExtension(), this.internship.getFinalReport(), this.buttonDownloadFinalReport);
-		}else{
-			this.buttonDownloadFinalReport.setVisible(false);
+	private void downloadFinalReport() {
+		try {
+        	this.showReport(this.internship.getFinalReport());
+    	} catch (Exception e) {
+        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	
+        	Notification.show("Download do Relatório Final", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
 	
@@ -534,118 +524,44 @@ public class EditInternshipWindow extends EditWindow {
 		}
 	}
 	
-	private void prepareStudentReportDownload(){
-		int index = this.getStudentReportSelectedIndex();
-		
-		this.buttonDownloadStudentReport.removeClickListener(this.listenerStudentReportDownload);
-    	
-    	if(index >= 0){
-			try {
-				InternshipReport report = this.internship.getReports().get(index);
-				
-            	new ExtensionUtils().extendToDownload(this.internship.getIdInternship() + "_" + report.getIdInternshipReport() + Document.DocumentType.PDF.getExtension(), report.getReport(), this.buttonDownloadStudentReport);
-        	} catch (Exception e) {
-        		this.listenerStudentReportDownload = new Button.ClickListener() {
-		            @Override
-		            public void buttonClick(ClickEvent event) {
-		            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-		            	
-		            	Notification.show("Download do Relatório", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-		            }
-		        };
-		        
-        		this.buttonDownloadStudentReport.addClickListener(this.listenerStudentReportDownload);
-			}
-    	}else{
-    		new ExtensionUtils().removeAllExtensions(this.buttonDownloadStudentReport);
-    		
-    		this.listenerStudentReportDownload = new Button.ClickListener() {
-	            @Override
-	            public void buttonClick(ClickEvent event) {
-	            	Notification.show("Download do Relatório", "Selecione um registro para baixar o relatório.", Notification.Type.WARNING_MESSAGE);
-	            }
-	        };
-    		
-    		this.buttonDownloadStudentReport.addClickListener(this.listenerStudentReportDownload);
-    	}
+	private void downloadStudentReport(){
+		this.downloadReport(this.getStudentReportSelectedIndex());
 	}
 	
-	private void prepareSupervisorReportDownload(){
-		int index = this.getSupervisorReportSelectedIndex();
-		
-		this.buttonDownloadSupervisorReport.removeClickListener(this.listenerSupervisorReportDownload);
-    	
-    	if(index >= 0){
-			try {
-				InternshipReport report = this.internship.getReports().get(index);
-				
-            	new ExtensionUtils().extendToDownload(this.internship.getIdInternship() + "_" + report.getIdInternshipReport() + Document.DocumentType.PDF.getExtension(), report.getReport(), this.buttonDownloadSupervisorReport);
-        	} catch (Exception e) {
-        		this.listenerSupervisorReportDownload = new Button.ClickListener() {
-		            @Override
-		            public void buttonClick(ClickEvent event) {
-		            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-		            	
-		            	Notification.show("Download do Relatório", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-		            }
-		        };
-		        
-        		this.buttonDownloadSupervisorReport.addClickListener(this.listenerSupervisorReportDownload);
-			}
-    	}else{
-    		new ExtensionUtils().removeAllExtensions(this.buttonDownloadStudentReport);
-    		
-    		this.listenerSupervisorReportDownload = new Button.ClickListener() {
-	            @Override
-	            public void buttonClick(ClickEvent event) {
-	            	Notification.show("Download do Relatório", "Selecione um registro para baixar o relatório.", Notification.Type.WARNING_MESSAGE);
-	            }
-	        };
-    		
-    		this.buttonDownloadSupervisorReport.addClickListener(this.listenerSupervisorReportDownload);
-    	}
+	private void downloadSupervisorReport(){
+		this.downloadReport(this.getSupervisorReportSelectedIndex());
 	}
 	
-	private void prepareCompanySupervisorReportDownload(){
-		int index = this.getCompanySupervisorReportSelectedIndex();
-		
-		this.buttonDownloadCompanySupervisorReport.removeClickListener(this.listenerCompanySupervisorReportDownload);
-    	
-    	if(index >= 0){
+	private void downloadCompanySupervisorReport(){
+		this.downloadReport(this.getCompanySupervisorReportSelectedIndex());
+	}
+	
+	private void downloadReport(int index) {
+		if(index == -1) {
+			Notification.show("Selecionar Relatório", "Selecione o relatório para baixar.", Notification.Type.WARNING_MESSAGE);
+		} else {
 			try {
-				InternshipReport report = this.internship.getReports().get(index);
-				
-            	new ExtensionUtils().extendToDownload(this.internship.getIdInternship() + "_" + report.getIdInternshipReport() + Document.DocumentType.PDF.getExtension(), report.getReport(), this.buttonDownloadCompanySupervisorReport);
-        	} catch (Exception e) {
-        		this.listenerCompanySupervisorReportDownload = new Button.ClickListener() {
-		            @Override
-		            public void buttonClick(ClickEvent event) {
-		            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-		            	
-		            	Notification.show("Download do Relatório", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-		            }
-		        };
-		        
-        		this.buttonDownloadCompanySupervisorReport.addClickListener(this.listenerCompanySupervisorReportDownload);
+	        	this.showReport(this.internship.getReports().get(index).getReport());
+	    	} catch (Exception e) {
+	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+	        	
+	        	Notification.show("Download do Relatório de Estágio", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
-    	}else{
-    		new ExtensionUtils().removeAllExtensions(this.buttonDownloadStudentReport);
-    		
-    		this.listenerCompanySupervisorReportDownload = new Button.ClickListener() {
-	            @Override
-	            public void buttonClick(ClickEvent event) {
-	            	Notification.show("Download do Relatório", "Selecione um registro para baixar o relatório.", Notification.Type.WARNING_MESSAGE);
-	            }
-	        };
-    		
-    		this.buttonDownloadCompanySupervisorReport.addClickListener(this.listenerCompanySupervisorReportDownload);
-    	}
+		}
 	}
 	
 	@Override
 	public void save() {
 		try{
 			InternshipBO bo = new InternshipBO();
+			
+			if(this.uploadInternshipPlan.getUploadedFile() != null) {
+				this.internship.setInternshipPlan(this.uploadInternshipPlan.getUploadedFile());
+			}
+			
+			if(this.uploadFinalReport.getUploadedFile() != null) {
+				this.internship.setFinalReport(this.uploadFinalReport.getUploadedFile());
+			}
 			
 			this.internship.setDepartment(this.comboDepartment.getDepartment());
 			this.internship.setStudent(this.comboStudent.getStudent());
@@ -793,110 +709,6 @@ public class EditInternshipWindow extends EditWindow {
 					this.tabContainer.addTab(tab, "Avaliação");
 				}
 			}
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	class InternshipPlanUploader implements Receiver, SucceededListener {
-		private File tempFile;
-		
-		@Override
-		public OutputStream receiveUpload(String filename, String mimeType) {
-			try {
-				imageInternshipPlanUploaded.setVisible(false);
-				
-				if(DocumentType.fromMimeType(mimeType) != DocumentType.PDF){
-					throw new Exception("O arquivo precisa estar no formato PDF.");
-				}
-				
-	            tempFile = File.createTempFile(filename, "tmp");
-	            tempFile.deleteOnExit();
-	            return new FileOutputStream(tempFile);
-	        } catch (Exception e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	        }
-
-	        return null;
-		}
-		
-		@Override
-		public void uploadSucceeded(SucceededEvent event) {
-			try {
-	            FileInputStream input = new FileInputStream(tempFile);
-	            
-	            if(input.available() > (10 * 1024 * 1024)){
-					throw new Exception("O arquivo precisa ter um tamanho máximo de 5 MB.");
-	            }
-	            
-	            byte[] buffer = new byte[input.available()];
-	            
-	            input.read(buffer);
-	            
-	            internship.setInternshipPlan(buffer);
-	            
-	            imageInternshipPlanUploaded.setVisible(true);
-	            prepareDownloadInternshipPlan();
-	            
-	            Notification.show("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.", Notification.Type.HUMANIZED_MESSAGE);
-	        } catch (Exception e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	        }
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	class FinalReportUploader implements Receiver, SucceededListener {
-		private File tempFile;
-		
-		@Override
-		public OutputStream receiveUpload(String filename, String mimeType) {
-			try {
-				imageFinalReportUploaded.setVisible(false);
-				
-				if(DocumentType.fromMimeType(mimeType) != DocumentType.PDF){
-					throw new Exception("O arquivo precisa estar no formato PDF.");
-				}
-				
-	            tempFile = File.createTempFile(filename, "tmp");
-	            tempFile.deleteOnExit();
-	            return new FileOutputStream(tempFile);
-	        } catch (Exception e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	        }
-
-	        return null;
-		}
-		
-		@Override
-		public void uploadSucceeded(SucceededEvent event) {
-			try {
-	            FileInputStream input = new FileInputStream(tempFile);
-	            
-	            if(input.available() > (10 * 1024 * 1024)){
-					throw new Exception("O arquivo precisa ter um tamanho máximo de 5 MB.");
-	            }
-	            
-	            byte[] buffer = new byte[input.available()];
-	            
-	            input.read(buffer);
-	            
-	            internship.setFinalReport(buffer);
-	            
-	            imageFinalReportUploaded.setVisible(true);
-	            prepareDownloadFinalReport();
-	            
-	            Notification.show("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.", Notification.Type.HUMANIZED_MESSAGE);
-	        } catch (Exception e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-	        }
 		}
 	}
 	

@@ -80,7 +80,7 @@ public class ProposalAppraiserBO {
 				throw new Exception("O avaliador da proposta não deve ser orientador do trabalho.");
 			}
 			if((proposal.getCosupervisor() != null) && (appraiser.getAppraiser().getIdUser() == proposal.getCosupervisor().getIdUser())) {
-				throw new Exception("O avaliador da proposta não deve ser co-orientador do trabalho.");
+				throw new Exception("O avaliador da proposta não deve ser coorientador do trabalho.");
 			}
 			ProposalAppraiser a = dao.findByAppraiser(appraiser.getProposal().getIdProposal(), appraiser.getAppraiser().getIdUser());
 			if((a != null) && (a.getIdProposalAppraiser() != appraiser.getIdProposalAppraiser())) {

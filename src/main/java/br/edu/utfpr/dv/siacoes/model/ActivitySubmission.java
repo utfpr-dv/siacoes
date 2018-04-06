@@ -60,6 +60,7 @@ public class ActivitySubmission {
 	private String comments;
 	private String description;
 	private int stage;
+	private String feedbackReason;
 	
 	public ActivitySubmission(){
 		this.setIdActivitySubmission(0);
@@ -79,6 +80,7 @@ public class ActivitySubmission {
 		this.setComments("");
 		this.setDescription("");
 		this.setStage(0);
+		this.setFeedbackReason("");
 	}
 	
 	public int getIdActivitySubmission() {
@@ -194,4 +196,11 @@ public class ActivitySubmission {
 	public void setStage(int stage) {
 		this.stage = stage;
 	}
+	public String getFeedbackReason() {
+		return feedbackReason;
+	}
+	public void setFeedbackReason(String feedbackReason) {
+		this.feedbackReason = feedbackReason;
+	}
+
 }

@@ -5,7 +5,7 @@ import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 public class Document {
 	
 	public enum DocumentType{
-		UNDEFINED(0), PDF(1), DOC(2), DOCX(3), ZIP(4), ODT(5), PPT(6), PPTX(7);
+		UNDEFINED(0), PDF(1), DOC(2), DOCX(3), ZIP(4), ODT(5), PPT(6), PPTX(7), JPEG(8), PNG(9);
 		
 		private final int value; 
 		DocumentType(int value){ 
@@ -32,6 +32,10 @@ public class Document {
 				return ".ppt";
 			case PPTX:
 				return ".pptx";
+			case JPEG:
+				return ".jpeg";
+			case PNG:
+				return ".png";
 			default:
 				return "";
 			}
@@ -52,6 +56,10 @@ public class Document {
 				return DocumentType.PPT;
 			}else if(mimeType.equals("application/vnd.openxmlformats-officedocument.presentationml.presentation")){
 				return DocumentType.PPTX;
+			}else if(mimeType.equals("image/jpeg")) {
+				return DocumentType.JPEG;
+			}else if(mimeType.equals("image/png")) {
+				return DocumentType.PNG;
 			}else{
 				return DocumentType.UNDEFINED;
 			}

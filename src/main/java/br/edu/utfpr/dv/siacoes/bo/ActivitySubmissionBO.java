@@ -97,8 +97,6 @@ public class ActivitySubmissionBO {
 		int ret = 0;
 		boolean isInsert = (submission.getIdActivitySubmission() == 0);
 		ActivitySubmissionDAO dao = new ActivitySubmissionDAO();
-		ActivityFeedback feedback = dao.getFeedback(submission.getIdActivitySubmission());
-		boolean fillAmount = new ActivityBO().needsFillAmount(submission.getActivity().getIdActivity());
 		
 		if((submission.getStudent() == null) || (submission.getStudent().getIdUser() == 0)){
 			throw new Exception("Informe o acadêmico.");
@@ -115,6 +113,12 @@ public class ActivitySubmissionBO {
 		if(submission.getDescription().trim().isEmpty()){
 			throw new Exception("Informe a descrição da atividade.");
 		}
+		if(submission.getFeedback() != ActivityFeedback.DISAPPROVED) {
+			submission.setFeedbackReason("");
+		} else if(submission.getFeedbackReason().trim().isEmpty()) {
+			throw new Exception("Informe o motivo para a recusa da atividade.");
+		}
+		boolean fillAmount = new ActivityBO().needsFillAmount(submission.getActivity().getIdActivity());
 		if((submission.getAmount() <= 0) && fillAmount) {
 			throw new Exception("Informe a quantidade a ser validada para a atividade (horas, etc.).");
 		}
@@ -127,6 +131,8 @@ public class ActivitySubmissionBO {
 		if(new FinalSubmissionBO().studentHasSubmission(submission.getStudent().getIdUser(), submission.getDepartment().getIdDepartment())) {
 			throw new Exception("Não é possível incluir ou editar a atividade pois o acadêmico já foi sinalizado como Aprovado.");
 		}
+		
+		ActivityFeedback feedback = dao.getFeedback(submission.getIdActivitySubmission());
 		
 		try{
 			ret = dao.save(submission);
@@ -158,9 +164,9 @@ public class ActivitySubmissionBO {
 				}
 			}
 			
-			if(isInsert){
+			if(isInsert) {
 				bo.sendEmail(submission.getStudent().getIdUser(), MessageType.ACTIVITYSUBMITTED, keys);
-			}else if(feedback != submission.getFeedback()){
+			} else if(feedback != submission.getFeedback()){
 				bo.sendEmail(submission.getStudent().getIdUser(), MessageType.ACTIVITYFEEDBACK, keys);
 			}
 		}catch(Exception e){
