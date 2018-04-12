@@ -3,11 +3,24 @@ package br.edu.utfpr.dv.siacoes.components;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.verapdf.core.VeraPDFException;
+import org.verapdf.pdfa.Foundries;
+import org.verapdf.pdfa.PDFAParser;
+import org.verapdf.pdfa.PDFAValidator;
+import org.verapdf.pdfa.VeraGreenfieldFoundryProvider;
+import org.verapdf.pdfa.results.ValidationResult;
 
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
@@ -35,6 +48,7 @@ public class FileUploader extends HorizontalLayout {
 	private FileUploaderListener fileUploadListener;
 	private byte[] uploadedFile;
 	private DocumentType fileType;
+	private boolean validatePDFAFile;
 	
 	public FileUploader(String caption) {
 		DocumentUploader listener = new DocumentUploader();
@@ -115,6 +129,8 @@ public class FileUploader extends HorizontalLayout {
 	}
 	
 	private boolean isDocumentTypeAccept(DocumentType docType) {
+		this.validatePDFAFile = false;
+		
 		if((this.getAcceptedDocumentTypes() == null) || (this.getAcceptedDocumentTypes().size() == 0)) {
 			return true;
 		}
@@ -125,7 +141,52 @@ public class FileUploader extends HorizontalLayout {
 			}
 		}
 		
+		if(docType == DocumentType.PDF) {
+			for(DocumentType doc : this.getAcceptedDocumentTypes()) {
+				if(doc == DocumentType.PDFA) {
+					this.validatePDFAFile = true;
+					return true;
+				}
+			}
+		}
+		
 		return false;
+	}
+	
+	private boolean validatePDFA(byte[] file) {
+		String tempName = UUID.randomUUID().toString() + ".pdf";
+		
+		Path path = Paths.get(tempName);
+		
+		this.validatePDFAFile = false;
+		
+		try {
+			Files.write(path, file);
+			
+			VeraGreenfieldFoundryProvider.initialise();
+			PDFAParser parser = Foundries.defaultInstance().createParser(path.toFile());
+			PDFAValidator validator = Foundries.defaultInstance().createValidator(parser.getFlavour(), false);
+			ValidationResult result = validator.validate(parser);
+		    return result.isCompliant();
+		} catch (IOException e1) {
+			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
+			
+			return false;
+		} catch (VeraPDFException e2) {
+			Logger.getGlobal().log(Level.SEVERE, e2.getMessage(), e2);
+			
+			return false;
+		} catch (NoSuchElementException e3) {
+			Logger.getGlobal().log(Level.SEVERE, e3.getMessage(), e3);
+			
+			return false;
+		} finally {
+			try {
+				Files.delete(path);
+			} catch (IOException e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			}
+		}
 	}
 	
 	private String getStringAcceptedDocumentTypes() {
@@ -200,6 +261,10 @@ public class FileUploader extends HorizontalLayout {
 	            byte[] buffer = new byte[input.available()];
 	            
 	            input.read(buffer);
+	            
+	            if(validatePDFAFile && !validatePDFA(buffer)) {
+	            	throw new Exception("O arquivo precisa estar no formato PDF/A-1b (padrão utilizado para arquivamento de longo prazo de documentos eletrônicos).");
+	            }
 	            
 	            uploadedFile = buffer;
 	            

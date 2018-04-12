@@ -56,7 +56,7 @@ public class ProposalFeedbackView extends ListView {
         });
 		this.buttonPrintFeedback.setWidth("150px");
 		
-		this.buttonDownloadProposal = new Button("Down. da Proposta", new Button.ClickListener() {
+		this.buttonDownloadProposal = new Button("Baixar Proposta", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
             	downloadProposal();

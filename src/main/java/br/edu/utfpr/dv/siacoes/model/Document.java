@@ -5,7 +5,7 @@ import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 public class Document {
 	
 	public enum DocumentType{
-		UNDEFINED(0), PDF(1), DOC(2), DOCX(3), ZIP(4), ODT(5), PPT(6), PPTX(7), JPEG(8), PNG(9);
+		UNDEFINED(0), PDF(1), DOC(2), DOCX(3), ZIP(4), ODT(5), PPT(6), PPTX(7), JPEG(8), PNG(9), PDFA(10);
 		
 		private final int value; 
 		DocumentType(int value){ 
@@ -36,6 +36,8 @@ public class Document {
 				return ".jpeg";
 			case PNG:
 				return ".png";
+			case PDFA:
+				return ".pdf";
 			default:
 				return "";
 			}

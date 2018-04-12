@@ -131,12 +131,6 @@
       		<artifactId>commons-dbcp2</artifactId>
       		<version>2.1.1</version>
 		</dependency>
-    	<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
-		<dependency>
-      		<groupId>org.apache.pdfbox</groupId>
-      		<artifactId>pdfbox</artifactId>
-      		<version>2.0.8</version>
-		</dependency>
     	<!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
 		<dependency>
       		<groupId>com.google.zxing</groupId>
@@ -240,6 +234,42 @@
 		    <groupId>org.vaadin.addons</groupId>
 		    <artifactId>dcharts-widget</artifactId>
 		    <version>1.7.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
+		<dependency>
+		    <groupId>org.apache.pdfbox</groupId>
+		    <artifactId>pdfbox</artifactId>
+		    <version>2.0.8</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/preflight -->
+		<dependency>
+		    <groupId>org.apache.pdfbox</groupId>
+		    <artifactId>preflight</artifactId>
+		    <version>2.0.8</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/fontbox -->
+		<dependency>
+		    <groupId>org.apache.pdfbox</groupId>
+		    <artifactId>fontbox</artifactId>
+		    <version>2.0.8</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.verapdf/core -->
+		<dependency>
+		    <groupId>org.verapdf</groupId>
+		    <artifactId>core</artifactId>
+		    <version>1.10.3</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.verapdf/parser -->
+		<dependency>
+		    <groupId>org.verapdf</groupId>
+		    <artifactId>parser</artifactId>
+		    <version>1.10.3</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.verapdf/validation-model -->
+		<dependency>
+		    <groupId>org.verapdf</groupId>
+		    <artifactId>validation-model</artifactId>
+		    <version>1.10.3</version>
 		</dependency>
   	</dependencies>
   	

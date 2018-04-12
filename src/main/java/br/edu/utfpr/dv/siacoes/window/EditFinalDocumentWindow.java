@@ -84,7 +84,7 @@ public class EditFinalDocumentWindow extends EditWindow {
 		this.textSubmissionDate.setDateFormat("dd/MM/yyyy");
 		
 		this.uploadFile = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
-		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);
+		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDFA);
 		this.uploadFile.setMaxBytesLength(6 * 1024 * 1024);
 		this.uploadFile.setFileUploadListener(new FileUploaderListener() {
 			@Override
