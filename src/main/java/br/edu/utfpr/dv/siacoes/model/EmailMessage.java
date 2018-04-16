@@ -31,7 +31,9 @@ public class EmailMessage {
 		FINALDOCUMENTVALIDATED(24),
 		INTERNSHIPFINALDOCUMENTSUBMITTED(25),
 		INTERNSHIPFINALDOCUMENTVALIDATED(26),
-		PROPOSALAPPRAISERSUPERVISORINDICATION(27);
+		PROPOSALAPPRAISERSUPERVISORINDICATION(27),
+		PROPOSALAPPRAISERFEEDBACKSUPERVISOR(28),
+		PROPOSALAPPRAISERFEEDBACKSTUDENT(29);
 		
 		private final int value; 
 		MessageType(int value){ 
@@ -108,6 +110,10 @@ public class EmailMessage {
 					return "Versão Final de Estágio Validada";
 				case PROPOSALAPPRAISERSUPERVISORINDICATION:
 					return "Indicação de Avaliador da Proposta de TCC 1 (Orientador)";
+				case PROPOSALAPPRAISERFEEDBACKSUPERVISOR:
+					return "Feedback da Proposta de TCC 1 (Orientador)";
+				case PROPOSALAPPRAISERFEEDBACKSTUDENT:
+					return "Feedback da Proposta de TCC 1 (Estudante)";
 				default:
 					return "";
 			}

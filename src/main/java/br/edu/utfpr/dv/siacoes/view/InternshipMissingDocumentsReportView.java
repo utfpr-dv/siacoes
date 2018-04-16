@@ -37,7 +37,7 @@ public class InternshipMissingDocumentsReportView extends ReportView {
 		this.textYear = new YearField();
 		this.textYear.setYear(0);
 		
-		this.comboStudent = new StudentComboBox("Aluno");
+		this.comboStudent = new StudentComboBox("Acadêmico");
 		
 		this.comboProfessor = new SupervisorComboBox("Orientador", Session.getUser().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		

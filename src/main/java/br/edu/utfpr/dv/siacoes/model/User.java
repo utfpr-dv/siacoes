@@ -38,7 +38,7 @@ public class User {
 				case PROFESSOR:
 					return "Professor";
 				case STUDENT:
-					return "Aluno";
+					return "Acadêmico";
 				case COMPANYSUPERVISOR:
 					return "Supervisor";
 				case SUPERVISOR:

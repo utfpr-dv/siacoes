@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
+import org.vaadin.dialogs.ConfirmDialog;
 
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Button;
@@ -280,19 +281,23 @@ public class JuryView extends ListView {
 		if(value == null){
 			Notification.show("Imprimir Termo de Aprovação", "Selecione uma banca para gerar o termo de aprovação.", Notification.Type.WARNING_MESSAGE);
 		}else{
-			try{
-				JuryBO bo = new JuryBO();
-				TermOfApprovalReport report = bo.getTermOfApprovalReport((int)value);
-				
-				List<TermOfApprovalReport> list = new ArrayList<TermOfApprovalReport>();
-				list.add(report);
-				
-				this.showReport(new ReportUtils().createPdfStream(list, "TermOfApproval").toByteArray());
-			}catch(Exception e){
-				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	        	
-	        	Notification.show("Imprimir Termo de Aprovação", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-			}
+			ConfirmDialog dialog = new ConfirmDialog();
+			dialog.setMessage("Selecione o modo de geração para o Termo de Aprovação.\n\n" +
+					"Versão Impressa: documento que deverá ser assinado e armazenado na coordenação.\n" + 
+					"Versão Eletrônica: documento sem assinaturas que deverá ser incluído na versão final entregue pelo acadêmico.");
+			dialog.getOkButton().setCaption("Versão Impressa");
+			dialog.getCancelButton().setCaption("Versão Eletrônica");
+			dialog.show(UI.getCurrent(), new ConfirmDialog.Listener() {
+                public void onClose(ConfirmDialog d) {
+                	try{
+        				showReport(new JuryBO().getTermOfApproval((int)value, !d.isConfirmed()));
+                	}catch(Exception e){
+        				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	        	
+        	        	Notification.show("Imprimir Termo de Aprovação", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        			}
+                }
+            }, true);
 		}
 	}
 	

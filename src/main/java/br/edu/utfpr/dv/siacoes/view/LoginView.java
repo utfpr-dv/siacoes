@@ -59,7 +59,7 @@ public class LoginView extends CustomComponent implements View {
     	this.info = new Label("Para acessar o SIACOES, efetue o login.");
     	this.info.setWidth("300px");
     	
-    	this.infoAluno = new Label("- Se você for aluno, no campo usuário coloque a letra \"a\" e o número do seu R.A. (por exemplo: a1234567 ou a1423599) e no campo senha insira a mesma senha do Sistema Acadêmico.");
+    	this.infoAluno = new Label("- Se você for acadêmico, no campo usuário coloque a letra \"a\" e o número do seu R.A. (por exemplo: a1234567 ou a1423599) e no campo senha insira a mesma senha do Sistema Acadêmico.");
     	this.infoAluno.setWidth("300px");
     	
     	this.infoServidor = new Label("- Se você for servidor, no campo usuário coloque o seu nome de usuário utilizado para acessar os sistemas da UTFPR, e no campo senha informe a sua senha utilizada para acessar os sistemas da UTFPR.");

@@ -230,12 +230,12 @@ public class CertificateBO {
 		}
 		if((internship.getStatus() == InternshipStatus.FINISHED) && (internship.getFinalReport() == null)){
 			if(internship.getType() == InternshipType.REQUIRED){
-				throw new Exception("O aluno precisa entregar o relatório final de estágio para gerar a declaração.");	
+				throw new Exception("O acadêmico precisa entregar o relatório final de estágio para gerar a declaração.");	
 			}else{
 				InternshipReportBO bo = new InternshipReportBO();
 				
 				if(!bo.hasReport(internship.getIdInternship(), ReportType.STUDENT)){
-					throw new Exception("O aluno precisa entregar o relatório de estágio para gerar a declaração.");
+					throw new Exception("O acadêmico precisa entregar o relatório de estágio para gerar a declaração.");
 				}
 			}
 		}
@@ -337,7 +337,7 @@ public class CertificateBO {
 	
 	public byte[] getJuryStudentStatement(JuryStudent student) throws Exception{
 		if((student == null) || (student.getIdJuryStudent() == 0)){
-			throw new Exception("É preciso salvar o aluno antes de gerar a declaração.");
+			throw new Exception("É preciso salvar o acadêmico antes de gerar a declaração.");
 		}
 		
 		StatementReport report = this.loadJuryStudentStatement(student);
@@ -465,7 +465,7 @@ public class CertificateBO {
 	
 	public byte[] getInternshipJuryStudentStatement(InternshipJuryStudent student) throws Exception{
 		if((student == null) || (student.getIdInternshipJuryStudent() == 0)){
-			throw new Exception("É preciso salvar o aluno antes de gerar a declaração.");
+			throw new Exception("É preciso salvar o acadêmico antes de gerar a declaração.");
 		}
 		
 		StatementReport report = this.loadInternshipJuryStudentStatement(student);

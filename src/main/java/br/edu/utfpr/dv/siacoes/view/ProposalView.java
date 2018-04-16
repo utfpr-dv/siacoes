@@ -16,6 +16,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.renderers.DateRenderer;
 
 import br.edu.utfpr.dv.siacoes.Session;
+import br.edu.utfpr.dv.siacoes.bo.ProposalAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
@@ -34,6 +35,7 @@ public class ProposalView extends ListView {
 	private final YearField textYear;
 	private final Button buttonDownload;
 	private final Button buttonInvalidate;
+	private final Button buttonCloseFeedback;
 	
 	private Button.ClickListener listenerClickDownload;
 	
@@ -72,6 +74,15 @@ public class ProposalView extends ListView {
         });
 		if(config.isRegisterProposal()) {
 			this.addActionButton(this.buttonInvalidate);
+		}
+		this.buttonCloseFeedback = new Button("Encerrar Avaliações", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	closeFeedback();
+            }
+        });
+		if(config.isRegisterProposal()) {
+			this.addActionButton(this.buttonCloseFeedback);
 		}
 		
 		this.comboSemester = new SemesterComboBox();
@@ -154,6 +165,27 @@ public class ProposalView extends ListView {
                 }
             });
 		}
+	}
+	
+	private void closeFeedback() {
+		ConfirmDialog.show(UI.getCurrent(), "Confirma o encerramento das avaliações de Proposta de TCC 1 para o semestre " + 
+				String.valueOf(this.comboSemester.getSemester()) + "/" + String.valueOf(this.textYear.getYear()) + "?", new ConfirmDialog.Listener() {
+            public void onClose(ConfirmDialog dialog) {
+                if (dialog.isConfirmed()) {
+                	try {
+                		ProposalAppraiserBO bo = new ProposalAppraiserBO();
+                		
+						bo.closeFeedback(Session.getUser().getDepartment().getIdDepartment(), comboSemester.getSemester(), textYear.getYear());
+						
+						Notification.show("Encerrar Avaliações", "Avaliações encerradas com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+					} catch (Exception e) {
+						Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+						
+						Notification.show("Encerrar Avaliações", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+					}
+                }
+            }
+        });
 	}
 	
 	@Override

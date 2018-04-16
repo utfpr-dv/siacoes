@@ -54,6 +54,7 @@ public class EditJuryAppraiserScoreWindow extends EditWindow {
 		this.textComments = new TextArea("Observações");
 		this.textComments.setWidth("800px");
 		this.textComments.setHeight("300px");
+		this.textComments.addStyleName("textscroll");
 		
 		this.tab = new TabSheet();
 		

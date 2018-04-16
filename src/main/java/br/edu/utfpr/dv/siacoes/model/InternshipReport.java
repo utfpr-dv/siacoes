@@ -35,13 +35,13 @@ public class InternshipReport {
 		public String getDescription(){
 			switch(this){
 				case STUDENT:
-					return "Aluno";
+					return "Acadêmico";
 				case SUPERVISOR:
 					return "Orientador";
 				case COMPANY:
 					return "Supervisor";
 				default:
-					return "Aluno";
+					return "Acadêmico";
 			}
 		}
 		

@@ -68,7 +68,7 @@ public class InternshipView extends ListView {
 		this.textYear = new YearField();
 		this.textYear.setYear(0);
 		
-		this.comboStudent = new StudentComboBox("Aluno");
+		this.comboStudent = new StudentComboBox("Acadêmico");
 		
 		this.comboProfessor = new SupervisorComboBox("Orientador", Session.getUser().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		
@@ -174,14 +174,14 @@ public class InternshipView extends ListView {
 				this.buttonFinalDocument.setCaption("Val. Relat. Final");
 			}
 		}else{
-			this.buttonProfessorStatement.setCaption("Declaração Prof.");
-			this.buttonStudentStatement.setCaption("Declaração Aluno");
+			this.buttonProfessorStatement.setCaption("Declaração Professor");
+			this.buttonStudentStatement.setCaption("Declaração Acadêmico");
 		}
 	}
 
 	@Override
 	protected void loadGrid() {
-		this.getGrid().addColumn("Aluno", String.class);
+		this.getGrid().addColumn("Acadêmico", String.class);
 		this.getGrid().addColumn("Empresa", String.class);
 		this.getGrid().addColumn("Orientador", String.class);
 		this.getGrid().addColumn("Data Início", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
@@ -317,7 +317,7 @@ public class InternshipView extends ListView {
     			
     			if(doc == null){
     				if(this.profile == UserProfile.PROFESSOR){
-    					throw new Exception("O aluno ainda não enviou a versão final do relatório.");
+    					throw new Exception("O acadêmico ainda não enviou a versão final do relatório.");
     				}else{
     					doc = new InternshipFinalDocument();
     					

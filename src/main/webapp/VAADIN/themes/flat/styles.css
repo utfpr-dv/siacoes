@@ -1633,6 +1633,10 @@ div.v-layout.v-horizontal.v-widget {
 	border: none !important;
 }
 
+.textscroll {
+	overflow-y: auto !important;
+}
+
 .flat.v-app, .flat.v-app-loading {
 	font: 400 13px/1.55 "Roboto", sans-serif;
 	color: #474747;

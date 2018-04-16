@@ -77,6 +77,7 @@ public class EditProposalAppraiserWindow extends EditWindow {
 		
 		this.textComments.setWidth("800px");
 		this.textComments.setHeight("200px");
+		this.textComments.addStyleName("textscroll");
 		
 		this.addField(this.comboAppraiser);
 		this.addField(this.comboFeedback);

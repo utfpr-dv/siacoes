@@ -114,7 +114,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.comboDepartment = new DepartmentComboBox(0);
 		this.comboDepartment.setEnabled(false);
 		
-		this.comboStudent = new StudentComboBox("Aluno");
+		this.comboStudent = new StudentComboBox("Acadêmico");
 		
 		this.comboSupervisor = new SupervisorComboBox("Orientador", Session.getUser().getDepartment().getIdDepartment(), new SigesConfigBO().getSupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
 		
@@ -312,7 +312,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.tabContainer = new TabSheet();
 		this.tabContainer.setWidth("820px");
 		this.tabContainer.addTab(tab1, "Estágio");
-		this.tabContainer.addTab(tab2, "Aluno");
+		this.tabContainer.addTab(tab2, "Acadêmico");
 		this.tabContainer.addTab(tab3, "Orientador");
 		this.tabContainer.addTab(tab4, "Supervisor");
 		this.tabContainer.addTab(this.textComments, "Observações");

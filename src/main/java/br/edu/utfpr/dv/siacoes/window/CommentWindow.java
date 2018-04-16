@@ -10,9 +10,9 @@ public class CommentWindow extends Window {
 		
 		TextArea text = new TextArea();
 		text.setWidth("800px");
-		text.setHeight("300px");
-		text.setEnabled(false);
+		text.setHeight("500px");
 		text.setValue(comments);
+		text.addStyleName("textscroll");
 		this.setContent(text);
 		
 		this.setModal(true);

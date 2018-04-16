@@ -13,6 +13,7 @@ public class TermOfApprovalReport {
 	private Date date;
 	private Date startTime;
 	private Date endTime;
+	private boolean hideSignatures;
 	
 	public TermOfApprovalReport(){
 		this.setTitle("");
@@ -24,6 +25,7 @@ public class TermOfApprovalReport {
 		this.setDate(new Date());
 		this.setStartTime(new Date());
 		this.setEndTime(new Date());
+		this.setHideSignatures(false);
 	}
 	
 	public String getTitle() {
@@ -79,6 +81,12 @@ public class TermOfApprovalReport {
 	}
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+	public boolean isHideSignatures() {
+		return hideSignatures;
+	}
+	public void setHideSignatures(boolean hideSignatures) {
+		this.hideSignatures = hideSignatures;
 	}
 
 }

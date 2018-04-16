@@ -1607,6 +1607,10 @@ div.v-layout.v-horizontal.v-widget {
 	font-weight: bold;
 }
 
+.textscroll {
+	overflow-y: auto !important;
+}
+
 .metro.v-app, .metro.v-app-loading {
 	font: 300 13px/1.55 "Source Sans Pro", sans-serif;
 	color: #474747;

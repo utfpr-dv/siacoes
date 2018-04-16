@@ -1598,6 +1598,10 @@ div.v-layout.v-horizontal.v-widget {
 	font-weight: bold;
 }
 
+.textscroll {
+	overflow-y: auto !important;
+}
+
 .facebook.v-app, .facebook.v-app-loading {
 	font: 400 13px/1.55 Helvetica, Arial, "lucida grande", tahoma, verdana, arial, sans-serif;
 	color: #37404E;

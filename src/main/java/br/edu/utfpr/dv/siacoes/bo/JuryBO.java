@@ -501,7 +501,16 @@ public class JuryBO {
 	    return bd.doubleValue();
 	}
 	
-	public TermOfApprovalReport getTermOfApprovalReport(int idJury) throws Exception{
+	public byte[] getTermOfApproval(int idJury, boolean hideSignatures) throws Exception{
+		TermOfApprovalReport report = this.getTermOfApprovalReport(idJury, hideSignatures);
+		
+		List<TermOfApprovalReport> list = new ArrayList<TermOfApprovalReport>();
+		list.add(report);
+		
+		return new ReportUtils().createPdfStream(list, "TermOfApproval").toByteArray();
+	}
+	
+	public TermOfApprovalReport getTermOfApprovalReport(int idJury, boolean hideSignatures) throws Exception{
 		try{
 			Jury jury = this.findById(idJury);
 			
@@ -530,6 +539,7 @@ public class JuryBO {
 			report.setLocal(jury.getLocal());
 			report.setStartTime(jury.getStartTime());
 			report.setEndTime(jury.getEndTime());
+			report.setHideSignatures(hideSignatures);
 			
 			JuryAppraiserBO bo2 = new JuryAppraiserBO();
 			List<JuryAppraiser> list = bo2.listAppraisers(idJury);

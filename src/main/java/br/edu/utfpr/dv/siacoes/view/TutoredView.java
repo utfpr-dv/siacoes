@@ -80,7 +80,7 @@ public class TutoredView extends ListView {
 
 	@Override
 	protected void loadGrid() {
-		this.getGrid().addColumn("Aluno", String.class);
+		this.getGrid().addColumn("Acadêmico", String.class);
 		this.getGrid().addColumn("TCC", Integer.class);
 		this.getGrid().addColumn("Título", String.class);
 		this.getGrid().addColumn("Sem.", Integer.class);

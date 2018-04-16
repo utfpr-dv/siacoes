@@ -1624,6 +1624,10 @@ div.v-layout.v-horizontal.v-widget {
 	font-weight: bold;
 }
 
+.textscroll {
+	overflow-y: auto !important;
+}
+
 .light.v-app, .light.v-app-loading {
 	font: 300 13px/1.55 "Open Sans", sans-serif;
 	color: #474747;

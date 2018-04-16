@@ -118,6 +118,7 @@ import br.edu.utfpr.dv.siacoes.window.EditSigetWindow;
 import br.edu.utfpr.dv.siacoes.window.EditSupervisorWindow;
 import br.edu.utfpr.dv.siacoes.window.EditThesisWindow;
 import br.edu.utfpr.dv.siacoes.window.EditUserWindow;
+import br.edu.utfpr.dv.siacoes.window.JuryGradesWindow;
 
 public class SideMenu extends CustomComponent {
 	
@@ -656,7 +657,7 @@ public class SideMenu extends CustomComponent {
 			layout.addComponent(new MenuEntry("Cidades", 1, CityView.NAME));
 			layout.addComponent(new MenuEntry("Empresas", 1, CompanyView.NAME));
 			layout.addComponent(new MenuEntry("Supervisores", 1, CompanySupervisorView.NAME));
-			layout.addComponent(new MenuEntry("Alunos", 1, StudentView.NAME));
+			layout.addComponent(new MenuEntry("Acadêmicos", 1, StudentView.NAME));
 		}
 		
 		if(Session.isUserManager(SystemModule.SIGES) || Session.isUserDepartmentManager() || Session.isUserProfessor() || Session.isUserStudent()) {
@@ -801,6 +802,23 @@ public class SideMenu extends CustomComponent {
 					}
 				}));
 				
+				if(this.sigetConfig.isShowGradesToStudent()) {
+					layout.addComponent(new MenuEntry("Notas da Banca", 1, new MenuEntryClickListener() {
+						@Override
+						public void menuClick() {
+							try {
+								Jury jury = new JuryBO().findByProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+								
+								UI.getCurrent().addWindow(new JuryGradesWindow(jury));
+		        	    	} catch (Exception e) {
+		        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+		        	    		
+								Notification.show("Notas da Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+							}
+						}
+					}));
+				}
+				
 				layout.addComponent(new MenuEntry("Submeter Versão Final", 1, new MenuEntryClickListener() {
 					@Override
 					public void menuClick() {
@@ -870,6 +888,42 @@ public class SideMenu extends CustomComponent {
 	        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	    		
 							Notification.show("Feedback da Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+						}
+					}
+				}));
+				
+				if(this.sigetConfig.isShowGradesToStudent()) {
+					layout.addComponent(new MenuEntry("Notas da Banca", 1, new MenuEntryClickListener() {
+						@Override
+						public void menuClick() {
+							try {
+								Jury jury = new JuryBO().findByThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+								
+								UI.getCurrent().addWindow(new JuryGradesWindow(jury));
+		        	    	} catch (Exception e) {
+		        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+		        	    		
+								Notification.show("Notas da Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+							}
+						}
+					}));
+				}
+				
+				layout.addComponent(new MenuEntry("Termo de Aprovação", 1, new MenuEntryClickListener() {
+					@Override
+					public void menuClick() {
+						try {
+							Jury jury = new JuryBO().findByThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+							
+							if(jury.getIdJury() == 0) {
+								throw new Exception("O Termo de Aprovação somente é gerado após o envio da Monografia e a composição da Banca.");
+							}
+							
+							showReport(new JuryBO().getTermOfApproval(jury.getIdJury(), true));
+						} catch (Exception e) {
+							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+							
+							Notification.show("Termo de Aprovação", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 						}
 					}
 				}));

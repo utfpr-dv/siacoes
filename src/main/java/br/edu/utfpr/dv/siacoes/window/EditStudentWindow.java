@@ -18,7 +18,7 @@ public class EditStudentWindow extends EditWindow {
 	private final TextField textStudentCode;
 	
 	public EditStudentWindow(User user, ListView parentView){
-		super("Editar Aluno", parentView);
+		super("Editar Acadêmico", parentView);
 		
 		if(user == null){
 			this.user = new User();
@@ -60,14 +60,14 @@ public class EditStudentWindow extends EditWindow {
 			
 			bo.save(user);
 			
-			Notification.show("Salvar Aluno", "Aluno salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			Notification.show("Salvar Acadêmico", "Acadêmico salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Aluno", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			Notification.show("Salvar Acadêmico", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
 

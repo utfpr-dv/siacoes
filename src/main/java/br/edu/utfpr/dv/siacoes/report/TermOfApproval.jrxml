@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-08-25T16:07:40 -->
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TermOfApproval" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="ca4d5aa2-bbad-4d90-85d3-6dbd5493d023">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -44,6 +43,9 @@
 	</field>
 	<field name="supervisor" class="java.lang.String">
 		<fieldDescription><![CDATA[supervisor]]></fieldDescription>
+	</field>
+	<field name="hideSignatures" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[hideSignatures]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -113,62 +115,71 @@
 				<textFieldExpression><![CDATA["Este Trabalho de Conclusão de Curso foi apresentado em " + DATEFORMAT($F{date}, "dd") + " de " + IF(MONTH($F{date}) == 1, "Janeiro", IF(MONTH($F{date}) == 2, "Fevereiro", IF(MONTH($F{date}) == 3, "Março", IF(MONTH($F{date}) == 4, "Abril", IF(MONTH($F{date}) == 5, "Maio", IF(MONTH($F{date}) == 6, "Junho", IF(MONTH($F{date}) == 7, "Julho", IF(MONTH($F{date}) == 8, "Agosto", IF(MONTH($F{date}) == 9, "Setembro", IF(MONTH($F{date}) == 10, "Outubro", IF(MONTH($F{date}) == 11, "Novembro", "Dezembro"))))))))))) + " de " + DATEFORMAT($F{date}, "yyyy") + " como requisito parcial para a obtenção do título de Bacharel em Engenharia de Software. O(a) candidato(a) foi arguido(a) pela Banca Examinadora composta pelos professores abaixo assinados. Após deliberação, a Banca Examinadora considerou o trabalho aprovado."]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="554" width="480" height="21" uuid="7c26f89a-c15c-4889-ace9-b5a5c4fe3d39"/>
+				<reportElement x="0" y="538" width="480" height="21" uuid="7c26f89a-c15c-4889-ace9-b5a5c4fe3d39"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{member2}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="575" width="480" height="20" uuid="99dc6b54-e864-4ed5-aedf-10ae8c8cb0eb"/>
+				<reportElement x="0" y="559" width="480" height="20" uuid="99dc6b54-e864-4ed5-aedf-10ae8c8cb0eb"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<text><![CDATA[Membro Titular]]></text>
 			</staticText>
 			<line>
-				<reportElement x="119" y="550" width="241" height="1" uuid="e992ccee-b554-4b5a-86b9-c799964a3683">
+				<reportElement x="119" y="534" width="241" height="1" uuid="e992ccee-b554-4b5a-86b9-c799964a3683">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 			</line>
 			<textField>
-				<reportElement x="0" y="370" width="480" height="21" uuid="ed3d2a30-163e-42de-9a34-b4ec2b8c1f1b"/>
+				<reportElement x="0" y="354" width="480" height="21" uuid="ed3d2a30-163e-42de-9a34-b4ec2b8c1f1b"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{supervisor}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="391" width="480" height="20" uuid="3907ed00-784c-412a-bb0f-50b7cd841239"/>
+				<reportElement x="0" y="375" width="480" height="20" uuid="3907ed00-784c-412a-bb0f-50b7cd841239"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<text><![CDATA[Professor(a) Orientador(a)]]></text>
 			</staticText>
 			<line>
-				<reportElement x="119" y="366" width="241" height="1" uuid="b80da8db-946d-41b0-864d-fde76fe680a2">
+				<reportElement x="119" y="350" width="241" height="1" uuid="b80da8db-946d-41b0-864d-fde76fe680a2">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 			</line>
 			<textField>
-				<reportElement x="0" y="460" width="480" height="21" uuid="8b80af2a-cf4e-4cad-9681-91287868c9b9"/>
+				<reportElement x="0" y="444" width="480" height="21" uuid="8b80af2a-cf4e-4cad-9681-91287868c9b9"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{member1}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="481" width="480" height="20" uuid="abdfb631-a34d-442d-83ea-68ae71001583"/>
+				<reportElement x="0" y="465" width="480" height="20" uuid="abdfb631-a34d-442d-83ea-68ae71001583"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<text><![CDATA[Membro Titular]]></text>
 			</staticText>
 			<line>
-				<reportElement x="119" y="456" width="241" height="1" uuid="fd047c07-5c94-4969-aab3-093f58766200">
+				<reportElement x="119" y="440" width="241" height="1" uuid="fd047c07-5c94-4969-aab3-093f58766200">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 			</line>
+			<staticText>
+				<reportElement x="1" y="589" width="480" height="20" uuid="749585c6-bc22-4cd7-ae25-9f2d216f21a7">
+					<printWhenExpression><![CDATA[$F{hideSignatures} == true]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[* A Folha de Aprovação assinada encontra-se na Coordenação do Curso]]></text>
+			</staticText>
 		</band>
 	</detail>
 </jasperReport>

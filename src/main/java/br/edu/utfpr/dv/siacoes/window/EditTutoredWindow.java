@@ -140,7 +140,7 @@ public class EditTutoredWindow extends EditWindow {
 		this.projectFinalDocument = projectFinalDocument;
 		this.thesisFinalDocument = thesisFinalDocument;
 		
-		this.textStudent = new TextField("Aluno");
+		this.textStudent = new TextField("Acadêmico");
 		this.textStudent.setWidth("400px");
 		this.textStudent.setEnabled(false);
 		

@@ -35,7 +35,7 @@ public class EditSigetWindow extends EditWindow {
 		this.textMinimumScore = new TextField("Pontuação Mínima");
 		this.textMinimumScore.setWidth("100px");
 		
-		this.checkRegisterProposal = new CheckBox("O aluno deve registrar a proposta para TCC1");
+		this.checkRegisterProposal = new CheckBox("O acadêmico deve registrar a proposta para TCC1");
 		
 		this.checkShowGradesToStudent = new CheckBox("Permitir que o acadêmico visualize as notas atribuídas pela banca");
 		

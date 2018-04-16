@@ -11,6 +11,7 @@ public class BasicWindow extends Window {
 	
 	public BasicWindow(String title) {
 		super(title);
+		this.setModal(true);
 	}
 
 	protected void showReport(byte[] pdfReport){

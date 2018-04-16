@@ -144,6 +144,8 @@ public class ProposalAppraiserBO {
 					keys.add(new EmailMessageEntry<String, String>("manager", user.getName()));
 					
 					bo.sendEmail(user.getIdUser(), MessageType.PROPOSALAPPRAISERFEEDBACK, keys);
+					bo.sendEmail(proposal.getSupervisor().getIdUser(), MessageType.PROPOSALAPPRAISERFEEDBACKSUPERVISOR, keys);
+					bo.sendEmail(proposal.getStudent().getIdUser(), MessageType.PROPOSALAPPRAISERFEEDBACKSTUDENT, keys);
 				}
 			}
 		}catch(Exception e){
@@ -151,6 +153,29 @@ public class ProposalAppraiserBO {
 		}
 		
 		return ret;
+	}
+	
+	public void closeFeedback(int idDepartment, int semester, int year) throws Exception {
+		try {
+			ProposalAppraiserDAO dao = new ProposalAppraiserDAO();
+			List<ProposalAppraiser> list = dao.listNoFeedbackAppraisers(idDepartment, semester, year);
+			
+			if(list.size() > 0) {
+				String message = "Não é possível encerrar as avaliações das Propostas de TCC 1, pois os seguintes avaliadores ainda não cadastraram seus pareceres:\n\n";
+				
+				for(ProposalAppraiser appraiser : list) {
+					message = message + "Avaliador: " + appraiser.getAppraiser().getName() + " > Acadêmico: " + appraiser.getProposal().getStudent().getName() + ".\n";
+				}
+				
+				throw new Exception(message);
+			} else {
+				dao.closeFeedback(idDepartment, semester, year);
+			}
+		} catch(Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
 	}
 	
 }

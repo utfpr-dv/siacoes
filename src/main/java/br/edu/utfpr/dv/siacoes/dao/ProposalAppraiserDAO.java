@@ -164,6 +164,53 @@ public class ProposalAppraiserDAO {
 		}
 	}
 	
+	public List<ProposalAppraiser> listNoFeedbackAppraisers(int idDepartment, int semester, int year) throws SQLException {
+		ResultSet rs = null;
+		Statement stmt = null;
+		
+		try{
+			stmt = this.conn.createStatement();
+			rs = stmt.executeQuery("SELECT proposalappraiser.*, appraiser.name AS appraiserName, proposal.idStudent, student.name AS studentName " +
+					"FROM proposalappraiser INNER JOIN proposal ON proposal.idProposal=proposalappraiser.idProposal " +
+					"INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
+					"INNER JOIN \"user\" appraiser ON appraiser.idUser=proposalappraiser.idAppraiser " +
+					"WHERE proposalappraiser.feedback = " + String.valueOf(ProposalFeedback.NONE.getValue()) + " AND proposal.idDepartment = " + String.valueOf(idDepartment) + 
+					" AND proposal.semester = " + String.valueOf(semester) + " AND proposal.year = " + String.valueOf(year));
+			List<ProposalAppraiser> list = new ArrayList<ProposalAppraiser>();
+			
+			while(rs.next()){
+				ProposalAppraiser appraiser = this.loadObject(rs); 
+				
+				appraiser.getProposal().getStudent().setIdUser(rs.getInt("idStudent"));
+				appraiser.getProposal().getStudent().setName(rs.getString("studentName"));
+				
+				list.add(appraiser);
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
+	}
+	
+	public void closeFeedback(int idDepartment, int semester, int year) throws SQLException {
+		Statement stmt = null;
+		
+		try{
+			stmt = this.conn.createStatement();
+			stmt.execute("UPDATE proposalappraiser SET allowEditing = 0 " +
+					"WHERE proposalappraiser.feedback <> " + String.valueOf(ProposalFeedback.NONE.getValue()) + 
+					" AND idProposal IN (SELECT idProposal FROM proposal WHERE proposal.idDepartment = " + String.valueOf(idDepartment) + 
+					" AND proposal.semester = " + String.valueOf(semester) + " AND proposal.year = " + String.valueOf(year) + ")");
+		}finally{
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
+	}
+	
 	private ProposalAppraiser loadObject(ResultSet rs) throws SQLException{
 		ProposalAppraiser p = new ProposalAppraiser();
 		

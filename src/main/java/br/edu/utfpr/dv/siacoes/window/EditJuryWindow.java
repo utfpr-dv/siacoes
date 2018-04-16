@@ -85,6 +85,7 @@ public class EditJuryWindow extends EditWindow {
 		this.textComments = new TextArea("Observações");
 		this.textComments.setWidth("690px");
 		this.textComments.setHeight("150px");
+		this.textComments.addStyleName("textscroll");
 		
 		VerticalLayout tab1 = new VerticalLayout();
 		tab1.setSpacing(true);
@@ -145,14 +146,14 @@ public class EditJuryWindow extends EditWindow {
 		
 		this.layoutParticipants = new HorizontalLayout();
 		
-		this.buttonAddParticipant = new Button("Adicionar Aluno", new Button.ClickListener() {
+		this.buttonAddParticipant = new Button("Adicionar Acadêmico", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
             	addParticipant();            	
             }
         });
 		
-		this.buttonRemoveParticipant = new Button("Remover Aluno", new Button.ClickListener() {
+		this.buttonRemoveParticipant = new Button("Remover Acadêmico", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
             	removeParticipant();
@@ -408,7 +409,7 @@ public class EditJuryWindow extends EditWindow {
 		int index = this.getParticipantSelectedIndex();
 		
 		if(index == -1){
-			Notification.show("Gerar Declaração", "Selecione o aluno para gerar a declaração.", Notification.Type.WARNING_MESSAGE);
+			Notification.show("Gerar Declaração", "Selecione o acadêmico para gerar a declaração.", Notification.Type.WARNING_MESSAGE);
 		}else{
 			try{
 				CertificateBO bo = new CertificateBO();

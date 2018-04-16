@@ -126,7 +126,7 @@ public class InternshipBO {
 			throw new Exception("Informe o professor orientador do estágio.");
 		}
 		if((internship.getStudent() == null) || (internship.getStudent().getIdUser() == 0)){
-			throw new Exception("Informe o aluno.");
+			throw new Exception("Informe o acadêmico.");
 		}
 		if(internship.getStartDate() == null){
 			throw new Exception("Informe a data de início do estágio.");
@@ -224,7 +224,7 @@ public class InternshipBO {
 			InternshipReportBO bo = new InternshipReportBO();
 			
 			if(bo.listByInternship(id).size() > 0){
-				throw new Exception("É necessário excluir os relatórios de orientação, supervisão e do aluno antes de excluir o estágio.");
+				throw new Exception("É necessário excluir os relatórios de orientação, supervisão e do acadêmico antes de excluir o estágio.");
 			}
 			
 			InternshipJuryBO jbo = new InternshipJuryBO();

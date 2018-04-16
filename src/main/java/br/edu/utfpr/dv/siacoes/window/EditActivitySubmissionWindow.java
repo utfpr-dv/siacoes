@@ -158,6 +158,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		this.textComments = new TextArea();
 		this.textComments.setWidth("810px");
 		this.textComments.setHeight("300px");
+		this.textComments.addStyleName("textscroll");
 		
 		if(Session.isUserDepartmentManager() && !Session.isUserManager(SystemModule.SIGAC)){
 			this.setSaveButtonEnabled(false);
