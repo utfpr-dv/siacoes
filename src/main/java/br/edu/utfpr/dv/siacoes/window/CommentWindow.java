@@ -1,9 +1,8 @@
 ﻿package br.edu.utfpr.dv.siacoes.window;
 
 import com.vaadin.ui.TextArea;
-import com.vaadin.ui.Window;
 
-public class CommentWindow extends Window {
+public class CommentWindow extends BasicWindow {
 	
 	public CommentWindow(String title, String comments){
 		super(title);
@@ -17,7 +16,6 @@ public class CommentWindow extends Window {
 		
 		this.setModal(true);
         this.center();
-        this.setResizable(false);
 	}
 
 }

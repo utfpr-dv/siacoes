@@ -44,9 +44,13 @@ public class JuryGradesWindow extends BasicWindow {
 			TabSheet tab = new TabSheet();
 			tab.setSizeFull();
 			
+			VerticalLayout layoutMain = new VerticalLayout(tab);
+			layoutMain.setSpacing(true);
+			layoutMain.setMargin(true);
+			
 			Grid gridGeneral = new Grid();
 			gridGeneral.setWidth("100%");
-			gridGeneral.setHeight("150px");
+			gridGeneral.setHeight("245px");
 			gridGeneral.addColumn("", String.class);
 			gridGeneral.addColumn("Avaliador", String.class);
 			gridGeneral.addColumn("Escrita", Double.class);
@@ -72,7 +76,7 @@ public class JuryGradesWindow extends BasicWindow {
 			
 			TextArea textComments = new TextArea("Comentários");
 			textComments.setWidth("100%");
-			textComments.setHeight("75px");
+			textComments.setHeight("100px");
 			textComments.setValue(report.getComments());
 			textComments.addStyleName("textscroll");
 			
@@ -90,7 +94,7 @@ public class JuryGradesWindow extends BasicWindow {
 				
 				Grid gridScores = new Grid();
 				gridScores.setWidth("100%");
-				gridScores.setHeight("150px");
+				gridScores.setHeight("225px");
 				gridScores.addColumn("Quesito", String.class);
 				gridScores.addColumn("Peso", Double.class);
 				gridScores.addColumn("Nota", Double.class);
@@ -101,7 +105,7 @@ public class JuryGradesWindow extends BasicWindow {
 				
 				TextArea textAppraiserComments = new TextArea("Comentários");
 				textAppraiserComments.setWidth("100%");
-				textAppraiserComments.setHeight("50px");
+				textAppraiserComments.setHeight("100px");
 				textAppraiserComments.setValue(appraiser.getComments());
 				textAppraiserComments.addStyleName("textscroll");
 				
@@ -111,7 +115,7 @@ public class JuryGradesWindow extends BasicWindow {
 				tab.addTab(tabAppraiser, appraiser.getDescription());
 			}
 			
-			this.setContent(tab);
+			this.setContent(layoutMain);
 		}
 	}
 	
