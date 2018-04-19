@@ -57,7 +57,7 @@ public class FileUploader extends HorizontalLayout {
 		this.uploadFile.addSucceededListener(listener);
 		this.uploadFile.addStartedListener(listener);
 		this.uploadFile.addProgressListener(listener);
-		this.uploadFile.setButtonCaption("Enviar Arquivo");
+		this.setButtonCaption("Enviar Arquivo");
 		this.uploadFile.setImmediate(true);
 		
 		this.imageFileUploaded = new Image("", new ThemeResource("images/ok.png"));
@@ -113,6 +113,14 @@ public class FileUploader extends HorizontalLayout {
 
 	public List<DocumentType> getAcceptedDocumentTypes() {
 		return acceptedDocumentTypes;
+	}
+	
+	public void setButtonCaption(String buttonCaption) {
+		this.uploadFile.setButtonCaption(buttonCaption);
+	}
+	
+	public String getButtonCaption() {
+		return this.uploadFile.getButtonCaption();
 	}
 	
 	private String getStringMaxBytesLength() {

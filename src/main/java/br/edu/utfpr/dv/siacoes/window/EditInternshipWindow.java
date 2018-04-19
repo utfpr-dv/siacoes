@@ -151,6 +151,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.textReportTitle.setWidth("810px");
 		
 		this.uploadInternshipPlan = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
+		this.uploadInternshipPlan.setButtonCaption("Enviar Plano de Estágio");
 		this.uploadInternshipPlan.getAcceptedDocumentTypes().add(DocumentType.PDF);
 		this.uploadInternshipPlan.setMaxBytesLength(6 * 1024 * 1024);
 		this.uploadInternshipPlan.setFileUploadListener(new FileUploaderListener() {
@@ -172,6 +173,7 @@ public class EditInternshipWindow extends EditWindow {
         });
 		
 		this.uploadFinalReport = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
+		this.uploadFinalReport.setButtonCaption("Enviar Relatório Final");
 		this.uploadFinalReport.getAcceptedDocumentTypes().add(DocumentType.PDF);
 		this.uploadFinalReport.setMaxBytesLength(6 * 1024 * 1024);
 		this.uploadFinalReport.setFileUploadListener(new FileUploaderListener() {
@@ -209,6 +211,7 @@ public class EditInternshipWindow extends EditWindow {
 		h4.setSpacing(true);
 		
 		HorizontalLayout h5 = new HorizontalLayout(this.uploadInternshipPlan, this.uploadFinalReport);
+		h5.setSpacing(true);
 		
 		VerticalLayout tab1 = new VerticalLayout(h1, h2, h3, h4, this.textReportTitle);
 		if(Session.isUserManager(SystemModule.SIGES)){
@@ -375,6 +378,8 @@ public class EditInternshipWindow extends EditWindow {
 		this.internship.setReports(null);
 		
 		this.loadReports();
+		this.buttonDownloadInternshipPlan.setVisible(this.internship.getInternshipPlan() != null);
+		this.buttonDownloadFinalReport.setVisible(this.internship.getFinalReport() != null);
 		
 		if(this.internship.getIdInternship() != 0) {
 			try {

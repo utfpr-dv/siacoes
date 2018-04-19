@@ -15,6 +15,7 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -141,11 +142,15 @@ public abstract class BasicView extends CustomComponent implements View {
     }
     
     protected void showReport(byte[] pdfReport){
-    	String id = UUID.randomUUID().toString();
-    	
-    	Session.putReport(pdfReport, id);
-		
-		getUI().getPage().open("#!" + PDFView.NAME + "/session/" + id, "_blank");
+    	if(pdfReport == null) {
+    		Notification.show("Visualizar Arquivo", "O arquivo solicitado não foi encontrado.", Notification.Type.ERROR_MESSAGE);
+    	} else {
+        	String id = UUID.randomUUID().toString();
+        	
+        	Session.putReport(pdfReport, id);
+    		
+    		getUI().getPage().open("#!" + PDFView.NAME + "/session/" + id, "_blank");    		
+    	}
     }
 
 }

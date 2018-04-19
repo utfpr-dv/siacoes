@@ -1053,12 +1053,16 @@ public class SideMenu extends CustomComponent {
 		return layout;
 	}
 	
-	private void showReport(byte[] pdfReport){
-		String id = UUID.randomUUID().toString();
-    	
-		Session.putReport(pdfReport, id);
-		
-		getUI().getPage().open("#!" + PDFView.NAME + "/session/" + id, "_blank");
+	private void showReport(byte[] pdfReport) {
+		if(pdfReport == null) {
+    		Notification.show("Visualizar Arquivo", "O arquivo solicitado não foi encontrado.", Notification.Type.ERROR_MESSAGE);
+    	} else {
+			String id = UUID.randomUUID().toString();
+	    	
+			Session.putReport(pdfReport, id);
+			
+			getUI().getPage().open("#!" + PDFView.NAME + "/session/" + id, "_blank");
+    	}
     }
 	
 }
