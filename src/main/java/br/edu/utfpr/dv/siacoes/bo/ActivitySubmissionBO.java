@@ -113,10 +113,8 @@ public class ActivitySubmissionBO {
 		if(submission.getDescription().trim().isEmpty()){
 			throw new Exception("Informe a descrição da atividade.");
 		}
-		if(submission.getFeedback() != ActivityFeedback.DISAPPROVED) {
-			submission.setFeedbackReason("");
-		} else if(submission.getFeedbackReason().trim().isEmpty()) {
-			throw new Exception("Informe o motivo para a recusa da atividade.");
+		if(submission.getFeedback() == ActivityFeedback.DISAPPROVED) {
+			throw new Exception("Informe o motivo para a recusa da atividade (observações do parecerista).");
 		}
 		boolean fillAmount = new ActivityBO().needsFillAmount(submission.getActivity().getIdActivity());
 		if((submission.getAmount() <= 0) && fillAmount) {

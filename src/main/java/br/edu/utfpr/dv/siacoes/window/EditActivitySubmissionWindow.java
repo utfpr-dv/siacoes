@@ -62,7 +62,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 	private final TextArea textComments;
 	private final TextField textFeedbackUser;
 	private final TextField textDescription;
-	private final TextField textFeedbackReason;
+	private final TextArea textFeedbackReason;
 	private final TabSheet tabContainer;
 	private final VerticalLayout tab3;
 	
@@ -152,8 +152,9 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		this.textFeedbackUser.setEnabled(false);
 		this.textFeedbackUser.setWidth("810px");
 		
-		this.textFeedbackReason = new TextField("Motivo da recusa da atividade");
+		this.textFeedbackReason = new TextArea("Observações do Parecerista");
 		this.textFeedbackReason.setWidth("810px");
+		this.textFeedbackReason.setHeight("150px");
 
 		this.textComments = new TextArea();
 		this.textComments.setWidth("810px");
@@ -213,9 +214,9 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		this.tabContainer = new TabSheet();
 		this.tabContainer.setWidth("820px");
 		this.tabContainer.addTab(tab1, "Atividade");
+		this.tabContainer.addTab(this.tab3, "Comprovante");
 		this.tabContainer.addTab(this.textComments, "Observações");
 		this.tabContainer.addTab(tabFeedback, "Parecer");
-		this.tabContainer.addTab(this.tab3, "Comprovante");
 		
 		this.addField(this.tabContainer);
 		
