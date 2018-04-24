@@ -113,7 +113,7 @@ public class ActivitySubmissionBO {
 		if(submission.getDescription().trim().isEmpty()){
 			throw new Exception("Informe a descrição da atividade.");
 		}
-		if(submission.getFeedback() == ActivityFeedback.DISAPPROVED) {
+		if((submission.getFeedback() == ActivityFeedback.DISAPPROVED) && ((submission.getFeedbackReason() == null) || submission.getFeedbackReason().trim().isEmpty())) {
 			throw new Exception("Informe o motivo para a recusa da atividade (observações do parecerista).");
 		}
 		boolean fillAmount = new ActivityBO().needsFillAmount(submission.getActivity().getIdActivity());
@@ -123,8 +123,14 @@ public class ActivitySubmissionBO {
 		if(!fillAmount) {
 			submission.setAmount(1);
 		}
-		if((submission.getFeedback() == ActivityFeedback.APPROVED) && (submission.getValidatedAmount() <= 0)){
-			submission.setValidatedAmount(submission.getAmount());
+		if((submission.getFeedback() == ActivityFeedback.APPROVED) && (submission.getValidatedAmount() <= 0)) {
+			if(!fillAmount) {
+				submission.setValidatedAmount(1);
+			} else {
+				submission.setValidatedAmount(submission.getAmount());
+			}
+		} else if(submission.getFeedback() != ActivityFeedback.APPROVED) {
+			submission.setValidatedAmount(0);
 		}
 		if(new FinalSubmissionBO().studentHasSubmission(submission.getStudent().getIdUser(), submission.getDepartment().getIdDepartment())) {
 			throw new Exception("Não é possível incluir ou editar a atividade pois o acadêmico já foi sinalizado como Aprovado.");

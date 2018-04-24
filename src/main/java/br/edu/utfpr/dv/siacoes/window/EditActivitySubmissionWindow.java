@@ -303,6 +303,10 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		this.textComments.setValue(this.submission.getComments());
 		this.textFeedbackReason.setValue(this.submission.getFeedbackReason());
 		
+		if(Session.isUserManager(SystemModule.SIGAC) && (this.submission.getValidatedAmount() <= 0)) {
+			this.textValidatedAmount.setValue(String.format("%.2f", this.submission.getAmount()));
+		}
+		
 		boolean allowEdit = false;
 		
 		if(this.submission.getIdActivitySubmission() == 0) {
