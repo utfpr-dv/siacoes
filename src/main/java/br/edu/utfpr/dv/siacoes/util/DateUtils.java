@@ -86,6 +86,15 @@ public class DateUtils {
 		}
 	}
 	
+	public static Date addMinute(Date date, int minutes){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		
+		cal.add(Calendar.MINUTE, minutes);
+		
+		return cal.getTime();
+	}
+	
 	public static Date addHour(Date date, int hours){
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);

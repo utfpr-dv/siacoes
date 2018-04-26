@@ -1,6 +1,5 @@
 ﻿package br.edu.utfpr.dv.siacoes.window;
 
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -188,6 +187,11 @@ public class EditJuryWindow extends EditWindow {
 		this.textStartTime.setValue(this.jury.getStartTime());
 		this.textEndTime.setValue(this.jury.getEndTime());
 		this.textComments.setValue(this.jury.getComments());
+		
+		if(this.jury.getIdJury() == 0) {
+			this.textStartTime.setVisible(false);
+			this.textEndTime.setVisible(false);
+		}
 		
 		if(this.jury.getAppraisers() == null){
 			try {

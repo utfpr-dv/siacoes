@@ -218,6 +218,9 @@ public class EditInternshipJuryWindow extends EditWindow {
 			this.jury.getAppraisers().add(appraiser);
 			
 			this.jury.setParticipants(new ArrayList<InternshipJuryStudent>());
+			
+			this.textStartTime.setVisible(false);
+			this.textEndTime.setVisible(false);
 		}else {
 			if(this.jury.getAppraisers() == null){
 				try {

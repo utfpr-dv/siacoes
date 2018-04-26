@@ -29,6 +29,7 @@ import br.edu.utfpr.dv.siacoes.model.JuryStudentReport;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class InternshipJuryBO {
@@ -103,6 +104,10 @@ public class InternshipJuryBO {
 			}
 			if(jury.getLocal().isEmpty()){
 				throw new Exception("Informe o local da banca.");
+			}
+			if(jury.getIdInternshipJury() == 0) {
+				jury.setStartTime(jury.getDate());
+				jury.setEndTime(DateUtils.addMinute(jury.getStartTime(), 30));
 			}
 			if(jury.getAppraisers() != null){
 				InternshipJuryAppraiserBO bo = new InternshipJuryAppraiserBO();
