@@ -278,7 +278,9 @@ public class FileUploader extends HorizontalLayout {
 	            
 	            setSuccess();
 	            
-	            fileUploadListener.uploadSucceeded();
+	            if(fileUploadListener != null) {
+	            	fileUploadListener.uploadSucceeded();
+	            }
 	            
 	            Notification.show("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.", Notification.Type.HUMANIZED_MESSAGE);
 	        } catch (Exception e) {
