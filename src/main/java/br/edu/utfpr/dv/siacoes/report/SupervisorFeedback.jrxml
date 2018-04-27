@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-12-04T20:45:58 -->
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SupervisorFeedback" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="4d8936ee-60c3-42f5-ba3a-2f1519f0deb6">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -94,7 +93,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Acadêmico:]]></text>
+				<text><![CDATA[Acadêmico(a):]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="88" width="110" height="20" uuid="d7bc9e97-e46d-4467-88ad-b08a6e5d9f45"/>
@@ -107,7 +106,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Orientador:]]></text>
+				<text><![CDATA[Orientador(a):]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="110" y="48" width="370" height="20" uuid="87425153-2907-4f05-8acb-2c31b4792385"/>
@@ -174,7 +173,7 @@
 				<textElement>
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[para que o acadêmico acima nominado apresente o trabalho em banca pública.]]></text>
+				<text><![CDATA[para que o(a) acadêmico(a) acima nominado(a) apresente o trabalho em banca pública.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="227" width="480" height="20" uuid="1808bbcc-9b51-42d9-9cc6-a5e0fa5c5614"/>
@@ -214,7 +213,7 @@
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Professor Orientador]]></text>
+				<text><![CDATA[Professor(a) Orientador(a)]]></text>
 			</staticText>
 			<line>
 				<reportElement x="119" y="471" width="241" height="1" uuid="47b61efe-f9c5-4905-be1a-a334d82485a1">

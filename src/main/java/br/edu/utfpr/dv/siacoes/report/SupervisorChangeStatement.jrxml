@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-08-25T16:04:58 -->
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SupervisorChangeStatement" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="ccea14cf-463c-4c70-9507-f7e19895ac17">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -106,7 +105,7 @@
 					<font size="12"/>
 					<paragraph lineSpacing="1_1_2"/>
 				</textElement>
-				<textFieldExpression><![CDATA["                                              Eu, acadêmico " + $F{proposal}.getStudent().getName() + ", portador do RA " + $F{proposal}.getStudent().getStudentCode() + ", venho, por meio desta, requerer a substituição do orientador para " + IF($F{stage} == 1, "o Projeto de TCC1", "a Monografia de TCC2") + ", sendo que a partir deste momento o Professor Orientador do trabalho intitulado \"" + $F{proposal}.getTitle() + "\" passa a ser o Professor(a) " + $F{newSupervisor}.getName() + ", e não mais o Professor(a) " + $F{oldSupervisor}.getName() + ", pelo seguinte motivo: " + $F{comments} + "."]]></textFieldExpression>
+				<textFieldExpression><![CDATA["                                              Eu, acadêmico(a) " + $F{proposal}.getStudent().getName() + ", portador(a) do RA " + $F{proposal}.getStudent().getStudentCode() + ", venho, por meio desta, requerer a substituição do orientador(a) para " + IF($F{stage} == 1, "o Projeto de TCC1", "a Monografia de TCC2") + ", sendo que a partir deste momento o(a) Professor(a) Orientador(a) do trabalho intitulado \"" + $F{proposal}.getTitle() + "\" passa a ser o(a) Professor(a) " + $F{newSupervisor}.getName() + ", e não mais o(a) Professor(a) " + $F{oldSupervisor}.getName() + ", pelo seguinte motivo: " + $F{comments} + "."]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="554" width="480" height="21" uuid="fb203a57-869e-4c40-8e20-284c8e5f9fc1"/>

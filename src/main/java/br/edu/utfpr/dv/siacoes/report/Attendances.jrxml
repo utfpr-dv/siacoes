@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-12-04T20:51:10 -->
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Attendances" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="730" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="3d913f38-4ce2-4b6a-be5a-ab11a4791d3f">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -73,7 +72,7 @@
 				<textFieldExpression><![CDATA["Acompanhamento das atividades de orientação de TCC " + $F{stage}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="34" width="100" height="19" uuid="5ad25e7f-26a1-4525-9069-544ae31291d0"/>
+				<reportElement x="0" y="34" width="150" height="19" uuid="5ad25e7f-26a1-4525-9069-544ae31291d0"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -83,10 +82,10 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Título do Projeto:]]></text>
+				<text><![CDATA[Título do Trabalho:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="54" width="100" height="19" uuid="1a38debc-bb57-49d7-b551-303d010ef103"/>
+				<reportElement x="0" y="54" width="150" height="19" uuid="1a38debc-bb57-49d7-b551-303d010ef103"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -96,10 +95,10 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Acadêmico:]]></text>
+				<text><![CDATA[Acadêmico(a):]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="74" width="100" height="19" uuid="59a0d780-0305-4636-a6a6-bc91064d94b6"/>
+				<reportElement x="0" y="74" width="150" height="19" uuid="59a0d780-0305-4636-a6a6-bc91064d94b6"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -109,10 +108,10 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Orientador:]]></text>
+				<text><![CDATA[Professor(a) Orientador(a):]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="100" y="34" width="630" height="20" uuid="67adf914-3ad8-4bfe-ba03-7db538fa134f"/>
+				<reportElement x="150" y="34" width="580" height="20" uuid="67adf914-3ad8-4bfe-ba03-7db538fa134f"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -125,7 +124,7 @@
 				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="100" y="54" width="630" height="20" uuid="f9b30e4d-c871-4299-851c-4cc33d1ced22"/>
+				<reportElement x="150" y="54" width="580" height="20" uuid="f9b30e4d-c871-4299-851c-4cc33d1ced22"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -138,7 +137,7 @@
 				<textFieldExpression><![CDATA[$F{student}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="100" y="73" width="630" height="20" uuid="e1c31282-5571-4cdb-a6b6-d5be3db5e1d3"/>
+				<reportElement x="150" y="73" width="580" height="20" uuid="e1c31282-5571-4cdb-a6b6-d5be3db5e1d3"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -185,7 +184,7 @@
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Acadêmico]]></text>
+				<text><![CDATA[Acadêmico(a)]]></text>
 			</staticText>
 			<line>
 				<reportElement x="416" y="30" width="241" height="1" uuid="67d1e906-14e9-4e37-bbf3-7a7a4a45f716"/>
@@ -202,7 +201,7 @@
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Professor Orientador]]></text>
+				<text><![CDATA[Professor(a) Orientador(a)]]></text>
 			</staticText>
 			<line>
 				<reportElement x="61" y="30" width="241" height="1" uuid="5c593156-e1c9-4883-99f3-3f067d0f7d20"/>

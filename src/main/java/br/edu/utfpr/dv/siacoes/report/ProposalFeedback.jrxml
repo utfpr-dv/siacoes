@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-09-26T11:15:06 -->
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ProposalFeedback" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="095a3e9f-14f9-49ee-ba4d-497e747740ad">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -105,7 +104,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Acadêmico:]]></text>
+				<text><![CDATA[Acadêmico(a):]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="110" width="110" height="20" uuid="7255cb02-3ed2-4709-a9a1-4b65208a4d3d"/>
@@ -118,7 +117,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Orientador:]]></text>
+				<text><![CDATA[Orientador(a):]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="110" y="70" width="370" height="20" uuid="38e3769a-b763-4688-9353-875358fdf7cf"/>
@@ -196,7 +195,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Avaliador:]]></text>
+				<text><![CDATA[Avaliador(a):]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="180" width="90" height="20" uuid="0af86b57-116f-4f70-b95b-908da2d11b15"/>
@@ -392,7 +391,7 @@
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Avaliador]]></text>
+				<text><![CDATA[Avaliador(a)]]></text>
 			</staticText>
 			<line>
 				<reportElement x="119" y="564" width="241" height="1" uuid="ea7f2b1d-5fb3-4d94-ab22-334287055dd5">
