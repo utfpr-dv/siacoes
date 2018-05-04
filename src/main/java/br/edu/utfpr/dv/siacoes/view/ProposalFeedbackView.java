@@ -1,7 +1,6 @@
 ﻿package br.edu.utfpr.dv.siacoes.view;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -17,14 +16,15 @@ import com.vaadin.ui.renderers.DateRenderer;
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ProposalAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
-import br.edu.utfpr.dv.siacoes.bo.UserBO;
+import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
+import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
-import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.window.EditProposalAppraiserWindow;
 
 public class ProposalFeedbackView extends ListView {
@@ -108,14 +108,16 @@ public class ProposalFeedbackView extends ListView {
 	private void downloadProposal() {
 		Object value = getIdSelected();
 		
-		if(value != null){
+		if(value != null) {
 			try {
-            	ProposalBO bo = new ProposalBO();
-            	Proposal p = bo.findById((int)value);
+            	Proposal proposal = new ProposalBO().findById((int)value);
+            	SigetConfig config = new SigetConfigBO().findByDepartment(proposal.getDepartment().getIdDepartment());
             	
-            	if(p.getFile() != null){
-            		this.showReport(p.getFile());
-            	}else{
+            	if(config.isSupervisorAgreement() && (proposal.getSupervisorFeedback() != ProposalFeedback.APPROVED)) {
+            		Notification.show("Download da Proposta", "O Professor Orientador ainda não preencheu o Termo de Concordância de Orientação.", Notification.Type.WARNING_MESSAGE);
+            	} else if(proposal.getFile() != null) {
+            		this.showReport(proposal.getFile());
+            	} else {
             		Notification.show("Download da Proposta", "O acadêmico ainda não efetuou a submissão da proposta.", Notification.Type.WARNING_MESSAGE);
             	}
         	} catch (Exception e) {
@@ -124,7 +126,7 @@ public class ProposalFeedbackView extends ListView {
             	Notification.show("Download da Proposta", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
 		} else {
-			Notification.show("Download da Proposta", "Selecione um registro para baixar a proposta.", Notification.Type.WARNING_MESSAGE);
+			Notification.show("Download da Proposta", "Selecione um registro para efetuar do download da proposta.", Notification.Type.WARNING_MESSAGE);
 		}
 	}
 	
@@ -134,8 +136,13 @@ public class ProposalFeedbackView extends ListView {
 		if(value != null){
 			try {
 				ProposalAppraiserBO bo = new ProposalAppraiserBO();
+				ProposalAppraiser appraiser = bo.findByAppraiser((int)value, Session.getUser().getIdUser());
 				
-				this.showReport(bo.getFeedbackReport((int)value, Session.getUser().getIdUser()));
+				if(appraiser.getFeedback() == ProposalFeedback.NONE) {
+					Notification.show("Imprimir Parecer", "É necessário preencher o parecer antes de imprimir.", Notification.Type.WARNING_MESSAGE);
+				} else {
+					this.showReport(bo.getFeedbackReport(appraiser));	
+				}
 			} catch (Exception e) {
             	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
             	

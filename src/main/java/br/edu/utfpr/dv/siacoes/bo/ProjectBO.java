@@ -12,6 +12,7 @@ import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.SupervisorFeedbackReport;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
@@ -225,19 +226,16 @@ public class ProjectBO {
 	}
 	
 	public Project prepareProject(int idUser, int idDepartment, int semester, int year) throws Exception {
-		ProjectBO bo = new ProjectBO();
-		Project p = bo.findCurrentProject(idUser, idDepartment, semester, year);
+		Project p = new ProjectBO().findCurrentProject(idUser, idDepartment, semester, year);
 		
 		if(p == null){
-			DeadlineBO dbo = new DeadlineBO();
-			Deadline d = dbo.findBySemester(idDepartment, semester, year);
+			Deadline d = new DeadlineBO().findBySemester(idDepartment, semester, year);
 			
 			if((d == null) || DateUtils.getToday().getTime().after(d.getProjectDeadline())){
 				throw new Exception("A submissão de projetos já foi encerrada.");
 			}
 			
-			ProposalBO pbo = new ProposalBO();
-			Proposal proposal = pbo.findCurrentProposal(idUser, idDepartment, semester, year);
+			Proposal proposal = new ProposalBO().findCurrentProposal(idUser, idDepartment, semester, year);
 			
 			if(proposal == null){
 				if(new SigetConfigBO().findByDepartment(idDepartment).isRegisterProposal()){
@@ -245,6 +243,11 @@ public class ProjectBO {
 				}else{
 					throw new Exception("Não foi encontrada o registro de orientação. É necessário primeiramente registrar a orientação.");
 				}
+			}
+			
+			SigetConfig config = new SigetConfigBO().findByDepartment(idDepartment);
+			if(config.isSupervisorAgreement() && (proposal.getSupervisorFeedback() != ProposalFeedback.APPROVED)) {
+				throw new Exception("O Professor Orientador não preencheu o Termo de Concordância de Orientação.");
 			}
 			
 			p = new Project(Session.getUser(), proposal);

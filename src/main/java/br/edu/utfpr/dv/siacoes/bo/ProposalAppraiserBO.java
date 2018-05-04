@@ -179,9 +179,7 @@ public class ProposalAppraiserBO {
 		}
 	}
 	
-	public byte[] getFeedbackReport(int idProposal, int idAppraiser) throws Exception {
-		ProposalAppraiser appraiser = this.findByAppraiser(idProposal, idAppraiser);
-		
+	public byte[] getFeedbackReport(ProposalAppraiser appraiser) throws Exception {
 		UserBO userBo = new UserBO();
 		appraiser.setAppraiser(userBo.findById(appraiser.getAppraiser().getIdUser()));
 		
@@ -192,6 +190,12 @@ public class ProposalAppraiserBO {
 		list.add(appraiser);
 		
 		return new ReportUtils().createPdfStream(list, "ProposalFeedback").toByteArray();
+	}
+	
+	public byte[] getFeedbackReport(int idProposal, int idAppraiser) throws Exception {
+		ProposalAppraiser appraiser = this.findByAppraiser(idProposal, idAppraiser);
+		
+		return this.getFeedbackReport(appraiser);
 	}
 	
 }
