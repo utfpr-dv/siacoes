@@ -14,6 +14,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
@@ -27,7 +28,7 @@ import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
-public class EditSupervisorWindow extends EditWindow {
+public class EditSupervisorChangeWindow extends EditWindow {
 
 	private SupervisorChange supervisorChange;
 	
@@ -44,7 +45,7 @@ public class EditSupervisorWindow extends EditWindow {
 	private TabSheet tabData;
 	private Button buttonPrintStatement;
 	
-	public EditSupervisorWindow(SupervisorChange change, ListView parentView){
+	public EditSupervisorChangeWindow(SupervisorChange change, ListView parentView){
 		super("Alterar Orientador", parentView);
 		
 		this.supervisorChange = change;
@@ -54,7 +55,7 @@ public class EditSupervisorWindow extends EditWindow {
 		this.loadChange();
 	}
 	
-	public EditSupervisorWindow(Proposal proposal, ListView parentView){
+	public EditSupervisorChangeWindow(Proposal proposal, ListView parentView, boolean supervisorRequest){
 		super("Alterar Orientador", parentView);
 		
 		this.buildWindow();
@@ -72,6 +73,7 @@ public class EditSupervisorWindow extends EditWindow {
 				this.supervisorChange.setNewSupervisor(this.supervisorChange.getOldSupervisor());
 				this.supervisorChange.setOldCosupervisor(bo.findCurrentCosupervisor(proposal.getIdProposal()));
 				this.supervisorChange.setNewCosupervisor(this.supervisorChange.getOldCosupervisor());
+				this.supervisorChange.setSupervisorRequest(supervisorRequest);
 				
 				this.buttonPrintStatement.setVisible(false);
 			}
@@ -94,6 +96,7 @@ public class EditSupervisorWindow extends EditWindow {
 		this.textTitle.setEnabled(false);
 		
 		this.tabData = new TabSheet();
+		this.tabData.setHeight("275px");
 		
 		this.textCurrentSupervisor = new TextField("Orientador Atual");
 		this.textCurrentSupervisor.setWidth("390px");
@@ -132,6 +135,7 @@ public class EditSupervisorWindow extends EditWindow {
 		this.comboApproved.addItem(ChangeFeedback.APPROVED);
 		this.comboApproved.addItem(ChangeFeedback.DISAPPROVED);
 		this.comboApproved.setNullSelectionAllowed(false);
+		this.comboApproved.setWidth("200px");
 		
 		this.labelDateApproved = new Label();
 		
@@ -154,19 +158,23 @@ public class EditSupervisorWindow extends EditWindow {
 		this.addField(this.textTitle);
 		this.addField(this.tabData);
 		
-		this.buttonPrintStatement = new Button("Imprimir Requisição");
-		this.buttonPrintStatement.setId("buttonPrintStatement");
+		this.buttonPrintStatement = new Button("Imprimir Requisição", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	try {
+					printStatement();
+				} catch (Exception e) {
+					e.printStackTrace();
+					
+					Notification.show("Imprimir Requisição", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				}
+            }
+        });
 		this.addButton(this.buttonPrintStatement);
 		this.buttonPrintStatement.setWidth("200px");
 	}
 	
 	private void loadChange() {
-		if(this.supervisorChange.getIdSupervisorChange() != 0){
-			this.prepareDownload();
-		}else{
-			this.buttonPrintStatement.setEnabled(false);
-		}
-		
 		this.textStudent.setValue(this.supervisorChange.getProposal().getStudent().getName());
 		this.textTitle.setValue(this.supervisorChange.getProposal().getTitle());
 		this.textCurrentSupervisor.setValue(this.supervisorChange.getOldSupervisor().getName());
@@ -213,11 +221,6 @@ public class EditSupervisorWindow extends EditWindow {
 			
 			bo.save(this.supervisorChange);
 			
-			this.prepareDownload();
-			this.buttonPrintStatement.setEnabled(true);
-			
-			Notification.show("Salvar Alteração", "Orientação alterada com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
-			
 			this.comboNewSupervisor.setEnabled(false);
 			this.comboNewCosupervisor.setEnabled(false);
 			this.textComments.setEnabled(false);
@@ -225,9 +228,16 @@ public class EditSupervisorWindow extends EditWindow {
 				this.setSaveButtonEnabled(false);
 			}
 			
+			this.buttonPrintStatement.setVisible(true);
+			if(this.supervisorChange.getOldSupervisor().getIdUser() != this.supervisorChange.getNewSupervisor().getIdUser()) {
+				this.printStatement();	
+			}
+			
+			Notification.show("Salvar Alteração", "Orientação alterada com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			
 			this.parentViewRefreshGrid();
 			
-			if(Session.isUserManager(SystemModule.SIGET)){
+			if(Session.isUserManager(SystemModule.SIGET) || Session.isUserProfessor() || (this.supervisorChange.getOldSupervisor().getIdUser() == this.supervisorChange.getNewSupervisor().getIdUser())){
 				this.close();	
 			}
 		} catch (Exception e) {
@@ -237,12 +247,12 @@ public class EditSupervisorWindow extends EditWindow {
 		}
 	}
 	
-	private void prepareDownload(){
+	private void printStatement() throws Exception {
 		List<SupervisorChange> list = new ArrayList<SupervisorChange>();
 		
 		list.add(this.supervisorChange);
 		
-		new ReportUtils().prepareForPdfReport("SupervisorChangeStatement", "Requerimento", list, this.buttonPrintStatement);
+		this.showReport(new ReportUtils().createPdfStream(list, "SupervisorChangeStatement").toByteArray());
 	}
 
 }

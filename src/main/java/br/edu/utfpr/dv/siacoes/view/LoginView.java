@@ -151,7 +151,7 @@ public class LoginView extends CustomComponent implements View {
 			
 			FinalDocumentBO fbo = new FinalDocumentBO();
 			
-			this.layoutStats.addComponent(this.createPanelStat("TCC's Publicados", String.valueOf(fbo.getTotalFinalThesis())));
+			this.layoutStats.addComponent(this.createPanelStat("TCC's Finalizados", String.valueOf(fbo.getTotalFinalThesis())));
 			
 			JuryBO jbo = new JuryBO();
 			

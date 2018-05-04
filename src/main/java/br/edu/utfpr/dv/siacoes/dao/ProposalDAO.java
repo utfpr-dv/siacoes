@@ -15,6 +15,7 @@ import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 
 public class ProposalDAO {
 	
@@ -55,6 +56,36 @@ public class ProposalDAO {
 			}
 			
 			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public String getStudentName(int id) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT \"user\".name FROM proposal " +
+					"INNER JOIN \"user\" ON \"user\".idUser=proposal.idStudent " +
+					"WHERE proposal.idProposal = ?");
+		
+			stmt.setInt(1, id);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getString("name");
+			}else{
+				return "";
+			}
 		}finally{
 			if((rs != null) && !rs.isClosed())
 				rs.close();
@@ -136,6 +167,36 @@ public class ProposalDAO {
 			stmt = conn.prepareStatement("SELECT idProposal FROM project WHERE idProject=?");
 		
 			stmt.setInt(1, idProject);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.findById(rs.getInt("idProposal"));
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public Proposal findByThesis(int idThesis) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT project.idProposal FROM project " +
+					"INNER JOIN thesis ON thesis.idProject=project.idProject " +
+					"WHERE thesis.idThesis=?");
+		
+			stmt.setInt(1, idThesis);
 			
 			rs = stmt.executeQuery();
 			
@@ -502,7 +563,7 @@ public class ProposalDAO {
 			boolean insert = (proposal.getIdProposal() == 0);
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO proposal(idDepartment, semester, year, title, subarea, idStudent, idSupervisor, idCosupervisor, file, fileType, submissionDate, invalidated) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO proposal(idDepartment, semester, year, title, subarea, idStudent, idSupervisor, idCosupervisor, file, fileType, submissionDate, invalidated, supervisorFeedback, supervisorFeedbackDate, supervisorComments) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, NULL, '')", Statement.RETURN_GENERATED_KEYS);
 			}else{
 				stmt = conn.prepareStatement("UPDATE proposal SET idDepartment=?, semester=?, year=?, title=?, subarea=?, idStudent=?, idSupervisor=?, idCosupervisor=?, file=?, fileType=?, submissionDate=? WHERE idProposal=?");
 			}
@@ -574,6 +635,31 @@ public class ProposalDAO {
 		}
 	}
 	
+	public int saveSupervisorFeedback(Proposal proposal) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try {
+			conn = ConnectionDAO.getInstance().getConnection();
+			
+			stmt = conn.prepareStatement("UPDATE proposal SET supervisorFeedback=?, supervisorFeedbackDate=?, supervisorComments=? WHERE idProposal=?");
+			
+			stmt.setInt(1, proposal.getSupervisorFeedback().getValue());
+			stmt.setDate(2, new java.sql.Date(proposal.getSupervisorFeedbackDate().getTime()));
+			stmt.setString(3, proposal.getSupervisorComments());
+			stmt.setInt(4, proposal.getIdProposal());
+			
+			stmt.execute();
+			
+			return proposal.getIdProposal();
+		} finally {
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	private Proposal loadObject(ResultSet rs) throws SQLException{
 		Proposal p = new Proposal();
 		
@@ -598,6 +684,9 @@ public class ProposalDAO {
 		p.getDepartment().setName(rs.getString("departmentName"));
 		p.getDepartment().getCampus().setIdCampus(rs.getInt("idCampus"));
 		p.setInvalidated(rs.getInt("invalidated") == 1);
+		p.setSupervisorFeedback(ProposalFeedback.valueOf(rs.getInt("supervisorFeedback")));
+		p.setSupervisorFeedbackDate(rs.getDate("supervisorFeedbackDate"));
+		p.setSupervisorComments(rs.getString("supervisorComments"));
 		
 		return p;
 	}

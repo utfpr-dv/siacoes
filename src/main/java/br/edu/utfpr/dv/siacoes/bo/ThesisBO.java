@@ -41,6 +41,18 @@ public class ThesisBO {
 			throw new Exception(e.getMessage());
 		}
 	}
+	
+	public int findIdDepartment(int idThesis) throws Exception{
+		try {
+			ThesisDAO dao = new ThesisDAO();
+			
+			return dao.findIdDepartment(idThesis);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
 
 	public List<Thesis> listAll() throws Exception{
 		try {

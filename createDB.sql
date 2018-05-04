@@ -105,6 +105,10 @@ CREATE  TABLE `sigetconfig` (
   `supervisorindication` SMALLINT NOT NULL ,
   `maxtutoredstage1` SMALLINT NOT NULL ,
   `maxtutoredstage2` SMALLINT NOT NULL ,
+  `requestfinaldocumentstage1` TINYINT NOT NULL ,
+  `repositorylink` varchar(255) NOT NULL ,
+  `supervisorjuryrequest` TINYINT NOT NULL ,
+  `supervisoragreement` TINYINT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigetconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -460,6 +464,9 @@ CREATE TABLE `proposal` (
   `submissionDate` date NOT NULL,
   `fileType` tinyint(4) NOT NULL,
   `invalidated` TINYINT NOT NULL,
+  `supervisorfeedback` TINYINT NOT NULL,
+  `supervisorfeedbackdate` date DEFAULT NULL,
+  `supervisorcomments` text NOT NULL,
   PRIMARY KEY (`idproposal`),
   KEY `fk_proposal_student_idx` (`idStudent`),
   KEY `fk_proposal_advisor_idx` (`idSupervisor`),
@@ -518,6 +525,7 @@ CREATE TABLE `supervisorchange` (
   `approved` tinyint(4) NOT NULL,
   `approvalDate` datetime DEFAULT NULL,
   `approvalComments` varchar(255) NOT NULL,
+  `supervisorrequest` tinyint NOT NULL,
   PRIMARY KEY (`idsupervisorchange`),
   KEY `fk_supervisorchange_oldsupervisor_idx` (`idOldSupervisor`),
   KEY `fk_supervisorchange_newsupervisor_idx` (`idNewSupervisor`),
@@ -625,6 +633,7 @@ CREATE TABLE `jury` (
   `startTime` time NOT NULL,
   `endTime` time NOT NULL,
   `minimumScore` double NOT NULL,
+  `supervisorabsencereason` TEXT NOT NULL,
   PRIMARY KEY (`idjury`),
   KEY `fk_jury_project_idx` (`idproject`),
   KEY `fk_jury_thesis_idx` (`idthesis`),
@@ -639,11 +648,42 @@ CREATE TABLE `juryappraiser` (
   `file` mediumblob NULL,
   `filetype` smallint(6) NOT NULL,
   `comments` TEXT NOT NULL,
+  `chair` tinyint NOT NULL,
+  `substitute` tinyint NOT NULL,
   PRIMARY KEY (`idjuryappraiser`),
   KEY `fk_juryappraiser_jury_idx` (`idjury`),
   KEY `fk_juryappraiser_appraiser_idx` (`idappraiser`),
   CONSTRAINT `fk_juryappraiser_appraiser` FOREIGN KEY (`idappraiser`) REFERENCES `user` (`iduser`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_juryappraiser_jury` FOREIGN KEY (`idjury`) REFERENCES `jury` (`idjury`) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+CREATE TABLE `juryrequest` (
+  `idjuryrequest` int(11) NOT NULL AUTO_INCREMENT,
+  `date` datetime NOT NULL,
+  `local` varchar(100) NOT NULL,
+  `idproposal` int(11) NOT NULL,
+  `stage` int(11) NOT NULL,
+  `comments` text NOT NULL,
+  `supervisorabsencereason` TEXT NOT NULL,
+  `idjury` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idjuryrequest`),
+  KEY `fk_juryrequest_proposal_idx` (`idproposal`),
+  KEY `fk_juryrequest_jury_idx` (`idjury`),
+  CONSTRAINT `fk_juryrequest_proposal` FOREIGN KEY (`idproposal`) REFERENCES `proposal` (`idproposal`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_juryrequest_jury` FOREIGN KEY (`idjury`) REFERENCES `jury` (`idjury`) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+CREATE TABLE `juryappraiserrequest` (
+  `idjuryappraiserrequest` int(11) NOT NULL AUTO_INCREMENT,
+  `idjuryrequest` int(11) NOT NULL,
+  `idappraiser` int(11) NOT NULL,
+  `chair` tinyint NOT NULL,
+  `substitute` tinyint NOT NULL,
+  PRIMARY KEY (`idjuryappraiserrequest`),
+  KEY `fk_juryappraiserrequest_juryrequest_idx` (`idjuryrequest`),
+  KEY `fk_juryappraiserrequest_appraiser_idx` (`idappraiser`),
+  CONSTRAINT `fk_juryappraiserrequest_appraiser` FOREIGN KEY (`idappraiser`) REFERENCES `user` (`iduser`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_juryappraiserrequest_juryrequest` FOREIGN KEY (`idjuryrequest`) REFERENCES `juryrequest` (`idjuryrequest`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
 CREATE TABLE `juryappraiserscore` (

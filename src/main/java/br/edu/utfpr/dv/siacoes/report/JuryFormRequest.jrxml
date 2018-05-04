@@ -21,9 +21,6 @@
 	<field name="date" class="java.util.Date">
 		<fieldDescription><![CDATA[date]]></fieldDescription>
 	</field>
-	<field name="score" class="java.lang.Double">
-		<fieldDescription><![CDATA[score]]></fieldDescription>
-	</field>
 	<field name="comments" class="java.lang.String">
 		<fieldDescription><![CDATA[comments]]></fieldDescription>
 	</field>
@@ -33,20 +30,17 @@
 	<field name="student" class="java.lang.String">
 		<fieldDescription><![CDATA[student]]></fieldDescription>
 	</field>
-	<field name="evaluationText" class="java.lang.String">
-		<fieldDescription><![CDATA[evaluationText]]></fieldDescription>
+	<field name="local" class="java.lang.String">
+		<fieldDescription><![CDATA[local]]></fieldDescription>
+	</field>
+	<field name="supervisor" class="java.lang.String">
+		<fieldDescription><![CDATA[supervisor]]></fieldDescription>
 	</field>
 	<field name="title" class="java.lang.String">
 		<fieldDescription><![CDATA[title]]></fieldDescription>
 	</field>
 	<field name="appraisers" class="java.util.List">
 		<fieldDescription><![CDATA[appraisers]]></fieldDescription>
-	</field>
-	<field name="scores" class="java.util.List">
-		<fieldDescription><![CDATA[scores]]></fieldDescription>
-	</field>
-	<field name="requestFinalDocumentStage1" class="java.lang.Boolean">
-		<fieldDescription><![CDATA[requestFinalDocumentStage1]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -79,22 +73,9 @@
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="444" splitType="Stretch">
+		<band height="541" splitType="Stretch">
 			<staticText>
-				<reportElement positionType="Float" x="0" y="199" width="390" height="20" uuid="8df902a6-ee46-4591-8bc9-7ed923253c45"/>
-				<box>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Média Final:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement positionType="Float" x="0" y="225" width="481" height="20" uuid="2f0bb051-c983-44e9-97ee-f6807a02c91e"/>
+				<reportElement positionType="Float" x="0" y="358" width="481" height="20" uuid="2f0bb051-c983-44e9-97ee-f6807a02c91e"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -107,7 +88,7 @@
 				<text><![CDATA[Observações]]></text>
 			</staticText>
 			<textField>
-				<reportElement positionType="Float" x="0" y="245" width="481" height="70" uuid="b4b5321c-a903-4c03-8dbd-78bdbeaddbcc"/>
+				<reportElement positionType="Float" x="0" y="378" width="481" height="70" uuid="b4b5321c-a903-4c03-8dbd-78bdbeaddbcc"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -120,46 +101,7 @@
 				<textFieldExpression><![CDATA[$F{comments}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="1" y="315" width="480" height="30" uuid="10da8350-72f9-4237-bf03-da31775250f5"/>
-				<textElement textAlignment="Justified"/>
-				<text><![CDATA[Ao término da avaliação, favor entregar esta ficha ao Professor Responsável pelo TCC, com assinatura da banca avaliadora e do acadêmico.]]></text>
-			</staticText>
-			<staticText>
-				<reportElement positionType="Float" x="1" y="345" width="480" height="30" uuid="4f128dc7-8009-4392-bbc3-0d1a1a4675d3">
-					<printWhenExpression><![CDATA[($F{stage} == 2) || $F{requestFinalDocumentStage1}]]></printWhenExpression>
-				</reportElement>
-				<textElement textAlignment="Justified"/>
-				<text><![CDATA[A nota obtida no trabalho escrito está condicionada à realização das correções apontadas pela banca avaliadora e à entrega da versão final do trabalho para arquivamento.]]></text>
-			</staticText>
-			<subreport>
-				<reportElement positionType="Float" x="0" y="377" width="481" height="66" uuid="4f2a0334-c1c5-461c-8241-0c144885c5f8"/>
-				<subreportParameter name="brasao_republica">
-					<subreportParameterExpression><![CDATA[$P{brasao_republica}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="logo_utfpr">
-					<subreportParameterExpression><![CDATA[$P{logo_utfpr}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="campus">
-					<subreportParameterExpression><![CDATA[$P{campus}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="department">
-					<subreportParameterExpression><![CDATA[$P{department}]]></subreportParameterExpression>
-				</subreportParameter>
-				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{appraisers})]]></dataSourceExpression>
-				<subreportExpression><![CDATA["br/edu/utfpr/dv/siacoes/report/JuryFormAppraiser.jasper"]]></subreportExpression>
-			</subreport>
-			<break>
-				<reportElement x="0" y="375" width="481" height="1" uuid="f8f92a07-2979-4d95-95e5-b0e6795e164e"/>
-			</break>
-			<textField>
-				<reportElement x="0" y="7" width="480" height="20" uuid="08767914-d7f5-4907-8d80-6f68f7584e41"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[IF($F{stage} == 2, "Ficha de Avaliação da Monografia de TCC 2", "Ficha de Avaliação do Projeto de TCC 1")]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="0" y="36" width="110" height="20" uuid="8b22b975-7e98-4439-8183-be551cccc9ff"/>
+				<reportElement x="0" y="51" width="110" height="20" uuid="8b22b975-7e98-4439-8183-be551cccc9ff"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -172,7 +114,7 @@
 				<text><![CDATA[Título do Trabalho:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="56" width="110" height="20" uuid="c53ba733-0ed9-468a-8cf8-4c877bef24f4"/>
+				<reportElement x="0" y="71" width="110" height="20" uuid="c53ba733-0ed9-468a-8cf8-4c877bef24f4"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -185,7 +127,7 @@
 				<text><![CDATA[Data da Defesa:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="76" width="110" height="20" uuid="3f80ceac-ac54-4418-9e80-a086dc85a915"/>
+				<reportElement x="0" y="111" width="110" height="20" uuid="3f80ceac-ac54-4418-9e80-a086dc85a915"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -198,7 +140,7 @@
 				<text><![CDATA[Acadêmico(a):]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="110" y="36" width="370" height="20" uuid="443ec177-ad17-4758-b68e-a0499fb5770b"/>
+				<reportElement x="110" y="51" width="370" height="20" uuid="443ec177-ad17-4758-b68e-a0499fb5770b"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -211,7 +153,7 @@
 				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="110" y="56" width="370" height="20" uuid="ba81d460-3bc7-46f6-ac13-1b6e0a36416c"/>
+				<reportElement x="110" y="71" width="130" height="20" uuid="ba81d460-3bc7-46f6-ac13-1b6e0a36416c"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -221,10 +163,10 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[DATEFORMAT($F{date}, "dd/MM/yyyy HH:mm")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DATEFORMAT($F{date}, "dd/MM/yyyy")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="110" y="76" width="230" height="20" uuid="77633935-efd9-4c7d-8fef-219df022dab2"/>
+				<reportElement x="110" y="111" width="230" height="20" uuid="77633935-efd9-4c7d-8fef-219df022dab2"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -237,7 +179,7 @@
 				<textFieldExpression><![CDATA[$F{student}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="103" width="480" height="20" uuid="e5af87d9-1f05-4cb9-8b41-5e32a325905d"/>
+				<reportElement x="0" y="138" width="480" height="20" uuid="e5af87d9-1f05-4cb9-8b41-5e32a325905d"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -247,10 +189,10 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Banca Examinadora]]></text>
+				<text><![CDATA[Composição da Banca Examinadora]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="340" y="76" width="30" height="20" uuid="d0709ee1-6ae3-4dee-8487-5e40bcd3a528"/>
+				<reportElement x="340" y="111" width="30" height="20" uuid="d0709ee1-6ae3-4dee-8487-5e40bcd3a528"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -263,7 +205,7 @@
 				<text><![CDATA[Ass.:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="370" y="76" width="110" height="20" uuid="34ac10d3-1e6a-4a37-a59b-d54220ccdb4b"/>
+				<reportElement x="370" y="111" width="110" height="20" uuid="34ac10d3-1e6a-4a37-a59b-d54220ccdb4b"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -275,8 +217,20 @@
 				</textElement>
 				<text><![CDATA[]]></text>
 			</staticText>
+			<subreport>
+				<reportElement x="0" y="159" width="480" height="26" uuid="8b0721bb-44da-4103-8bc1-0413b509f427"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{appraisers})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["br/edu/utfpr/dv/siacoes/report/JuryFormAppraiserList.jasper"]]></subreportExpression>
+			</subreport>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="159" width="120" height="20" uuid="fb7a8ec4-af98-4745-8ca8-b5f5b9f154cc"/>
+				<reportElement x="0" y="7" width="480" height="20" uuid="e29c03ec-a670-4e47-910f-fe3339ef183c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Formulário de Agendamento de Banca]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="31" width="110" height="20" uuid="d40be7df-7c08-4635-a361-70b0d49b90af"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -284,80 +238,38 @@
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="12" isBold="true"/>
+					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Notas]]></text>
+				<text><![CDATA[Banca:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="120" y="159" width="90" height="20" uuid="f98ebe5a-53d9-42df-8b57-788ab4d48898">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-				</reportElement>
+				<reportElement x="150" y="31" width="140" height="20" uuid="b1ce8f12-3217-4346-a2e1-d1d9965883bf"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12" isBold="true"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Escrita]]></text>
+				<text><![CDATA[TCC 1]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="210" y="159" width="90" height="20" uuid="67c0ab50-e406-46c0-b6cd-ca0a2f18e8d6"/>
+				<reportElement x="330" y="31" width="150" height="20" uuid="9c2e09e6-75bc-4f2b-b42b-33e6bd7a0b5d"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12" isBold="true"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Apresentação]]></text>
+				<text><![CDATA[TCC 1]]></text>
 			</staticText>
-			<staticText>
-				<reportElement positionType="Float" x="300" y="159" width="90" height="20" uuid="d8a746bd-d35e-42fe-8eff-b061ee9e6104">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Arguição]]></text>
-			</staticText>
-			<staticText>
-				<reportElement positionType="Float" x="390" y="159" width="90" height="20" uuid="35a5392b-c6b2-4012-bdca-97abb9b86160">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Total]]></text>
-			</staticText>
-			<subreport>
-				<reportElement x="0" y="124" width="480" height="26" uuid="8b0721bb-44da-4103-8bc1-0413b509f427"/>
-				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{appraisers})]]></dataSourceExpression>
-				<subreportExpression><![CDATA["br/edu/utfpr/dv/siacoes/report/JuryFormAppraiserList.jasper"]]></subreportExpression>
-			</subreport>
-			<subreport>
-				<reportElement positionType="Float" x="0" y="179" width="480" height="19" uuid="98863768-5106-4388-bba5-df2c85ee33d4"/>
-				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{scores})]]></dataSourceExpression>
-				<subreportExpression><![CDATA["br/edu/utfpr/dv/siacoes/report/JuryFormAppraiserScore.jasper"]]></subreportExpression>
-			</subreport>
 			<textField>
-				<reportElement positionType="Float" x="390" y="199" width="90" height="20" uuid="3ef153e4-7bf0-4c94-8230-36bce5b057fe"/>
+				<reportElement x="110" y="31" width="40" height="20" uuid="25cd0695-e4c6-42b2-a5f8-28d90271be86"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -367,8 +279,105 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{score} == 0, "", $F{score})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{stage} == 1, "X", "" )]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="290" y="31" width="40" height="20" uuid="07867030-8c0f-4dce-a533-b696fee55d82"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{stage} == 2, "X", "" )]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="240" y="71" width="110" height="20" uuid="9337f776-a868-47c5-b5c3-a39d56198d11"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[Horário da Defesa:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="350" y="71" width="130" height="20" uuid="301ab141-bb96-4be4-a15f-df67da1ced43"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[DATEFORMAT($F{date}, "HH:mm")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="91" width="110" height="20" uuid="4c14fc3d-d594-47e5-b0bd-1897c6dd597b"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[Local da Defesa:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="110" y="91" width="370" height="20" uuid="cc01ddd9-a7d1-4c45-9e96-df8bd6b5371b"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{local}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="498" width="480" height="21" uuid="5049c5ea-87e7-4cff-b0b3-e915e4396bb3"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{supervisor}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="519" width="480" height="20" uuid="06cf37b9-995d-44a2-9224-ef43255d8def"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[Professor(a) Orientador(a)]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="119" y="494" width="241" height="1" uuid="3a253cff-f1b6-423e-ab74-6c0cbabde829">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="193" width="480" height="157" uuid="7826d600-024f-4ea9-9ee6-e6a834f04d77"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<text><![CDATA[- O(a) acadêmico(a) acima nominado(a) está de acordo com a execução da banca na data e horário estipulados neste documento.
+
+- Os membros acima nominados declaram o aceite na participação em banca de defesa pública do trabalho do(a) acadêmico(a) acima nominado(a). Declaram também não ter qualquer outro compromisso pré-agendado na data e horário estipulados neste documento que impeça a sua participação na banca.
+
+- O avaliador indicado como suplente poderá ser convocado a qualquer momento pelo Presidente da Banca para compor a mesma.
+
+- Caso ocorra qualquer alteração de data, horário ou nos membros da banca em até 48 horas antes da execução da mesma, este documento deverá ser atualizado e entregue novamente ao Professor Responsável pelo TCC.]]></text>
+			</staticText>
 		</band>
 	</detail>
 </jasperReport>

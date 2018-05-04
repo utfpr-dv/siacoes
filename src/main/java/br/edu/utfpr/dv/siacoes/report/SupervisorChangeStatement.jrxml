@@ -54,6 +54,9 @@
 	<field name="stage" class="java.lang.Integer">
 		<fieldDescription><![CDATA[stage]]></fieldDescription>
 	</field>
+	<field name="supervisorRequest" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[supervisorRequest]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -105,14 +108,14 @@
 					<font size="12"/>
 					<paragraph lineSpacing="1_1_2"/>
 				</textElement>
-				<textFieldExpression><![CDATA["                                              Eu, acadêmico(a) " + $F{proposal}.getStudent().getName() + ", portador(a) do RA " + $F{proposal}.getStudent().getStudentCode() + ", venho, por meio desta, requerer a substituição do orientador(a) para " + IF($F{stage} == 1, "o Projeto de TCC1", "a Monografia de TCC2") + ", sendo que a partir deste momento o(a) Professor(a) Orientador(a) do trabalho intitulado \"" + $F{proposal}.getTitle() + "\" passa a ser o(a) Professor(a) " + $F{newSupervisor}.getName() + ", e não mais o(a) Professor(a) " + $F{oldSupervisor}.getName() + ", pelo seguinte motivo: " + $F{comments} + "."]]></textFieldExpression>
+				<textFieldExpression><![CDATA["                                              Eu, " + IF($F{supervisorRequest}, "Professor(a) " + $F{oldSupervisor}.getName(), "acadêmico(a) " + $F{proposal}.getStudent().getName() + ", portador(a) do RA " + $F{proposal}.getStudent().getStudentCode())  + ", venho, por meio desta, requerer a substituição do orientador(a) para " + IF($F{stage} == 1, "o Projeto de TCC 1", "a Monografia de TCC 2") +  IF($F{supervisorRequest}, " do(a) acadêmico(a) " + $F{proposal}.getStudent().getName(), "") + ", sendo que a partir deste momento o(a) Professor(a) Orientador(a) do trabalho intitulado \"" + $F{proposal}.getTitle() + "\" passa a ser o(a) Professor(a) " + $F{newSupervisor}.getName() + IF($F{supervisorRequest}, "", ", e não mais o(a) Professor(a) " + $F{oldSupervisor}.getName()) + ", pelo seguinte motivo: " + $F{comments} + "."]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="554" width="480" height="21" uuid="fb203a57-869e-4c40-8e20-284c8e5f9fc1"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{proposal}.getStudent().getName()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{supervisorRequest}, $F{oldSupervisor}.getName(), $F{proposal}.getStudent().getName())]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="119" y="544" width="241" height="1" uuid="52046419-a233-43b4-b6ba-24195bc81392">

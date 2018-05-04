@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class Proposal {
@@ -22,6 +23,9 @@ public class Proposal {
 	private Date submissionDate;
 	private Department department;
 	private boolean invalidated;
+	private ProposalFeedback supervisorFeedback;
+	private Date supervisorFeedbackDate;
+	private String supervisorComments;
 	
 	public Proposal(){
 		this.setIdProposal(0);
@@ -37,6 +41,9 @@ public class Proposal {
 		this.setSubmissionDate(DateUtils.getToday().getTime());
 		this.setDepartment(new Department());
 		this.setInvalidated(false);
+		this.setSupervisorFeedback(ProposalFeedback.NONE);
+		this.setSupervisorFeedbackDate(null);
+		this.setSupervisorComments("");
 	}
 	
 	public Proposal(User student){
@@ -53,6 +60,9 @@ public class Proposal {
 		this.setSubmissionDate(DateUtils.getToday().getTime());
 		this.setDepartment(new Department());
 		this.setInvalidated(false);
+		this.setSupervisorFeedback(ProposalFeedback.NONE);
+		this.setSupervisorFeedbackDate(null);
+		this.setSupervisorComments("");
 	}
 	
 	public int getIdProposal() {
@@ -141,6 +151,24 @@ public class Proposal {
 	}
 	public void setInvalidated(boolean invalidated) {
 		this.invalidated = invalidated;
+	}
+	public ProposalFeedback getSupervisorFeedback() {
+		return supervisorFeedback;
+	}
+	public void setSupervisorFeedback(ProposalFeedback supervisorFeedback) {
+		this.supervisorFeedback = supervisorFeedback;
+	}
+	public Date getSupervisorFeedbackDate() {
+		return supervisorFeedbackDate;
+	}
+	public void setSupervisorFeedbackDate(Date supervisorFeedbackDate) {
+		this.supervisorFeedbackDate = supervisorFeedbackDate;
+	}
+	public String getSupervisorComments() {
+		return supervisorComments;
+	}
+	public void setSupervisorComments(String supervisorComments) {
+		this.supervisorComments = supervisorComments;
 	}
 	
 }

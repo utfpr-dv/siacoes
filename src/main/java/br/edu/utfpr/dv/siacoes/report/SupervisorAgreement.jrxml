@@ -18,17 +18,26 @@
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="stage" class="java.lang.Integer">
-		<fieldDescription><![CDATA[stage]]></fieldDescription>
+	<field name="allowEditing" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[allowEditing]]></fieldDescription>
 	</field>
-	<field name="student" class="java.lang.String">
-		<fieldDescription><![CDATA[student]]></fieldDescription>
+	<field name="feedback" class="br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback">
+		<fieldDescription><![CDATA[feedback]]></fieldDescription>
 	</field>
-	<field name="title" class="java.lang.String">
-		<fieldDescription><![CDATA[title]]></fieldDescription>
+	<field name="proposal" class="br.edu.utfpr.dv.siacoes.model.Proposal">
+		<fieldDescription><![CDATA[proposal]]></fieldDescription>
 	</field>
-	<field name="supervisor" class="java.lang.String">
-		<fieldDescription><![CDATA[supervisor]]></fieldDescription>
+	<field name="comments" class="java.lang.String">
+		<fieldDescription><![CDATA[comments]]></fieldDescription>
+	</field>
+	<field name="supervisorIndication" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[supervisorIndication]]></fieldDescription>
+	</field>
+	<field name="idProposalAppraiser" class="java.lang.Integer">
+		<fieldDescription><![CDATA[idProposalAppraiser]]></fieldDescription>
+	</field>
+	<field name="appraiser" class="br.edu.utfpr.dv.siacoes.model.User">
+		<fieldDescription><![CDATA[appraiser]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -61,16 +70,9 @@
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="519" splitType="Stretch">
-			<textField>
-				<reportElement x="0" y="5" width="480" height="35" uuid="8a0ed8cd-4fd3-42ab-b34e-4c190a82aab2"/>
-				<textElement textAlignment="Center">
-					<font fontName="Arial" size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Parecer do Professor Orientador para Apresentação do Trabalho em Banca Pública\n(TCC " + $F{stage} + ")"]]></textFieldExpression>
-			</textField>
+		<band height="565" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="48" width="110" height="20" uuid="4a1ae42d-0293-44af-8567-44c79dccdc34"/>
+				<reportElement x="0" y="54" width="110" height="20" uuid="4a1ae42d-0293-44af-8567-44c79dccdc34"/>
 				<box padding="1">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -83,7 +85,7 @@
 				<text><![CDATA[Título do Trabalho:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="68" width="110" height="20" uuid="76d1856f-fa6f-4ef5-af1d-0bae18063f6b"/>
+				<reportElement x="0" y="74" width="110" height="20" uuid="76d1856f-fa6f-4ef5-af1d-0bae18063f6b"/>
 				<box padding="1">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -96,7 +98,7 @@
 				<text><![CDATA[Acadêmico(a):]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="88" width="110" height="20" uuid="d7bc9e97-e46d-4467-88ad-b08a6e5d9f45"/>
+				<reportElement x="0" y="94" width="110" height="20" uuid="d7bc9e97-e46d-4467-88ad-b08a6e5d9f45"/>
 				<box padding="1">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -109,7 +111,7 @@
 				<text><![CDATA[Orientador(a):]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="110" y="48" width="370" height="20" uuid="87425153-2907-4f05-8acb-2c31b4792385"/>
+				<reportElement x="110" y="54" width="370" height="20" uuid="87425153-2907-4f05-8acb-2c31b4792385"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -119,10 +121,10 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{proposal}.getTitle()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="110" y="68" width="370" height="20" uuid="23b886ba-2d0f-43ed-9bb2-e0ef2410d562"/>
+				<reportElement x="110" y="74" width="370" height="20" uuid="23b886ba-2d0f-43ed-9bb2-e0ef2410d562"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -132,10 +134,10 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{student}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{proposal}.getStudent().getName()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="110" y="88" width="370" height="20" uuid="48084230-b0cc-479f-92d1-9a3b61ffd124"/>
+				<reportElement x="110" y="94" width="370" height="20" uuid="48084230-b0cc-479f-92d1-9a3b61ffd124"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -145,38 +147,24 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{supervisor}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{proposal}.getSupervisor().getName()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="120" width="480" height="30" uuid="461ce4cd-864f-4c25-a01f-0ba8d7705d1c"/>
+				<reportElement x="0" y="126" width="480" height="30" uuid="461ce4cd-864f-4c25-a01f-0ba8d7705d1c"/>
 				<textElement textAlignment="Justified">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<text><![CDATA[Conforme exigências descritas no Regulamento de TCC do Curso de Engenharia de Software, sou de parecer]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="40" y="150" width="166" height="20" uuid="a17ed73c-3e39-466c-a0fa-66cf75676a64"/>
-				<textElement>
+				<reportElement x="0" y="196" width="480" height="37" uuid="1b97bf84-0d6d-4fe7-9c7e-fac8bba94606"/>
+				<textElement textAlignment="Justified">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[(     ) FAVORÁVEL]]></text>
+				<text><![CDATA[para que o(a) acadêmico(a) acima nominado(a) desenvolva, sob minha orientação, o Trabalho de Conclusão de Curso acima intitulado.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="40" y="170" width="166" height="20" uuid="682ea60e-5160-4860-bde7-5982315709c1"/>
-				<textElement>
-					<font fontName="Arial" size="12"/>
-				</textElement>
-				<text><![CDATA[(     ) DESFAVORÁVEL]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="190" width="480" height="20" uuid="1b97bf84-0d6d-4fe7-9c7e-fac8bba94606"/>
-				<textElement>
-					<font fontName="Arial" size="12"/>
-				</textElement>
-				<text><![CDATA[para que o(a) acadêmico(a) acima nominado(a) apresente o trabalho em banca pública.]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="227" width="480" height="20" uuid="1808bbcc-9b51-42d9-9cc6-a5e0fa5c5614"/>
+				<reportElement x="0" y="244" width="480" height="20" uuid="1808bbcc-9b51-42d9-9cc6-a5e0fa5c5614"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -188,38 +176,85 @@
 				</textElement>
 				<text><![CDATA[Observações]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="0" y="247" width="480" height="182" uuid="c8dd7738-3865-46a1-a061-29894f0aadc3"/>
-				<box>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement verticalAlignment="Top">
-					<font fontName="Arial" size="12"/>
-				</textElement>
-				<text><![CDATA[]]></text>
-			</staticText>
 			<textField>
-				<reportElement x="0" y="475" width="480" height="21" uuid="903f7f95-9c80-4cb7-8e4c-12cc71b65467"/>
+				<reportElement x="0" y="520" width="480" height="21" uuid="903f7f95-9c80-4cb7-8e4c-12cc71b65467"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{supervisor}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{proposal}.getSupervisor().getName()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="496" width="480" height="20" uuid="c724372e-0ac7-4248-b75f-551ae9f8e657"/>
+				<reportElement x="0" y="541" width="480" height="20" uuid="c724372e-0ac7-4248-b75f-551ae9f8e657"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<text><![CDATA[Professor(a) Orientador(a)]]></text>
 			</staticText>
 			<line>
-				<reportElement x="119" y="471" width="241" height="1" uuid="47b61efe-f9c5-4905-be1a-a334d82485a1">
+				<reportElement x="119" y="513" width="241" height="1" uuid="47b61efe-f9c5-4905-be1a-a334d82485a1">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 			</line>
+			<staticText>
+				<reportElement x="0" y="9" width="480" height="15" uuid="d4632b34-32a2-479b-be23-4a8934219d73"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Concordância do Professor Orientador para Proposta de TCC 1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="34" width="110" height="20" uuid="420800c2-35c2-489d-91cc-10c73e1b2862"/>
+				<box padding="1">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[Data:]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="110" y="34" width="370" height="20" uuid="60910e0e-c902-42f4-9946-c5e6aaf6504a"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[DATEFORMAT(new java.util.Date(), "dd/MM/yyyy")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="264" width="480" height="182" uuid="34b98e65-f0e8-43b1-8ed2-06862038eb24"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{comments}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="40" y="156" width="440" height="20" uuid="e9a87460-4df3-4577-9ba0-2ee2fa2e39a2"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{feedback} == br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback.APPROVED, " ( X )", " (    )") + " FAVORÁVEL"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="40" y="176" width="440" height="20" uuid="3aca2b52-26cc-49fb-8770-945446e850d8"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{feedback} == br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback.DISAPPROVED, " ( X )", " (    )") + " DESFAVORÁVEL"]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 </jasperReport>

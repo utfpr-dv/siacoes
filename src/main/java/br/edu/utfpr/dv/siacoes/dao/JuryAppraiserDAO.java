@@ -113,7 +113,7 @@ public class JuryAppraiserDAO {
 					"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
 					"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
 					"WHERE juryappraiser.idJury = " + String.valueOf(idJury) + 
-					" ORDER BY appraiser.name");
+					" ORDER BY juryappraiser.chair DESC, juryappraiser.substitute, appraiser.name");
 			List<JuryAppraiser> list = new ArrayList<JuryAppraiser>();
 			
 			while(rs.next()){
@@ -136,19 +136,21 @@ public class JuryAppraiserDAO {
 		
 		try{
 			if(insert){
-				stmt = this.conn.prepareStatement("INSERT INTO juryappraiser(idJury, idAppraiser, file, fileType, comments) VALUES(?, ?, NULL, 0, '')", Statement.RETURN_GENERATED_KEYS);
+				stmt = this.conn.prepareStatement("INSERT INTO juryappraiser(idJury, idAppraiser, chair, substitute, file, fileType, comments) VALUES(?, ?, ?, ?, NULL, 0, '')", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = this.conn.prepareStatement("UPDATE juryappraiser SET idJury=?, idAppraiser=?, file=?, fileType=?, comments=? WHERE idJuryAppraiser=?");
+				stmt = this.conn.prepareStatement("UPDATE juryappraiser SET idJury=?, idAppraiser=?, chair=?, substitute=?, file=?, fileType=?, comments=? WHERE idJuryAppraiser=?");
 			}
 			
 			stmt.setInt(1, appraiser.getJury().getIdJury());
 			stmt.setInt(2, appraiser.getAppraiser().getIdUser());
+			stmt.setInt(3, (appraiser.isChair() ? 1 : 0));
+			stmt.setInt(4, (appraiser.isSubstitute() ? 1 : 0));
 			
 			if(!insert){
-				stmt.setBytes(3, appraiser.getFile());
-				stmt.setInt(4, appraiser.getFileType().getValue());
-				stmt.setString(5, appraiser.getComments());
-				stmt.setInt(6, appraiser.getIdJuryAppraiser());
+				stmt.setBytes(5, appraiser.getFile());
+				stmt.setInt(6, appraiser.getFileType().getValue());
+				stmt.setString(7, appraiser.getComments());
+				stmt.setInt(8, appraiser.getIdJuryAppraiser());
 			}
 			
 			stmt.execute();
@@ -183,6 +185,8 @@ public class JuryAppraiserDAO {
 		p.setFile(rs.getBytes("file"));
 		p.setComments(rs.getString("comments"));
 		p.setFileType(DocumentType.valueOf(rs.getInt("fileType")));
+		p.setSubstitute(rs.getInt("substitute") == 1);
+		p.setChair(rs.getInt("chair") == 1);
 		
 		if(rs.getInt("idThesis") != 0){
 			p.getJury().setThesis(new Thesis());

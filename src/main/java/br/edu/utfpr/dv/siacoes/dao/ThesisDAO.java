@@ -160,6 +160,37 @@ public class ThesisDAO {
 		}
 	}
 	
+	public int findIdDepartment(int idThesis) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT proposal.idDepartment FROM thesis " +
+					"INNER JOIN project ON project.idProject=thesis.idProject " +
+					"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
+					"WHERE thesis.idThesis=?");
+		
+			stmt.setInt(1, idThesis);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getInt("idDepartment");
+			}else{
+				return 0;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public Thesis findCurrentThesis(int idStudent, int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;

@@ -134,25 +134,15 @@ public class ProposalFeedbackView extends ListView {
 		if(value != null){
 			try {
 				ProposalAppraiserBO bo = new ProposalAppraiserBO();
-				ProposalAppraiser appraiser = bo.findByAppraiser((int)value, Session.getUser().getIdUser());
 				
-				UserBO userBo = new UserBO();
-				appraiser.setAppraiser(userBo.findById(appraiser.getAppraiser().getIdUser()));
-				
-				ProposalBO proposalBo = new ProposalBO();
-				appraiser.setProposal(proposalBo.findById(appraiser.getProposal().getIdProposal()));
-				
-				List<ProposalAppraiser> list = new ArrayList<ProposalAppraiser>();
-				list.add(appraiser);
-				
-				this.showReport(new ReportUtils().createPdfStream(list, "ProposalFeedback").toByteArray());
+				this.showReport(bo.getFeedbackReport((int)value, Session.getUser().getIdUser()));
 			} catch (Exception e) {
             	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
             	
             	Notification.show("Imprimir Parecer", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
 		} else {
-			Notification.show("Imprimir Parecer", "Selecione um registro para imprimir o parecer", Notification.Type.WARNING_MESSAGE);
+			Notification.show("Imprimir Parecer", "Selecione um registro para imprimir o parecer.", Notification.Type.WARNING_MESSAGE);
 		}
 	}
 	

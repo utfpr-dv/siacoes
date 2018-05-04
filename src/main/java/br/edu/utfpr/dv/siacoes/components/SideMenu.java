@@ -86,7 +86,6 @@ import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipView;
 import br.edu.utfpr.dv.siacoes.view.JuryParticipantsReportView;
 import br.edu.utfpr.dv.siacoes.view.JurySemesterChartView;
-import br.edu.utfpr.dv.siacoes.view.LibraryView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
 import br.edu.utfpr.dv.siacoes.view.MainView;
 import br.edu.utfpr.dv.siacoes.view.PDFView;
@@ -115,7 +114,7 @@ import br.edu.utfpr.dv.siacoes.window.EditProposalWindow;
 import br.edu.utfpr.dv.siacoes.window.EditSigacWindow;
 import br.edu.utfpr.dv.siacoes.window.EditSigesWindow;
 import br.edu.utfpr.dv.siacoes.window.EditSigetWindow;
-import br.edu.utfpr.dv.siacoes.window.EditSupervisorWindow;
+import br.edu.utfpr.dv.siacoes.window.EditSupervisorChangeWindow;
 import br.edu.utfpr.dv.siacoes.window.EditThesisWindow;
 import br.edu.utfpr.dv.siacoes.window.EditUserWindow;
 import br.edu.utfpr.dv.siacoes.window.JuryGradesWindow;
@@ -819,26 +818,28 @@ public class SideMenu extends CustomComponent {
 					}));
 				}
 				
-				layout.addComponent(new MenuEntry("Submeter Versão Final", 1, new MenuEntryClickListener() {
-					@Override
-					public void menuClick() {
-						try {
-							FinalDocument ft = new FinalDocumentBO().prepareFinalProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
-							
-							UI.getCurrent().addWindow(new EditFinalDocumentWindow(ft, null));
-						} catch (Exception e) {
-							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-							
-							Notification.show("Submeter Versão Final", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				if(this.sigetConfig.isRequestFinalDocumentStage1()) {
+					layout.addComponent(new MenuEntry("Submeter Versão Final", 1, new MenuEntryClickListener() {
+						@Override
+						public void menuClick() {
+							try {
+								FinalDocument ft = new FinalDocumentBO().prepareFinalProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+								
+								UI.getCurrent().addWindow(new EditFinalDocumentWindow(ft, null));
+							} catch (Exception e) {
+								Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+								
+								Notification.show("Submeter Versão Final", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+							}
 						}
-					}
-				}));
+					}));
+				}
 			}else{
 				if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
 					layout.addComponent(new MenuEntry("Listar Projetos", 1, ProjectView.NAME));
 				}
 				
-				if(Session.isUserSupervisor()) {
+				if(Session.isUserSupervisor() && this.sigetConfig.isRequestFinalDocumentStage1()) {
 					layout.addComponent(new MenuEntry("Validar Versão Final", 1, FinalDocumentView.NAME));
 				}
 	    	}
@@ -980,7 +981,7 @@ public class SideMenu extends CustomComponent {
 							if(proposal == null){
 								Notification.show("Alterar Orientador", "É necessário efetuar a submissão da proposta.", Notification.Type.ERROR_MESSAGE);
 							}else{
-								UI.getCurrent().addWindow(new EditSupervisorWindow(proposal, null));
+								UI.getCurrent().addWindow(new EditSupervisorChangeWindow(proposal, null, false));
 							}
 						} catch (Exception e) {
 							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
@@ -1014,7 +1015,16 @@ public class SideMenu extends CustomComponent {
 		
 		layout.addComponent(new MenuEntry("Repositório", 0));
 		layout.addComponent(new MenuEntry("Regulamentos e Anexos", 1, DocumentView.NAME + "/" + String.valueOf(SystemModule.SIGET.getValue())));
-		layout.addComponent(new MenuEntry("Biblioteca", 1, LibraryView.NAME));
+		layout.addComponent(new MenuEntry("Biblioteca", 1, new MenuEntryClickListener() {
+			@Override
+			public void menuClick() {
+				if(sigetConfig.getRepositoryLink().trim().isEmpty()) {
+					Notification.show("Biblioteca", "O link do repositório de TCCs não foi configurado.", Notification.Type.ERROR_MESSAGE);
+				} else {
+					UI.getCurrent().getPage().open(sigetConfig.getRepositoryLink(), "_blank");
+				}
+			}
+		}));
 		layout.addComponent(new MenuEntry("Sugestões de Projetos", 1, ThemeSuggestionView.NAME));
 		
 		if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){

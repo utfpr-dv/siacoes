@@ -13,6 +13,8 @@ public class JuryAppraiser {
 	private DocumentType fileType;
 	private List<JuryAppraiserScore> scores;
 	private String comments;
+	private boolean chair;
+	private boolean substitute;
 	
 	public JuryAppraiser(){
 		this.setIdJuryAppraiser(0);
@@ -22,6 +24,8 @@ public class JuryAppraiser {
 		this.setFileType(DocumentType.UNDEFINED);
 		this.setScores(null);
 		this.setComments("");
+		this.setChair(false);
+		this.setSubstitute(false);
 	}
 	
 	public int getIdJuryAppraiser() {
@@ -65,6 +69,18 @@ public class JuryAppraiser {
 	}
 	public void setComments(String comments) {
 		this.comments = comments;
+	}
+	public boolean isChair() {
+		return chair;
+	}
+	public void setChair(boolean chair) {
+		this.chair = chair;
+	}
+	public boolean isSubstitute() {
+		return substitute;
+	}
+	public void setSubstitute(boolean substitute) {
+		this.substitute = substitute;
 	}
 
 }

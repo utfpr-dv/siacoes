@@ -47,20 +47,24 @@ public class SigetConfigDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO sigetconfig(minimumScore, registerProposal, showgradestostudent, supervisorfilter, cosupervisorfilter, supervisorIndication, maxTutoredStage1, maxTutoredStage2, idDepartment) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+				stmt = conn.prepareStatement("INSERT INTO sigetconfig(minimumScore, registerProposal, showgradestostudent, supervisorfilter, cosupervisorfilter, supervisorIndication, maxTutoredStage1, maxTutoredStage2, requestFinalDocumentStage1, repositoryLink, supervisorJuryRequest, supervisorAgreement, idDepartment) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}else{
-				stmt = conn.prepareStatement("UPDATE sigetconfig SET minimumScore=?, registerProposal=?, showgradestostudent=?, supervisorfilter=?, cosupervisorfilter=?, supervisorIndication=?, maxTutoredStage1=?, maxTutoredStage2=? WHERE idDepartment=?");
+				stmt = conn.prepareStatement("UPDATE sigetconfig SET minimumScore=?, registerProposal=?, showgradestostudent=?, supervisorfilter=?, cosupervisorfilter=?, supervisorIndication=?, maxTutoredStage1=?, maxTutoredStage2=?, requestFinalDocumentStage1=?, repositoryLink=?, supervisorJuryRequest=?, supervisorAgreement=? WHERE idDepartment=?");
 			}
 			
 			stmt.setDouble(1, config.getMinimumScore());
 			stmt.setInt(2, (config.isRegisterProposal() ? 1 : 0));
-			stmt.setInt(3, config.isShowGradesToStudent() ? 1 : 0);
+			stmt.setInt(3, (config.isShowGradesToStudent() ? 1 : 0));
 			stmt.setInt(4, config.getSupervisorFilter().getValue());
 			stmt.setInt(5, config.getCosupervisorFilter().getValue());
 			stmt.setInt(6, config.getSupervisorIndication());
 			stmt.setInt(7, config.getMaxTutoredStage1());
 			stmt.setInt(8, config.getMaxTutoredStage2());
-			stmt.setInt(9, config.getDepartment().getIdDepartment());
+			stmt.setInt(9, (config.isRequestFinalDocumentStage1() ? 1 : 0));
+			stmt.setString(10, config.getRepositoryLink());
+			stmt.setInt(11, (config.isSupervisorJuryRequest() ? 1 : 0));
+			stmt.setInt(12, (config.isSupervisorAgreement() ? 1 : 0));
+			stmt.setInt(13, config.getDepartment().getIdDepartment());
 			
 			stmt.execute();
 			
@@ -85,6 +89,10 @@ public class SigetConfigDAO {
 		config.setSupervisorIndication(rs.getInt("supervisorIndication"));
 		config.setMaxTutoredStage1(rs.getInt("maxTutoredStage1"));
 		config.setMaxTutoredStage2(rs.getInt("maxTutoredStage2"));
+		config.setRequestFinalDocumentStage1(rs.getInt("requestFinalDocumentStage1") == 1);
+		config.setRepositoryLink(rs.getString("repositoryLink"));
+		config.setSupervisorJuryRequest(rs.getInt("supervisorJuryRequest") == 1);
+		config.setSupervisorAgreement(rs.getInt("supervisorAgreement") == 1);
 		
 		return config;
 	}

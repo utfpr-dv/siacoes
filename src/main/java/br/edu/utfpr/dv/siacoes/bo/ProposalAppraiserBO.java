@@ -12,6 +12,7 @@ import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
+import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
@@ -176,6 +177,21 @@ public class ProposalAppraiserBO {
 			
 			throw new Exception(e.getMessage());
 		}
+	}
+	
+	public byte[] getFeedbackReport(int idProposal, int idAppraiser) throws Exception {
+		ProposalAppraiser appraiser = this.findByAppraiser(idProposal, idAppraiser);
+		
+		UserBO userBo = new UserBO();
+		appraiser.setAppraiser(userBo.findById(appraiser.getAppraiser().getIdUser()));
+		
+		ProposalBO proposalBo = new ProposalBO();
+		appraiser.setProposal(proposalBo.findById(appraiser.getProposal().getIdProposal()));
+		
+		List<ProposalAppraiser> list = new ArrayList<ProposalAppraiser>();
+		list.add(appraiser);
+		
+		return new ReportUtils().createPdfStream(list, "ProposalFeedback").toByteArray();
 	}
 	
 }

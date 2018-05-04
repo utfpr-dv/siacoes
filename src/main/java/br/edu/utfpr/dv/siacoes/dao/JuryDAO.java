@@ -204,7 +204,7 @@ public class JuryDAO {
 			boolean insert = (jury.getIdJury() == 0);
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO jury(date, local, idProject, idThesis, comments, startTime, endTime, minimumScore) VALUES(?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO jury(date, local, idProject, idThesis, comments, startTime, endTime, minimumScore, supervisorAbsenceReason) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 				
 				jury.setMinimumScore(10);
 				
@@ -232,7 +232,7 @@ public class JuryDAO {
 				
 				rs.close();
 			}else{
-				stmt = conn.prepareStatement("UPDATE jury SET date=?, local=?, idProject=?, idThesis=?, comments=?, startTime=?, endTime=?, minimumScore=? WHERE idJury=?");
+				stmt = conn.prepareStatement("UPDATE jury SET date=?, local=?, idProject=?, idThesis=?, comments=?, startTime=?, endTime=?, minimumScore=?, supervisorAbsenceReason=? WHERE idJury=?");
 			}
 			
 			stmt.setTimestamp(1, new java.sql.Timestamp(jury.getDate().getTime()));
@@ -251,9 +251,10 @@ public class JuryDAO {
 			stmt.setTime(6, new java.sql.Time(jury.getStartTime().getTime()));
 			stmt.setTime(7, new java.sql.Time(jury.getEndTime().getTime()));
 			stmt.setDouble(8, jury.getMinimumScore());
+			stmt.setString(9, jury.getSupervisorAbsenceReason());
 			
 			if(!insert){
-				stmt.setInt(9, jury.getIdJury());
+				stmt.setInt(10, jury.getIdJury());
 			}
 			
 			stmt.execute();
@@ -279,6 +280,7 @@ public class JuryDAO {
 				if(!ids.isEmpty()){
 					Statement st = conn.createStatement();
 					st.execute("DELETE FROM juryappraiser WHERE idJury=" + String.valueOf(jury.getIdJury()) + " AND idJuryAppraiser NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")");
+					st.close();
 				}
 			}
 			
@@ -297,7 +299,14 @@ public class JuryDAO {
 				if(!ids.isEmpty()){
 					Statement st = conn.createStatement();
 					st.execute("DELETE FROM jurystudent WHERE idJury=" + String.valueOf(jury.getIdJury()) + " AND idJuryStudent NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")");
+					st.close();
 				}
+			}
+			
+			if((jury.getJuryRequest() != null) && (jury.getJuryRequest().getIdJuryRequest() != 0)) {
+				Statement st = conn.createStatement();
+				st.execute("UPDATE juryrequest SET idJury=" + String.valueOf(jury.getIdJury()) + " WHERE idJuryRequest=" + String.valueOf(jury.getJuryRequest().getIdJuryRequest()));
+				st.close();
 			}
 			
 			conn.commit();
@@ -339,6 +348,7 @@ public class JuryDAO {
 			jury.setThesis(dao.findById(rs.getInt("idThesis")));
 		}
 		jury.setMinimumScore(rs.getDouble("minimumScore"));
+		jury.setSupervisorAbsenceReason(rs.getString("supervisorAbsenceReason"));
 		
 		return jury;
 	}
@@ -375,7 +385,7 @@ public class JuryDAO {
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT COUNT(*) AS total FROM juryappraiser WHERE idJury=?");
+			stmt = conn.prepareStatement("SELECT COUNT(*) AS total FROM juryappraiser WHERE substitute=0 AND idJury=?");
 			stmt.setInt(1, idJury);
 			
 			rs = stmt.executeQuery();
@@ -384,7 +394,7 @@ public class JuryDAO {
 			rs.close();
 			
 			stmt.close();
-			stmt = conn.prepareStatement("SELECT COUNT(DISTINCT juryappraiser.idJuryAppraiser) AS total FROM juryappraiserscore INNER JOIN juryappraiser ON juryappraiser.idJuryAppraiser=juryappraiserscore.idJuryAppraiser WHERE idJury=?");
+			stmt = conn.prepareStatement("SELECT COUNT(DISTINCT juryappraiser.idJuryAppraiser) AS total FROM juryappraiserscore INNER JOIN juryappraiser ON juryappraiser.idJuryAppraiser=juryappraiserscore.idJuryAppraiser WHERE juryappraiser.substitute=0 AND juryappraiser.idJury=?");
 			stmt.setInt(1, idJury);
 			
 			rs = stmt.executeQuery();
@@ -418,7 +428,7 @@ public class JuryDAO {
 					"SELECT SUM(juryappraiserscore.score * evaluationitem.ponderosity) / SUM(evaluationitem.ponderosity) AS score" +
 					"FROM juryappraiserscore INNER JOIN evaluationitem ON evaluationitem.idEvaluationItem=juryappraiserscore.idEvaluationItem " +
 					"INNER JOIN juryappraiser ON juryappraiser.idJuryAppraiser=juryappraiserscore.idJuryAppraiser " +
-					"WHERE juryappraiser.idJury=? GROUP BY juryappraiser.idJuryAppraiser");
+					"WHERE juryappraiser.substitute=0 AND juryappraiser.idJury=? GROUP BY juryappraiser.idJuryAppraiser");
 			stmt.setInt(1, idJury);
 			
 			rs = stmt.executeQuery();

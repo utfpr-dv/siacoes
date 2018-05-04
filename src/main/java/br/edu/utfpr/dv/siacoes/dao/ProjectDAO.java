@@ -131,6 +131,36 @@ public class ProjectDAO {
 		}
 	}
 	
+	public int findIdDepartment(int idProject) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT proposal.idDepartment FROM proposal " +
+					"INNER JOIN project ON project.idProposal=proposal.idProposal " +
+					"WHERE project.idProject=?");
+		
+			stmt.setInt(1, idProject);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getInt("idDepartment");
+			}else{
+				return 0;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public int findIdProposal(int idProject) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -196,7 +226,7 @@ public class ProjectDAO {
 		}
 	}
 	
-	public Project findApprovedProject(int idStudent, int idDepartment, int semester, int year) throws SQLException{
+	public Project findApprovedProject(int idStudent, int idDepartment, int semester, int year, boolean requestFinalDocumentStage1) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -208,14 +238,17 @@ public class ProjectDAO {
 				"(SELECT AVG(score) FROM (SELECT juryAppraiser.idJury, SUM(juryAppraiserScore.score) AS score " +
 				"FROM juryAppraiser INNER JOIN juryAppraiserScore ON juryAppraiserScore.idJuryAppraiser = juryAppraiser.idJuryAppraiser " +
 				"INNER JOIN evaluationItem ON evaluationItem.idEvaluationItem = juryAppraiserScore.idEvaluationItem " +
-				"WHERE juryAppraiser.idJury = jury.idJury GROUP BY juryAppraiser.idJuryAppraiser) AS tableScore) AS score " +
+				"WHERE juryAppraiser.substitute=0 AND juryAppraiser.idJury = jury.idJury GROUP BY juryAppraiser.idJuryAppraiser) AS tableScore) AS score " +
 				"FROM project INNER JOIN proposal ON proposal.idProposal=project.idProposal " + 
 				"INNER JOIN \"user\" student ON student.idUser=project.idStudent " +
 				"INNER JOIN \"user\" supervisor ON supervisor.idUser=project.idSupervisor " +
 				"INNER JOIN jury ON jury.idProject = project.idProject " +
-				"INNER JOIN finalDocument ON finalDocument.idProject = project.idProject " +
+				(requestFinalDocumentStage1 ? "INNER JOIN finalDocument ON finalDocument.idProject = project.idProject " : "") +
 				"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=project.idCosupervisor " +
-				"WHERE finalDocument.supervisorFeedback=1 AND project.idStudent = ? AND proposal.idDepartment = ? AND (project.year < " + String.valueOf(year) + " OR (project.year = " + String.valueOf(year) + " AND project.semester < " + String.valueOf(semester) + "))) AS p WHERE p.score >= p.minimumScore ORDER BY year DESC, semester DESC");
+				"WHERE " + (requestFinalDocumentStage1 ? "finalDocument.supervisorFeedback=1 AND " : "") + 
+					"project.idStudent = ? AND proposal.idDepartment = ? AND (project.year < " + String.valueOf(year) + 
+					" OR (project.year = " + String.valueOf(year) + " AND project.semester < " + String.valueOf(semester) + 
+					"))) AS p WHERE p.score >= p.minimumScore ORDER BY year DESC, semester DESC");
 		
 			stmt.setInt(1, idStudent);
 			stmt.setInt(2, idDepartment);

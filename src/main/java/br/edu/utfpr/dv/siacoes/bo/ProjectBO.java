@@ -12,6 +12,7 @@ import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.SupervisorFeedbackReport;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
@@ -48,6 +49,18 @@ public class ProjectBO {
 			ProjectDAO dao = new ProjectDAO();
 			
 			return dao.findIdCampus(idProject);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public int findIdDepartment(int idProject) throws Exception{
+		try {
+			ProjectDAO dao = new ProjectDAO();
+			
+			return dao.findIdDepartment(idProject);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -174,8 +187,9 @@ public class ProjectBO {
 	public Project findApprovedProject(int idStudent, int idDepartment, int semester, int year) throws Exception{
 		try {
 			ProjectDAO dao = new ProjectDAO();
+			SigetConfig config = new SigetConfigBO().findByDepartment(idDepartment);
 			
-			return dao.findApprovedProject(idStudent, idDepartment, semester, year);
+			return dao.findApprovedProject(idStudent, idDepartment, semester, year, config.isRequestFinalDocumentStage1());
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

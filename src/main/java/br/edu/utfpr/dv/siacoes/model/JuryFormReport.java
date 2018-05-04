@@ -15,6 +15,9 @@ public class JuryFormReport {
 	private String evaluationText;
 	private List<JuryFormAppraiserReport> appraisers;
 	private List<JuryFormAppraiserScoreReport> scores;
+	private String local;
+	private String supervisor;
+	private boolean requestFinalDocumentStage1;
 	
 	public JuryFormReport(){
 		this.setStage(0);
@@ -26,6 +29,9 @@ public class JuryFormReport {
 		this.setEvaluationText("");
 		this.setAppraisers(new ArrayList<JuryFormAppraiserReport>());
 		this.setScores(new ArrayList<JuryFormAppraiserScoreReport>());
+		this.setLocal("");
+		this.setSupervisor("");
+		this.setRequestFinalDocumentStage1(false);
 	}
 	
 	public int getStage() {
@@ -82,5 +88,23 @@ public class JuryFormReport {
 	public void setScores(List<JuryFormAppraiserScoreReport> scores) {
 		this.scores = scores;
 	}
-
+	public String getLocal() {
+		return local;
+	}
+	public void setLocal(String local) {
+		this.local = local;
+	}
+	public String getSupervisor() {
+		return supervisor;
+	}
+	public void setSupervisor(String supervisor) {
+		this.supervisor = supervisor;
+	}
+	public boolean isRequestFinalDocumentStage1() {
+		return requestFinalDocumentStage1;
+	}
+	public void setRequestFinalDocumentStage1(boolean requestFinalDocumentStage1) {
+		this.requestFinalDocumentStage1 = requestFinalDocumentStage1;
+	}
+	
 }

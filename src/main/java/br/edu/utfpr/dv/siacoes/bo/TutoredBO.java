@@ -19,7 +19,7 @@ import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class TutoredBO {
 	
-	public List<TutoredBySupervisor> listTutoredBySupervisor(int idDepartment, int initialYear, int finalYear, int stage) throws Exception{
+	public List<TutoredBySupervisor> listTutoredBySupervisor(int idDepartment, int initialYear, int finalYear, int stage) throws Exception {
 		try {
 			TutoredDAO dao = new TutoredDAO();
 			
@@ -31,7 +31,7 @@ public class TutoredBO {
 		}
 	}
 	
-	public List<TutoredGroupedBySupervisor> listTutoredGroupedBySupervisor(int idDepartment, int initialYear, int finalYear, int stage) throws Exception{
+	public List<TutoredGroupedBySupervisor> listTutoredGroupedBySupervisor(int idDepartment, int initialYear, int finalYear, int stage) throws Exception {
 		try {
 			TutoredDAO dao = new TutoredDAO();
 			
@@ -91,13 +91,25 @@ public class TutoredBO {
 		}
 	}
 	
-	public List<Tutored> listBySupervisor(int idSupervisor) throws Exception{
+	public List<Tutored> listBySupervisor(int idSupervisor, int semester, int year) throws Exception {
+		List<Tutored> list = this.listBySupervisor(idSupervisor);
+		
+		for(int i = list.size() - 1; i >= 0; i--) {
+			if((list.get(i).getSemester() != semester) || (list.get(i).getYear() != year)) {
+				list.remove(i);
+			}
+		}
+		
+		return list;
+	}
+	
+	public List<Tutored> listBySupervisor(int idSupervisor) throws Exception {
 		List<Tutored> list = new ArrayList<Tutored>();
 		
 		ProposalBO bo = new ProposalBO();
 		List<Proposal> proposals = bo.listBySupervisor(idSupervisor);
 		
-		for(Proposal p : proposals){
+		for(Proposal p : proposals) {
 			Tutored t = new Tutored();
 			
 			t.setProposal(p);
@@ -115,9 +127,9 @@ public class TutoredBO {
 		ProjectBO pbo = new ProjectBO();
 		List<Project> projects = pbo.listBySupervisor(idSupervisor);
 		
-		for(Project p : projects){
-			for(Tutored t : list){
-				if(p.getProposal().getIdProposal() == t.getProposal().getIdProposal()){
+		for(Project p : projects) {
+			for(Tutored t : list) {
+				if(p.getProposal().getIdProposal() == t.getProposal().getIdProposal()) {
 					t.setProject(p);
 					t.setSupervisor(p.getSupervisor());
 					t.setCosupervisor(p.getCosupervisor());
@@ -127,8 +139,10 @@ public class TutoredBO {
 					
 					Semester semester = new SemesterBO().findByDate(new ProjectBO().findIdCampus(p.getIdProject()), DateUtils.getToday().getTime());
 					
-					if((p.getYear() < semester.getYear()) || ((p.getYear() == semester.getYear()) && (p.getSemester() < semester.getSemester()))){
+					if((p.getYear() < semester.getYear()) || ((p.getYear() == semester.getYear()) && (p.getSemester() < semester.getSemester()))) {
 						t.setStage(2);
+						t.setSemester(semester.getSemester());
+						t.setYear(semester.getYear());
 					}
 				}
 			}
@@ -137,9 +151,9 @@ public class TutoredBO {
 		ThesisBO tbo = new ThesisBO();
 		List<Thesis> thesis = tbo.listBySupervisor(idSupervisor);
 		
-		for(Thesis th : thesis){
-			for(Tutored t : list){
-				if(th.getProject().getIdProject() == t.getProject().getIdProject()){
+		for(Thesis th : thesis) {
+			for(Tutored t : list) {
+				if(th.getProject().getIdProject() == t.getProject().getIdProject()) {
 					t.setThesis(th);
 					t.setSupervisor(th.getSupervisor());
 					t.setCosupervisor(th.getCosupervisor());

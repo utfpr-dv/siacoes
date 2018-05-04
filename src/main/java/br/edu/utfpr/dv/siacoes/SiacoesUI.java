@@ -51,7 +51,6 @@ import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipView;
 import br.edu.utfpr.dv.siacoes.view.JuryParticipantsReportView;
 import br.edu.utfpr.dv.siacoes.view.JurySemesterChartView;
-import br.edu.utfpr.dv.siacoes.view.LibraryView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
 import br.edu.utfpr.dv.siacoes.view.MainView;
 import br.edu.utfpr.dv.siacoes.view.PDFView;
@@ -109,7 +108,6 @@ public class SiacoesUI extends UI {
         getNavigator().addView(ActivitySubmissionView.NAME, ActivitySubmissionView.class);
         getNavigator().addView(CampusView.NAME, CampusView.class);
         getNavigator().addView(DepartmentView.NAME, DepartmentView.class);
-        getNavigator().addView(LibraryView.NAME, LibraryView.class);
         getNavigator().addView(ThemeSuggestionView.NAME, ThemeSuggestionView.class);
         getNavigator().addView(SupervisorChangeView.NAME, SupervisorChangeView.class);
         getNavigator().addView(EmailMessageView.NAME, EmailMessageView.class);

@@ -62,6 +62,8 @@ public class Jury {
 	private Date startTime;
 	private Date endTime;
 	private double minimumScore;
+	private JuryRequest juryRequest;
+	private String supervisorAbsenceReason;
 	
 	public Jury(){
 		this.setIdJury(0);
@@ -74,6 +76,8 @@ public class Jury {
 		this.setStartTime(new Date());
 		this.setEndTime(new Date());
 		this.setMinimumScore(0);
+		this.setJuryRequest(null);
+		this.setSupervisorAbsenceReason("");
 	}
 	
 	public int getIdJury() {
@@ -142,6 +146,18 @@ public class Jury {
 	public void setMinimumScore(double minimumScore){
 		this.minimumScore = minimumScore;
 	}
+	public JuryRequest getJuryRequest() {
+		return juryRequest;
+	}
+	public void setJuryRequest(JuryRequest juryRequest) {
+		this.juryRequest = juryRequest;
+	}
+	public String getSupervisorAbsenceReason() {
+		return supervisorAbsenceReason;
+	}
+	public void setSupervisorAbsenceReason(String supervisorAbsenceReason) {
+		this.supervisorAbsenceReason = supervisorAbsenceReason;
+	}
 	public int getStage(){
 		if((this.getThesis() != null) && (this.getThesis().getIdThesis() != 0)){
 			return 2;
@@ -162,6 +178,21 @@ public class Jury {
 			}
 			
 			return this.getProject().getSupervisor();
+		}
+	}
+	public User getCosupervisor(){
+		if((this.getThesis() != null) && (this.getThesis().getIdThesis() != 0)){
+			if((this.getThesis().getSupervisor() == null) || (this.getThesis().getSupervisor().getIdUser() == 0)){
+				this.loadThesis();
+			}
+			
+			return this.getThesis().getCosupervisor();
+		}else{
+			if((this.getProject().getSupervisor() == null) || (this.getProject().getSupervisor().getIdUser() == 0)){
+				this.loadProject();
+			}
+			
+			return this.getProject().getCosupervisor();
 		}
 	}
 	public User getStudent(){

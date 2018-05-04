@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import br.edu.utfpr.dv.siacoes.dao.ProposalDAO;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
+import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
@@ -19,6 +20,7 @@ import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
+import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class ProposalBO {
 	
@@ -273,6 +275,51 @@ public class ProposalBO {
 		return ret;
 	}
 	
+	public int saveSupervisorFeedback(Proposal proposal) throws Exception {
+		try {
+			if(proposal.getIdProposal() == 0) {
+				throw new Exception("O acadêmico deve submeter a Proposta de TCC 1 para que ela seja avaliada.");
+			}
+			if(proposal.getSupervisorFeedback() == ProposalFeedback.NONE) {
+				throw new Exception("Informe o parecer sobre a orientação de TCC.");
+			}
+			
+			ProposalDAO dao = new ProposalDAO();
+			
+			return dao.saveSupervisorFeedback(proposal);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public byte[] getSupervisorFeedbackReport(int idProposal) throws Exception {
+		Proposal proposal = this.findById(idProposal);
+		
+		ProposalAppraiser appraiser = new ProposalAppraiser();
+		appraiser.setProposal(proposal);
+		appraiser.setFeedback(proposal.getSupervisorFeedback());
+		appraiser.setComments(proposal.getSupervisorComments());
+		
+		List<ProposalAppraiser> list = new ArrayList<ProposalAppraiser>();
+		list.add(appraiser);
+		
+		return new ReportUtils().createPdfStream(list, "SupervisorAgreement").toByteArray();
+	}
+	
+	public String getStudentName(int id) throws Exception{
+		try {
+			ProposalDAO dao = new ProposalDAO();
+			
+			return dao.getStudentName(id);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public Proposal findById(int id) throws Exception{
 		try {
 			ProposalDAO dao = new ProposalDAO();
@@ -290,6 +337,18 @@ public class ProposalBO {
 			ProposalDAO dao = new ProposalDAO();
 			
 			return dao.findByProject(idProject);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public Proposal findByThesis(int idThesis) throws Exception{
+		try {
+			ProposalDAO dao = new ProposalDAO();
+			
+			return dao.findByThesis(idThesis);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

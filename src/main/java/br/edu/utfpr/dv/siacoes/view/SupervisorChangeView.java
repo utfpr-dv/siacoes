@@ -19,7 +19,7 @@ import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.model.SupervisorChange;
-import br.edu.utfpr.dv.siacoes.window.EditSupervisorWindow;
+import br.edu.utfpr.dv.siacoes.window.EditSupervisorChangeWindow;
 
 public class SupervisorChangeView extends ListView {
 
@@ -91,7 +91,7 @@ public class SupervisorChangeView extends ListView {
 			
 			SupervisorChange change = bo.findById((int)id);
 			
-			UI.getCurrent().addWindow(new EditSupervisorWindow(change, this));
+			UI.getCurrent().addWindow(new EditSupervisorChangeWindow(change, this));
 		}catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

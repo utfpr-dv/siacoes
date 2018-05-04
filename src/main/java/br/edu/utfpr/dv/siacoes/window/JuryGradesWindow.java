@@ -39,7 +39,7 @@ public class JuryGradesWindow extends BasicWindow {
 		JuryBO bo = new JuryBO();
 		
 		if((this.jury.getIdJury() != 0) && (bo.hasScores(this.jury.getIdJury()))) {
-			JuryFormReport report = bo.getFormReport(this.jury.getIdJury());
+			JuryFormReport report = bo.getJuryFormReport(this.jury.getIdJury());
 			
 			TabSheet tab = new TabSheet();
 			tab.setSizeFull();

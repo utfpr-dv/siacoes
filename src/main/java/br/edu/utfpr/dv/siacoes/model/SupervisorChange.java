@@ -55,6 +55,7 @@ public class SupervisorChange {
 	private Date approvalDate;
 	private String approvalComments;
 	private int stage;
+	private boolean supervisorRequest;
 	
 	public SupervisorChange(){
 		this.setIdSupervisorChange(0);
@@ -68,6 +69,7 @@ public class SupervisorChange {
 		this.setApprovalDate(new Date());
 		this.setApprovalComments("");
 		this.stage = 0;
+		this.setSupervisorRequest(false);
 	}
 	
 	public int getIdSupervisorChange() {
@@ -148,6 +150,12 @@ public class SupervisorChange {
 		}
 		
 		return stage;
+	}
+	public boolean isSupervisorRequest() {
+		return supervisorRequest;
+	}
+	public void setSupervisorRequest(boolean supervisorRequest) {
+		this.supervisorRequest = supervisorRequest;
 	}
 
 }

@@ -17,7 +17,6 @@ import br.edu.utfpr.dv.siacoes.model.SupervisorChange;
 import br.edu.utfpr.dv.siacoes.model.SupervisorChange.ChangeFeedback;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
-import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class SupervisorChangeDAO {
 	
@@ -32,9 +31,9 @@ public class SupervisorChangeDAO {
 			boolean insert = (change.getIdSupervisorChange() == 0);
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO supervisorchange(idProposal, idOldSupervisor, idNewSupervisor, idOldCosupervisor, idNewCosupervisor, date, comments, approved, approvalDate, approvalComments) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO supervisorchange(idProposal, idOldSupervisor, idNewSupervisor, idOldCosupervisor, idNewCosupervisor, date, comments, approved, approvalDate, approvalComments, supervisorRequest) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE supervisorchange SET idProposal=?, idOldSupervisor=?, idNewSupervisor=?, idOldCosupervisor=?, idNewCosupervisor=?, date=?, comments=?, approved=?, approvalDate=?, approvalComments=? WHERE idSupervisorChange=?");
+				stmt = conn.prepareStatement("UPDATE supervisorchange SET idProposal=?, idOldSupervisor=?, idNewSupervisor=?, idOldCosupervisor=?, idNewCosupervisor=?, date=?, comments=?, approved=?, approvalDate=?, approvalComments=?, supervisorRequest=? WHERE idSupervisorChange=?");
 			}
 			
 			stmt.setInt(1, change.getProposal().getIdProposal());
@@ -62,8 +61,10 @@ public class SupervisorChangeDAO {
 				stmt.setString(10, "");
 			}
 			
+			stmt.setInt(11, (change.isSupervisorRequest() ? 1 : 0));
+			
 			if(!insert){
-				stmt.setInt(11, change.getIdSupervisorChange());
+				stmt.setInt(12, change.getIdSupervisorChange());
 			}
 			
 			stmt.execute();
@@ -390,6 +391,7 @@ public class SupervisorChangeDAO {
 		change.setApproved(ChangeFeedback.valueOf(rs.getInt("approved")));
 		change.setApprovalDate(rs.getTimestamp("approvalDate"));
 		change.setApprovalComments(rs.getString("approvalComments"));
+		change.setSupervisorRequest(rs.getInt("supervisorRequest") == 1);
 		
 		return change;
 	}

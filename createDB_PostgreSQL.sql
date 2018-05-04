@@ -105,6 +105,10 @@ CREATE  TABLE sigetconfig (
   supervisorindication SMALLINT NOT NULL ,
   maxtutoredstage1 SMALLINT NOT NULL ,
   maxtutoredstage2 SMALLINT NOT NULL ,
+  requestfinaldocumentstage1 SMALLINT NOT NULL ,
+  repositorylink VARCHAR(255) NOT NULL ,
+  supervisorjuryrequest SMALLINT NOT NULL ,
+  supervisoragreement SMALLINT NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigetconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -460,6 +464,9 @@ CREATE TABLE proposal (
   submissionDate date NOT NULL,
   fileType SMALLINT NOT NULL,
   invalidated SMALLINT NOT NULL,
+  supervisorfeedback SMALLINT NOT NULL,
+  supervisorfeedbackdate date DEFAULT NULL,
+  supervisorcomments text NOT NULL,
   PRIMARY KEY (idproposal),
   CONSTRAINT fk_proposal_cosupervisor FOREIGN KEY (idCoSupervisor) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_proposal_department FOREIGN KEY (idDepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -518,6 +525,7 @@ CREATE TABLE supervisorchange (
   approved SMALLINT NOT NULL,
   approvalDate TIMESTAMP DEFAULT NULL,
   approvalComments VARCHAR(255) NOT NULL,
+  supervisorrequest smallint NOT NULL,
   PRIMARY KEY (idsupervisorchange),
   CONSTRAINT fk_supervisorchange_newcosupervisor FOREIGN KEY (idNewCosupervisor) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_supervisorchange_newsupervisor FOREIGN KEY (idNewSupervisor) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -625,6 +633,7 @@ CREATE TABLE jury (
   startTime time NOT NULL,
   endTime time NOT NULL,
   minimumScore REAL NOT NULL,
+  supervisorabsencereason TEXT NOT NULL,
   PRIMARY KEY (idjury),
   CONSTRAINT fk_jury_project FOREIGN KEY (idproject) REFERENCES project (idproject) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_jury_thesis FOREIGN KEY (idthesis) REFERENCES thesis (idthesis) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -639,12 +648,43 @@ CREATE TABLE juryappraiser (
   file BYTEA NULL,
   filetype SMALLINT NOT NULL,
   comments TEXT NOT NULL,
+  chair SMALLINT NOT NULL,
+  substitute SMALLINT NOT NULL,
   PRIMARY KEY (idjuryappraiser),
   CONSTRAINT fk_juryappraiser_appraiser FOREIGN KEY (idappraiser) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_juryappraiser_jury FOREIGN KEY (idjury) REFERENCES jury (idjury) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 CREATE INDEX fk_juryappraiser_jury_idx ON juryappraiser (idjury);
 CREATE INDEX fk_juryappraiser_appraiser_idx ON juryappraiser (idappraiser);
+
+CREATE TABLE juryrequest (
+  idjuryrequest SERIAL NOT NULL,
+  date TIMESTAMP NOT NULL,
+  local VARCHAR(100) NOT NULL,
+  idproposal INT NOT NULL,
+  stage INT NOT NULL,
+  comments text NOT NULL,
+  supervisorabsencereason TEXT NOT NULL,
+  idjury INT DEFAULT NULL,
+  PRIMARY KEY (idjuryrequest),
+  CONSTRAINT fk_juryrequest_proposal FOREIGN KEY (idproposal) REFERENCES proposal (idproposal) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT fk_juryrequest_jury FOREIGN KEY (idjury) REFERENCES jury (idjury) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+CREATE INDEX fk_juryrequest_proposal_idx ON juryrequest (idproposal);
+CREATE INDEX fk_juryrequest_jury_idx ON juryrequest (idjury);
+
+CREATE TABLE juryappraiserrequest (
+  idjuryappraiserrequest SERIAL NOT NULL,
+  idjuryrequest INT NOT NULL,
+  idappraiser INT NOT NULL,
+  chair SMALLINT NOT NULL,
+  substitute SMALLINT NOT NULL,
+  PRIMARY KEY (idjuryappraiserrequest),
+  CONSTRAINT fk_juryappraiserrequest_appraiser FOREIGN KEY (idappraiser) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT fk_juryappraiserrequest_juryrequest FOREIGN KEY (idjuryrequest) REFERENCES juryrequest (idjuryrequest) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+CREATE INDEX fk_juryappraiserrequest_juryrequest_idx ON juryappraiserrequest (idjuryrequest);
+CREATE INDEX fk_juryappraiserrequest_appraiser_idx ON juryappraiserrequest (idappraiser);
 
 CREATE TABLE juryappraiserscore (
   idjuryappraiserscore SERIAL NOT NULL,

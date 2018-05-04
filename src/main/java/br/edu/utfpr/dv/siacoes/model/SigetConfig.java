@@ -49,6 +49,10 @@ public class SigetConfig {
 	private int supervisorIndication;
 	private int maxTutoredStage1;
 	private int maxTutoredStage2;
+	private boolean requestFinalDocumentStage1;
+	private String repositoryLink;
+	private boolean supervisorJuryRequest;
+	private boolean supervisorAgreement;
 	
 	public SigetConfig(){
 		this.setDepartment(new Department());
@@ -60,6 +64,10 @@ public class SigetConfig {
 		this.setSupervisorIndication(0);
 		this.setMaxTutoredStage1(0);
 		this.setMaxTutoredStage2(0);
+		this.setRequestFinalDocumentStage1(false);
+		this.setRepositoryLink("");
+		this.setSupervisorAgreement(false);
+		this.setSupervisorJuryRequest(false);
 	}
 	
 	public Department getDepartment() {
@@ -115,6 +123,30 @@ public class SigetConfig {
 	}
 	public void setMaxTutoredStage2(int maxTutoredStage2) {
 		this.maxTutoredStage2 = maxTutoredStage2;
+	}
+	public boolean isRequestFinalDocumentStage1() {
+		return requestFinalDocumentStage1;
+	}
+	public void setRequestFinalDocumentStage1(boolean requestFinalDocumentStage1) {
+		this.requestFinalDocumentStage1 = requestFinalDocumentStage1;
+	}
+	public String getRepositoryLink() {
+		return repositoryLink;
+	}
+	public void setRepositoryLink(String repositoryLink) {
+		this.repositoryLink = repositoryLink;
+	}
+	public boolean isSupervisorJuryRequest() {
+		return supervisorJuryRequest;
+	}
+	public void setSupervisorJuryRequest(boolean supervisorJuryRequest) {
+		this.supervisorJuryRequest = supervisorJuryRequest;
+	}
+	public boolean isSupervisorAgreement() {
+		return supervisorAgreement;
+	}
+	public void setSupervisorAgreement(boolean supervisorAgreement) {
+		this.supervisorAgreement = supervisorAgreement;
 	}
 
 }

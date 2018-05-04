@@ -24,9 +24,13 @@ import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryStudentBO;
+import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
+import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
+import br.edu.utfpr.dv.siacoes.bo.ThesisBO;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryStudent;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
@@ -52,6 +56,7 @@ public class EditJuryWindow extends EditWindow {
 	private final TimeField textStartTime;
 	private final TimeField textEndTime;
 	private final TextArea textComments;
+	private final TextArea textSupervisorAbsenceReason;
 	private final TabSheet tabContainer;
 	
 	public EditJuryWindow(Jury jury, ListView parentView){
@@ -64,11 +69,11 @@ public class EditJuryWindow extends EditWindow {
 		}
 		
 		this.tabContainer = new TabSheet();
-		this.tabContainer.setWidth("700px");
-		this.tabContainer.setHeight("400px");
+		this.tabContainer.setWidth("810px");
+		this.tabContainer.setHeight("450px");
 		
 		this.textLocal = new TextField("Local");
-		this.textLocal.setWidth("690px");
+		this.textLocal.setWidth("800px");
 		this.textLocal.setMaxLength(100);
 		
 		this.textDate = new DateField("Data");
@@ -82,9 +87,14 @@ public class EditJuryWindow extends EditWindow {
 		this.textEndTime.set24HourClock(true);
 		
 		this.textComments = new TextArea("Observações");
-		this.textComments.setWidth("690px");
+		this.textComments.setWidth("800px");
 		this.textComments.setHeight("150px");
 		this.textComments.addStyleName("textscroll");
+		
+		this.textSupervisorAbsenceReason = new TextArea("Motivo da ausência do Professor Orientador na banca");
+		this.textSupervisorAbsenceReason.setWidth("800px");
+		this.textSupervisorAbsenceReason.setHeight("75px");
+		this.textSupervisorAbsenceReason.addStyleName("textscroll");
 		
 		VerticalLayout tab1 = new VerticalLayout();
 		tab1.setSpacing(true);
@@ -93,6 +103,7 @@ public class EditJuryWindow extends EditWindow {
 		h1.setSpacing(true);
 		tab1.addComponent(h1);
 		tab1.addComponent(this.textComments);
+		tab1.addComponent(this.textSupervisorAbsenceReason);
 		
 		this.layoutAppraisers = new HorizontalLayout();
 		
@@ -142,6 +153,7 @@ public class EditJuryWindow extends EditWindow {
 		layoutGridButtons.setSpacing(true);
 		
 		VerticalLayout tab2 = new VerticalLayout(this.layoutAppraisers, layoutGridButtons);
+		tab2.setSpacing(true);
 		
 		this.layoutParticipants = new HorizontalLayout();
 		
@@ -170,6 +182,7 @@ public class EditJuryWindow extends EditWindow {
 		layoutGridButtons2.setSpacing(true);
 		
 		VerticalLayout tab3 = new VerticalLayout(this.layoutParticipants, layoutGridButtons2);
+		tab3.setSpacing(true);
 		
 		this.tabContainer.addTab(tab1, "Dados da Banca");
 		this.tabContainer.addTab(tab2, "Membros");
@@ -187,6 +200,7 @@ public class EditJuryWindow extends EditWindow {
 		this.textStartTime.setValue(this.jury.getStartTime());
 		this.textEndTime.setValue(this.jury.getEndTime());
 		this.textComments.setValue(this.jury.getComments());
+		this.textSupervisorAbsenceReason.setValue(this.jury.getSupervisorAbsenceReason());
 		
 		if(this.jury.getIdJury() == 0) {
 			this.textStartTime.setVisible(false);
@@ -223,23 +237,48 @@ public class EditJuryWindow extends EditWindow {
 		
 		this.loadGridAppraisers();
 		this.loadGridParticipants();
+		
+		if(this.jury.getIdJury() == 0) {
+			try{
+				int idDepartment = 0;
+				
+				if((this.jury.getThesis() != null) && (this.jury.getThesis().getIdThesis() != 0)) {
+					idDepartment = new ThesisBO().findIdDepartment(this.jury.getThesis().getIdThesis());
+				} else {
+					idDepartment = new ProjectBO().findIdDepartment(this.jury.getProject().getIdProject());
+				}
+				
+				SigetConfig config = new SigetConfigBO().findByDepartment(idDepartment);
+				
+				if(config.isSupervisorJuryRequest() && (this.jury.getJuryRequest() == null) || (this.jury.getJuryRequest().getIdJuryRequest() == 0)) {
+					Notification.show("Agendamento de Banca", "O Professor Orientador não efetuou a solicitação de agendamento de banca.", Notification.Type.WARNING_MESSAGE);
+				}
+			} catch (Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				
+				Notification.show("Agendamento de Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			}
+		}
 	}
 	
 	private void loadGridAppraisers(){
 		this.gridAppraisers = new Grid();
 		this.gridAppraisers.addColumn("Membro", String.class);
 		this.gridAppraisers.addColumn("Nome", String.class);
-		this.gridAppraisers.setWidth("690px");
-		this.gridAppraisers.setHeight("300px");
+		this.gridAppraisers.setWidth("800px");
+		this.gridAppraisers.setHeight("370px");
+		this.gridAppraisers.getColumns().get(0).setWidth(100);
 		
 		if(this.jury.getAppraisers() != null){
-			User supervisor = this.jury.getSupervisor();
-			int member = 1;
+			int member = 1, substitute = 1;
 			
 			for(JuryAppraiser appraiser : this.jury.getAppraisers()){
-				if(appraiser.getAppraiser().getIdUser() == supervisor.getIdUser()){
-					this.gridAppraisers.addRow("Orientador", appraiser.getAppraiser().getName());
-				}else{
+				if(appraiser.isChair()) {
+					this.gridAppraisers.addRow("Presidente", appraiser.getAppraiser().getName());
+				} else if (appraiser.isSubstitute()) {
+					this.gridAppraisers.addRow("Suplente " + String.valueOf(substitute), appraiser.getAppraiser().getName());
+					substitute = substitute + 1;
+				}else {
 					this.gridAppraisers.addRow("Membro " + String.valueOf(member), appraiser.getAppraiser().getName());
 					member = member + 1;
 				}
@@ -254,8 +293,9 @@ public class EditJuryWindow extends EditWindow {
 		this.gridParticipants = new Grid();
 		this.gridParticipants.addColumn("RA", String.class);
 		this.gridParticipants.addColumn("Nome", String.class);
-		this.gridParticipants.setWidth("690px");
-		this.gridParticipants.setHeight("300px");
+		this.gridParticipants.setWidth("800px");
+		this.gridParticipants.setHeight("370px");
+		this.gridParticipants.getColumns().get(0).setWidth(100);
 		
 		if(this.jury.getAppraisers() != null){
 			for(JuryStudent student : this.jury.getParticipants()){
@@ -277,6 +317,7 @@ public class EditJuryWindow extends EditWindow {
 			this.jury.setStartTime(this.textStartTime.getValue());
 			this.jury.setEndTime(this.textEndTime.getValue());
 			this.jury.setDate(this.textDate.getValue());
+			this.jury.setSupervisorAbsenceReason(this.textSupervisorAbsenceReason.getValue());
 			
 			bo.save(this.jury);
 			
@@ -295,15 +336,11 @@ public class EditJuryWindow extends EditWindow {
 		UI.getCurrent().addWindow(new EditJuryAppraiserWindow(this));
 	}
 	
-	public void addAppraiser(User appraiser) throws Exception{
+	public void addAppraiser(JuryAppraiser appraiser) throws Exception{
 		JuryBO bo = new JuryBO();
 		
-		if(bo.canAddAppraiser(this.jury, appraiser)){
-			JuryAppraiser ja = new JuryAppraiser();
-			
-			ja.setAppraiser(appraiser);
-			
-			this.jury.getAppraisers().add(ja);
+		if(bo.canAddAppraiser(this.jury, appraiser.getAppraiser())){
+			this.jury.getAppraisers().add(appraiser);
 			
 			this.loadGridAppraisers();
 		}
