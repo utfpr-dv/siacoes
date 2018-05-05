@@ -13,6 +13,7 @@ import br.edu.utfpr.dv.siacoes.dao.UserDAO;
 import br.edu.utfpr.dv.siacoes.ldap.LdapConfig;
 import br.edu.utfpr.dv.siacoes.ldap.LdapUtils;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.Credential;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.util.StringUtils;
@@ -309,6 +310,10 @@ public class UserBO {
 			
 			throw new Exception(e.getMessage());
 		}
+	}
+	
+	public User validateLogin(Credential credentials) throws Exception {
+		return this.validateLogin(credentials.getLogin(), credentials.getPassword());
 	}
 	
 	public User validateLogin(String login, String password) throws Exception{

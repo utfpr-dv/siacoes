@@ -76,7 +76,7 @@ import com.vaadin.ui.UI;
 @Theme("facebook")
 public class SiacoesUI extends UI {
 
-	@WebServlet(value = "/*", asyncSupported = true)
+	@WebServlet(value = {"/", "/VAADIN/*"}, asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = false, ui = SiacoesUI.class, widgetset="br.edu.utfpr.dv.siacoes.widgetset.SiacoesWidgetset")
 	public static class Servlet extends VaadinServlet {
 	}
@@ -156,7 +156,6 @@ public class SiacoesUI extends UI {
 
             @Override
             public boolean beforeViewChange(ViewChangeEvent event) {
-
                 // Check if a user has logged in
                 boolean isLoggedIn = Session.isAuthenticated();
                 boolean isLoginView = event.getNewView() instanceof LoginView;
