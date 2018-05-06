@@ -41,9 +41,10 @@ public class LoginView extends CustomComponent implements View {
 	private final Label info;
 	private final Label infoAluno;
 	private final Label infoServidor;
-    private final TextField user;
-    private final PasswordField password;
-    private final Button loginButton;
+    private final TextField textLogin;
+    private final PasswordField textPassword;
+    private final Button buttonLogin;
+    private final Button buttonForgotPassword;
     private final Panel panelLogin;
     private final GridLayout layoutStats;
     
@@ -65,32 +66,40 @@ public class LoginView extends CustomComponent implements View {
     	this.infoServidor = new Label("- Se você for servidor, no campo usuário coloque o seu nome de usuário utilizado para acessar os sistemas da UTFPR, e no campo senha informe a sua senha utilizada para acessar os sistemas da UTFPR.");
     	this.infoServidor.setWidth("300px");
     	
-    	this.user = new TextField("Usuário");
-    	this.user.setWidth("300px");
-    	this.user.setInputPrompt("Informe seu nome de usuário");
-    	this.user.setInvalidAllowed(false);
-    	this.user.setNullRepresentation("");
-    	this.user.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
-    	this.user.setIcon(FontAwesome.USER);
+    	this.textLogin = new TextField("Usuário");
+    	this.textLogin.setWidth("300px");
+    	this.textLogin.setInputPrompt("Informe seu nome de usuário");
+    	this.textLogin.setInvalidAllowed(false);
+    	this.textLogin.setNullRepresentation("");
+    	this.textLogin.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+    	this.textLogin.setIcon(FontAwesome.USER);
 
-    	this.password = new PasswordField("Senha");
-    	this.password.setWidth("300px");
-    	this.password.setInputPrompt("Informe sua senha");
+    	this.textPassword = new PasswordField("Senha");
+    	this.textPassword.setWidth("300px");
+    	this.textPassword.setInputPrompt("Informe sua senha");
     	//this.password.setValue("");
-    	this.password.setNullRepresentation("");
-    	this.password.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
-    	this.password.setIcon(FontAwesome.LOCK);
+    	this.textPassword.setNullRepresentation("");
+    	this.textPassword.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+    	this.textPassword.setIcon(FontAwesome.LOCK);
         
-    	this.loginButton = new Button("Login", new Button.ClickListener() {
+    	this.buttonLogin = new Button("Login", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
             	login();
             }
         });
-    	this.loginButton.setWidth("300px");
-    	this.loginButton.setClickShortcut(KeyCode.ENTER);
+    	this.buttonLogin.setWidth("300px");
+    	this.buttonLogin.setClickShortcut(KeyCode.ENTER);
         
-        VerticalLayout layoutLogin = new VerticalLayout(this.user, this.password, this.loginButton, this.info, this.infoAluno, this.infoServidor);
+    	this.buttonForgotPassword = new Button("Esqueci minha senha", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	forgotPassword();
+            }
+        });
+    	this.buttonForgotPassword.setWidth("300px");
+    	
+        VerticalLayout layoutLogin = new VerticalLayout(this.textLogin, this.textPassword, this.buttonLogin, this.buttonForgotPassword, this.info, this.infoAluno, this.infoServidor);
         layoutLogin.setSizeUndefined();
         layoutLogin.setResponsive(true);
         layoutLogin.setSpacing(true);
@@ -183,12 +192,12 @@ public class LoginView extends CustomComponent implements View {
 			}
 		}
     	
-        user.focus();
+        textLogin.focus();
     }
     
     private void login(){
-    	String username = this.user.getValue();
-        String password = this.password.getValue();
+    	String username = this.textLogin.getValue();
+        String password = this.textPassword.getValue();
         
         try{
         	UserBO bo = new UserBO();
@@ -211,12 +220,16 @@ public class LoginView extends CustomComponent implements View {
         }catch(Exception e){
         	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	this.password.setValue("");
-            this.user.setValue("");
-            this.user.focus();
+        	this.textPassword.setValue("");
+            this.textLogin.setValue("");
+            this.textLogin.focus();
             
             Notification.show("Login", e.getMessage(), Notification.Type.ERROR_MESSAGE);
         }
+    }
+    
+    private void forgotPassword() {
+    	getUI().getNavigator().navigateTo(PasswordView.NAME);
     }
     
 }

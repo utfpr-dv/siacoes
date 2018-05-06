@@ -54,6 +54,7 @@ import br.edu.utfpr.dv.siacoes.view.JurySemesterChartView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
 import br.edu.utfpr.dv.siacoes.view.MainView;
 import br.edu.utfpr.dv.siacoes.view.PDFView;
+import br.edu.utfpr.dv.siacoes.view.PasswordView;
 import br.edu.utfpr.dv.siacoes.view.ProjectView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackStudentView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackView;
@@ -76,7 +77,7 @@ import com.vaadin.ui.UI;
 @Theme("facebook")
 public class SiacoesUI extends UI {
 
-	@WebServlet(value = {"/", "/VAADIN/*"}, asyncSupported = true)
+	@WebServlet(value = "/*", asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = false, ui = SiacoesUI.class, widgetset="br.edu.utfpr.dv.siacoes.widgetset.SiacoesWidgetset")
 	public static class Servlet extends VaadinServlet {
 	}
@@ -145,6 +146,7 @@ public class SiacoesUI extends UI {
         getNavigator().addView(Error404View.NAME, Error404View.class);
         getNavigator().addView(JuryParticipantsReportView.NAME, JuryParticipantsReportView.class);
         getNavigator().addView(InternshipJuryParticipantsReportView.NAME, InternshipJuryParticipantsReportView.class);
+        getNavigator().addView(PasswordView.NAME, PasswordView.class);
         
         getNavigator().setErrorView(Error404View.class);
         
@@ -161,7 +163,7 @@ public class SiacoesUI extends UI {
                 boolean isLoginView = event.getNewView() instanceof LoginView;
                 boolean isMainView = event.getNewView() instanceof MainView;
                 
-                if ((event.getNewView() instanceof AuthenticateView) || (event.getNewView() instanceof CertificateView)){
+                if ((event.getNewView() instanceof AuthenticateView) || (event.getNewView() instanceof CertificateView) || (event.getNewView() instanceof PasswordView)){
                 	return true;
                 } else if (!isLoggedIn && !isLoginView) {
                     // Redirect to login view always if a user has not yet

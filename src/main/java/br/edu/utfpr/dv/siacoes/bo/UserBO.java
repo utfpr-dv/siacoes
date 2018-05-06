@@ -16,6 +16,7 @@ import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Credential;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.service.LoginService;
 import br.edu.utfpr.dv.siacoes.util.StringUtils;
 
 public class UserBO {
@@ -228,7 +229,7 @@ public class UserBO {
 		}
 	}
 	
-	private boolean loginIsStudent(String login){
+	public boolean loginIsStudent(String login){
 		if(login.toLowerCase().startsWith("a")){
 			login = login.substring(1);
 			
@@ -273,6 +274,32 @@ public class UserBO {
 			UserDAO dao = new UserDAO();
 			
 			return dao.findEmail(idUser);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public User changePassword(String token, String newPassword) throws Exception {
+		try {
+			String login = new LoginService().validateToken(token);
+			String newHash = StringUtils.generateSHA3Hash(newPassword);
+			
+			UserDAO dao = new UserDAO();
+			User user = dao.findByLogin(login);
+			
+			if(user == null){
+				throw new Exception("Usuário não encontrado.");
+			}
+			if(!user.isExternal()){
+				throw new Exception("A alteração de senha é permitida apenas para usuários externos. Acadêmicos e Professores devem alterar a senha através do Sistema Acadêmico.");
+			}
+			
+			user.setPassword(newHash);
+			dao.save(user);
+			
+			return user;
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

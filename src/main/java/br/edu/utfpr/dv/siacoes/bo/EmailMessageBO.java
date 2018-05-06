@@ -6,10 +6,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.EmailMessageDAO;
+import br.edu.utfpr.dv.siacoes.model.AppConfig;
 import br.edu.utfpr.dv.siacoes.model.EmailConfig;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.service.LoginService;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.util.EmailUtils;
 
@@ -70,6 +73,16 @@ public class EmailMessageBO {
 		}
 	}
 	
+	public void sendForgotPasswordEmail(User user) throws Exception {
+		String token = new LoginService().generateToken(user.getLogin());
+		String link = AppConfig.getInstance().getHost() + "/#!password/" + token;
+		String message = "Você solicitou a recuperação de senha do sistema SIACOES<br/><br/>" +
+				"Para redefinir a sua senha, acesse o link:<br/>" +
+				"<a href=\"" + link + "\">" + link + "</a>";
+		
+		this.sendEmail(new String[] {user.getEmail()}, "Recuperação de Senha", message, true, true);
+	}
+	
 	public void sendEmail(int idUser, EmailMessage.MessageType type, List<EmailMessageEntry<String, String>> keys) throws Exception {
 		UserBO bo = new UserBO();
 		
@@ -103,7 +116,7 @@ public class EmailMessageBO {
 			}
 		}
 		
-		this.sendEmail(to, message.getSubject(), msg, true);
+		this.sendEmail(to, message.getSubject(), msg, true, false);
 	}
 	
 	public void sendEmailNoThread(String[] to, EmailMessage message, List<EmailMessageEntry<String, String>> keys) throws Exception {
@@ -115,10 +128,10 @@ public class EmailMessageBO {
 			}
 		}
 		
-		this.sendEmail(to, message.getSubject(), msg, false);
+		this.sendEmail(to, message.getSubject(), msg, false, false);
 	}
 	
-	private void sendEmail(String[] to, String subject, String message, boolean useThread) throws Exception{
+	private void sendEmail(String[] to, String subject, String message, boolean useThread, boolean html) throws Exception{
 		EmailConfigBO bo = new EmailConfigBO();
 		EmailConfig config = bo.loadConfiguration();
 		
@@ -126,16 +139,20 @@ public class EmailMessageBO {
 			throw new Exception("É preciso configurar os dados para envio de e-mails.");
 		}
 		
-		if((config.getSignature() != null) && !config.getSignature().trim().isEmpty()){
-			message = message + "\n\n--------------\n" + config.getSignature();	
+		if((config.getSignature() != null) && !config.getSignature().trim().isEmpty()) {
+			if(html) {
+				message = message + "<br/><br/>--------------<br/>" + config.getSignature().replace("\n", "<br/>");
+			} else {
+				message = message + "\n\n--------------\n" + config.getSignature();	
+			}
 		}
 		
 		EmailUtils email = new EmailUtils(config.getHost(), config.getPort(), config.getUser(), config.getPassword(), config.isEnableSsl(), config.isAuthenticate());
 		
 		if(useThread)
-			email.sendEmail(config.getUser(), to, null, null, subject, message);
+			email.sendEmail(config.getUser(), to, null, null, subject, message, html);
 		else
-			email.sendEmailNoThread(config.getUser(), to, null, null, subject, message);
+			email.sendEmailNoThread(config.getUser(), to, null, null, subject, message, html);
 	}
 
 }

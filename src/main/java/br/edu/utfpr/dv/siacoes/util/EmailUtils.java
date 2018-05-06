@@ -75,7 +75,7 @@ public class EmailUtils {
 		this.setAuthenticate(authenticate);
 	}
 	
-	public void sendEmailNoThread(String from, String[] to, String[] cc, String[] bcc, String subject, String body) throws Exception {
+	public void sendEmailNoThread(String from, String[] to, String[] cc, String[] bcc, String subject, String body, boolean html) throws Exception {
 		Session session;
 		Properties props = System.getProperties();
         
@@ -136,7 +136,12 @@ public class EmailUtils {
             }
 
             message.setSubject(subject);
-            message.setText(body);
+            
+            if(html) {
+            	message.setContent(body, "text/html; charset=utf-8");
+            } else {
+            	message.setText(body);
+            }
             
             Transport.send(message, getUser(), getPassword());
         } catch (Exception e) {
@@ -146,11 +151,11 @@ public class EmailUtils {
         }
 	}
 	
-	public void sendEmail(String from, String[] to, String[] cc, String[] bcc, String subject, String body) {
+	public void sendEmail(String from, String[] to, String[] cc, String[] bcc, String subject, String body, boolean html) {
 		Thread t = new Thread() {
 		    public void run() {
 		    	try {
-					sendEmailNoThread(from, to, cc, bcc, subject, body);
+					sendEmailNoThread(from, to, cc, bcc, subject, body, html);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 				}
