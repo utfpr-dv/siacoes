@@ -162,6 +162,90 @@ public class UserDAO {
 		}
 	}
 	
+	public int findId(String login) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT iduser FROM \"user\" WHERE login = ?");
+		
+			stmt.setString(1, login);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getInt("iduser");
+			}else{
+				return 0;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public String findSalt(String login) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT salt FROM \"user\" WHERE login = ?");
+		
+			stmt.setString(1, login);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getString("salt");
+			}else{
+				return "";
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public String findSalt(int idUser) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT salt FROM \"user\" WHERE idUser = ?");
+		
+			stmt.setInt(1, idUser);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getString("salt");
+			}else{
+				return "";
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public String findEmail(int idUser) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -627,9 +711,9 @@ public class UserDAO {
 			conn.setAutoCommit(false);
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO \"user\"(name, login, password, email, institution, research, lattes, external, active, area, idDepartment, sigacManager, sigesManager, sigetManager, departmentManager, studentCode, registerSemester, registerYear, phone, idcompany, photo) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO \"user\"(name, login, password, email, institution, research, lattes, external, active, area, idDepartment, sigacManager, sigesManager, sigetManager, departmentManager, studentCode, registerSemester, registerYear, phone, idcompany, photo, salt) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE \"user\" SET name=?, login=?, password=?, email=?, institution=?, research=?, lattes=?, external=?, active=?, area=?, idDepartment=?, sigacManager=?, sigesManager=?, sigetManager=?, departmentManager=?, studentCode=?, registerSemester=?, registerYear=?, phone=?, idcompany=?, photo=? WHERE idUser=?");
+				stmt = conn.prepareStatement("UPDATE \"user\" SET name=?, login=?, password=?, email=?, institution=?, research=?, lattes=?, external=?, active=?, area=?, idDepartment=?, sigacManager=?, sigesManager=?, sigetManager=?, departmentManager=?, studentCode=?, registerSemester=?, registerYear=?, phone=?, idcompany=?, photo=?, salt=? WHERE idUser=?");
 			}
 			
 			stmt.setString(1, user.getName());
@@ -665,9 +749,10 @@ public class UserDAO {
 			}else{
 				stmt.setBytes(21, user.getPhoto());	
 			}
+			stmt.setString(22, user.getSalt());
 			
 			if(!insert){
-				stmt.setInt(22, user.getIdUser());
+				stmt.setInt(23, user.getIdUser());
 			}
 			
 			stmt.execute();
@@ -719,6 +804,7 @@ public class UserDAO {
 		user.setName(rs.getString("name"));
 		user.setLogin(rs.getString("login"));
 		user.setPassword(rs.getString("password"));
+		user.setSalt(rs.getString("salt"));
 		user.setEmail(rs.getString("email"));
 		user.setPhone(rs.getString("phone"));
 		user.setInstitution(rs.getString("institution"));

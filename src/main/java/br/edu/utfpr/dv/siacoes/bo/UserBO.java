@@ -281,10 +281,35 @@ public class UserBO {
 		}
 	}
 	
+	public String findSalt(int idUser) throws Exception{
+		try {
+			UserDAO dao = new UserDAO();
+			
+			return dao.findSalt(idUser);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public String findSalt(String login) throws Exception{
+		try {
+			UserDAO dao = new UserDAO();
+			
+			return dao.findSalt(login);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public User changePassword(String token, String newPassword) throws Exception {
 		try {
 			String login = new LoginService().validateToken(token);
-			String newHash = StringUtils.generateSHA3Hash(newPassword);
+			String newSalt = StringUtils.generateSalt();
+			String newHash = StringUtils.generateSHA3Hash(newPassword + newSalt);
 			
 			UserDAO dao = new UserDAO();
 			User user = dao.findByLogin(login);
@@ -297,6 +322,7 @@ public class UserBO {
 			}
 			
 			user.setPassword(newHash);
+			user.setSalt(newSalt);
 			dao.save(user);
 			
 			return user;
@@ -309,8 +335,10 @@ public class UserBO {
 	
 	public User changePassword(int idUser, String currentPassword, String newPassword) throws Exception{
 		try {
-			String currentHash = StringUtils.generateSHA3Hash(currentPassword);
-			String newHash = StringUtils.generateSHA3Hash(newPassword);
+			String salt = this.findSalt(idUser);
+			String currentHash = StringUtils.generateSHA3Hash(currentPassword + salt);
+			String newSalt = StringUtils.generateSalt();
+			String newHash = StringUtils.generateSHA3Hash(newPassword + newSalt);
 			
 			UserDAO dao = new UserDAO();
 			User user = dao.findById(idUser);
@@ -329,6 +357,7 @@ public class UserBO {
 			}
 			
 			user.setPassword(newHash);
+			user.setSalt(newSalt);
 			dao.save(user);
 			
 			return user;
@@ -348,8 +377,6 @@ public class UserBO {
     		throw new Exception("Informe o usuário e a senha.");
     	}
 		
-		String hash = StringUtils.generateSHA3Hash(password);
-		
 		if(login.contains("@")){
 			login = login.substring(0, login.indexOf("@"));
 		}
@@ -366,6 +393,12 @@ public class UserBO {
 			user = new User();
 			user.setExternal(false);
 		}
+		
+		if(user.getSalt().isEmpty()) {
+			user.setSalt(StringUtils.generateSalt());
+		}
+		
+		String hash = StringUtils.generateSHA3Hash(password + user.getSalt());
 		
 		if(user.isExternal()){
 			if(!user.getPassword().equals(hash)){

@@ -3,7 +3,6 @@ package br.edu.utfpr.dv.siacoes.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.edu.utfpr.dv.siacoes.model.TutoredBySupervisor.TutoredGroupedBySupervisor;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class TutoredBySupervisor {

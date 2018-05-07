@@ -57,6 +57,7 @@ public class User {
 	private String name;
 	private String login;
 	private String password;
+	private String salt;
 	private String email;
 	private String phone;
 	private String institution;
@@ -82,6 +83,7 @@ public class User {
 		this.setName("");
 		this.setLogin("");
 		this.setPassword("");
+		this.setSalt("");
 		this.setEmail("");
 		this.setPhone("");
 		this.setInstitution("");
@@ -124,6 +126,12 @@ public class User {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public String getSalt() {
+		return salt;
+	}
+	public void setSalt(String salt) {
+		this.salt = salt;
 	}
 	public String getEmail(){
 		return this.email;
