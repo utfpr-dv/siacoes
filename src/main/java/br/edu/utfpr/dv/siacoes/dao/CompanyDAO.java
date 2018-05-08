@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.Company;
-import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 
 public class CompanyDAO {
 	

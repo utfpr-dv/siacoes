@@ -24,9 +24,8 @@ public class UserDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-					"SELECT \"user\".*, company.name AS companyName, department.idCampus " +
+					"SELECT \"user\".*, company.name AS companyName " +
 					"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-					"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
 					"WHERE \"user\".login = ?");
 		
 			stmt.setString(1, login);
@@ -56,9 +55,8 @@ public class UserDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-					"SELECT \"user\".*, company.name AS companyName, department.idCampus " +
+					"SELECT \"user\".*, company.name AS companyName " +
 					"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-					"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
 					"WHERE \"user\".idUser = ?");
 		
 			stmt.setInt(1, id);
@@ -88,26 +86,26 @@ public class UserDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			
-			String sql = "SELECT \"user\".*, company.name AS companyName, department.idCampus " +
-					"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-					"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-					"WHERE \"user\".iddepartment = ? ";
+			String sql = "SELECT \"user\".*, company.name AS companyName " +
+					"FROM \"user\" INNER JOIN userdepartment ON userdepartment.iduser=\"user\".iduser " +
+					"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
+					"WHERE userdepartment.iddepartment = ? ";
 			
 			switch(module){
 				case SIGAC:
-					sql += " AND \"user\".sigacmanager=1 ";
+					sql += " AND userdepartment.sigacmanager=1 ";
 					break;
 				case SIGES:
-					sql += " AND \"user\".sigesmanager=1 ";
+					sql += " AND userdepartment.sigesmanager=1 ";
 					break;
 				case SIGET:
-					sql += " AND \"user\".sigetmanager=1 ";
+					sql += " AND userdepartment.sigetmanager=1 ";
 					break;
 				default:
 					sql += " AND 1=2 ";
 			}
 			
-			//sql += " ORDER BY \"user\".profile";
+			sql += " ORDER BY userdepartment.profile";
 			
 			stmt = conn.prepareStatement(sql);
 		
@@ -138,10 +136,11 @@ public class UserDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-				"SELECT \"user\".*, company.name AS companyName, department.idCampus " +
-				"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-				"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-				"WHERE \"user\".iddepartment = ? AND \"user\".departmentmanager=1 ORDER BY \"user\".profile");
+				"SELECT \"user\".*, company.name AS companyName " +
+				"FROM \"user\" INNER JOIN userdepartment ON userdepartment.iduser=\"user\".iduser " +
+				"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
+				"WHERE userdepartment.iddepartment = ? AND userdepartment.departmentmanager=1 " +
+				"ORDER BY userdepartment.profile");
 	
 			stmt.setInt(1, idDepartment);
 			
@@ -283,10 +282,10 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT \"user\".*, company.name AS companyName, department.idCampus " +
+			rs = stmt.executeQuery("SELECT \"user\".*, company.name AS companyName " +
 						"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-						"WHERE \"user\".login <> 'admin' " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+						"WHERE \"user\".login <> 'admin' " + (onlyActives ? " AND \"user\".active = 1 " : "") + 
+						" ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -313,11 +312,11 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName " +
 						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
 						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-						"WHERE \"user\".login <> 'admin' AND userprofile.profile = 1 " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+						"WHERE \"user\".login <> 'admin' AND userprofile.profile = 1 " + (onlyActives ? " AND \"user\".active = 1 " : "") + 
+						" ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -344,11 +343,11 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName " +
 						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
 						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-						"WHERE \"user\".login <> 'admin' AND \"user\".idDepartment=" + String.valueOf(idDepartment) + " AND userprofile.profile = 1 " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+						"WHERE \"user\".login <> 'admin' AND \"user\".idDepartment=" + String.valueOf(idDepartment) + " AND userprofile.profile = 1 " + (onlyActives ? " AND \"user\".active = 1 " : "") + 
+						" ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -375,11 +374,11 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName " +
 					"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
-					"INNER JOIN department ON department.idDepartment=\"user\".idDepartment " + 
 					"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-					"WHERE \"user\".login <> 'admin' AND idCampus=" + String.valueOf(idCampus) + " AND userprofile.profile = 1 " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+					"WHERE \"user\".login <> 'admin' AND idCampus=" + String.valueOf(idCampus) + " AND userprofile.profile = 1 " + (onlyActives ? " AND \"user\".active = 1 " : "") + 
+					" ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -406,11 +405,11 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName " +
 						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
 						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-						"WHERE \"user\".login <> 'admin' AND userprofile.profile IN (1, 5) " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+						"WHERE \"user\".login <> 'admin' AND userprofile.profile IN (1, 5) " + (onlyActives ? " AND \"user\".active = 1 " : "") + 
+						" ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -437,11 +436,11 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName " +
 						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
 						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-						"WHERE \"user\".login <> 'admin' AND \"user\".external = 0 AND userprofile.profile IN (1, 5) " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+						"WHERE \"user\".login <> 'admin' AND \"user\".external = 0 AND userprofile.profile IN (1, 5) " + (onlyActives ? " AND \"user\".active = 1 " : "") + 
+						" ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -468,11 +467,11 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName " +
 						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
 						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-						"WHERE \"user\".login <> 'admin' AND \"user\".idDepartment=" + String.valueOf(idDepartment) + " AND userprofile.profile IN (1, 5) " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+						"WHERE \"user\".login <> 'admin' AND \"user\".idDepartment=" + String.valueOf(idDepartment) + " AND userprofile.profile IN (1, 5) " + (onlyActives ? " AND \"user\".active = 1 " : "") + 
+						" ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -499,11 +498,11 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName " +
 					"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
-					"INNER JOIN department ON department.idDepartment=\"user\".idDepartment " + 
 					"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-					"WHERE \"user\".login <> 'admin' AND idCampus=" + String.valueOf(idCampus) + " AND userprofile.profile IN (1, 5) " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+					"WHERE \"user\".login <> 'admin' AND idCampus=" + String.valueOf(idCampus) + " AND userprofile.profile IN (1, 5) " + (onlyActives ? " AND \"user\".active = 1 " : "") + 
+					" ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -530,11 +529,11 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName " +
 						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
 						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-						"WHERE \"user\".login <> 'admin' AND userprofile.profile = 0 " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+						"WHERE \"user\".login <> 'admin' AND userprofile.profile = 0 " + (onlyActives ? " AND \"user\".active = 1 " : "") + 
+						" ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -561,11 +560,11 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName " +
 						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
 						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-						"WHERE \"user\".login <> 'admin' AND userprofile.profile = 4 " + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+						"WHERE \"user\".login <> 'admin' AND userprofile.profile = 4 " + (onlyActives ? " AND \"user\".active = 1 " : "") + 
+						" ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -592,11 +591,11 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName " +
 						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
 						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
-						"WHERE \"user\".login <> 'admin' AND userprofile.profile = 4 AND \"user\".idcompany=" + String.valueOf(idCompany) + (onlyActives ? " AND \"user\".active = 1 " : "") + " ORDER BY \"user\".name");
+						"WHERE \"user\".login <> 'admin' AND userprofile.profile = 4 AND \"user\".idcompany=" + String.valueOf(idCompany) + (onlyActives ? " AND \"user\".active = 1 " : "") + 
+						" ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			
 			while(rs.next()){
@@ -623,16 +622,19 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT \"user\".*, department.idCampus FROM \"user\" INNER JOIN proposal ON proposal.idStudent=\"user\".idUser " +
-					"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
+			rs = stmt.executeQuery("SELECT \"user\".*, company.name AS companyName " +
+					"FROM \"user\" INNER JOIN proposal ON proposal.idStudent=\"user\".idUser " +
+					"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
 					"WHERE (proposal.idSupervisor=" + String.valueOf(idSupervisor) + " OR proposal.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
 					" UNION " +
-					"SELECT \"user\".*, department.idCampus FROM \"user\" INNER JOIN project ON project.idStudent=\"user\".idUser " + 
-					"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
+					"SELECT \"user\".*, company.name AS companyName " +
+					"FROM \"user\" INNER JOIN project ON project.idStudent=\"user\".idUser " + 
+					"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
 					"WHERE (project.idSupervisor=" + String.valueOf(idSupervisor) + " OR project.idCosupervisor=" + String.valueOf(idSupervisor) + ") " + 
 					" UNION " +
-					"SELECT \"user\".*, department.idCampus FROM \"user\" INNER JOIN thesis ON thesis.idStudent=\"user\".idUser " + 
-					"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
+					"SELECT \"user\".*, company.name AS companyName " +
+					"FROM \"user\" INNER JOIN thesis ON thesis.idStudent=\"user\".idUser " + 
+					"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
 					"WHERE (thesis.idSupervisor=" + String.valueOf(idSupervisor) + " OR thesis.idCosupervisor=" + String.valueOf(idSupervisor) + ") " +
 					"ORDER BY name");
 			List<User> list = new ArrayList<User>();
@@ -660,10 +662,9 @@ public class UserDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			
-			String sql = "SELECT DISTINCT \"user\".*, company.name AS companyName, department.idCampus " +
+			String sql = "SELECT DISTINCT \"user\".*, company.name AS companyName " +
 						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
 						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-						"LEFT JOIN department ON \"user\".idDepartment=department.idDepartment " +
 						"WHERE login <> 'admin' " + 
 						(!name.isEmpty() ? " AND \"user\".name ILIKE ? " : "") +
 						(profile >= 0 ? " AND userprofile.profile = ? " : "") +

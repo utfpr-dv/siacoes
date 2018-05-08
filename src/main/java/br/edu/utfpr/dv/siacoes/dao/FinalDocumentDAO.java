@@ -11,7 +11,6 @@ import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.FinalDocument;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
-import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.model.LibraryReport;
 import br.edu.utfpr.dv.siacoes.model.User;
 
