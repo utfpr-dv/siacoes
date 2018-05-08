@@ -47,7 +47,7 @@ public class FinalDocumentView extends ListView {
 		
 		Semester semester;
 		try {
-			semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+			semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
 		} catch (Exception e) {
 			semester = new Semester();
 		}
@@ -100,7 +100,7 @@ public class FinalDocumentView extends ListView {
 			List<FinalDocument> list;
 			
 			if(this.checkListAll.getValue() == true){
-				list = bo.listBySemester(Session.getUser().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), true);
+				list = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), true);
 			}else{
 				list = bo.listBySupervisor(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
 			}
@@ -165,7 +165,7 @@ public class FinalDocumentView extends ListView {
     	
 		try {
 			FinalDocumentBO bo = new FinalDocumentBO();
-        	byte[] report = bo.getLibraryReport(Session.getUser().getDepartment().getIdDepartment(), this.textYear.getYear(), this.comboSemester.getSemester());
+        	byte[] report = bo.getLibraryReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textYear.getYear(), this.comboSemester.getSemester());
         	
         	new ExtensionUtils().extendToDownload("RelatorioBiblioteca.zip", report, this.buttonLibraryReport);	
     	} catch (Exception e) {

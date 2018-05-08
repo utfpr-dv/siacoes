@@ -12,8 +12,15 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
 import br.edu.utfpr.dv.siacoes.bo.AttendanceBO;
+import br.edu.utfpr.dv.siacoes.bo.CampusBO;
+import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
+import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
+import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.components.StageComboBox;
 import br.edu.utfpr.dv.siacoes.model.Attendance;
+import br.edu.utfpr.dv.siacoes.model.Semester;
+import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditAttendanceWindow extends EditWindow {

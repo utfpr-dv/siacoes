@@ -60,7 +60,7 @@ public class InternshipLibraryView extends ListView {
 		
 		try {
 			InternshipFinalDocumentBO bo = new InternshipFinalDocumentBO();
-	    	List<InternshipFinalDocument> list = bo.listByDepartment(Session.getUser().getDepartment().getIdDepartment(), false);
+	    	List<InternshipFinalDocument> list = bo.listByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment(), false);
 	    	
 	    	for(InternshipFinalDocument p : list){
 				Object itemId = this.getGrid().addRow(p.getSubmissionDate(), p.getTitle(), p.getInternship().getStudent().getName(), p.getInternship().getCompany().getName());

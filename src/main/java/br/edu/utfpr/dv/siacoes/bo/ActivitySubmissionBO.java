@@ -27,7 +27,9 @@ import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.SigacConfig;
 import br.edu.utfpr.dv.siacoes.model.StudentActivityStatusReport;
 import br.edu.utfpr.dv.siacoes.model.StudentActivityStatusReport.StudentStage;
+import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.UserDepartment;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
@@ -231,10 +233,15 @@ public class ActivitySubmissionBO {
 		ActivitySubmissionReport report = new ActivitySubmissionReport();
 		List<ReportActivity> activities = new ArrayList<ReportActivity>();
 		List<byte[]> documents = new ArrayList<byte[]>();
+		UserDepartment department = new UserDepartmentBO().find(student.getIdUser(), UserProfile.STUDENT, idDepartment);
+		
+		if(department == null) {
+			department = new UserDepartment();
+		}
 		
 		report.setStudent(student.getName());
-		report.setRegisterSemester(student.getRegisterSemester());
-		report.setRegisterYear(student.getRegisterYear());
+		report.setRegisterSemester(department.getRegisterSemester());
+		report.setRegisterYear(department.getRegisterYear());
 		report.setStudentCode(student.getStudentCode());
 		
 		report.setDetails(this.loadSubmissionDetailReport(list));
@@ -261,7 +268,7 @@ public class ActivitySubmissionBO {
 		List<ActivitySubmissionReport> list2 = new ArrayList<ActivitySubmissionReport>();
 		list2.add(report);
 		
-		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list2, "ActivitySubmission");
+		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list2, "ActivitySubmission", idDepartment);
 		
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		PDFMergerUtility pdfMerge = new PDFMergerUtility();
@@ -422,7 +429,7 @@ public class ActivitySubmissionBO {
 			
 			List<ActivityValidationReport> list = dao.getActivityValidationReport(idDepartment, idFeedbackUser);
 			
-			ByteArrayOutputStream report = new ReportUtils().createPdfStream(list, "ActivityValidation");
+			ByteArrayOutputStream report = new ReportUtils().createPdfStream(list, "ActivityValidation", idDepartment);
 			
 			return report.toByteArray();
 		}catch(SQLException e){
@@ -474,7 +481,7 @@ public class ActivitySubmissionBO {
 		try{
 			List<StudentActivityStatusReport> report = this.getStudentActivityStatus(idDepartment, stage);
 			
-			ByteArrayOutputStream pdfReport = new ReportUtils().createPdfStream(report, "StudentActivityStatus");
+			ByteArrayOutputStream pdfReport = new ReportUtils().createPdfStream(report, "StudentActivityStatus", idDepartment);
 			
 			return pdfReport.toByteArray();
 		}catch(SQLException e){

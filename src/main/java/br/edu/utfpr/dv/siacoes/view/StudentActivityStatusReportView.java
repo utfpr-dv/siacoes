@@ -34,7 +34,7 @@ public class StudentActivityStatusReportView extends ReportView {
 	@Override
 	public byte[] generateReport() throws Exception {
 		ActivitySubmissionBO bo = new ActivitySubmissionBO();
-		return bo.getStudentActivityStatusReport(Session.getUser().getDepartment().getIdDepartment(), (StudentStage)this.comboStage.getValue());
+		return bo.getStudentActivityStatusReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), (StudentStage)this.comboStage.getValue());
 	}
 
 }

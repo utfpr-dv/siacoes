@@ -70,7 +70,7 @@ public class InternshipView extends ListView {
 		
 		this.comboStudent = new StudentComboBox("Acadêmico");
 		
-		this.comboProfessor = new SupervisorComboBox("Orientador", Session.getUser().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
+		this.comboProfessor = new SupervisorComboBox("Orientador", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		
 		this.comboCompany = new CompanyComboBox();
 		
@@ -207,7 +207,7 @@ public class InternshipView extends ListView {
 					status = ((InternshipStatus)this.comboStatus.getValue()).getValue();
 				}
 				
-				list = bo.list(Session.getUser().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status);
+				list = bo.list(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status);
 			}else if(this.profile == UserProfile.PROFESSOR){
 				list = bo.listBySupervisor(Session.getUser().getIdUser());
 			}else{
@@ -228,7 +228,7 @@ public class InternshipView extends ListView {
 	@Override
 	public void addClick() {
 		Internship internship = new Internship();
-		internship.setDepartment(Session.getUser().getDepartment());
+		internship.setDepartment(Session.getSelectedDepartment().getDepartment());
 		
 		UI.getCurrent().addWindow(new EditInternshipWindow(internship, this));
 	}

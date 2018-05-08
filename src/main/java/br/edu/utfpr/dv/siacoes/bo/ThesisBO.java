@@ -238,12 +238,12 @@ public class ThesisBO {
 			List<AttendanceReport> list = new ArrayList<AttendanceReport>();
 			list.add(attendance);
 			
-			ret.add(new ReportUtils().createPdfStream(list, "Attendances").toByteArray());
+			ret.add(new ReportUtils().createPdfStream(list, "Attendances", idDepartment).toByteArray());
 			
 			List<SupervisorFeedbackReport> list2 = new ArrayList<SupervisorFeedbackReport>();
 			list2.add(this.getSupervisorFeedbackReport(thesis));
 			
-			ret.add(new ReportUtils().createPdfStream(list2, "SupervisorFeedback").toByteArray());
+			ret.add(new ReportUtils().createPdfStream(list2, "SupervisorFeedback", idDepartment).toByteArray());
 		}
 		
 		return ret;

@@ -68,7 +68,7 @@ public class InternshipEvaluationItemView extends ListView {
 		
 		try {
 			InternshipEvaluationItemBO bo = new InternshipEvaluationItemBO();
-	    	List<InternshipEvaluationItem> list = bo.listByDepartment(Session.getUser().getDepartment().getIdDepartment(), this.checkActive.getValue());
+	    	List<InternshipEvaluationItem> list = bo.listByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.checkActive.getValue());
 	    	
 	    	for(InternshipEvaluationItem item : list){
 				Object itemId = this.getGrid().addRow(item.getType().toString(), item.getDescription(), item.getPonderosity());
@@ -85,7 +85,7 @@ public class InternshipEvaluationItemView extends ListView {
 	public void addClick() {
 		InternshipEvaluationItem item = new InternshipEvaluationItem();
 		
-		item.setDepartment(Session.getUser().getDepartment());
+		item.setDepartment(Session.getSelectedDepartment().getDepartment());
 		
 		UI.getCurrent().addWindow(new EditInternshipEvaluationItemWindow(item, this));
 	}

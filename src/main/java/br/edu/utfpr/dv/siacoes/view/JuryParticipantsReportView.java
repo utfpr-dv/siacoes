@@ -37,7 +37,7 @@ public class JuryParticipantsReportView extends ReportView {
 	public byte[] generateReport() throws Exception {
 		JuryBO bo = new JuryBO();
 		
-		return bo.getJuryStudentReport(Session.getUser().getDepartment().getIdDepartment(), 0, this.comboSemester.getSemester(), this.textYear.getYear(), this.checkGroup.getValue());
+		return bo.getJuryStudentReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), 0, this.comboSemester.getSemester(), this.textYear.getYear(), this.checkGroup.getValue());
 	}
 
 }

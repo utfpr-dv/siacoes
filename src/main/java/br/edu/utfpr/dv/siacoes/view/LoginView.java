@@ -23,15 +23,14 @@ import com.vaadin.ui.Button.ClickEvent;
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ActivitySubmissionBO;
 import br.edu.utfpr.dv.siacoes.bo.CompanyBO;
-import br.edu.utfpr.dv.siacoes.bo.DepartmentBO;
 import br.edu.utfpr.dv.siacoes.bo.FinalDocumentBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.model.User;
-import br.edu.utfpr.dv.siacoes.model.Department;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 
 public class LoginView extends CustomComponent implements View {
 	
@@ -203,14 +202,14 @@ public class LoginView extends CustomComponent implements View {
         	UserBO bo = new UserBO();
         	User user = bo.validateLogin(username, password);
         	
-        	if((user.getDepartment() != null) && (user.getDepartment().getIdDepartment() != 0)){
-        		DepartmentBO dbo = new DepartmentBO();
-            	user.setDepartment(dbo.findById(user.getDepartment().getIdDepartment()));	
-        	}else{
-        		user.setDepartment(new Department());
-        	}
-        	
         	Session.setUser(user);
+        	if((user.getProfiles() != null) && (user.getProfiles().size() > 0)) {
+        		Session.setSelectedProfile(user.getProfiles().get(0));
+        	} else if(!user.isExternal()) {
+        		Session.setSelectedProfile(UserProfile.STUDENT);
+        	} else {
+        		Session.setSelectedProfile(UserProfile.COMPANYSUPERVISOR);
+        	}
         	
         	if(!this.redirect.isEmpty()) {
         		getUI().getNavigator().navigateTo(this.redirect);

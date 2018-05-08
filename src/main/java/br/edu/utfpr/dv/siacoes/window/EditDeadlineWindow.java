@@ -39,7 +39,7 @@ public class EditDeadlineWindow extends EditWindow {
 		
 		if(deadline == null){
 			this.deadline = new Deadline();
-			this.deadline.setDepartment(Session.getUser().getDepartment());
+			this.deadline.setDepartment(Session.getSelectedDepartment().getDepartment());
 		}else{
 			this.deadline = deadline;
 		}
@@ -57,7 +57,7 @@ public class EditDeadlineWindow extends EditWindow {
 		SigetConfigBO bo = new SigetConfigBO();
 		SigetConfig sigetConfig = new SigetConfig();
 		try {
-			sigetConfig = bo.findByDepartment(Session.getUser().getDepartment().getIdDepartment());
+			sigetConfig = bo.findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
 		} catch (Exception e1) {
 			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
 		}

@@ -189,7 +189,7 @@ public class ProposalAppraiserBO {
 		List<ProposalAppraiser> list = new ArrayList<ProposalAppraiser>();
 		list.add(appraiser);
 		
-		return new ReportUtils().createPdfStream(list, "ProposalFeedback").toByteArray();
+		return new ReportUtils().createPdfStream(list, "ProposalFeedback", appraiser.getProposal().getDepartment().getIdDepartment()).toByteArray();
 	}
 	
 	public byte[] getFeedbackReport(int idProposal, int idAppraiser) throws Exception {

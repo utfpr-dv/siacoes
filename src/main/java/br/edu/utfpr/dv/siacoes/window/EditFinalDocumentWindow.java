@@ -146,8 +146,8 @@ public class EditFinalDocumentWindow extends EditWindow {
 		if(Session.isUserStudent()){
 			try {
 				DeadlineBO dbo = new DeadlineBO();
-				Semester semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
-				Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+				Semester semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+				Deadline d = dbo.findBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 				
 				if((this.thesis.getThesis() != null) && (this.thesis.getThesis().getIdThesis() != 0)) {
 					if(DateUtils.getToday().getTime().after(d.getThesisFinalDocumentDeadline())){

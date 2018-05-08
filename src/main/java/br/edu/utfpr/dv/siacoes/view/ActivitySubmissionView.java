@@ -116,7 +116,7 @@ public class ActivitySubmissionView extends ListView {
 			boolean allowAdd = false;
 			
 			try {
-				allowAdd = !new FinalSubmissionBO().studentHasSubmission(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment());
+				allowAdd = !new FinalSubmissionBO().studentHasSubmission(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -180,35 +180,35 @@ public class ActivitySubmissionView extends ListView {
 			
 			if(Session.isUserManager(this.getModule()) || Session.isUserDepartmentManager()){
 				if(this.optionFilterType.isSelected(this.optionFilterType.getItemIds().iterator().next())){
-					list = bo.listWithNoFeedback2(Session.getUser().getDepartment().getIdDepartment());
+					list = bo.listWithNoFeedback2(Session.getSelectedDepartment().getDepartment().getIdDepartment());
 					this.buttonFinalReport.setEnabled(false);
 					this.buttonFinalSubmission.setEnabled(false);
 					this.panelScore.setVisible(false);
 					this.panelLabel.setVisible(true);
 				}else{
-					list = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), feedback);
+					list = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), feedback);
 					List<ActivitySubmission> listReport;
 					
 					if(feedback == ActivityFeedback.APPROVED.getValue()) {
 						listReport = list;
 					} else {
-						listReport = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), ActivityFeedback.APPROVED.getValue());
+						listReport = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), ActivityFeedback.APPROVED.getValue());
 					}
 					
-					report = bo.getReport(listReport, this.comboStudent.getStudent(), Session.getUser().getDepartment().getIdDepartment());
+					report = bo.getReport(listReport, this.comboStudent.getStudent(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 					scores = bo.getFooterReport(listReport);
 				}
 			}else{
-				list = bo.listByStudent(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), feedback);
+				list = bo.listByStudent(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), feedback);
 				List<ActivitySubmission> listReport;
 				
 				if(feedback == ActivityFeedback.APPROVED.getValue()) {
 					listReport = list;
 				} else {
-					listReport = bo.listByStudent(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), ActivityFeedback.APPROVED.getValue());
+					listReport = bo.listByStudent(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), ActivityFeedback.APPROVED.getValue());
 				}
 				
-				report = bo.getReport(listReport, Session.getUser(), Session.getUser().getDepartment().getIdDepartment());
+				report = bo.getReport(listReport, Session.getUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 				scores = bo.getFooterReport(listReport);
 			}
 			
@@ -275,7 +275,7 @@ public class ActivitySubmissionView extends ListView {
                 	try {
                 		FinalSubmissionBO bo = new FinalSubmissionBO();
                 		
-                		FinalSubmission submission = bo.registerFinalSubmission(comboStudent.getStudent().getIdUser(), Session.getUser().getDepartment().getIdDepartment());
+                		FinalSubmission submission = bo.registerFinalSubmission(comboStudent.getStudent().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
                 		
                 		Notification.show("Finalizar Processo", "O processo de aprovação do acadêmico foi realizado com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
 					} catch (Exception e) {

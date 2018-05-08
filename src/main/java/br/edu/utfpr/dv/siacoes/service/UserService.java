@@ -28,7 +28,7 @@ public class UserService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getProfile(@Context SecurityContext securityContext) {
 		try {
-			UserInfo user = new UserInfo(new LoginService().getUser(securityContext));
+			UserInfo user = new UserInfo(new LoginService().getUser(securityContext), null);
 			
 			return Response.ok(user).build();
 		} catch (Exception e) {
@@ -52,8 +52,8 @@ public class UserService {
 			user.setResearch(info.getResearch());
 			user.setLattes(info.getLattes());
 			user.setPhoto(info.getPhoto());
-			user.setRegisterSemester(info.getRegisterSemester());
-			user.setRegisterYear(info.getRegisterYear());
+			//user.setRegisterSemester(info.getRegisterSemester());
+			//user.setRegisterYear(info.getRegisterYear());
 			user.setInstitution(info.getInstitution());
 			
 			if(user.isExternal()) {

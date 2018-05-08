@@ -67,7 +67,7 @@ public class JuryView extends ListView {
 		
 		Semester semester;
 		try {
-			semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+			semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
 		} catch (Exception e) {
 			semester = new Semester();
 		}
@@ -196,19 +196,19 @@ public class JuryView extends ListView {
 			List<CalendarReport> report = null;
 			
 			if(this.listAll){
-				list = bo.listBySemester(Session.getUser().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
-				report = bo.getCalendarReport(Session.getUser().getDepartment().getIdDepartment(), 0, this.comboSemester.getSemester(), this.textYear.getYear());
+				list = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
+				report = bo.getCalendarReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), 0, this.comboSemester.getSemester(), this.textYear.getYear());
 			}else{
 				if(Session.isUserProfessor() || Session.isUserSupervisor()){
 					list = bo.listByAppraiser(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
-					report = bo.getCalendarReport(Session.getUser().getDepartment().getIdDepartment(), Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
+					report = bo.getCalendarReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
 				}else{
 					list = bo.listByStudent(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
 				}
 			}
 			
 			if(this.listAll || Session.isUserProfessor()){
-				new ReportUtils().prepareForPdfReport("Calendar", "Agenda de Defesas", report, this.buttonCalendar);
+				new ReportUtils().prepareForPdfReport("Calendar", "Agenda de Defesas", report, Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.buttonCalendar);
 			}
 			
 	    	for(Jury jury : list){
@@ -341,7 +341,7 @@ public class JuryView extends ListView {
 			try{
 				JuryBO bo = new JuryBO();
 				
-				this.showReport(bo.getJuryStudentReport(Session.getUser().getDepartment().getIdDepartment(), (int)value, 0, 0, true));
+				this.showReport(bo.getJuryStudentReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), (int)value, 0, 0, true));
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	

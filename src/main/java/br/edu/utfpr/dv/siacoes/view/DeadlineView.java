@@ -38,7 +38,7 @@ public class DeadlineView extends ListView {
 		SigetConfigBO sbo = new SigetConfigBO();
 		SigetConfig sigetConfig = new SigetConfig();
 		try {
-			sigetConfig = sbo.findByDepartment(Session.getUser().getDepartment().getIdDepartment());
+			sigetConfig = sbo.findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
 		} catch (Exception e1) {
 			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
 		}
@@ -61,7 +61,7 @@ public class DeadlineView extends ListView {
 		
 		try {
 			DeadlineBO bo = new DeadlineBO();
-	    	List<Deadline> list = bo.listByDepartment(Session.getUser().getDepartment().getIdDepartment());
+	    	List<Deadline> list = bo.listByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
 	    	
 	    	for(Deadline d : list){
 				Object itemId = this.getGrid().addRow(d.getSemester(), d.getYear(), d.getProposalDeadline(), d.getProjectDeadline(), d.getThesisDeadline(), d.getProjectFinalDocumentDeadline(), d.getThesisFinalDocumentDeadline());

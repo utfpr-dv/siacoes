@@ -81,7 +81,7 @@ public class DocumentView extends ListView {
 		
 		try {
 			DocumentBO bo = new DocumentBO();
-	    	List<Document> list = bo.listByModule(Session.getUser().getDepartment().getIdDepartment(), this.getModule());
+	    	List<Document> list = bo.listByModule(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.getModule());
 	    	
 	    	for(Document d : list){
 				Object itemId = this.getGrid().addRow(new ThemeResource("images/" + d.getType().name() + ".png"), d.getName());
@@ -99,7 +99,7 @@ public class DocumentView extends ListView {
     	new ExtensionUtils().removeAllExtensions(this.buttonDownloadAll);
     	
     	try {
-    		new ExtensionUtils().extendToDownload(this.getModule().getShortDescription() + ".zip", new DocumentBO().downloadAllDocuments(Session.getUser().getDepartment().getIdDepartment(), this.getModule()), this.buttonDownloadAll);
+    		new ExtensionUtils().extendToDownload(this.getModule().getShortDescription() + ".zip", new DocumentBO().downloadAllDocuments(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.getModule()), this.buttonDownloadAll);
     	} catch (Exception e) {
     		this.listenerClickDownloadAll = new Button.ClickListener() {
 	            @Override
@@ -154,7 +154,7 @@ public class DocumentView extends ListView {
 	public void addClick() {
 		Document doc = new Document();
 		
-		doc.setDepartment(Session.getUser().getDepartment());
+		doc.setDepartment(Session.getSelectedDepartment().getDepartment());
 		doc.setModule(this.getModule());
 		
 		UI.getCurrent().addWindow(new EditDocumentWindow(doc, this));

@@ -65,7 +65,7 @@ public class InternshipJuryView extends ListView {
 		
 		Semester semester;
 		try {
-			semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+			semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
 		} catch (Exception e) {
 			semester = new Semester();
 		}
@@ -182,19 +182,19 @@ public class InternshipJuryView extends ListView {
 			List<CalendarReport> report = null;
 			
 			if(this.listAll){
-				list = bo.listBySemester(Session.getUser().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
-				report = bo.getCalendarReport(Session.getUser().getDepartment().getIdDepartment(), 0, this.comboSemester.getSemester(), this.textYear.getYear());
+				list = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
+				report = bo.getCalendarReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), 0, this.comboSemester.getSemester(), this.textYear.getYear());
 			}else{
 				if(Session.isUserProfessor() || Session.isUserSupervisor()){
 					list = bo.listByAppraiser(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
-					report = bo.getCalendarReport(Session.getUser().getDepartment().getIdDepartment(), Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
+					report = bo.getCalendarReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
 				}else{
 					list = bo.listByStudent(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
 				}
 			}
 			
 			if(this.listAll || Session.isUserProfessor()){
-				new ReportUtils().prepareForPdfReport("InternshipCalendar", "Agenda de Defesas", report, this.buttonCalendar);
+				new ReportUtils().prepareForPdfReport("InternshipCalendar", "Agenda de Defesas", report, Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.buttonCalendar);
 			}
 			
 	    	for(InternshipJury jury : list){
@@ -248,7 +248,7 @@ public class InternshipJuryView extends ListView {
 				List<InternshipJuryFormReport> list = new ArrayList<InternshipJuryFormReport>();
 				list.add(report);
 
-				this.showReport(new ReportUtils().createPdfStream(list, "InternshipJuryForm").toByteArray());
+				this.showReport(new ReportUtils().createPdfStream(list, "InternshipJuryForm", bo.findIdDepartment((int)value)).toByteArray());
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
@@ -284,7 +284,7 @@ public class InternshipJuryView extends ListView {
 			try{
 				InternshipJuryBO bo = new InternshipJuryBO();
 				
-				this.showReport(bo.getJuryStudentReport(Session.getUser().getDepartment().getIdDepartment(), (int)value, null, null, true));
+				this.showReport(bo.getJuryStudentReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), (int)value, null, null, true));
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	

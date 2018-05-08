@@ -42,7 +42,7 @@ public class EditThemeSuggestionWindow extends EditWindow {
 		
 		if(theme == null){
 			this.theme = new ThemeSuggestion();
-			this.theme.setDepartment(Session.getUser().getDepartment());
+			this.theme.setDepartment(Session.getSelectedDepartment().getDepartment());
 			this.theme.setUser(Session.getUser());
 		}else{
 			this.theme = theme;

@@ -36,7 +36,7 @@ public class UserInfo {
 		this.setPhoto(null);
 	}
 	
-	public UserInfo(User user) {
+	public UserInfo(User user, UserDepartment department) {
 		this.setName(user.getName());
 		this.setLogin(user.getLogin());
 		this.setEmail(user.getEmail());
@@ -48,8 +48,8 @@ public class UserInfo {
 		this.setExternal(user.isExternal());
 		this.setActive(user.isActive());
 		this.setStudentCode(user.getStudentCode());
-		this.setRegisterSemester(user.getRegisterSemester());
-		this.setRegisterYear(user.getRegisterYear());
+		this.setRegisterSemester(department.getRegisterSemester());
+		this.setRegisterYear(department.getRegisterYear());
 		this.setPhoto(user.getPhoto());
 	}
 	

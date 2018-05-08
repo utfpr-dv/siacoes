@@ -55,7 +55,7 @@ public class FinalSubmissionView extends ListView {
 		
 		try{
 			FinalSubmissionBO bo = new FinalSubmissionBO();
-			List<FinalSubmission> list = bo.listByDepartment(Session.getUser().getDepartment().getIdDepartment());
+			List<FinalSubmission> list = bo.listByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			
 			for(FinalSubmission submission : list) {
 				Object itemId = this.getGrid().addRow(submission.getStudent().getName(), submission.getFinalScore(), submission.getDate(), submission.getFeedbackUser().getName());

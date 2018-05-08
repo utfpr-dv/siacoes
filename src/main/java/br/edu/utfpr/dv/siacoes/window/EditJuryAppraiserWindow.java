@@ -26,7 +26,7 @@ public class EditJuryAppraiserWindow extends EditWindow {
 		
 		this.parentWindow = parentWindow;
 		
-		this.comboProfessor = new SupervisorComboBox("Membro", Session.getUser().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
+		this.comboProfessor = new SupervisorComboBox("Membro", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		
 		this.optionAppraiserType = new OptionGroup();
 		this.optionAppraiserType.addItem("Titular");
@@ -45,7 +45,7 @@ public class EditJuryAppraiserWindow extends EditWindow {
 		
 		this.parentWindow = parentWindow;
 		
-		this.comboProfessor = new SupervisorComboBox((substitute ? "Suplente" : "Membro"), Session.getUser().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
+		this.comboProfessor = new SupervisorComboBox((substitute ? "Suplente" : "Membro"), Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		
 		this.optionAppraiserType = new OptionGroup();
 		this.optionAppraiserType.addItem("Titular");

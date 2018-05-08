@@ -481,7 +481,7 @@ public class EditJuryWindow extends EditWindow {
 		try{
 			JuryBO bo = new JuryBO();
 			
-			this.showReport(bo.getJuryStudentReport(Session.getUser().getDepartment().getIdDepartment(), this.jury.getIdJury(), 0, 0, true));
+			this.showReport(bo.getJuryStudentReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.jury.getIdJury(), 0, 0, true));
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	

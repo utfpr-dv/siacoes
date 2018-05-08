@@ -132,7 +132,7 @@ public class TutoredView extends ListView {
 		this.setDeleteVisible(false);
 		
 		try {
-			this.config = new SigetConfigBO().findByDepartment(Session.getUser().getDepartment().getIdDepartment());
+			this.config = new SigetConfigBO().findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			this.config = new SigetConfig();

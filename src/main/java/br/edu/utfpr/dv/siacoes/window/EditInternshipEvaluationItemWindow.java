@@ -35,7 +35,7 @@ public class EditInternshipEvaluationItemWindow extends EditWindow {
 		
 		if(item == null){
 			this.item = new InternshipEvaluationItem();
-			this.item.setDepartment(Session.getUser().getDepartment());
+			this.item.setDepartment(Session.getSelectedDepartment().getDepartment());
 		}else{
 			this.item = item;
 		}

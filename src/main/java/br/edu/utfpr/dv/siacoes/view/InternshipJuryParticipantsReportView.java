@@ -41,7 +41,7 @@ public class InternshipJuryParticipantsReportView extends ReportView {
 	public byte[] generateReport() throws Exception {
 		InternshipJuryBO bo = new InternshipJuryBO();
 		
-		return bo.getJuryStudentReport(Session.getUser().getDepartment().getIdDepartment(), 0, this.dateInitial.getValue(), this.dateFinal.getValue(), this.checkGroup.getValue());
+		return bo.getJuryStudentReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), 0, this.dateInitial.getValue(), this.dateFinal.getValue(), this.checkGroup.getValue());
 	}
 
 }

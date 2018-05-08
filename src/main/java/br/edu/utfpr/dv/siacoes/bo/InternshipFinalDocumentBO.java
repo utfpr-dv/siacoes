@@ -119,8 +119,7 @@ public class InternshipFinalDocumentBO {
 				if(isInsert) {
 					ebo.sendEmail(internship.getSupervisor().getIdUser(), MessageType.INTERNSHIPFINALDOCUMENTSUBMITTED, keys);
 				} else if((doc.getSupervisorFeedback() != DocumentFeedback.NONE) && (feedback != doc.getSupervisorFeedback())) {
-					UserBO ubo = new UserBO();
-					User user = ubo.findManager(Session.getUser().getDepartment().getIdDepartment(), SystemModule.SIGES);
+					User user = new UserBO().findManager(new InternshipBO().findIdDepartment(doc.getInternship().getIdInternship()), SystemModule.SIGES);
 					
 					keys.add(new EmailMessageEntry<String, String>("manager", user.getName()));
 					

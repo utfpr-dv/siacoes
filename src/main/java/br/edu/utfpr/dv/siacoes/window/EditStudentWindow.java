@@ -6,24 +6,36 @@ import java.util.logging.Logger;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
+import br.edu.utfpr.dv.siacoes.bo.UserDepartmentBO;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.UserDepartment;
+import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditStudentWindow extends EditWindow {
 	
 	private final User user;
+	private final UserDepartment department;
 	
 	private final TextField textName;
 	private final TextField textStudentCode;
 	
-	public EditStudentWindow(User user, ListView parentView){
+	public EditStudentWindow(User user, UserDepartment department, ListView parentView) {
 		super("Editar Acadêmico", parentView);
 		
-		if(user == null){
+		if(user == null) {
 			this.user = new User();
-		}else{
+		} else {
 			this.user = user;
+		}
+		if(department == null) {
+			this.department = new UserDepartment();
+			this.department.setDepartment(Session.getSelectedDepartment().getDepartment());
+			this.department.setProfile(UserProfile.STUDENT);
+		} else {
+			this.department = department;
 		}
 		
 		this.textName = new TextField("Nome");
@@ -58,7 +70,11 @@ public class EditStudentWindow extends EditWindow {
 				this.user.setLogin(bo.formatLoginFromStudentCode(this.user.getStudentCode()));
 			}
 			
-			bo.save(user);
+			bo.save(this.user);
+			
+			this.department.setUser(this.user);
+			
+			new UserDepartmentBO().save(this.department);
 			
 			Notification.show("Salvar Acadêmico", "Acadêmico salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
 			

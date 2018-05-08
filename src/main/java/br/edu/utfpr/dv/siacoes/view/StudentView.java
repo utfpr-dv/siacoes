@@ -11,9 +11,11 @@ import com.vaadin.ui.UI;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
+import br.edu.utfpr.dv.siacoes.bo.UserDepartmentBO;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.model.UserDepartment;
 import br.edu.utfpr.dv.siacoes.util.StringUtils;
 import br.edu.utfpr.dv.siacoes.window.EditStudentWindow;
 
@@ -66,19 +68,23 @@ public class StudentView extends ListView {
 		user.getProfiles().add(UserProfile.STUDENT);
 		user.setActive(true);
 		user.setExternal(false);
-		user.setDepartment(Session.getUser().getDepartment());
 		user.setPassword(StringUtils.generateSHA3Hash(""));
 		
-		UI.getCurrent().addWindow(new EditStudentWindow(user, this));
+		UserDepartment department = new UserDepartment();
+		
+		department.setDepartment(Session.getSelectedDepartment().getDepartment());
+		department.setProfile(UserProfile.STUDENT);
+		
+		UI.getCurrent().addWindow(new EditStudentWindow(user, department, this));
 	}
 
 	@Override
 	public void editClick(Object id) {
 		try {
-			UserBO bo = new UserBO();
-			User user = bo.findById((int)id);
+			User user = new UserBO().findById((int)id);
+			UserDepartment department = new UserDepartmentBO().find(user.getIdUser(), UserProfile.STUDENT, Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			
-			UI.getCurrent().addWindow(new EditStudentWindow(user, this));
+			UI.getCurrent().addWindow(new EditStudentWindow(user, department, this));
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

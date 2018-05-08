@@ -64,7 +64,7 @@ public class ActivityView extends ListView {
 		
 		try{
 			ActivityBO bo = new ActivityBO();
-			List<Activity> list = bo.listByDepartment(Session.getUser().getDepartment().getIdDepartment());
+			List<Activity> list = bo.listByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			
 			for(Activity activity : list){
 				Object itemId = this.getGrid().addRow(activity.getGroup().getSequence(), activity.getDescription(), activity.getScore(), activity.getUnit().getDescription());

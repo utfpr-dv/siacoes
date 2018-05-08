@@ -41,7 +41,7 @@ public class AttendanceReportView extends ReportView {
 	@Override
 	public byte[] generateReport() throws Exception {
 		AttendanceBO bo = new AttendanceBO();
-		return bo.getAttendanceReport(Session.getUser().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), (this.comboStage.isBothSelected() ? 0 : this.comboStage.getStage()), this.checkDetail.getValue());
+		return bo.getAttendanceReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), (this.comboStage.isBothSelected() ? 0 : this.comboStage.getStage()), this.checkDetail.getValue());
 	}
 
 }

@@ -65,7 +65,7 @@ public class SupervisorChangeView extends ListView {
 		
 		try {
 			SupervisorChangeBO bo = new SupervisorChangeBO();
-			List<SupervisorChange> list = bo.list(Session.getUser().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), this.checkOnlyPending.getValue());
+			List<SupervisorChange> list = bo.list(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), this.checkOnlyPending.getValue());
 			
 			for(SupervisorChange change : list){
 				Object itemId = this.getGrid().addRow(change.getStage(), change.getProposal().getStudent().getName(), change.getDate(), change.getOldSupervisor().getName(), change.getNewSupervisor().getName(), change.getApproved().toString());

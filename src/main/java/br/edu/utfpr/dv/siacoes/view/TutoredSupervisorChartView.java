@@ -66,7 +66,7 @@ public class TutoredSupervisorChartView extends ChartView {
 	
 	@Override
 	public DCharts generateChart() throws Exception {
-		List<TutoredGroupedBySupervisor> list = new TutoredBO().listTutoredGroupedBySupervisor(Session.getUser().getDepartment().getIdDepartment(), this.textInitialYear.getYear(), this.textFinalYear.getYear(), this.comboStage.getStage());
+		List<TutoredGroupedBySupervisor> list = new TutoredBO().listTutoredGroupedBySupervisor(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textInitialYear.getYear(), this.textFinalYear.getYear(), this.comboStage.getStage());
 		
 		DataSeries dataSeries = new DataSeries();
 		Series series = new Series();

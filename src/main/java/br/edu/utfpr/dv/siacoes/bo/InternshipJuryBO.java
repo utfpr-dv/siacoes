@@ -94,6 +94,18 @@ public class InternshipJuryBO {
 		}
 	}
 	
+	public int findIdDepartment(int idJury) throws Exception{
+		try {
+			InternshipJuryDAO dao = new InternshipJuryDAO();
+			
+			return dao.findIdDepartment(idJury);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public int save(InternshipJury jury) throws Exception{
 		try {
 			boolean insert = (jury.getIdInternshipJury() == 0);
@@ -468,9 +480,9 @@ public class InternshipJuryBO {
 		ByteArrayOutputStream report;
 		
 		if(groupByJury) {
-			report = new ReportUtils().createPdfStream(list, "JuryParticipantsListGrouped");
+			report = new ReportUtils().createPdfStream(list, "JuryParticipantsListGrouped", idDepartment);
 		} else {
-			report = new ReportUtils().createPdfStream(list, "JuryParticipantsList");
+			report = new ReportUtils().createPdfStream(list, "JuryParticipantsList", idDepartment);
 		}
 		
 		return report.toByteArray();
@@ -489,7 +501,7 @@ public class InternshipJuryBO {
 		List<JuryFormReport> list = new ArrayList<JuryFormReport>();
 		list.add(report2);
 		
-		return new ReportUtils().createPdfStream(list, "JuryParticipants").toByteArray();
+		return new ReportUtils().createPdfStream(list, "JuryParticipants", this.findIdDepartment(idInternshipJury)).toByteArray();
 	}
 
 }

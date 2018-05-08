@@ -305,7 +305,7 @@ public class ProposalBO {
 		List<ProposalAppraiser> list = new ArrayList<ProposalAppraiser>();
 		list.add(appraiser);
 		
-		return new ReportUtils().createPdfStream(list, "SupervisorAgreement").toByteArray();
+		return new ReportUtils().createPdfStream(list, "SupervisorAgreement", proposal.getDepartment().getIdDepartment()).toByteArray();
 	}
 	
 	public String getStudentName(int id) throws Exception{

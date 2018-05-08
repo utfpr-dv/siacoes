@@ -39,7 +39,7 @@ public class InternshipFinalDocumentView extends ListView {
 		
 		Semester semester;
 		try {
-			semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+			semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
 		} catch (Exception e) {
 			semester = new Semester();
 		}
@@ -73,7 +73,7 @@ public class InternshipFinalDocumentView extends ListView {
 			InternshipFinalDocumentBO bo = new InternshipFinalDocumentBO();
 			List<InternshipFinalDocument> list;
 			
-			list = bo.listBySemester(Session.getUser().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), true);
+			list = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), true);
 			
 			for(InternshipFinalDocument doc : list){
 				Object itemId = this.getGrid().addRow(doc.getInternship().getStudent().getName(), doc.getInternship().getCompany().getName(), doc.getSubmissionDate(), (doc.isPrivate() ? "Sim" : "Não"), doc.getSupervisorFeedback().toString());

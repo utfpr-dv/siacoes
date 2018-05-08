@@ -476,7 +476,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 		try{
 			InternshipJuryBO bo = new InternshipJuryBO();
 			
-			this.showReport(bo.getJuryStudentReport(Session.getUser().getDepartment().getIdDepartment(), this.jury.getIdInternshipJury(), null, null, true));
+			this.showReport(bo.getJuryStudentReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.jury.getIdInternshipJury(), null, null, true));
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	

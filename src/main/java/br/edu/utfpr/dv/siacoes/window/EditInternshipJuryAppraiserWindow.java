@@ -20,7 +20,7 @@ public class EditInternshipJuryAppraiserWindow extends EditWindow {
 		
 		this.parentWindow = parentWindow;
 		
-		this.comboProfessor = new SupervisorComboBox("Membro", Session.getUser().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
+		this.comboProfessor = new SupervisorComboBox("Membro", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		
 		this.addField(this.comboProfessor);
 	}

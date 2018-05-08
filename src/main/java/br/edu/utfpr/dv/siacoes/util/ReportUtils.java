@@ -50,13 +50,13 @@ public class ReportUtils {
      * @param reportOutputFilename Pdf output file name
      * @param buttonToExtend Vaadin button to extend
      */
-    public void prepareForPdfReport(String reportName, String reportOutputFilename, List dataSource, Button buttonToExtend){
-    	this.prepareForPdfReport(reportName, reportOutputFilename, dataSource, buttonToExtend, true);
+    public void prepareForPdfReport(String reportName, String reportOutputFilename, List dataSource, int idDepartment, Button buttonToExtend){
+    	this.prepareForPdfReport(reportName, reportOutputFilename, dataSource, idDepartment, buttonToExtend, true);
     }
     
-    public void prepareForPdfReport(String reportName, String reportOutputFilename, List dataSource, Button buttonToExtend, boolean removeExtensions){
+    public void prepareForPdfReport(String reportName, String reportOutputFilename, List dataSource, int idDepartment, Button buttonToExtend, boolean removeExtensions){
         reportOutputFilename += ("_" + getDateAsString() + ".pdf");
-        StreamResource myResource = createPdfResource(dataSource, reportName, reportOutputFilename);
+        StreamResource myResource = createPdfResource(dataSource, reportName, reportOutputFilename, idDepartment);
         FileDownloader fileDownloader = new FileDownloader(myResource);
         
         if(removeExtensions && (buttonToExtend.getExtensions().size() > 0)){
@@ -75,14 +75,14 @@ public class ReportUtils {
      * @param reportFileName Pdf output file name
      * @return StreamResource with the generated pdf report
      */
-    private StreamResource createPdfResource(final List beanCollection, final String templatePath, String reportFileName) {
+    private StreamResource createPdfResource(final List beanCollection, final String templatePath, String reportFileName, int idDepartment) {
         return new StreamResource(new StreamResource.StreamSource() {
             @Override
             public InputStream getStream () {
                 ByteArrayOutputStream pdfBuffer = new ByteArrayOutputStream();
 
                 try {
-                    executeReport(templatePath, beanCollection, pdfBuffer);
+                    executeReport(templatePath, beanCollection, pdfBuffer, idDepartment);
                 } catch (JRException e) {
                     e.printStackTrace();
                 }
@@ -92,11 +92,11 @@ public class ReportUtils {
         }, reportFileName);
     }
     
-    public ByteArrayOutputStream createPdfStream(final List beanCollection, final String templatePath) throws Exception {
+    public ByteArrayOutputStream createPdfStream(final List beanCollection, final String templatePath, int idDepartment) throws Exception {
     	ByteArrayOutputStream pdfBuffer = new ByteArrayOutputStream();
 
         try {
-            executeReport(templatePath, beanCollection, pdfBuffer);
+            executeReport(templatePath, beanCollection, pdfBuffer, idDepartment);
             
             return pdfBuffer;
         } catch (JRException e) {
@@ -119,13 +119,13 @@ public class ReportUtils {
                 String.valueOf(Calendar.getInstance().get(Calendar.SECOND)));
     }
     
-    private void executeReport(String templatePath, List beanCollection, OutputStream outputStream) throws JRException {
+    private void executeReport(String templatePath, List beanCollection, OutputStream outputStream, int idDepartment) throws JRException {
         //JasperDesign jasperDesign = this.loadTemplate(this.baseReportsPath + templatePath + ".jrxml");
         setTempDirectory(templatePath);
         JasperReport jasperReport = (JasperReport)JRLoader.loadObject(this.getClass().getClassLoader().getResource("br/edu/utfpr/dv/siacoes/report/" + templatePath + ".jasper"));
         //JasperReport jasperReport = (JasperReport)JRLoader.loadObjectFromFile(this.baseReportsPath + templatePath + ".jasper");
         //JasperReport jasperReport = this.compileReport(jasperDesign);
-        JasperPrint jasperPrint = fillReport(jasperReport, beanCollection);
+        JasperPrint jasperPrint = fillReport(jasperReport, beanCollection, idDepartment);
         exportReportToPdf(jasperPrint, outputStream);
     }
 
@@ -172,7 +172,7 @@ public class ReportUtils {
      * @param jasperReport The Compiled report design
      * @return JasperPrint
      */
-    private JasperPrint fillReport(JasperReport jasperReport, List beanCollection){
+    private JasperPrint fillReport(JasperReport jasperReport, List beanCollection, int idDepartment){
         JasperPrint jasperPrint = null;
         HashMap<String, Object> fillParameters = new HashMap<String, Object>();
         String campus = "";
@@ -186,7 +186,7 @@ public class ReportUtils {
         
         try{
         	DepartmentBO bo = new DepartmentBO();
-        	Department d = bo.findById(Session.getUser().getDepartment().getIdDepartment());
+        	Department d = bo.findById(idDepartment);
         	
         	department = d.getFullName();
         	

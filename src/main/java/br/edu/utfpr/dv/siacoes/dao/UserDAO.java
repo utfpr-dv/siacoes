@@ -11,7 +11,7 @@ import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
-import br.edu.utfpr.dv.siacoes.model.Campus;
+import br.edu.utfpr.dv.siacoes.model.UserDepartment;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 
 public class UserDAO {
@@ -711,9 +711,9 @@ public class UserDAO {
 			conn.setAutoCommit(false);
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO \"user\"(name, login, password, email, institution, research, lattes, external, active, area, idDepartment, sigacManager, sigesManager, sigetManager, departmentManager, studentCode, registerSemester, registerYear, phone, idcompany, photo, salt) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO \"user\"(name, login, password, email, institution, research, lattes, external, active, area, studentCode, phone, idcompany, photo, salt) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE \"user\" SET name=?, login=?, password=?, email=?, institution=?, research=?, lattes=?, external=?, active=?, area=?, idDepartment=?, sigacManager=?, sigesManager=?, sigetManager=?, departmentManager=?, studentCode=?, registerSemester=?, registerYear=?, phone=?, idcompany=?, photo=?, salt=? WHERE idUser=?");
+				stmt = conn.prepareStatement("UPDATE \"user\" SET name=?, login=?, password=?, email=?, institution=?, research=?, lattes=?, external=?, active=?, area=?, studentCode=?, phone=?, idcompany=?, photo=?, salt=? WHERE idUser=?");
 			}
 			
 			stmt.setString(1, user.getName());
@@ -726,33 +726,22 @@ public class UserDAO {
 			stmt.setInt(8, user.isExternal() ? 1 : 0);
 			stmt.setInt(9, user.isActive() ? 1 : 0);
 			stmt.setString(10, user.getArea());
-			if((user.getDepartment() == null) || (user.getDepartment().getIdDepartment() == 0)){
-				stmt.setNull(11, Types.INTEGER);
-			}else{
-				stmt.setInt(11, user.getDepartment().getIdDepartment());	
-			}
-			stmt.setInt(12, (user.isSigacManager() ? 1 : 0));
-			stmt.setInt(13, (user.isSigesManager() ? 1 : 0));
-			stmt.setInt(14, (user.isSigetManager() ? 1 : 0));
-			stmt.setInt(15, (user.isDepartmentManager() ? 1 : 0));
-			stmt.setString(16, user.getStudentCode());
-			stmt.setInt(17, user.getRegisterSemester());
-			stmt.setInt(18, user.getRegisterYear());
-			stmt.setString(19, user.getPhone());
+			stmt.setString(11, user.getStudentCode());
+			stmt.setString(12, user.getPhone());
 			if((user.getCompany() == null) || (user.getCompany().getIdCompany() == 0)){
-				stmt.setNull(20, Types.INTEGER);
+				stmt.setNull(13, Types.INTEGER);
 			}else{
-				stmt.setInt(20, user.getCompany().getIdCompany());	
+				stmt.setInt(13, user.getCompany().getIdCompany());	
 			}
 			if(user.getPhoto() == null){
-				stmt.setNull(21, Types.BINARY);
+				stmt.setNull(14, Types.BINARY);
 			}else{
-				stmt.setBytes(21, user.getPhoto());	
+				stmt.setBytes(14, user.getPhoto());	
 			}
-			stmt.setString(22, user.getSalt());
+			stmt.setString(15, user.getSalt());
 			
 			if(!insert){
-				stmt.setInt(23, user.getIdUser());
+				stmt.setInt(16, user.getIdUser());
 			}
 			
 			stmt.execute();
@@ -777,6 +766,25 @@ public class UserDAO {
 				stmt.setInt(2, p.getValue());
 				
 				stmt.execute();
+			}
+			
+			if(user.getDepartments() != null) {
+				UserDepartmentDAO udao = new UserDepartmentDAO(conn);
+				String ids = "";
+				
+				for(UserDepartment department : user.getDepartments()) {
+					if((department.getDepartment() != null) && (department.getDepartment().getIdDepartment() != 0)) {
+						department.setUser(user);
+						int did = udao.save(department);
+						ids = ids + String.valueOf(did) + ",";
+					}
+				}
+				
+				if(!ids.isEmpty()){
+					Statement st = conn.createStatement();
+					st.execute("DELETE FROM userdepartment WHERE iduser=" + String.valueOf(user.getIdUser()) + " AND iduserdepartment NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")");
+					st.close();
+				}
 			}
 			
 			conn.commit();
@@ -813,26 +821,13 @@ public class UserDAO {
 		user.setExternal(rs.getInt("external") == 1);
 		user.setActive(rs.getInt("active") == 1);
 		user.setArea(rs.getString("area"));
-		if(rs.getInt("idDepartment") == 0){
-			user.setDepartment(null);
-		}else{
-			user.getDepartment().setIdDepartment(rs.getInt("idDepartment"));
-			user.getDepartment().setCampus(new Campus());
-			user.getDepartment().getCampus().setIdCampus(rs.getInt("idCampus"));
-		}
 		if(rs.getInt("idcompany") == 0){
 			user.setCompany(null);
 		}else{
 			user.getCompany().setIdCompany(rs.getInt("idcompany"));
 			user.getCompany().setName(rs.getString("companyName"));
 		}
-		user.setSigacManager(rs.getInt("sigacManager") == 1);
-		user.setSigesManager(rs.getInt("sigesManager") == 1);
-		user.setSigetManager(rs.getInt("sigetManager") == 1);
-		user.setDepartmentManager(rs.getInt("departmentmanager") == 1);
 		user.setStudentCode(rs.getString("studentCode"));
-		user.setRegisterSemester(rs.getInt("registerSemester"));
-		user.setRegisterYear(rs.getInt("registerYear"));
 		user.setPhoto(rs.getBytes("photo"));
 		
 		Statement stmt = null;

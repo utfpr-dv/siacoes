@@ -132,6 +132,36 @@ public class JuryRequestDAO {
 		}
 	}
 	
+	public int findIdDepartment(int idJuryRequest) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT proposal.iddepartment FROM juryrequest " +
+					"INNER JOIN proposal ON proposal.idproposal=juryrequest.idproposal " +
+					"WHERE juryrequest.idjuryrequest=?");
+		
+			stmt.setInt(1, idJuryRequest);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getInt("idDepartment");
+			}else{
+				return 0;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public List<JuryRequest> listBySemester(int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;

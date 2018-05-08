@@ -236,6 +236,34 @@ public class InternshipDAO {
 		}
 	}
 	
+	public int findIdDepartment(int idInternship) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT idDepartment FROM internship WHERE idInternship=?");
+		
+			stmt.setInt(1, idInternship);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getInt("idDepartment");
+			}else{
+				return 0;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public Internship findById(int id) throws SQLException{
 		ResultSet rs = null;
 		PreparedStatement stmt = null;

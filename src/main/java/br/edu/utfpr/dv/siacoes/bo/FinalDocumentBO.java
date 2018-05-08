@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.dao.FinalDocumentDAO;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
@@ -192,8 +191,15 @@ public class FinalDocumentBO {
 					
 					bo.sendEmail(idSupervisor, MessageType.FINALDOCUMENTSUBMITTED, keys);
 				} else if((thesis.getSupervisorFeedback() != DocumentFeedback.NONE) && (feedback != thesis.getSupervisorFeedback())) {
-					UserBO ubo = new UserBO();
-					User user = ubo.findManager(Session.getUser().getDepartment().getIdDepartment(), SystemModule.SIGET);
+					int idDepartment = 0;
+					
+					if((thesis.getThesis() != null) && (thesis.getThesis().getIdThesis() != 0)) {
+						idDepartment = new ThesisBO().findIdDepartment(thesis.getThesis().getIdThesis());
+					} else {
+						idDepartment = new ProjectBO().findIdDepartment(thesis.getProject().getIdProject());
+					}
+					
+					User user = new UserBO().findManager(idDepartment, SystemModule.SIGET);
 					
 					keys.add(new EmailMessageEntry<String, String>("manager", user.getName()));
 					
@@ -238,9 +244,9 @@ public class FinalDocumentBO {
 						String.valueOf(semester) + "_" + String.valueOf(item.getSequence()) + ".pdf");
 			}
 			
-			ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "Library");
+			ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "Library", idDepartment);
 			
-			ByteArrayOutputStream coverRep = new ReportUtils().createPdfStream(listCover, "LibraryCover");
+			ByteArrayOutputStream coverRep = new ReportUtils().createPdfStream(listCover, "LibraryCover", idDepartment);
 			
 			ZipOutputStream out = new ZipOutputStream(ret);
 			

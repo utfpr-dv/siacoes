@@ -82,7 +82,7 @@ public class EvaluationItemView extends ListView {
 			}
 			
 			EvaluationItemBO bo = new EvaluationItemBO();
-	    	List<EvaluationItem> list = bo.listByStage(stage, Session.getUser().getDepartment().getIdDepartment(), this.checkActive.getValue());
+	    	List<EvaluationItem> list = bo.listByStage(stage, Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.checkActive.getValue());
 	    	
 	    	for(EvaluationItem item : list){
 				Object itemId = this.getGrid().addRow(item.getStage(), item.getType().toString(), item.getDescription(), item.getPonderosity());
@@ -99,7 +99,7 @@ public class EvaluationItemView extends ListView {
 	public void addClick() {
 		EvaluationItem item = new EvaluationItem();
 		
-		item.setDepartment(Session.getUser().getDepartment());
+		item.setDepartment(Session.getSelectedDepartment().getDepartment());
 		
 		if(!this.comboStage.getValue().toString().toLowerCase().equals("ambos")){
 			item.setStage((int)this.comboStage.getValue());

@@ -30,7 +30,7 @@ public class EditSemesterWindow extends EditWindow {
 		
 		if(semester == null){
 			this.semester = new Semester();
-			this.semester.setCampus(Session.getUser().getDepartment().getCampus());
+			this.semester.setCampus(Session.getSelectedDepartment().getDepartment().getCampus());
 		}else{
 			this.semester = semester;
 		}

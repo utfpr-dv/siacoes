@@ -56,7 +56,7 @@ public class ActivityHighScoreChartView extends ChartView {
 
 	@Override
 	public DCharts generateChart() throws Exception {
-		List<ActivityScore> list = new ActivitySubmissionBO().getActivityScore(Session.getUser().getDepartment().getIdDepartment(), this.textInitialYear.getYear(), this.textFinalYear.getYear(), 10);
+		List<ActivityScore> list = new ActivitySubmissionBO().getActivityScore(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textInitialYear.getYear(), this.textFinalYear.getYear(), 10);
 		
 		DataSeries dataSeries = new DataSeries();
 		

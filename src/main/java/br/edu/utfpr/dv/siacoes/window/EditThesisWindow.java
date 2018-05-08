@@ -88,10 +88,10 @@ public class EditThesisWindow extends EditWindow {
 		this.textStudent.setEnabled(false);
 		this.textStudent.setWidth("800px");
 		
-		this.comboSupervisor = new SupervisorComboBox("Orientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getSupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
+		this.comboSupervisor = new SupervisorComboBox("Orientador", Session.getSelectedDepartment().getDepartment().getIdDepartment(), new SigetConfigBO().getSupervisorFilter(Session.getSelectedDepartment().getDepartment().getIdDepartment()));
 		this.comboSupervisor.setEnabled(false);
 		
-		this.comboCosupervisor = new SupervisorComboBox("Coorientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getCosupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
+		this.comboCosupervisor = new SupervisorComboBox("Coorientador", Session.getSelectedDepartment().getDepartment().getIdDepartment(), new SigetConfigBO().getCosupervisorFilter(Session.getSelectedDepartment().getDepartment().getIdDepartment()));
 		this.comboCosupervisor.setNullSelectionAllowed(true);
 		this.comboCosupervisor.setEnabled(false);
 		
@@ -163,8 +163,8 @@ public class EditThesisWindow extends EditWindow {
 		if(Session.isUserStudent()){
 			try {
 				DeadlineBO dbo = new DeadlineBO();
-				Semester semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
-				Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+				Semester semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+				Deadline d = dbo.findBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 				
 				if(DateUtils.getToday().getTime().after(d.getThesisDeadline())){
 					this.uploadFile.setEnabled(false);
@@ -236,8 +236,8 @@ public class EditThesisWindow extends EditWindow {
 		if(Session.isUserStudent()){
 			try {
 				DeadlineBO dbo = new DeadlineBO();
-				Semester semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
-				Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+				Semester semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+				Deadline d = dbo.findBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 				
 				if(DateUtils.getToday().getTime().after(d.getProjectDeadline())){
 					Notification.show("Submeter Monografia", "O prazo para a submissão de monografias já foi encerrado.", Notification.Type.ERROR_MESSAGE);

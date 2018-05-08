@@ -2,6 +2,7 @@
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,6 +52,7 @@ import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.model.UserDepartment;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.view.ActivityGroupStatusChartView;
 import br.edu.utfpr.dv.siacoes.view.ActivityGroupView;
@@ -109,14 +111,16 @@ import br.edu.utfpr.dv.siacoes.window.DownloadProposalFeedbackWindow;
 import br.edu.utfpr.dv.siacoes.window.EditAppConfigWindow;
 import br.edu.utfpr.dv.siacoes.window.EditFinalDocumentWindow;
 import br.edu.utfpr.dv.siacoes.window.EditPasswordWindow;
+import br.edu.utfpr.dv.siacoes.window.EditProfessorProfileWindow;
 import br.edu.utfpr.dv.siacoes.window.EditProjectWindow;
 import br.edu.utfpr.dv.siacoes.window.EditProposalWindow;
 import br.edu.utfpr.dv.siacoes.window.EditSigacWindow;
 import br.edu.utfpr.dv.siacoes.window.EditSigesWindow;
 import br.edu.utfpr.dv.siacoes.window.EditSigetWindow;
+import br.edu.utfpr.dv.siacoes.window.EditStudentProfileWindow;
 import br.edu.utfpr.dv.siacoes.window.EditSupervisorChangeWindow;
 import br.edu.utfpr.dv.siacoes.window.EditThesisWindow;
-import br.edu.utfpr.dv.siacoes.window.EditUserWindow;
+import br.edu.utfpr.dv.siacoes.window.EditUserProfileWindow;
 import br.edu.utfpr.dv.siacoes.window.JuryGradesWindow;
 
 public class SideMenu extends CustomComponent {
@@ -170,39 +174,43 @@ public class SideMenu extends CustomComponent {
         setSizeUndefined();
         
         this.semester = new Semester();
-		try {
-			this.semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
-		} catch (Exception e1) {
-			Notification.show("Semestre", e1.getMessage(), Notification.Type.ERROR_MESSAGE);
-			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
-		}
+        if((Session.getSelectedDepartment() != null) && (Session.getSelectedDepartment().getDepartment() != null) && (Session.getSelectedDepartment().getDepartment().getCampus() != null)) {
+        	try {
+    			this.semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+    		} catch (Exception e1) {
+    			Notification.show("Semestre", e1.getMessage(), Notification.Type.ERROR_MESSAGE);
+    			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
+    		}
+        }
+		
+        this.sigetConfig = new SigetConfig();
+        this.sigacConfig = new SigacConfig();
+        this.sigesConfig = new SigesConfig();
         
-		SigetConfigBO bo = new SigetConfigBO();
-		this.sigetConfig = new SigetConfig();
-		try {
-			this.sigetConfig = bo.findByDepartment(Session.getUser().getDepartment().getIdDepartment());
-		} catch (Exception e1) {
-			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
-		}
-		
-        SigacConfigBO bo2 = new SigacConfigBO();
-		this.sigacConfig = new SigacConfig();
-		try {
-			this.sigacConfig = bo2.findByDepartment(Session.getUser().getDepartment().getIdDepartment());
-		} catch (Exception e1) {
-			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
-		}
-		
-		SigesConfigBO bo3 = new SigesConfigBO();
-		this.sigesConfig = new SigesConfig();
-		try {
-			this.sigesConfig = bo3.findByDepartment(Session.getUser().getDepartment().getIdDepartment());
-		} catch (Exception e1) {
-			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
-		}
-
+        if((Session.getSelectedDepartment() != null) && (Session.getSelectedDepartment().getDepartment() != null)) {
+			SigetConfigBO bo = new SigetConfigBO();
+			try {
+				this.sigetConfig = bo.findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
+			} catch (Exception e1) {
+				Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
+			}
+			
+	        SigacConfigBO bo2 = new SigacConfigBO();
+			try {
+				this.sigacConfig = bo2.findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
+			} catch (Exception e1) {
+				Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
+			}
+			
+			SigesConfigBO bo3 = new SigesConfigBO();
+			try {
+				this.sigesConfig = bo3.findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
+			} catch (Exception e1) {
+				Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
+			}
+        }
+        
         setCompositionRoot(buildContent());
-        
         
         this.setMenuState(this.getMenuStateFromCookie());
     }
@@ -339,7 +347,13 @@ public class SideMenu extends CustomComponent {
         settingsItem.addItem("Meus Dados", new Command() {
             @Override
             public void menuSelected(final MenuItem selectedItem) {
-            	UI.getCurrent().addWindow(new EditUserWindow(Session.getUser(), null));
+            	if(Session.getSelectedProfile() == UserProfile.STUDENT) {
+					UI.getCurrent().addWindow(new EditStudentProfileWindow(Session.getUser(), Session.getSelectedDepartment()));
+				} else if(Session.getSelectedProfile() == UserProfile.PROFESSOR) {
+					UI.getCurrent().addWindow(new EditProfessorProfileWindow(Session.getUser(), Session.getSelectedDepartment()));
+				} else {
+					UI.getCurrent().addWindow(new EditUserProfileWindow(Session.getUser(), Session.getSelectedProfile()));
+				}
             }
         });
         if(Session.getUser().isExternal() && !Session.isLoggedAs()){
@@ -366,6 +380,32 @@ public class SideMenu extends CustomComponent {
                     });
         		}
         	}
+        }
+        if((Session.getSelectedProfile() == UserProfile.PROFESSOR) || (Session.getSelectedProfile() == UserProfile.STUDENT)) {
+	        try {
+				List<UserDepartment> departments = Session.getListDepartments();
+				
+				if(departments.size() > 1) {
+					settingsItem.addSeparator();
+		        	MenuItem department = settingsItem.addItem("Departamento", null);
+		        	
+		        	for(UserDepartment d : departments) {
+		        		if(d.getDepartment().getIdDepartment() != Session.getSelectedDepartment().getDepartment().getIdDepartment()) {
+		        			department.addItem(d.getDepartment().getName() + " - " + d.getDepartment().getCampus().getName(), new Command() {
+		                        @Override
+		                        public void menuSelected(final MenuItem selectedItem) {
+		                            Session.setSelectedDepartment(d);
+		                            
+		                            getUI().getNavigator().navigateTo(MainView.NAME);
+		                        }
+		                    });
+		        		}
+		        	}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
         if(Session.isLoggedAs()){
         	settingsItem.addSeparator();
@@ -718,7 +758,7 @@ public class SideMenu extends CustomComponent {
 					@Override
 					public void menuClick() {
 						try {
-							Proposal p = new ProposalBO().prepareProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear(), false);
+							Proposal p = new ProposalBO().prepareProposal(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear(), false);
 							
 							UI.getCurrent().addWindow(new EditProposalWindow(p, null, true));
 						} catch (Exception e) {
@@ -734,7 +774,7 @@ public class SideMenu extends CustomComponent {
 					public void menuClick() {
 						try {
 							ProposalBO bo = new ProposalBO();
-							Proposal p = bo.findCurrentProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+							Proposal p = bo.findCurrentProposal(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 							
 							if((p == null) || (p.getFile() == null)) {
 								throw new Exception("A proposta ainda não foi enviada.");
@@ -760,7 +800,7 @@ public class SideMenu extends CustomComponent {
 					@Override
 					public void menuClick() {
 						try {
-							Project p = new ProjectBO().prepareProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+							Project p = new ProjectBO().prepareProject(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 							
 							UI.getCurrent().addWindow(new EditProjectWindow(p, null));
 						} catch (Exception e) {
@@ -775,7 +815,7 @@ public class SideMenu extends CustomComponent {
 					@Override
 					public void menuClick() {
 						try {
-							for(byte[] data : new ProjectBO().prepareDocuments(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear())) {
+							for(byte[] data : new ProjectBO().prepareDocuments(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear())) {
 								showReport(data);
 							}
 	        	    	} catch (Exception e) {
@@ -790,7 +830,7 @@ public class SideMenu extends CustomComponent {
 					@Override
 					public void menuClick() {
 						try {
-							Jury jury = new JuryBO().findByProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+							Jury jury = new JuryBO().findByProject(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 							
 							UI.getCurrent().addWindow(new DownloadFeedbackWindow(jury));
 	        	    	} catch (Exception e) {
@@ -806,7 +846,7 @@ public class SideMenu extends CustomComponent {
 						@Override
 						public void menuClick() {
 							try {
-								Jury jury = new JuryBO().findByProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+								Jury jury = new JuryBO().findByProject(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								
 								UI.getCurrent().addWindow(new JuryGradesWindow(jury));
 		        	    	} catch (Exception e) {
@@ -823,7 +863,7 @@ public class SideMenu extends CustomComponent {
 						@Override
 						public void menuClick() {
 							try {
-								FinalDocument ft = new FinalDocumentBO().prepareFinalProject(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+								FinalDocument ft = new FinalDocumentBO().prepareFinalProject(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								
 								UI.getCurrent().addWindow(new EditFinalDocumentWindow(ft, null));
 							} catch (Exception e) {
@@ -852,7 +892,7 @@ public class SideMenu extends CustomComponent {
 					@Override
 					public void menuClick() {
 						try {
-							Thesis thesis = new ThesisBO().prepareThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+							Thesis thesis = new ThesisBO().prepareThesis(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 							
 							UI.getCurrent().addWindow(new EditThesisWindow(thesis, null));
 						} catch (Exception e) {
@@ -867,7 +907,7 @@ public class SideMenu extends CustomComponent {
 					@Override
 					public void menuClick() {
 						try {
-							for(byte[] data : new ThesisBO().prepareDocuments(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear())) {
+							for(byte[] data : new ThesisBO().prepareDocuments(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear())) {
 								showReport(data);
 							}
 						} catch (Exception e) {
@@ -882,7 +922,7 @@ public class SideMenu extends CustomComponent {
 					@Override
 					public void menuClick() {
 						try {
-							Jury jury = new JuryBO().findByThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+							Jury jury = new JuryBO().findByThesis(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 							
 							UI.getCurrent().addWindow(new DownloadFeedbackWindow(jury));
 	        	    	} catch (Exception e) {
@@ -898,7 +938,7 @@ public class SideMenu extends CustomComponent {
 						@Override
 						public void menuClick() {
 							try {
-								Jury jury = new JuryBO().findByThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+								Jury jury = new JuryBO().findByThesis(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								
 								UI.getCurrent().addWindow(new JuryGradesWindow(jury));
 		        	    	} catch (Exception e) {
@@ -914,7 +954,7 @@ public class SideMenu extends CustomComponent {
 					@Override
 					public void menuClick() {
 						try {
-							Jury jury = new JuryBO().findByThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+							Jury jury = new JuryBO().findByThesis(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 							
 							if(jury.getIdJury() == 0) {
 								throw new Exception("O Termo de Aprovação somente é gerado após o envio da Monografia e a composição da Banca.");
@@ -933,7 +973,7 @@ public class SideMenu extends CustomComponent {
 					@Override
 					public void menuClick() {
 						try {
-							FinalDocument ft = new FinalDocumentBO().prepareFinalThesis(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+							FinalDocument ft = new FinalDocumentBO().prepareFinalThesis(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 							
 							UI.getCurrent().addWindow(new EditFinalDocumentWindow(ft, null));
 						} catch (Exception e) {
@@ -962,7 +1002,7 @@ public class SideMenu extends CustomComponent {
 					@Override
 					public void menuClick() {
 						try {
-							Proposal p = new ProposalBO().prepareProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear(), true);
+							Proposal p = new ProposalBO().prepareProposal(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear(), true);
 							
 							UI.getCurrent().addWindow(new EditProposalWindow(p, null, false));
 						} catch (Exception e) {
@@ -976,7 +1016,7 @@ public class SideMenu extends CustomComponent {
 					@Override
 					public void menuClick() {
 						try {
-	        	        	Proposal proposal = new ProposalBO().findLastProposal(Session.getUser().getIdUser(), Session.getUser().getDepartment().getIdDepartment());
+	        	        	Proposal proposal = new ProposalBO().findLastProposal(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 							
 							if(proposal == null){
 								Notification.show("Alterar Orientador", "É necessário efetuar a submissão da proposta.", Notification.Type.ERROR_MESSAGE);

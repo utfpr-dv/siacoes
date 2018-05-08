@@ -21,7 +21,6 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
-import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.dao.CertificateDAO;
 import br.edu.utfpr.dv.siacoes.model.AppConfig;
 import br.edu.utfpr.dv.siacoes.model.Certificate;
@@ -96,16 +95,24 @@ public class CertificateBO {
 		List<StatementReport> list = new ArrayList<StatementReport>();
 		list.add(report);
 		
-		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "ProfessorThesisStatement");
+		int idDepartment = 0;
+		if((thesis != null) && (thesis.getIdThesis() != 0)) {
+			idDepartment = new ThesisBO().findIdDepartment(thesis.getIdThesis());
+		} else {
+			idDepartment = new ProjectBO().findIdDepartment(project.getIdProject());
+		}
+		
+		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "ProfessorThesisStatement", idDepartment);
 		byte[] finalReport = rep.toByteArray();
 		
 		Certificate certificate = new Certificate();
 		certificate.setDate(report.getGeneratedDate());
-		certificate.setDepartment(Session.getUser().getDepartment());
 		certificate.setFile(finalReport);
 		certificate.setGuid(report.getGuid());
 		certificate.setModule(SystemModule.SIGET);
 		certificate.setUser(supervisor);
+		certificate.getDepartment().setIdDepartment(idDepartment);
+		
 		
 		this.save(certificate);
 		
@@ -155,9 +162,18 @@ public class CertificateBO {
 			e1.printStackTrace();
 		}
 		
+		int idDepartment = 0;
+		
 		try {
-			UserBO bo = new UserBO();
-			User user = bo.findManager(Session.getUser().getDepartment().getIdDepartment(), SystemModule.SIGET);
+			if((thesis != null) && (thesis.getIdThesis() != 0)) {
+				idDepartment = new ThesisBO().findIdDepartment(thesis.getIdThesis());
+			} else {
+				idDepartment = new ProjectBO().findIdDepartment(project.getIdProject());
+			}
+		} catch (Exception e) { }
+		
+		try {
+			User user = new UserBO().findManager(idDepartment, SystemModule.SIGET);
 			
 			statement.setManagerName(user.getName());
 		} catch (Exception e) {
@@ -168,7 +184,7 @@ public class CertificateBO {
 		
 		try {
 			UserBO bo = new UserBO();
-			User manager = bo.findDepartmentManager(Session.getUser().getDepartment().getIdDepartment());
+			User manager = bo.findDepartmentManager(idDepartment);
 			
 			statement.setDepartmentManager(manager.getName());
 		} catch (Exception e) {
@@ -202,12 +218,12 @@ public class CertificateBO {
 		List<StatementReport> list = new ArrayList<StatementReport>();
 		list.add(report);
 		
-		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "ProfessorInternshipStatement");
+		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "ProfessorInternshipStatement", internship.getDepartment().getIdDepartment());
 		byte[] finalReport = rep.toByteArray();
 		
 		Certificate certificate = new Certificate();
 		certificate.setDate(report.getGeneratedDate());
-		certificate.setDepartment(Session.getUser().getDepartment());
+		certificate.getDepartment().setIdDepartment(internship.getDepartment().getIdDepartment());
 		certificate.setFile(finalReport);
 		certificate.setGuid(report.getGuid());
 		certificate.setModule(SystemModule.SIGES);
@@ -244,12 +260,12 @@ public class CertificateBO {
 		List<StatementReport> list = new ArrayList<StatementReport>();
 		list.add(report);
 		
-		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "StudentInternshipStatement");
+		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "StudentInternshipStatement", internship.getDepartment().getIdDepartment());
 		byte[] finalReport = rep.toByteArray();
 		
 		Certificate certificate = new Certificate();
 		certificate.setDate(report.getGeneratedDate());
-		certificate.setDepartment(Session.getUser().getDepartment());
+		certificate.getDepartment().setIdDepartment(internship.getDepartment().getIdDepartment());
 		certificate.setFile(finalReport);
 		certificate.setGuid(report.getGuid());
 		certificate.setModule(SystemModule.SIGES);
@@ -278,12 +294,14 @@ public class CertificateBO {
 		List<StatementReport> list = new ArrayList<StatementReport>();
 		list.add(report);
 		
-		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "ProfessorStatement");
+		int idDepartment = new JuryBO().findIdDepartment(appraiser.getJury().getIdJury());
+		
+		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "ProfessorStatement", idDepartment);
 		byte[] finalReport = rep.toByteArray();
 		
 		Certificate certificate = new Certificate();
 		certificate.setDate(report.getGeneratedDate());
-		certificate.setDepartment(Session.getUser().getDepartment());
+		certificate.getDepartment().setIdDepartment(idDepartment);
 		certificate.setFile(finalReport);
 		certificate.setGuid(report.getGuid());
 		certificate.setModule(SystemModule.SIGET);
@@ -344,12 +362,14 @@ public class CertificateBO {
 		List<StatementReport> list = new ArrayList<StatementReport>();
 		list.add(report);
 		
-		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "StudentStatement");
+		int idDepartment = new JuryBO().findIdDepartment(student.getJury().getIdJury());
+		
+		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "StudentStatement", idDepartment);
 		byte[] finalReport = rep.toByteArray();
 		
 		Certificate certificate = new Certificate();
 		certificate.setDate(report.getGeneratedDate());
-		certificate.setDepartment(Session.getUser().getDepartment());
+		certificate.getDepartment().setIdDepartment(idDepartment);
 		certificate.setFile(finalReport);
 		certificate.setGuid(report.getGuid());
 		certificate.setModule(SystemModule.SIGET);
@@ -413,12 +433,14 @@ public class CertificateBO {
 		List<StatementReport> list = new ArrayList<StatementReport>();
 		list.add(report);
 		
-		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "ProfessorStatement");
+		int idDepartment = new InternshipJuryBO().findIdDepartment(appraiser.getInternshipJury().getIdInternshipJury());
+		
+		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "ProfessorStatement", idDepartment);
 		byte[] finalReport = rep.toByteArray();
 		
 		Certificate certificate = new Certificate();
 		certificate.setDate(report.getGeneratedDate());
-		certificate.setDepartment(Session.getUser().getDepartment());
+		certificate.getDepartment().setIdDepartment(idDepartment);
 		certificate.setFile(finalReport);
 		certificate.setGuid(report.getGuid());
 		certificate.setModule(SystemModule.SIGES);
@@ -472,12 +494,14 @@ public class CertificateBO {
 		List<StatementReport> list = new ArrayList<StatementReport>();
 		list.add(report);
 		
-		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "StudentStatement");
+		int idDepartment = new InternshipJuryBO().findIdDepartment(student.getInternshipJury().getIdInternshipJury());
+		
+		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list, "StudentStatement", idDepartment);
 		byte[] finalReport = rep.toByteArray();
 		
 		Certificate certificate = new Certificate();
 		certificate.setDate(report.getGeneratedDate());
-		certificate.setDepartment(Session.getUser().getDepartment());
+		certificate.getDepartment().setIdDepartment(idDepartment);
 		certificate.setFile(finalReport);
 		certificate.setGuid(report.getGuid());
 		certificate.setModule(SystemModule.SIGES);
@@ -566,9 +590,15 @@ public class CertificateBO {
 			statement.setTitle(appraiser.getJury().getThesis().getTitle());
 		}
 		
+		int idDepartment = 0;
+		
+		try {
+			idDepartment = new JuryBO().findIdDepartment(appraiser.getJury().getIdJury());
+		} catch (Exception e) { }
+		
 		try {
 			UserBO bo = new UserBO();
-			User user = bo.findManager(Session.getUser().getDepartment().getIdDepartment(), SystemModule.SIGET);
+			User user = bo.findManager(idDepartment, SystemModule.SIGET);
 			
 			statement.setManagerName(user.getName());
 		} catch (Exception e) {
@@ -579,7 +609,7 @@ public class CertificateBO {
 		
 		try {
 			UserBO bo = new UserBO();
-			User manager = bo.findDepartmentManager(Session.getUser().getDepartment().getIdDepartment());
+			User manager = bo.findDepartmentManager(idDepartment);
 			
 			statement.setDepartmentManager(manager.getName());
 		} catch (Exception e) {
@@ -618,9 +648,15 @@ public class CertificateBO {
 			statement.setTitle(student.getJury().getThesis().getTitle());
 		}
 		
+		int idDepartment = 0;
+		
+		try {
+			idDepartment = new JuryBO().findIdDepartment(student.getJury().getIdJury());
+		} catch (Exception e) { }
+		
 		try {
 			UserBO bo = new UserBO();
-			User user = bo.findManager(Session.getUser().getDepartment().getIdDepartment(), SystemModule.SIGET);
+			User user = bo.findManager(idDepartment, SystemModule.SIGET);
 			
 			statement.setManagerName(user.getName());
 		} catch (Exception e) {
@@ -631,7 +667,7 @@ public class CertificateBO {
 		
 		try {
 			UserBO bo = new UserBO();
-			User manager = bo.findDepartmentManager(Session.getUser().getDepartment().getIdDepartment());
+			User manager = bo.findDepartmentManager(idDepartment);
 			
 			statement.setDepartmentManager(manager.getName());
 		} catch (Exception e) {
@@ -677,7 +713,7 @@ public class CertificateBO {
 		
 		try {
 			UserBO bo = new UserBO();
-			User user = bo.findManager(Session.getUser().getDepartment().getIdDepartment(), SystemModule.SIGES);
+			User user = bo.findManager(internship.getDepartment().getIdDepartment(), SystemModule.SIGES);
 			
 			statement.setManagerName(user.getName());
 		} catch (Exception e) {
@@ -688,7 +724,7 @@ public class CertificateBO {
 		
 		try {
 			UserBO bo = new UserBO();
-			User manager = bo.findDepartmentManager(Session.getUser().getDepartment().getIdDepartment());
+			User manager = bo.findDepartmentManager(internship.getDepartment().getIdDepartment());
 			
 			statement.setDepartmentManager(manager.getName());
 		} catch (Exception e) {
@@ -734,7 +770,7 @@ public class CertificateBO {
 		
 		try {
 			UserBO bo = new UserBO();
-			User user = bo.findManager(Session.getUser().getDepartment().getIdDepartment(), SystemModule.SIGES);
+			User user = bo.findManager(internship.getDepartment().getIdDepartment(), SystemModule.SIGES);
 			
 			statement.setManagerName(user.getName());
 		} catch (Exception e) {
@@ -745,7 +781,7 @@ public class CertificateBO {
 		
 		try {
 			UserBO bo = new UserBO();
-			User manager = bo.findDepartmentManager(Session.getUser().getDepartment().getIdDepartment());
+			User manager = bo.findDepartmentManager(internship.getDepartment().getIdDepartment());
 			
 			statement.setDepartmentManager(manager.getName());
 		} catch (Exception e) {
@@ -778,9 +814,15 @@ public class CertificateBO {
 		statement.setTitle(appraiser.getInternshipJury().getInternship().getReportTitle());
 		statement.setCompany(appraiser.getInternshipJury().getInternship().getCompany().getName());
 		
+		int idDepartment = 0;
+		
+		try {
+			idDepartment = new InternshipJuryBO().findIdDepartment(appraiser.getInternshipJury().getIdInternshipJury());
+		} catch (Exception e) { }
+		
 		try {
 			UserBO bo = new UserBO();
-			User user = bo.findManager(Session.getUser().getDepartment().getIdDepartment(), SystemModule.SIGES);
+			User user = bo.findManager(idDepartment, SystemModule.SIGES);
 			
 			statement.setManagerName(user.getName());
 		} catch (Exception e) {
@@ -791,7 +833,7 @@ public class CertificateBO {
 		
 		try {
 			UserBO bo = new UserBO();
-			User manager = bo.findDepartmentManager(Session.getUser().getDepartment().getIdDepartment());
+			User manager = bo.findDepartmentManager(idDepartment);
 			
 			statement.setDepartmentManager(manager.getName());
 		} catch (Exception e) {
@@ -825,9 +867,15 @@ public class CertificateBO {
 		statement.setTitle(student.getInternshipJury().getInternship().getReportTitle());
 		statement.setCompany(student.getInternshipJury().getInternship().getCompany().getName());
 		
+		int idDepartment = 0;
+		
+		try {
+			idDepartment = new InternshipJuryBO().findIdDepartment(student.getInternshipJury().getIdInternshipJury());
+		} catch (Exception e) { }
+		
 		try {
 			UserBO bo = new UserBO();
-			User user = bo.findManager(Session.getUser().getDepartment().getIdDepartment(), SystemModule.SIGES);
+			User user = bo.findManager(idDepartment, SystemModule.SIGES);
 			
 			statement.setManagerName(user.getName());
 		} catch (Exception e) {
@@ -838,7 +886,7 @@ public class CertificateBO {
 		
 		try {
 			UserBO bo = new UserBO();
-			User manager = bo.findDepartmentManager(Session.getUser().getDepartment().getIdDepartment());
+			User manager = bo.findDepartmentManager(idDepartment);
 			
 			statement.setDepartmentManager(manager.getName());
 		} catch (Exception e) {

@@ -34,7 +34,7 @@ public class EditSupervisorIndicationWindow extends EditWindow {
 		}
 		
 		try {
-			this.config = new SigetConfigBO().findByDepartment(Session.getUser().getDepartment().getIdDepartment());
+			this.config = new SigetConfigBO().findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
 		} catch (Exception e) {
 			this.config = new SigetConfig();
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
@@ -58,7 +58,7 @@ public class EditSupervisorIndicationWindow extends EditWindow {
 			}
 			
 			for(int i = 0; i < this.config.getSupervisorIndication(); i++) {
-				SupervisorComboBox combo = new SupervisorComboBox("Avaliador", Session.getUser().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
+				SupervisorComboBox combo = new SupervisorComboBox("Avaliador", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 				
 				if(this.appraisers.size() > i) {
 					combo.setProfessor(this.appraisers.get(i).getAppraiser());

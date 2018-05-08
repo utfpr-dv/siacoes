@@ -3,8 +3,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import br.edu.utfpr.dv.siacoes.util.DateUtils;
-
 public class User {
 	
 	public enum UserProfile{
@@ -52,7 +50,6 @@ public class User {
 	}
 	
 	private int idUser;
-	private Department department;
 	private Company company;
 	private String name;
 	private String login;
@@ -67,18 +64,12 @@ public class User {
 	private List<UserProfile> profiles;
 	private boolean external;
 	private boolean active;
-	private boolean sigacManager;
-	private boolean sigesManager;
-	private boolean sigetManager;
-	private boolean departmentManager;
 	private String studentCode;
-	private int registerSemester;
-	private int registerYear;
 	private byte[] photo;
+	private List<UserDepartment> departments;
 	
 	public User(){
 		this.setIdUser(0);
-		this.setDepartment(new Department());
 		this.setCompany(new Company());
 		this.setName("");
 		this.setLogin("");
@@ -93,14 +84,9 @@ public class User {
 		this.setProfiles(new ArrayList<UserProfile>());
 		this.setExternal(true);
 		this.setActive(true);
-		this.setSigacManager(false);
-		this.setSigesManager(false);
-		this.setSigetManager(false);
-		this.setDepartmentManager(false);
 		this.setStudentCode("");
-		this.setRegisterSemester(DateUtils.getSemester());
-		this.setRegisterYear(DateUtils.getYear());
 		this.setPhoto(null);
+		this.setDepartments(null);
 	}
 	
 	public int getIdUser() {
@@ -196,41 +182,11 @@ public class User {
 	public boolean isActive(){
 		return active;
 	}
-	public void setDepartment(Department department){
-		this.department = department;
-	}
-	public Department getDepartment(){
-		return department;
-	}
 	public Company getCompany() {
 		return company;
 	}
 	public void setCompany(Company company) {
 		this.company = company;
-	}
-	public void setSigacManager(boolean sigacManager){
-		this.sigacManager = sigacManager;
-	}
-	public boolean isSigacManager(){
-		return sigacManager;
-	}
-	public void setSigesManager(boolean sigesManager){
-		this.sigesManager = sigesManager;
-	}
-	public boolean isSigesManager(){
-		return sigesManager;
-	}
-	public void setSigetManager(boolean sigetManager){
-		this.sigetManager = sigetManager;
-	}
-	public boolean isSigetManager(){
-		return this.sigetManager;
-	}
-	public boolean isDepartmentManager() {
-		return departmentManager;
-	}
-	public void setDepartmentManager(boolean departmentManager) {
-		this.departmentManager = departmentManager;
 	}
 	public void setStudentCode(String studentCode){
 		this.studentCode = studentCode;
@@ -238,23 +194,17 @@ public class User {
 	public String getStudentCode(){
 		return studentCode;
 	}
-	public void setRegisterSemester(int registerSemester){
-		this.registerSemester = registerSemester;
-	}
-	public int getRegisterSemester(){
-		return registerSemester;
-	}
-	public void setRegisterYear(int registerYear){
-		this.registerYear = registerYear;
-	}
-	public int getRegisterYear(){
-		return registerYear;
-	}
 	public byte[] getPhoto() {
 		return photo;
 	}
 	public void setPhoto(byte[] photo) {
 		this.photo = photo;
+	}
+	public List<UserDepartment> getDepartments() {
+		return departments;
+	}
+	public void setDepartments(List<UserDepartment> departments) {
+		this.departments = departments;
 	}
 
 	@Override

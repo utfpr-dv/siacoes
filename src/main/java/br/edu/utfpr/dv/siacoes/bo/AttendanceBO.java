@@ -9,9 +9,6 @@ import java.util.logging.Logger;
 import br.edu.utfpr.dv.siacoes.dao.AttendanceDAO;
 import br.edu.utfpr.dv.siacoes.model.Attendance;
 import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
-import br.edu.utfpr.dv.siacoes.model.Semester;
-import br.edu.utfpr.dv.siacoes.model.User;
-import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class AttendanceBO {
@@ -52,24 +49,16 @@ public class AttendanceBO {
 		}
 	}
 	
-	public int save(Attendance attendance) throws Exception{
+	public int save(Attendance attendance) throws Exception {
 		try {
-			if(attendance.getComments().isEmpty()){
+			if(attendance.getComments().isEmpty()) {
 				throw new Exception("Informe as observações/orientações.");
+			}
+			if((attendance.getProposal() == null) || (attendance.getProposal().getIdProposal() == 0)) {
+				throw new Exception("Informe o Projeto de TCC 1");
 			}
 			
 			AttendanceDAO dao = new AttendanceDAO();
-			
-			if(attendance.getProposal().getIdProposal() == 0){
-				UserBO ubo = new UserBO();
-				User user = ubo.findById(attendance.getStudent().getIdUser());
-				
-				ProposalBO bo = new ProposalBO();
-				
-				Semester semester = new SemesterBO().findByDate(new CampusBO().findByDepartment(user.getDepartment().getIdDepartment()).getIdCampus(), DateUtils.getToday().getTime());
-				
-				attendance.setProposal(bo.findCurrentProposal(user.getIdUser(), user.getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear()));
-			}
 			
 			return dao.save(attendance);
 		} catch (SQLException e) {
@@ -112,9 +101,9 @@ public class AttendanceBO {
 			ByteArrayOutputStream report;
 			
 			if(!showDetail){
-				report = new ReportUtils().createPdfStream(list, "AttendanceList");
+				report = new ReportUtils().createPdfStream(list, "AttendanceList", idDepartment);
 			}else{
-				report = new ReportUtils().createPdfStream(list, "AttendanceDetailedList");
+				report = new ReportUtils().createPdfStream(list, "AttendanceDetailedList", idDepartment);
 			}
 			
 			return report.toByteArray();

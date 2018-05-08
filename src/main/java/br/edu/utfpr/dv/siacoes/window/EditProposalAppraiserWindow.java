@@ -38,7 +38,7 @@ public class EditProposalAppraiserWindow extends EditWindow {
 		
 		this.editProposalWindow = editProposalWindow;
 		
-		this.comboAppraiser = new SupervisorComboBox("Avaliador", Session.getUser().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
+		this.comboAppraiser = new SupervisorComboBox("Avaliador", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		this.comboFeedback = new NativeSelect("Parecer");
 		this.textComments = new TextArea("Observações");
 		this.checkAllowEditing = new CheckBox("Permite edição");
@@ -57,7 +57,7 @@ public class EditProposalAppraiserWindow extends EditWindow {
 		
 		this.editProposalWindow = null;
 		
-		this.comboAppraiser = new SupervisorComboBox("Avaliador", Session.getUser().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
+		this.comboAppraiser = new SupervisorComboBox("Avaliador", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		this.comboFeedback = new NativeSelect("Parecer");
 		this.textComments = new TextArea("Observações");
 		this.checkAllowEditing = new CheckBox("Permite edição");

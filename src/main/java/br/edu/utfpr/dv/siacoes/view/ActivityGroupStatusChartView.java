@@ -55,7 +55,7 @@ public class ActivityGroupStatusChartView extends ChartView {
 
 	@Override
 	public DCharts generateChart() throws Exception {
-		List<ActivityGroupStatus> list = new ActivitySubmissionBO().getStudentActivityGroupStatus(Session.getUser().getDepartment().getIdDepartment(), (StudentStage)this.comboStage.getValue());
+		List<ActivityGroupStatus> list = new ActivitySubmissionBO().getStudentActivityGroupStatus(Session.getSelectedDepartment().getDepartment().getIdDepartment(), (StudentStage)this.comboStage.getValue());
 		
 		DataSeries dataSeries = new DataSeries();
 		Series series = new Series();

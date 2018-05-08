@@ -133,7 +133,7 @@ public class ProjectView extends ListView {
 		
 		try {
 			ProjectBO bo = new ProjectBO();
-	    	List<Project> list = bo.listBySemester(Session.getUser().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
+	    	List<Project> list = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 	    	
 	    	for(Project p : list){
 				Object itemId = this.getGrid().addRow(p.getSemester(), p.getYear(), p.getStudent().getName(), p.getSupervisor().getName(), p.getTitle(), p.getSubmissionDate());

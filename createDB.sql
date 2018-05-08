@@ -190,6 +190,24 @@ CREATE TABLE `userprofile` (
     CONSTRAINT `fk_userprofile_user` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
+CREATE TABLE `userdepartment` (
+    `iduserdepartment` integer NOT NULL AUTO_INCREMENT,
+    `iduser` integer NOT NULL,
+    `iddepartment` integer NOT NULL,
+    `profile` smallint NOT NULL,
+    `sigacmanager` tinyint NOT NULL,
+    `sigesmanager` tinyint NOT NULL,
+    `sigetmanager` tinyint NOT NULL,
+    `departmentmanager` tinyint NOT NULL,
+    `registersemester` tinyint NOT NULL,
+    `registeryear` integer NOT NULL,
+    PRIMARY KEY (`iduserdepartment`),
+	KEY `fk_userdepartment_iduser_idx` (`iduser`),
+	KEY `fk_userdepartment_iddepartment_idx` (`iddepartment`),
+    CONSTRAINT `fk_userdepartment_iduser` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT `fk_userdepartment_iddepartment` FOREIGN KEY (`iddepartment`) REFERENCES `department` (`iddepartment`) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
 CREATE TABLE `certificate` (
   `idcertificate` int(11) NOT NULL AUTO_INCREMENT,
   `iddepartment` int(11) NOT NULL,

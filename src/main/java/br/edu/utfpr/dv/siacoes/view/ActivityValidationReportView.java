@@ -35,7 +35,7 @@ public class ActivityValidationReportView extends ReportView {
 	private void loadComboFeedbackUser(){
 		try {
 			ActivitySubmissionBO bo = new ActivitySubmissionBO();
-			List<User> list = bo.listFeedbackUsers(Session.getUser().getDepartment().getIdDepartment());
+			List<User> list = bo.listFeedbackUsers(Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			
 			User all = new User();
 			all.setIdUser(0);
@@ -55,7 +55,7 @@ public class ActivityValidationReportView extends ReportView {
 	@Override
 	public byte[] generateReport() throws Exception {
 		ActivitySubmissionBO bo = new ActivitySubmissionBO();
-		return bo.getActivityValidationReport(Session.getUser().getDepartment().getIdDepartment(), ((User)this.comboFeedbackUser.getValue()).getIdUser());
+		return bo.getActivityValidationReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), ((User)this.comboFeedbackUser.getValue()).getIdUser());
 	}
 
 }

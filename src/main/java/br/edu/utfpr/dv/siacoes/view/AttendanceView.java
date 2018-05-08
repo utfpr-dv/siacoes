@@ -233,13 +233,14 @@ public class AttendanceView extends ListView {
 		
 		if((this.comboStudent.getStudent() != null) && (this.comboProposal.getValue() != null)){
 			try {
-				AttendanceBO bo = new AttendanceBO();
-				AttendanceReport attendance = bo.getReport(this.comboStudent.getStudent().getIdUser(), ((Proposal)this.comboProposal.getValue()).getIdProposal(), ((User)this.comboSupervisor.getValue()).getIdUser(), this.comboStage.getStage());
+				AttendanceReport attendance = new AttendanceBO().getReport(this.comboStudent.getStudent().getIdUser(), ((Proposal)this.comboProposal.getValue()).getIdProposal(), ((User)this.comboSupervisor.getValue()).getIdUser(), this.comboStage.getStage());
+				
+				Proposal proposal = new ProposalBO().findById(((Proposal)this.comboProposal.getValue()).getIdProposal());
 				
 				List<AttendanceReport> list = new ArrayList<AttendanceReport>();
 				list.add(attendance);
 				
-				new ReportUtils().prepareForPdfReport("Attendances", "Acompanhamento", list, this.buttonPrint);
+				new ReportUtils().prepareForPdfReport("Attendances", "Acompanhamento", list, proposal.getDepartment().getIdDepartment(), this.buttonPrint);
 			} catch (Exception e) {
 				this.buttonPrint.addClickListener(new Button.ClickListener() {
 		            @Override

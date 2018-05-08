@@ -17,6 +17,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 
 import br.edu.utfpr.dv.siacoes.Session;
+import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.bo.SupervisorChangeBO;
 import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
@@ -106,9 +107,9 @@ public class EditSupervisorChangeWindow extends EditWindow {
 		this.textCurrentCosupervisor.setWidth("390px");
 		this.textCurrentCosupervisor.setEnabled(false);
 		
-		this.comboNewSupervisor = new SupervisorComboBox("Novo Orientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getSupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
+		this.comboNewSupervisor = new SupervisorComboBox("Novo Orientador", Session.getSelectedDepartment().getDepartment().getIdDepartment(), new SigetConfigBO().getSupervisorFilter(Session.getSelectedDepartment().getDepartment().getIdDepartment()));
 		
-		this.comboNewCosupervisor = new SupervisorComboBox("Novo Coorientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getCosupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
+		this.comboNewCosupervisor = new SupervisorComboBox("Novo Coorientador", Session.getSelectedDepartment().getDepartment().getIdDepartment(), new SigetConfigBO().getCosupervisorFilter(Session.getSelectedDepartment().getDepartment().getIdDepartment()));
 		this.comboNewCosupervisor.setNullSelectionAllowed(true);
 		
 		this.textComments = new TextArea("Motivo/Observações");
@@ -252,7 +253,7 @@ public class EditSupervisorChangeWindow extends EditWindow {
 		
 		list.add(this.supervisorChange);
 		
-		this.showReport(new ReportUtils().createPdfStream(list, "SupervisorChangeStatement").toByteArray());
+		this.showReport(new ReportUtils().createPdfStream(list, "SupervisorChangeStatement", new ProposalBO().findById(this.supervisorChange.getProposal().getIdProposal()).getDepartment().getIdDepartment()).toByteArray());
 	}
 
 }

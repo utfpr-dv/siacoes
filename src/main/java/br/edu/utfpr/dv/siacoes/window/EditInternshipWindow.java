@@ -116,7 +116,7 @@ public class EditInternshipWindow extends EditWindow {
 		
 		this.comboStudent = new StudentComboBox("Acadêmico");
 		
-		this.comboSupervisor = new SupervisorComboBox("Orientador", Session.getUser().getDepartment().getIdDepartment(), new SigesConfigBO().getSupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
+		this.comboSupervisor = new SupervisorComboBox("Orientador", Session.getSelectedDepartment().getDepartment().getIdDepartment(), new SigesConfigBO().getSupervisorFilter(Session.getSelectedDepartment().getDepartment().getIdDepartment()));
 		
 		this.comboCompanySupervisor = new CompanySupervisorComboBox();
 		
@@ -354,11 +354,11 @@ public class EditInternshipWindow extends EditWindow {
 				
 				this.comboDepartment.setDepartment(this.internship.getDepartment());
 			}else{
-				this.comboCampus.setCampus(Session.getUser().getDepartment().getCampus());
+				this.comboCampus.setCampus(Session.getSelectedDepartment().getDepartment().getCampus());
 				
-				this.comboDepartment.setIdCampus(Session.getUser().getDepartment().getCampus().getIdCampus());
+				this.comboDepartment.setIdCampus(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus());
 				
-				this.comboDepartment.setDepartment(Session.getUser().getDepartment());
+				this.comboDepartment.setDepartment(Session.getSelectedDepartment().getDepartment());
 			}
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);

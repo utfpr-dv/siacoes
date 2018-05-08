@@ -36,7 +36,7 @@ public class EditEvaluationItemWindow extends EditWindow {
 		
 		if(item == null){
 			this.item = new EvaluationItem();
-			this.item.setDepartment(Session.getUser().getDepartment());
+			this.item.setDepartment(Session.getSelectedDepartment().getDepartment());
 		}else{
 			this.item = item;
 		}

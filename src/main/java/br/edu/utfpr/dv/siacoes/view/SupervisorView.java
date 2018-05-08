@@ -57,7 +57,7 @@ public class SupervisorView extends ListView {
 			UserBO bo = new UserBO();
 	    	List<User> list = bo.listAllProfessors(true);
 	    	
-			new ReportUtils().prepareForPdfReport("Supervisors", "Orientadores", list, this.buttonPrint);
+			new ReportUtils().prepareForPdfReport("Supervisors", "Orientadores", list, Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.buttonPrint);
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

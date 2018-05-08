@@ -173,6 +173,36 @@ public class InternshipJuryDAO {
 		}
 	}
 	
+	public int findIdDepartment(int idInternshipJury) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT internship.iddepartment FROM internshipjury " +
+					"INNER JOIN internship ON internship.idinternship=internshipjury.internship " +
+					"WHERE internshipjury.idinternshipjury=?");
+		
+			stmt.setInt(1, idInternshipJury);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getInt("idDepartment");
+			}else{
+				return 0;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public int save(InternshipJury jury) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;

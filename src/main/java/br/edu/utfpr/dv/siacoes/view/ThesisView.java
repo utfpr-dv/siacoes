@@ -135,7 +135,7 @@ public class ThesisView extends ListView {
 		
 		try {
 			ThesisBO bo = new ThesisBO();
-	    	List<Thesis> list = bo.listBySemester(Session.getUser().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
+	    	List<Thesis> list = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 	    	
 	    	for(Thesis p : list){
 				Object itemId = this.getGrid().addRow(p.getSemester(), p.getYear(), p.getStudent().getName(), p.getSupervisor().getName(), p.getTitle(), p.getSubmissionDate());

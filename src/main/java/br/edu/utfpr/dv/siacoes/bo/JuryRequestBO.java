@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import br.edu.utfpr.dv.siacoes.dao.JuryDAO;
 import br.edu.utfpr.dv.siacoes.dao.JuryRequestDAO;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
@@ -88,6 +89,18 @@ public class JuryRequestBO {
 			JuryRequestDAO dao = new JuryRequestDAO();
 			
 			return dao.findByThesis(idThesis);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public int findIdDepartment(int idJuryRequest) throws Exception{
+		try {
+			JuryRequestDAO dao = new JuryRequestDAO();
+			
+			return dao.findIdDepartment(idJuryRequest);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -302,7 +315,7 @@ public class JuryRequestBO {
 		List<JuryFormReport> list = new ArrayList<JuryFormReport>();
 		list.add(report);
 		
-		return new ReportUtils().createPdfStream(list, "JuryFormRequest").toByteArray();
+		return new ReportUtils().createPdfStream(list, "JuryFormRequest", this.findIdDepartment(idJuryRequest)).toByteArray();
 	}
 	
 	public JuryFormReport getJuryRequestFormReport(int idJuryRequest) throws Exception {

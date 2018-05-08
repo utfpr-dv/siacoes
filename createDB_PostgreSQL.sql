@@ -190,6 +190,24 @@ CREATE TABLE userprofile (
 );
 CREATE INDEX fk_userprofile_user_idx ON userprofile (iduser);
 
+CREATE TABLE userdepartment (
+    iduserdepartment serial NOT NULL,
+    iduser integer NOT NULL,
+    iddepartment integer NOT NULL,
+    profile smallint NOT NULL,
+    sigacmanager smallint NOT NULL,
+    sigesmanager smallint NOT NULL,
+    sigetmanager smallint NOT NULL,
+    departmentmanager smallint NOT NULL,
+    registersemester smallint NOT NULL,
+    registeryear integer NOT NULL,
+    PRIMARY KEY (iduserdepartment),
+    CONSTRAINT fk_userdepartment_iduser FOREIGN KEY (iduser) REFERENCES "user" (iduser) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT fk_userdepartment_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+CREATE INDEX fk_userdepartment_iduser_idx ON userdepartment (iduser);
+CREATE INDEX fk_userdepartment_iddepartment_idx ON userdepartment (iddepartment);
+
 CREATE TABLE certificate (
   idcertificate SERIAL NOT NULL,
   iddepartment INT NOT NULL,

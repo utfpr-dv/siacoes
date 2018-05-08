@@ -13,7 +13,6 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
@@ -23,7 +22,9 @@ import br.edu.utfpr.dv.siacoes.bo.DepartmentBO;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.Department;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
-import br.edu.utfpr.dv.siacoes.window.EditUserWindow;
+import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.window.EditProfessorProfileWindow;
+import br.edu.utfpr.dv.siacoes.window.EditStudentProfileWindow;
 
 public class MainView extends BasicView {
 	
@@ -62,14 +63,12 @@ public class MainView extends BasicView {
     	layoutMain.setSizeFull();
     	
     	this.setContent(layoutMain);
-    	
-    	this.loadImages();
     }
     
     private void loadImages(){
     	try{
     		DepartmentBO dbo = new DepartmentBO();
-    		Department department = dbo.findById(Session.getUser().getDepartment().getIdDepartment());
+    		Department department = dbo.findById(Session.getSelectedDepartment().getDepartment().getIdDepartment());
     		
     		this.logoES.setResource(new ExternalResource(department.getSite()));
     		if(department.getLogo() != null){
@@ -106,13 +105,27 @@ public class MainView extends BasicView {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		try{
-			if((Session.getUser().getIdUser() != 0) && ((Session.getUser().getDepartment() == null) || (Session.getUser().getDepartment().getIdDepartment() == 0))){
-				UI.getCurrent().addWindow(new EditUserWindow(Session.getUser(), null));
-				
-				Notification.show("Completar Cadastro", "Complete seu cadastro informando os dados necessários.", Notification.Type.WARNING_MESSAGE);
-			}	
-		}catch(Exception e){
+		try {
+			if((Session.getUser() != null) && (Session.getUser().getIdUser() != 0)) {
+				if(Session.getSelectedProfile() == UserProfile.STUDENT) {
+					if((Session.getListDepartments().size() == 0) || (Session.getSelectedDepartment().getRegisterYear() < 1900)) {
+						EditStudentProfileWindow window = new EditStudentProfileWindow(Session.getUser(), Session.getSelectedDepartment());
+						
+						window.setClosable(false);
+						UI.getCurrent().addWindow(window);
+					}
+				} else if(Session.getSelectedProfile() == UserProfile.PROFESSOR) {
+					if(Session.getListDepartments().size() == 0) {
+						EditProfessorProfileWindow window = new EditProfessorProfileWindow(Session.getUser(), Session.getSelectedDepartment());
+						
+						window.setClosable(false);
+						UI.getCurrent().addWindow(window);
+					}
+				}
+			}
+			
+			this.loadImages();
+		} catch(Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}

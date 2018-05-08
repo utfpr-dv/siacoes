@@ -51,7 +51,7 @@ public class ThemeSuggestionView extends ListView {
 		
 		try {
 			ThemeSuggestionBO bo = new ThemeSuggestionBO();
-	    	List<ThemeSuggestion> list = bo.listByDepartment(Session.getUser().getDepartment().getIdDepartment(), this.checkActive.getValue());
+	    	List<ThemeSuggestion> list = bo.listByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.checkActive.getValue());
 	    	
 	    	for(ThemeSuggestion p : list){
 				Object itemId = this.getGrid().addRow(p.getSubmissionDate(), p.getTitle(), p.getProponent());

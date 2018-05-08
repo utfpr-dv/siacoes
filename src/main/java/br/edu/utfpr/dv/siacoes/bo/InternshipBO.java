@@ -112,6 +112,18 @@ public class InternshipBO {
 		}
 	}
 	
+	public int findIdDepartment(int idInternship) throws Exception{
+		try {
+			InternshipDAO dao = new InternshipDAO();
+			
+			return dao.findIdDepartment(idInternship);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public int save(Internship internship) throws Exception{
 		if((internship.getDepartment() == null) || (internship.getDepartment().getIdDepartment() == 0)){
 			throw new Exception("Informe o departamento do estágio.");
@@ -254,7 +266,7 @@ public class InternshipBO {
 			
 			List<InternshipMissingDocumentsReport> list = dao.getMissingDocumentsReport(idDepartment, year, idStudent, idSupervisor, idCompany, type, status, finalReportMissing);
 			
-			ByteArrayOutputStream report = new ReportUtils().createPdfStream(list, "InternshipMissingDocuments");
+			ByteArrayOutputStream report = new ReportUtils().createPdfStream(list, "InternshipMissingDocuments", idDepartment);
 			
 			return report.toByteArray();
 		}catch(SQLException e){

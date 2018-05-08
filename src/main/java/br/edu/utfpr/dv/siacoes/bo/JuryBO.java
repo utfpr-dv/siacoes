@@ -88,6 +88,18 @@ public class JuryBO {
 		}
 	}
 	
+	public int findIdDepartment(int idJury) throws Exception{
+		try {
+			JuryDAO dao = new JuryDAO();
+			
+			return dao.findIdDepartment(idJury);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public Jury findByProject(int idProject) throws Exception {
 		try {
 			JuryDAO dao = new JuryDAO();
@@ -465,7 +477,7 @@ public class JuryBO {
 		List<JuryFormReport> list = new ArrayList<JuryFormReport>();
 		list.add(report);
 		
-		return new ReportUtils().createPdfStream(list, "JuryForm").toByteArray();
+		return new ReportUtils().createPdfStream(list, "JuryForm", this.findIdDepartment(idJury)).toByteArray();
 	}
 	
 	public JuryFormReport getJuryFormReport(int idJury) throws Exception{
@@ -621,7 +633,7 @@ public class JuryBO {
 		List<TermOfApprovalReport> list = new ArrayList<TermOfApprovalReport>();
 		list.add(report);
 		
-		return new ReportUtils().createPdfStream(list, "TermOfApproval").toByteArray();
+		return new ReportUtils().createPdfStream(list, "TermOfApproval", this.findIdDepartment(idJury)).toByteArray();
 	}
 	
 	public TermOfApprovalReport getTermOfApprovalReport(int idJury, boolean hideSignatures) throws Exception{
@@ -810,9 +822,9 @@ public class JuryBO {
 		ByteArrayOutputStream report;
 		
 		if(groupByJury) {
-			report = new ReportUtils().createPdfStream(list, "JuryParticipantsListGrouped");
+			report = new ReportUtils().createPdfStream(list, "JuryParticipantsListGrouped", idDepartment);
 		} else {
-			report = new ReportUtils().createPdfStream(list, "JuryParticipantsList");
+			report = new ReportUtils().createPdfStream(list, "JuryParticipantsList", idDepartment);
 		}
 		
 		return report.toByteArray();
@@ -824,7 +836,7 @@ public class JuryBO {
 		List<JuryFormReport> list = new ArrayList<JuryFormReport>();
 		list.add(report);
 		
-		return new ReportUtils().createPdfStream(list, "JuryParticipants").toByteArray();
+		return new ReportUtils().createPdfStream(list, "JuryParticipants", this.findIdDepartment(idJury)).toByteArray();
 	}
 	
 }

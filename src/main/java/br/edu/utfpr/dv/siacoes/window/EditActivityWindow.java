@@ -41,7 +41,7 @@ public class EditActivityWindow extends EditWindow {
 		
 		if(activity == null){
 			this.activity = new Activity();
-			this.activity.setDepartment(Session.getUser().getDepartment());
+			this.activity.setDepartment(Session.getSelectedDepartment().getDepartment());
 		}else{
 			this.activity = activity;
 		}

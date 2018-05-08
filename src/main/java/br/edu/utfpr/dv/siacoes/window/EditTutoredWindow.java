@@ -129,7 +129,7 @@ public class EditTutoredWindow extends EditWindow {
 		}
 		
 		try {
-			semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+			semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
 		} catch (Exception e) {
 			Notification.show("Carregar Orientado", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
@@ -187,7 +187,7 @@ public class EditTutoredWindow extends EditWindow {
             }
         });
 		try {
-			this.buttonProposalDownloadFile.setVisible(new SigetConfigBO().findByDepartment(Session.getUser().getDepartment().getIdDepartment()).isRegisterProposal());
+			this.buttonProposalDownloadFile.setVisible(new SigetConfigBO().findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment()).isRegisterProposal());
 		} catch (Exception e) {
 			this.buttonProposalDownloadFile.setVisible(false);
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);

@@ -108,7 +108,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		tab1.setSpacing(true);
 		this.tabContainer.addTab(tab1, "Informações da Banca");
 		
-		this.comboChair = new SupervisorComboBox("Presidente da Banca", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getSupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
+		this.comboChair = new SupervisorComboBox("Presidente da Banca", Session.getSelectedDepartment().getDepartment().getIdDepartment(), new SigetConfigBO().getSupervisorFilter(Session.getSelectedDepartment().getDepartment().getIdDepartment()));
 		this.comboChair.setWidth("800px");
 		
 		this.layoutAppraisers = new HorizontalLayout();

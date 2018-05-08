@@ -72,7 +72,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		if(s == null){
 			this.submission = new ActivitySubmission();
 			this.submission.setStudent(Session.getUser());
-			this.submission.setDepartment(Session.getUser().getDepartment());
+			this.submission.setDepartment(Session.getSelectedDepartment().getDepartment());
 		}else{
 			this.submission = s;
 		}
@@ -246,7 +246,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 	private void loadActivities(){
 		try{
 			ActivityBO bo = new ActivityBO();
-			List<Activity> list = bo.listByGroup(Session.getUser().getDepartment().getIdDepartment(), ((ActivityGroup)this.comboGroup.getValue()).getIdActivityGroup());
+			List<Activity> list = bo.listByGroup(Session.getSelectedDepartment().getDepartment().getIdDepartment(), ((ActivityGroup)this.comboGroup.getValue()).getIdActivityGroup());
 			
 			this.comboActivity.removeAllItems();
 			this.comboActivity.addItems(list);

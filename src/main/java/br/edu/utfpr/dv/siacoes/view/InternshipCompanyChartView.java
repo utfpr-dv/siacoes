@@ -137,20 +137,20 @@ public class InternshipCompanyChartView extends ChartView {
 		
 		if(this.optionDetailType.getValue().equals(InternshipCompanyChartView.COUNTRYDETAIL)) {
 			title = new Title("Estagiários por País");
-			list = new InternshipBO().listInternshipByCountry(Session.getUser().getDepartment().getIdDepartment(), 
+			list = new InternshipBO().listInternshipByCountry(Session.getSelectedDepartment().getDepartment().getIdDepartment(), 
 					(this.comboType.getValue().equals("Todos") ? -1 : ((InternshipType)this.comboType.getValue()).getValue()), 
 					(this.comboStatus.getValue().equals("Todos") ? -1 : ((InternshipStatus)this.comboStatus.getValue()).getValue()),
 					(this.comboCompanyStatus.getValue().equals("Todas") ? -1 : (this.comboCompanyStatus.getValue().equals(InternshipCompanyChartView.COMPANYWITHAGREEMENT) ? 1 : 0)));
 		} else if(this.optionDetailType.getValue().equals(InternshipCompanyChartView.STATEDETAIL)) {
 			title = new Title("Estagiários por Estado");
-			list = new InternshipBO().listInternshipByState(Session.getUser().getDepartment().getIdDepartment(), 
+			list = new InternshipBO().listInternshipByState(Session.getSelectedDepartment().getDepartment().getIdDepartment(), 
 					(this.comboCountry.getCountry() == null ? 0 : this.comboCountry.getCountry().getIdCountry()), 
 					(this.comboType.getValue().equals("Todos") ? -1 : ((InternshipType)this.comboType.getValue()).getValue()), 
 					(this.comboStatus.getValue().equals("Todos") ? -1 : ((InternshipStatus)this.comboStatus.getValue()).getValue()),
 					(this.comboCompanyStatus.getValue().equals("Todas") ? -1 : (this.comboCompanyStatus.getValue().equals(InternshipCompanyChartView.COMPANYWITHAGREEMENT) ? 1 : 0)));
 		} else if(this.optionDetailType.getValue().equals(InternshipCompanyChartView.CITYDETAIL)) {
 			title = new Title("Estagiários por Cidade");
-			list = new InternshipBO().listInternshipByCity(Session.getUser().getDepartment().getIdDepartment(), 
+			list = new InternshipBO().listInternshipByCity(Session.getSelectedDepartment().getDepartment().getIdDepartment(), 
 					(this.comboCountry.getCountry() == null ? 0 : this.comboCountry.getCountry().getIdCountry()), 
 					(this.comboState.getStateValue() == null ? 0 : this.comboState.getStateValue().getIdState()), 
 					(this.comboType.getValue().equals("Todos") ? -1 : ((InternshipType)this.comboType.getValue()).getValue()), 
@@ -158,7 +158,7 @@ public class InternshipCompanyChartView extends ChartView {
 					(this.comboCompanyStatus.getValue().equals("Todas") ? -1 : (this.comboCompanyStatus.getValue().equals(InternshipCompanyChartView.COMPANYWITHAGREEMENT) ? 1 : 0)));
 		} else {
 			title = new Title("Estagiários por Empresa");
-			list = new InternshipBO().listInternshipByCompany(Session.getUser().getDepartment().getIdDepartment(), 
+			list = new InternshipBO().listInternshipByCompany(Session.getSelectedDepartment().getDepartment().getIdDepartment(), 
 					(this.comboCountry.getCountry() == null ? 0 : this.comboCountry.getCountry().getIdCountry()), 
 					(this.comboState.getStateValue() == null ? 0 : this.comboState.getStateValue().getIdState()), 
 					(this.comboCity.getCity() == null ? 0 : this.comboCity.getCity().getIdCity()), 

@@ -30,7 +30,7 @@ public class EditDocumentWindow extends EditWindow {
 		
 		if(document == null){
 			this.document = new Document();
-			this.document.setDepartment(Session.getUser().getDepartment());
+			this.document.setDepartment(Session.getSelectedDepartment().getDepartment());
 		}else{
 			this.document = document;	
 		}

@@ -60,7 +60,7 @@ public class EventCalendarView extends BasicView {
 	public EventCalendarView(){
 		Semester semester;
 		try {
-			semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+			semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
 		} catch (Exception e) {
 			semester = new Semester();
 		}
@@ -157,7 +157,7 @@ public class EventCalendarView extends BasicView {
 				if(this.checkListOnlyMy.getValue()){
 					listThesis = bo.listByAppraiser(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
 				}else{
-					listThesis = bo.listBySemester(Session.getUser().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
+					listThesis = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 				}
 			}
 			
@@ -167,7 +167,7 @@ public class EventCalendarView extends BasicView {
 				if(this.checkListOnlyMy.getValue()){
 					listInternship = bo.listByAppraiser(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
 				}else{
-					listInternship = bo.listBySemester(Session.getUser().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
+					listInternship = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 				}
 			}
 			

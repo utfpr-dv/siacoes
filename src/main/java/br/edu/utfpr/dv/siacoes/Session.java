@@ -1,9 +1,17 @@
 ﻿package br.edu.utfpr.dv.siacoes;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.vaadin.server.VaadinSession;
 
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.UserDepartment;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.bo.UserDepartmentBO;
+import br.edu.utfpr.dv.siacoes.model.Department;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 
 public class Session {
@@ -36,12 +44,59 @@ public class Session {
 	public static UserProfile getSelectedProfile(){
 		if(VaadinSession.getCurrent().getAttribute("profile") == null) {
 			if(Session.getUser().getProfiles().size() > 0) {
-				return Session.getUser().getProfiles().get(0);	
+				Session.setSelectedProfile(Session.getUser().getProfiles().get(0));
+				Session.loadListDepartments();
+				return Session.getUser().getProfiles().get(0);
 			} else {
 				return UserProfile.STUDENT;
 			}
 		} else {
 			return (UserProfile)VaadinSession.getCurrent().getAttribute("profile");
+		}
+	}
+	
+	private static void loadListDepartments() {
+		try {
+			List<UserDepartment> departments = new UserDepartmentBO().list(Session.getUser().getIdUser(), Session.getSelectedProfile());
+			
+			VaadinSession.getCurrent().setAttribute("listdepartment", departments);
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			VaadinSession.getCurrent().setAttribute("listdepartment", new ArrayList<UserDepartment>());
+		}
+	}
+	
+	public static List<UserDepartment> getListDepartments() {
+		if(VaadinSession.getCurrent().getAttribute("listdepartment") == null) {
+			Session.loadListDepartments();
+		}
+		
+		return (List<UserDepartment>)VaadinSession.getCurrent().getAttribute("listdepartment");
+	}
+	
+	public static void setSelectedDepartment(UserDepartment department) {
+		VaadinSession.getCurrent().setAttribute("department", department);
+	}
+	
+	public static UserDepartment getSelectedDepartment() {
+		if(VaadinSession.getCurrent().getAttribute("department") == null) {
+			try {
+				List<UserDepartment> departments = Session.getListDepartments();
+				
+				if((departments != null) && (departments.size() > 0)) {
+					Session.setSelectedDepartment(departments.get(0));
+					return departments.get(0);	
+				} else {
+					return new UserDepartment();
+				}
+			} catch (Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				
+				return new UserDepartment();
+			}
+		} else {
+			return (UserDepartment)VaadinSession.getCurrent().getAttribute("department");
 		}
 	}
 	
@@ -141,11 +196,11 @@ public class Session {
 		
 		if(module == SystemModule.GENERAL){
 			return true;
-		}else if((module == SystemModule.SIGAC) && Session.getUser().isSigacManager()){
+		}else if((module == SystemModule.SIGAC) && Session.getSelectedDepartment().isSigacManager()){
 			return true;
-		}else if((module == SystemModule.SIGES) && Session.getUser().isSigesManager()){
+		}else if((module == SystemModule.SIGES) && Session.getSelectedDepartment().isSigesManager()){
 			return true;
-		}else if((module == SystemModule.SIGET) && Session.getUser().isSigetManager()){
+		}else if((module == SystemModule.SIGET) && Session.getSelectedDepartment().isSigetManager()){
 			return true;
 		}else{
 			return false;
@@ -160,7 +215,7 @@ public class Session {
 			return false;
 		}
 		
-		return Session.getUser().isDepartmentManager();
+		return Session.getSelectedDepartment().isDepartmentManager();
 	}
 	
 	public static void putReport(byte[] report, String id){

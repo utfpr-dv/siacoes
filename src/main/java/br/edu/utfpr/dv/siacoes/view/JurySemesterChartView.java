@@ -61,7 +61,7 @@ public class JurySemesterChartView extends ChartView {
 
 	@Override
 	public DCharts generateChart() throws Exception {
-		List<JuryBySemester> list = new JuryBO().listJuryBySemester(Session.getUser().getDepartment().getIdDepartment(), this.textInitialYear.getYear(), this.textFinalYear.getYear());
+		List<JuryBySemester> list = new JuryBO().listJuryBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textInitialYear.getYear(), this.textFinalYear.getYear());
 		
 		DataSeries dataSeries = new DataSeries();
 		Series series = new Series();

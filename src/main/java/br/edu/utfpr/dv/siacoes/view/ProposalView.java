@@ -61,7 +61,7 @@ public class ProposalView extends ListView {
 		try {
 			SigetConfigBO bo = new SigetConfigBO();
 			
-			config = bo.findByDepartment(Session.getUser().getDepartment().getIdDepartment());
+			config = bo.findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -106,7 +106,7 @@ public class ProposalView extends ListView {
 		
 		try {
 			ProposalBO bo = new ProposalBO();
-	    	List<Proposal> list = bo.listBySemester(Session.getUser().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
+	    	List<Proposal> list = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 	    	
 	    	for(Proposal p : list){
 				Object itemId = this.getGrid().addRow(p.getSemester(), p.getYear(), p.getStudent().getName(), p.getSupervisor().getName(), p.getTitle(), p.getSubmissionDate());
@@ -175,7 +175,7 @@ public class ProposalView extends ListView {
                 	try {
                 		ProposalAppraiserBO bo = new ProposalAppraiserBO();
                 		
-						bo.closeFeedback(Session.getUser().getDepartment().getIdDepartment(), comboSemester.getSemester(), textYear.getYear());
+						bo.closeFeedback(Session.getSelectedDepartment().getDepartment().getIdDepartment(), comboSemester.getSemester(), textYear.getYear());
 						
 						Notification.show("Encerrar Avaliações", "Avaliações encerradas com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
 					} catch (Exception e) {

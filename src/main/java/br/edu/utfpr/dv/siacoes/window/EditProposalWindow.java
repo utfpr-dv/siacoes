@@ -76,7 +76,7 @@ public class EditProposalWindow extends EditWindow {
 		
 		if(p == null){
 			this.proposal = new Proposal();
-			this.proposal.setDepartment(Session.getUser().getDepartment());
+			this.proposal.setDepartment(Session.getSelectedDepartment().getDepartment());
 		}else{
 			this.proposal = p;
 		}
@@ -99,9 +99,9 @@ public class EditProposalWindow extends EditWindow {
 		this.textStudent.setEnabled(false);
 		this.textStudent.setWidth("800px");
 		
-		this.comboSupervisor = new SupervisorComboBox("Orientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getSupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
+		this.comboSupervisor = new SupervisorComboBox("Orientador", Session.getSelectedDepartment().getDepartment().getIdDepartment(), new SigetConfigBO().getSupervisorFilter(Session.getSelectedDepartment().getDepartment().getIdDepartment()));
 		
-		this.comboCosupervisor = new SupervisorComboBox("Coorientador", Session.getUser().getDepartment().getIdDepartment(), new SigetConfigBO().getCosupervisorFilter(Session.getUser().getDepartment().getIdDepartment()));
+		this.comboCosupervisor = new SupervisorComboBox("Coorientador", Session.getSelectedDepartment().getDepartment().getIdDepartment(), new SigetConfigBO().getCosupervisorFilter(Session.getSelectedDepartment().getDepartment().getIdDepartment()));
 		this.comboCosupervisor.setNullSelectionAllowed(true);
 		
 		this.comboSemester = new SemesterComboBox();
@@ -196,8 +196,8 @@ public class EditProposalWindow extends EditWindow {
 		}else if(Session.isUserStudent()){
 			try {
 				DeadlineBO dbo = new DeadlineBO();
-				Semester semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
-				Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+				Semester semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+				Deadline d = dbo.findBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 				
 				if(DateUtils.getToday().getTime().after(d.getProposalDeadline())){
 					this.uploadFile.setEnabled(false);
@@ -238,11 +238,11 @@ public class EditProposalWindow extends EditWindow {
 				
 				this.comboDepartment.setDepartment(this.proposal.getDepartment());
 			}else{
-				this.comboCampus.setCampus(Session.getUser().getDepartment().getCampus());
+				this.comboCampus.setCampus(Session.getSelectedDepartment().getDepartment().getCampus());
 				
-				this.comboDepartment.setIdCampus(Session.getUser().getDepartment().getCampus().getIdCampus());
+				this.comboDepartment.setIdCampus(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus());
 				
-				this.comboDepartment.setDepartment(Session.getUser().getDepartment());
+				this.comboDepartment.setDepartment(Session.getSelectedDepartment().getDepartment());
 			}
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
@@ -318,8 +318,8 @@ public class EditProposalWindow extends EditWindow {
 			
 			try {
 				DeadlineBO dbo = new DeadlineBO();
-				Semester semester = new SemesterBO().findByDate(Session.getUser().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
-				Deadline d = dbo.findBySemester(Session.getUser().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+				Semester semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+				Deadline d = dbo.findBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 				
 				if(DateUtils.getToday().getTime().after(d.getProposalDeadline())){
 					Notification.show("Submeter Proposta", "O prazo para a submissão de propostas já foi encerrado.", Notification.Type.ERROR_MESSAGE);
