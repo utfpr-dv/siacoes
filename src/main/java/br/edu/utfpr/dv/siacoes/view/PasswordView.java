@@ -109,7 +109,7 @@ public class PasswordView extends CustomComponent implements View {
 		Label label = new Label("Informe a sua nova senha.");
 		label.setWidth("300px");
 		
-		VerticalLayout layout = new VerticalLayout(label, this.textPassword, this.textConfirmPassword, this.buttonSendPassword);
+		VerticalLayout layout = new VerticalLayout(label, this.textPassword, this.textConfirmPassword, this.buttonSendPassword, this.buttonLogin);
 		layout.setSpacing(true);
 		layout.setMargin(true);
 		
@@ -133,7 +133,7 @@ public class PasswordView extends CustomComponent implements View {
 		Label label = new Label("Informe seu nome de usuário para redefinir a sua senha.");
 		label.setWidth("300px");
 		
-		VerticalLayout layout = new VerticalLayout(label, this.textLogin, this.buttonSendUser);
+		VerticalLayout layout = new VerticalLayout(label, this.textLogin, this.buttonSendUser, this.buttonLogin);
 		layout.setSpacing(true);
 		layout.setMargin(true);
 		
@@ -151,6 +151,7 @@ public class PasswordView extends CustomComponent implements View {
 		this.mainLayout.addComponent(this.label);
 		
 		Label label = new Label();
+		label.setCaptionAsHtml(true);
 		
 		VerticalLayout layout = new VerticalLayout(label, this.buttonLogin);
 		layout.setSpacing(true);
@@ -164,12 +165,11 @@ public class PasswordView extends CustomComponent implements View {
 			label.setCaption("Sua senha foi redefinida com sucesso.");
 		} else if(confirmEmail) {
 			label.setCaption("O link para redefinição de senha foi enviado para o<br/>e-mail " + user.getEmail() + ".");
-			label.setCaptionAsHtml(true);
 		} else if(new UserBO().loginIsStudent(user.getLogin())) {
-			label.setCaption("Utilize o seu Registro Acadêmico (RA) e proceda a Recuperação de sua senha no Portal do Aluno.");
+			label.setCaption("Utilize o seu Registro Acadêmico (RA) e proceda a<br/>Recuperação de sua senha no Portal do Aluno.");
 			layout.addComponent(this.buttonStudentPortal);
 		} else {
-			label.setCaption("A senha utilizada para seu acesso é a mesma utilizada para acessar os sistemas da UTFPR. Caso tenha esquecido, entre em contato com a Coordenadoria de Gestão de Tecnologia da Informação (COGETI) do seu câmpus.");
+			label.setCaption("A senha utilizada para seu acesso é a mesma utilizada<br/>para acessar os sistemas da UTFPR. Caso tenha<br/>esquecido, entre em contato com a Coordenadoria de<br/>Gestão de Tecnologia da Informação (COGETI) do seu<br/>câmpus.");
 		}
 		
 		label.setWidth("300px");
