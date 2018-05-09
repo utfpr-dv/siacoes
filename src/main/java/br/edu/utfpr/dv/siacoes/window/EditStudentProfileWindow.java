@@ -174,6 +174,7 @@ public class EditStudentProfileWindow extends EditWindow {
 			this.profile.setDepartment(this.comboDepartment.getDepartment());
 			this.profile.setRegisterSemester(this.comboSemester.getSemester());
 			this.profile.setRegisterYear(this.textYear.getYear());
+			this.profile.setUser(this.user);
 			
 			new UserDepartmentBO().save(this.profile);
 			

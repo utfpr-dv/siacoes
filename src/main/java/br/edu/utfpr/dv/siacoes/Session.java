@@ -39,6 +39,7 @@ public class Session {
 	
 	public static void setSelectedProfile(UserProfile profile){
 		VaadinSession.getCurrent().setAttribute("profile", profile);
+		Session.loadListDepartments();
 	}
 	
 	public static UserProfile getSelectedProfile(){
@@ -88,12 +89,20 @@ public class Session {
 					Session.setSelectedDepartment(departments.get(0));
 					return departments.get(0);	
 				} else {
-					return new UserDepartment();
+					UserDepartment department = new UserDepartment();
+					
+					department.setProfile(Session.getSelectedProfile());
+					
+					return department;
 				}
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				return new UserDepartment();
+				UserDepartment department = new UserDepartment();
+				
+				department.setProfile(Session.getSelectedProfile());
+				
+				return department;
 			}
 		} else {
 			return (UserDepartment)VaadinSession.getCurrent().getAttribute("department");

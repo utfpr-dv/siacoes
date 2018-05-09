@@ -381,7 +381,7 @@ public class EditUserWindow extends EditWindow {
 		int index = -1;
 		
 		for(int i = 0; i < this.user.getDepartments().size(); i++) {
-			if(this.user.getDepartments().get(i).getDepartment().getIdDepartment() == department.getDepartment().getIdDepartment()) {
+			if((this.user.getDepartments().get(i).getDepartment().getIdDepartment() == department.getDepartment().getIdDepartment()) && (this.user.getDepartments().get(i).getProfile() == department.getProfile())) {
 				index = i;
 				break;
 			}

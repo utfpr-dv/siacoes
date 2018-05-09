@@ -285,10 +285,9 @@ public class JuryRequestDAO {
 					ids = ids + String.valueOf(paId) + ",";
 				}
 				
-				if(!ids.isEmpty()) {
-					Statement st = conn.createStatement();
-					st.execute("DELETE FROM juryappraiserrequest WHERE idJuryRequest=" + String.valueOf(jury.getIdJuryRequest()) + " AND idJuryAppraiserRequest NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")");
-				}
+				Statement st = conn.createStatement();
+				st.execute("DELETE FROM juryappraiserrequest WHERE idJuryRequest=" + String.valueOf(jury.getIdJuryRequest()) + 
+						(ids.isEmpty() ? "" : " AND idJuryAppraiserRequest NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")"));
 			}
 			
 			conn.commit();

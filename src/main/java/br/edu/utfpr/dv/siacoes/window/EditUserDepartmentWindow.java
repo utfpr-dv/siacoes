@@ -125,10 +125,10 @@ public class EditUserDepartmentWindow extends EditWindow {
 	}
 	
 	private void configureProfile() {
-		this.checkSigacManager.setVisible(this.department.getProfile() == UserProfile.PROFESSOR);
-		this.checkSigesManager.setVisible(this.department.getProfile() == UserProfile.PROFESSOR);
-		this.checkSigetManager.setVisible(this.department.getProfile() == UserProfile.PROFESSOR);
-		this.checkDepartmentManager.setVisible(this.department.getProfile() == UserProfile.PROFESSOR);
+		this.checkSigacManager.setVisible(this.comboProfile.getValue() == UserProfile.PROFESSOR);
+		this.checkSigesManager.setVisible(this.comboProfile.getValue() == UserProfile.PROFESSOR);
+		this.checkSigetManager.setVisible(this.comboProfile.getValue() == UserProfile.PROFESSOR);
+		this.checkDepartmentManager.setVisible(this.comboProfile.getValue() == UserProfile.PROFESSOR);
 	}
 	
 	@Override

@@ -781,11 +781,10 @@ public class UserDAO {
 					}
 				}
 				
-				if(!ids.isEmpty()){
-					Statement st = conn.createStatement();
-					st.execute("DELETE FROM userdepartment WHERE iduser=" + String.valueOf(user.getIdUser()) + " AND iduserdepartment NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")");
-					st.close();
-				}
+				Statement st = conn.createStatement();
+				st.execute("DELETE FROM userdepartment WHERE iduser=" + String.valueOf(user.getIdUser()) + 
+						(ids.isEmpty() ? "" : " AND iduserdepartment NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")"));
+				st.close();
 			}
 			
 			conn.commit();

@@ -175,6 +175,7 @@ public class EditProfessorProfileWindow extends EditWindow {
 			
 			new UserBO().save(this.user);
 			
+			this.profile.setUser(this.user);
 			this.profile.setDepartment(this.comboDepartment.getDepartment());
 			
 			new UserDepartmentBO().save(this.profile);

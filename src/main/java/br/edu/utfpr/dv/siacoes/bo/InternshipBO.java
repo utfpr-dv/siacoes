@@ -190,11 +190,10 @@ public class InternshipBO {
 					}
 				}
 				
-				if(!ids.isEmpty()){
-					Statement stmt = conn.createStatement();
-					
-					stmt.execute("DELETE FROM internshipreport WHERE idinternship=" + String.valueOf(ret) + " AND idinternshipreport NOT IN (" + ids + ")");
-				}
+				Statement stmt = conn.createStatement();
+				
+				stmt.execute("DELETE FROM internshipreport WHERE idinternship=" + String.valueOf(ret) + 
+						(ids.isEmpty() ? "" : " AND idinternshipreport NOT IN (" + ids + ")"));
 			}
 			
 			conn.commit();

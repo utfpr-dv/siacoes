@@ -614,7 +614,8 @@ public class ProposalDAO {
 				}
 				
 				Statement st = conn.createStatement();
-				st.execute("DELETE FROM proposalappraiser WHERE idProposal=" + String.valueOf(proposal.getIdProposal()) + (!ids.isEmpty() ? " AND idProposalAppraiser NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")" : ""));
+				st.execute("DELETE FROM proposalappraiser WHERE idProposal=" + String.valueOf(proposal.getIdProposal()) + 
+						(!ids.isEmpty() ? " AND idProposalAppraiser NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")" : ""));
 				st.close();
 			}
 			

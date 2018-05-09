@@ -309,11 +309,10 @@ public class JuryDAO {
 					ids = ids + String.valueOf(paId) + ",";
 				}
 				
-				if(!ids.isEmpty()){
-					Statement st = conn.createStatement();
-					st.execute("DELETE FROM juryappraiser WHERE idJury=" + String.valueOf(jury.getIdJury()) + " AND idJuryAppraiser NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")");
-					st.close();
-				}
+				Statement st = conn.createStatement();
+				st.execute("DELETE FROM juryappraiser WHERE idJury=" + String.valueOf(jury.getIdJury()) + 
+						(ids.isEmpty() ? "" : " AND idJuryAppraiser NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")"));
+				st.close();
 			}
 			
 			if(jury.getParticipants() != null){
@@ -327,12 +326,11 @@ public class JuryDAO {
 						ids = ids + String.valueOf(paId) + ",";	
 					}
 				}
-				
-				if(!ids.isEmpty()){
-					Statement st = conn.createStatement();
-					st.execute("DELETE FROM jurystudent WHERE idJury=" + String.valueOf(jury.getIdJury()) + " AND idJuryStudent NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")");
-					st.close();
-				}
+			
+				Statement st = conn.createStatement();
+				st.execute("DELETE FROM jurystudent WHERE idJury=" + String.valueOf(jury.getIdJury()) + 
+						(ids.isEmpty() ? "" : " AND idJuryStudent NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")"));
+				st.close();
 			}
 			
 			if((jury.getJuryRequest() != null) && (jury.getJuryRequest().getIdJuryRequest() != 0)) {
