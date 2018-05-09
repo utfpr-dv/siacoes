@@ -210,7 +210,8 @@ public class EditUserWindow extends EditWindow {
 			this.user.setActive(this.checkActive.getValue());
 				
 			if(this.user.getPassword().isEmpty()) {
-				this.user.setPassword(StringUtils.generateSHA3Hash(this.user.getLogin()));
+				this.user.setSalt(StringUtils.generateSalt());
+				this.user.setPassword(StringUtils.generateSHA3Hash(this.user.getLogin() + this.user.getSalt()));
 			}
 			
 			bo.save(user);
