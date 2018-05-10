@@ -12,6 +12,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserScoreBO;
 import br.edu.utfpr.dv.siacoes.dao.ConnectionDAO;
@@ -57,6 +58,10 @@ public class EditInternshipJuryAppraiserScoreWindow extends EditWindow {
 		this.textComments.addStyleName("textscroll");
 		
 		this.tab = new TabSheet();
+		this.tab.setWidth("800px");
+		this.tab.addStyleName(ValoTheme.TABSHEET_FRAMED);
+		this.tab.addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
+		this.tab.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 		
 		VerticalLayout tab1 = new VerticalLayout(new HorizontalLayout(labelDescription, labelPonderosity, labelScore), this.layoutEvaluationItems);
 		this.tab.addTab(tab1, "Notas");

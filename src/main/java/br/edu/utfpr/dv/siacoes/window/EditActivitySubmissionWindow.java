@@ -20,6 +20,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ActivityBO;
@@ -213,6 +214,9 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		
 		this.tabContainer = new TabSheet();
 		this.tabContainer.setWidth("820px");
+		this.tabContainer.addStyleName(ValoTheme.TABSHEET_FRAMED);
+		this.tabContainer.addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
+		this.tabContainer.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 		this.tabContainer.addTab(tab1, "Atividade");
 		this.tabContainer.addTab(this.tab3, "Comprovante");
 		this.tabContainer.addTab(this.textComments, "Observações");

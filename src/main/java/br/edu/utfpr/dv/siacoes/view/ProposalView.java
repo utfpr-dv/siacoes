@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import org.vaadin.dialogs.ConfirmDialog;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
@@ -55,6 +56,7 @@ public class ProposalView extends ListView {
             	downloadFile();
             }
         });
+		this.buttonDownload.setIcon(FontAwesome.DOWNLOAD);
 		this.addActionButton(this.buttonDownload);
 		
 		SigetConfig config = new SigetConfig();

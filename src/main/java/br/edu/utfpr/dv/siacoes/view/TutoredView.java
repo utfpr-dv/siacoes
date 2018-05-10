@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
@@ -157,6 +158,7 @@ public class TutoredView extends ListView {
 		this.addActionButton(this.buttonStatementStage2);
 		
 		this.setEditCaption("Visualizar");
+		this.setEditIcon(FontAwesome.SEARCH);
 	}
 
 	@Override

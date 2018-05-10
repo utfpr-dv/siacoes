@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
@@ -116,6 +117,7 @@ public class InternshipJuryView extends ListView {
             	sendFeedbackClick();
             }
         });
+		this.buttonSendFeedback.setIcon(FontAwesome.UPLOAD);
 		
 		this.buttonStatements = new Button("Declarações", new Button.ClickListener() {
             @Override
@@ -123,6 +125,7 @@ public class InternshipJuryView extends ListView {
             	downloadStatements();
             }
         });
+		this.buttonStatements.setIcon(FontAwesome.FILE_PDF_O);
 		
 		this.buttonSingleStatement = new Button("Declaração", new Button.ClickListener() {
             @Override
@@ -130,8 +133,10 @@ public class InternshipJuryView extends ListView {
             	downloadSingleStatement();
             }
         });
+		this.buttonSingleStatement.setIcon(FontAwesome.FILE_PDF_O);
 		
 		this.buttonCalendar = new Button("Imprimir");
+		this.buttonCalendar.setIcon(FontAwesome.PRINT);
 		
 		this.addActionButton(this.buttonCalendar);
 		this.addActionButton(this.buttonFile);

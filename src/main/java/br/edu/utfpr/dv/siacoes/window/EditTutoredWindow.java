@@ -13,6 +13,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.FinalDocumentBO;
@@ -334,6 +335,10 @@ public class EditTutoredWindow extends EditWindow {
 		tab3.setSpacing(true);
 		
 		this.tab = new TabSheet();
+		this.tab.setWidth("820px");
+		this.tab.addStyleName(ValoTheme.TABSHEET_FRAMED);
+		this.tab.addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
+		this.tab.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 		this.tab.addTab(tab1, "Proposta de TCC 1");
 		if((this.project != null) && (this.project.getIdProject() != 0)){
 			this.tab.addTab(tab2, "Projeto de TCC 1");

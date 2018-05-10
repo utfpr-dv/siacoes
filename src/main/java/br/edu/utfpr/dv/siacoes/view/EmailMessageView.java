@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
@@ -53,6 +54,7 @@ public class EmailMessageView extends ListView {
             	UI.getCurrent().addWindow(new EditEmailConfigWindow());
             }
         });
+    	this.buttonConfigurations.setIcon(FontAwesome.GEAR);
     	
     	this.buttonTest = new Button("Testar Envio", new Button.ClickListener() {
             @Override
@@ -60,6 +62,7 @@ public class EmailMessageView extends ListView {
             	UI.getCurrent().addWindow(new TestEmailSendWindow());
             }
         });
+    	this.buttonTest.setIcon(FontAwesome.SEND);
     	
     	this.addActionButton(this.buttonConfigurations);
     	this.addActionButton(this.buttonTest);

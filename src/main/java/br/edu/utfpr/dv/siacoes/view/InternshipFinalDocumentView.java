@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
@@ -55,6 +56,7 @@ public class InternshipFinalDocumentView extends ListView {
 		this.setAddVisible(false);
 		this.setDeleteVisible(false);
 		this.setEditCaption("Validar");
+		this.setEditIcon(FontAwesome.CHECK);
 	}
 
 	@Override

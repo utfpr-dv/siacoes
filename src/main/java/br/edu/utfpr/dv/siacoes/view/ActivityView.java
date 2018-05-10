@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
@@ -36,6 +37,7 @@ public class ActivityView extends ListView {
             	moveUp();
             }
         });
+		this.buttonMoveUp.setIcon(FontAwesome.ARROW_UP);
     	
     	this.buttonMoveDown = new Button("Para Baixo", new Button.ClickListener() {
             @Override
@@ -43,6 +45,7 @@ public class ActivityView extends ListView {
             	moveDown();
             }
         });
+    	this.buttonMoveDown.setIcon(FontAwesome.ARROW_DOWN);
     	
     	this.addActionButton(this.buttonMoveUp);
     	this.addActionButton(this.buttonMoveDown);

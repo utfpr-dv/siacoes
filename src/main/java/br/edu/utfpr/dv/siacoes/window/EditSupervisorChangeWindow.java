@@ -15,6 +15,7 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
@@ -97,7 +98,11 @@ public class EditSupervisorChangeWindow extends EditWindow {
 		this.textTitle.setEnabled(false);
 		
 		this.tabData = new TabSheet();
+		this.tabData.setWidth("800px");
 		this.tabData.setHeight("275px");
+		this.tabData.addStyleName(ValoTheme.TABSHEET_FRAMED);
+		this.tabData.addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
+		this.tabData.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 		
 		this.textCurrentSupervisor = new TextField("Orientador Atual");
 		this.textCurrentSupervisor.setWidth("390px");

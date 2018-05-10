@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import org.vaadin.dialogs.ConfirmDialog;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -69,6 +70,7 @@ public class ActivitySubmissionView extends ListView {
 		this.comboFeedback.select("(Todos)");
 		
 		this.buttonFinalReport = new Button("Relatório Final");
+		this.buttonFinalReport.setIcon(FontAwesome.FILE_PDF_O);
 		
 		this.buttonFinalSubmission = new Button("Finalizar Processo", new Button.ClickListener() {
             @Override
@@ -87,8 +89,10 @@ public class ActivitySubmissionView extends ListView {
 			
 			if(Session.isUserManager(this.getModule())){
 				this.setEditCaption("Validar");
+				this.setEditIcon(FontAwesome.CHECK);
 			}else{
 				this.setEditCaption("Visualizar");
+				this.setEditIcon(FontAwesome.SEARCH);
 			}
 			
 			Image imageRedWarning = new Image(null, new ThemeResource("images/redwarning.png"));
@@ -126,6 +130,7 @@ public class ActivitySubmissionView extends ListView {
 			
 			if(!allowAdd) {
 				this.setEditCaption("Visualizar");
+				this.setEditIcon(FontAwesome.SEARCH);
 			}
 			
 			this.addFilterField(this.comboFeedback);

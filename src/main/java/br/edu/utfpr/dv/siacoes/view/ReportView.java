@@ -1,18 +1,18 @@
 ﻿package br.edu.utfpr.dv.siacoes.view;
 
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.ValoTheme;
 
-import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 
@@ -37,6 +37,8 @@ public abstract class ReportView extends BasicView {
             }
         });
 		this.buttonReport.setWidth("150px");
+		this.buttonReport.addStyleName(ValoTheme.BUTTON_PRIMARY);
+		this.buttonReport.setIcon(FontAwesome.FILE_PDF_O);
 		
 		this.layoutFields = new VerticalLayout();
 		this.layoutFields.setSpacing(true);

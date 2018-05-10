@@ -9,6 +9,7 @@ import org.dussan.vaadin.dcharts.DownloadButtonLocation;
 
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -49,6 +50,8 @@ public abstract class ChartView extends BasicView {
             }
         });
 		this.buttonChart.setWidth("150px");
+		this.buttonChart.setIcon(FontAwesome.BAR_CHART);
+		this.buttonChart.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		
 		this.layoutFields = new VerticalLayout();
 		this.layoutFields.setSpacing(true);

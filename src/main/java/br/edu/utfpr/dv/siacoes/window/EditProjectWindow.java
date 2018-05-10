@@ -12,6 +12,7 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
@@ -67,6 +68,9 @@ public class EditProjectWindow extends EditWindow {
 		
 		this.tabData = new TabSheet();
 		this.tabData.setWidth("810px");
+		this.tabData.addStyleName(ValoTheme.TABSHEET_FRAMED);
+		this.tabData.addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
+		this.tabData.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 		
 		this.comboCampus = new CampusComboBox();
 		this.comboCampus.setEnabled(false);

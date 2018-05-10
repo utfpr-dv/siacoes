@@ -14,6 +14,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.ui.VerticalLayout;
 
 import br.edu.utfpr.dv.siacoes.Session;
@@ -187,6 +188,9 @@ public class EditProposalWindow extends EditWindow {
 		
 		this.tab = new TabSheet();
 		this.tab.setWidth("820px");
+		this.tab.addStyleName(ValoTheme.TABSHEET_FRAMED);
+		this.tab.addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
+		this.tab.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 		this.tab.addTab(tab1, "Proposta");
 		
 		if(Session.isUserManager(SystemModule.SIGET)){

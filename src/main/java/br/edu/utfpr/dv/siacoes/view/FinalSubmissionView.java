@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Button.ClickEvent;
@@ -35,6 +36,7 @@ public class FinalSubmissionView extends ListView {
             	finalReport();
             }
         });
+		this.buttonFinalReport.setIcon(FontAwesome.FILE_PDF_O);
 		
 		this.setFiltersVisible(false);
 		this.setAddVisible(false);

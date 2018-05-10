@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
@@ -64,6 +65,7 @@ public class UserView extends ListView {
             	loginAs();
             }
         });
+		this.buttonLoginAs.setIcon(FontAwesome.USER);
 		
 		VerticalLayout vl = new VerticalLayout(this.checkActive, this.checkExternal);
 		vl.setSpacing(true);

@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import org.vaadin.dialogs.ConfirmDialog;
 import org.vaadin.thomas.timefield.TimeField;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
@@ -18,6 +19,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
@@ -71,6 +73,9 @@ public class EditJuryWindow extends EditWindow {
 		this.tabContainer = new TabSheet();
 		this.tabContainer.setWidth("810px");
 		this.tabContainer.setHeight("450px");
+		this.tabContainer.addStyleName(ValoTheme.TABSHEET_FRAMED);
+		this.tabContainer.addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
+		this.tabContainer.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 		
 		this.textLocal = new TextField("Local");
 		this.textLocal.setWidth("800px");
@@ -113,6 +118,8 @@ public class EditJuryWindow extends EditWindow {
             	addAppraiser();
             }
         });
+		this.buttonAddAppraiser.setIcon(FontAwesome.PLUS);
+		this.buttonAddAppraiser.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 		
 		this.buttonRemoveAppraiser = new Button("Remover Membro", new Button.ClickListener() {
             @Override
@@ -120,6 +127,8 @@ public class EditJuryWindow extends EditWindow {
             	removeAppraiser();
             }
         });
+		this.buttonRemoveAppraiser.setIcon(FontAwesome.TRASH);
+		this.buttonRemoveAppraiser.addStyleName(ValoTheme.BUTTON_DANGER);
 		
 		this.buttonAppraiserScore = new Button("Lançar Notas", new Button.ClickListener() {
             @Override
@@ -127,6 +136,7 @@ public class EditJuryWindow extends EditWindow {
             	addScore();
             }
         });
+		this.buttonAppraiserScore.setIcon(FontAwesome.CALCULATOR);
 		
 		this.buttonAppraiserStatement = new Button("Declaração", new Button.ClickListener() {
             @Override
@@ -134,6 +144,7 @@ public class EditJuryWindow extends EditWindow {
             	downloadProfessorStatement();
             }
         });
+		this.buttonAppraiserStatement.setIcon(FontAwesome.FILE_PDF_O);
 		
 		this.buttonParticipants = new Button("Lista de Presença", new Button.ClickListener() {
             @Override
@@ -163,6 +174,8 @@ public class EditJuryWindow extends EditWindow {
             	addParticipant();            	
             }
         });
+		this.buttonAddParticipant.setIcon(FontAwesome.PLUS);
+		this.buttonAddParticipant.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 		
 		this.buttonRemoveParticipant = new Button("Remover Acadêmico", new Button.ClickListener() {
             @Override
@@ -170,6 +183,8 @@ public class EditJuryWindow extends EditWindow {
             	removeParticipant();
             }
         });
+		this.buttonRemoveParticipant.setIcon(FontAwesome.TRASH);
+		this.buttonRemoveParticipant.addStyleName(ValoTheme.BUTTON_DANGER);
 		
 		this.buttonParticipantStatement = new Button("Gerar Declaração", new Button.ClickListener() {
             @Override
@@ -177,6 +192,7 @@ public class EditJuryWindow extends EditWindow {
             	downloadStudentStatement();
             }
         });
+		this.buttonParticipantStatement.setIcon(FontAwesome.FILE_PDF_O);
 		
 		HorizontalLayout layoutGridButtons2 = new HorizontalLayout(this.buttonAddParticipant, this.buttonRemoveParticipant, this.buttonParticipantStatement, this.buttonParticipants, this.buttonParticipantsReport);
 		layoutGridButtons2.setSpacing(true);

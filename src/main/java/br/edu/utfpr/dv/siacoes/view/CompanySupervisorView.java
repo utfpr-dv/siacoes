@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 
@@ -36,6 +37,7 @@ public class CompanySupervisorView extends ListView {
             	registerProfessor();
             }
         });
+		this.buttonRegisterProfessor.setIcon(FontAwesome.USER_PLUS);
 		
 		this.setFiltersVisible(false);
 		this.setDeleteVisible(false);

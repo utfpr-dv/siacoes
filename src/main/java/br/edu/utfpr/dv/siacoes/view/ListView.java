@@ -10,6 +10,8 @@ import org.vaadin.dialogs.ConfirmDialog;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Resource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
@@ -23,6 +25,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Grid.SingleSelectionModel;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
@@ -70,6 +73,8 @@ public abstract class ListView extends BasicView {
             }
         });
 		this.buttonAdd.setWidth("150px");
+		this.buttonAdd.setIcon(FontAwesome.PLUS);
+		this.buttonAdd.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 		
 		this.buttonEdit = new Button("Editar", new Button.ClickListener() {
             @Override
@@ -78,6 +83,8 @@ public abstract class ListView extends BasicView {
             }
         });
 		this.buttonEdit.setWidth("150px");
+		this.buttonEdit.setIcon(FontAwesome.EDIT);
+		this.buttonEdit.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		
 		this.buttonDelete = new Button("Excluir", new Button.ClickListener() {
             @Override
@@ -86,6 +93,8 @@ public abstract class ListView extends BasicView {
             }
         });
 		this.buttonDelete.setWidth("150px");
+		this.buttonDelete.setIcon(FontAwesome.TRASH);
+		this.buttonDelete.addStyleName(ValoTheme.BUTTON_DANGER);
 		
 		this.layoutButtons = new VerticalLayout(buttonAdd, buttonEdit, buttonDelete);
 		//this.layoutButtons.setWidth("150px");
@@ -112,6 +121,7 @@ public abstract class ListView extends BasicView {
             }
         });
 		this.buttonFilter.setWidth("150px");
+		this.buttonFilter.setIcon(FontAwesome.FILTER);
 		
 		this.labelGridRecords = new Label();
 		
@@ -234,24 +244,48 @@ public abstract class ListView extends BasicView {
     	this.buttonAdd.setCaption(caption);
     }
     
+    public void setAddIcon(Resource icon){
+    	this.buttonAdd.setIcon(icon);
+    }
+    
     public void setEditCaption(String caption){
     	this.buttonEdit.setCaption(caption);
+    }
+    
+    public void setEditIcon(Resource icon){
+    	this.buttonEdit.setIcon(icon);
     }
     
     public void setDeleteCaption(String caption){
     	this.buttonDelete.setCaption(caption);
     }
     
+    public void setDeleteIcon(Resource icon){
+    	this.buttonDelete.setIcon(icon);
+    }
+    
     public String getAddCaption(){
     	return this.buttonAdd.getCaption();
+    }
+    
+    public Resource getAddIcon(){
+    	return this.buttonAdd.getIcon();
     }
     
     public String getEditCaption(){
     	return this.buttonEdit.getCaption();
     }
     
+    public Resource getEditIcon(){
+    	return this.buttonEdit.getIcon();
+    }
+    
     public String getDeleteCaption(){
     	return this.buttonDelete.getCaption();
+    }
+    
+    public Resource getDeleteIcon(){
+    	return this.buttonDelete.getIcon();
     }
     
     public void addRowId(Object itemId, Object value){

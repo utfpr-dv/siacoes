@@ -14,6 +14,7 @@ import org.vaadin.dialogs.ConfirmDialog;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
@@ -32,6 +33,7 @@ import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.renderers.DateRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
@@ -234,6 +236,7 @@ public class EditInternshipWindow extends EditWindow {
             	downloadStudentReport();
             }
         });
+		this.buttonDownloadStudentReport.setIcon(FontAwesome.DOWNLOAD);
 		this.buttonDownloadStudentReport.setWidth("150px");
 		
 		this.buttonDeleteStudentReport = new Button("Excluir", new Button.ClickListener() {
@@ -242,6 +245,8 @@ public class EditInternshipWindow extends EditWindow {
             	deleteStudentReport();
             }
         });
+		this.buttonDeleteStudentReport.setIcon(FontAwesome.TRASH);
+		this.buttonDeleteStudentReport.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonDeleteStudentReport.setWidth("150px");
 		
 		HorizontalLayout h6 = new HorizontalLayout(this.uploadStudentReport, this.buttonDownloadStudentReport, this.buttonDeleteStudentReport);
@@ -265,6 +270,7 @@ public class EditInternshipWindow extends EditWindow {
             	downloadSupervisorReport();
             }
         });
+		this.buttonDownloadSupervisorReport.setIcon(FontAwesome.DOWNLOAD);
 		this.buttonDownloadSupervisorReport.setWidth("150px");
 		
 		this.buttonDeleteSupervisorReport = new Button("Excluir", new Button.ClickListener() {
@@ -273,6 +279,8 @@ public class EditInternshipWindow extends EditWindow {
             	deleteSupervisorReport();
             }
         });
+		this.buttonDeleteSupervisorReport.setIcon(FontAwesome.TRASH);
+		this.buttonDeleteSupervisorReport.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonDeleteSupervisorReport.setWidth("150px");
 		
 		HorizontalLayout h7 = new HorizontalLayout(this.uploadSupervisorReport, this.buttonDownloadSupervisorReport, this.buttonDeleteSupervisorReport);
@@ -296,6 +304,7 @@ public class EditInternshipWindow extends EditWindow {
             	downloadCompanySupervisorReport();
             }
         });
+		this.buttonDownloadCompanySupervisorReport.setIcon(FontAwesome.DOWNLOAD);
 		this.buttonDownloadCompanySupervisorReport.setWidth("150px");
 		
 		this.buttonDeleteCompanySupervisorReport = new Button("Excluir", new Button.ClickListener() {
@@ -304,6 +313,8 @@ public class EditInternshipWindow extends EditWindow {
             	deleteCompanySupervisorReport();
             }
         });
+		this.buttonDeleteCompanySupervisorReport.setIcon(FontAwesome.TRASH);
+		this.buttonDeleteCompanySupervisorReport.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonDeleteCompanySupervisorReport.setWidth("150px");
 		
 		HorizontalLayout h8 = new HorizontalLayout(this.uploadCompanySupervisorReport, this.buttonDownloadCompanySupervisorReport, this.buttonDeleteCompanySupervisorReport);
@@ -314,6 +325,9 @@ public class EditInternshipWindow extends EditWindow {
 		
 		this.tabContainer = new TabSheet();
 		this.tabContainer.setWidth("820px");
+		this.tabContainer.addStyleName(ValoTheme.TABSHEET_FRAMED);
+		this.tabContainer.addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
+		this.tabContainer.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 		this.tabContainer.addTab(tab1, "Estágio");
 		this.tabContainer.addTab(tab2, "Acadêmico");
 		this.tabContainer.addTab(tab3, "Orientador");

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
@@ -61,6 +62,7 @@ public class FinalDocumentView extends ListView {
 		this.checkListAll = new CheckBox("Listar Todos");
 		
 		this.buttonLibraryReport = new Button("Relat. Biblioteca");
+		this.buttonLibraryReport.setIcon(FontAwesome.FILE_PDF_O);
 		
 		if(!Session.isUserManager(this.getModule())){
 			this.checkListAll.setVisible(false);
@@ -75,6 +77,7 @@ public class FinalDocumentView extends ListView {
 		this.setAddVisible(false);
 		this.setDeleteVisible(false);
 		this.setEditCaption("Validar");
+		this.setEditIcon(FontAwesome.CHECK);
 	}
 
 	@Override

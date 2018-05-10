@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import com.vaadin.event.SelectionEvent;
 import com.vaadin.event.SelectionEvent.SelectionListener;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Button;
@@ -40,8 +41,10 @@ public class DocumentView extends ListView {
     	this.setCaption("Regulamentos e Anexos");
 		
     	this.buttonDownload = new Button("Baixar Arquivo");
+    	this.buttonDownload.setIcon(FontAwesome.DOWNLOAD);
     	
     	this.buttonDownloadAll = new Button("Baixar Todos");
+    	this.buttonDownloadAll.setIcon(FontAwesome.FILE_ZIP_O);
     	
     	this.buttonMoveUp = new Button("Para Cima", new Button.ClickListener() {
             @Override
@@ -49,6 +52,7 @@ public class DocumentView extends ListView {
             	moveUp();
             }
         });
+    	this.buttonMoveUp.setIcon(FontAwesome.ARROW_UP);
     	
     	this.buttonMoveDown = new Button("Para Baixo", new Button.ClickListener() {
             @Override
@@ -56,6 +60,7 @@ public class DocumentView extends ListView {
             	moveDown();
             }
         });
+    	this.buttonMoveDown.setIcon(FontAwesome.ARROW_DOWN);
     	
     	this.addActionButton(this.buttonDownload);
     	this.addActionButton(this.buttonDownloadAll);

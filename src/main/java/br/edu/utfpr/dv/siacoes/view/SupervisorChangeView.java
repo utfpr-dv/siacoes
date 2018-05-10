@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
@@ -39,6 +40,7 @@ public class SupervisorChangeView extends ListView {
 		this.setAddVisible(false);
 		this.setDeleteVisible(false);
 		this.setEditCaption("Aprovar");
+		this.setEditIcon(FontAwesome.CHECK);
 		
 		this.checkOnlyPending = new CheckBox("Apenas pendentes");
 		this.checkOnlyPending.setValue(true);

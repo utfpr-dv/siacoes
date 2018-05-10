@@ -14,6 +14,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.components.FileUploader;
@@ -89,6 +90,9 @@ public class EditUserProfileWindow extends EditWindow {
 		this.tab = new TabSheet();
 		this.tab.setWidth("820px");
 		this.tab.setHeight("350px");
+		this.tab.addStyleName(ValoTheme.TABSHEET_FRAMED);
+		this.tab.addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
+		this.tab.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 		
 		VerticalLayout tabData = new VerticalLayout(this.textName, this.textEmail);
 		tabData.setSpacing(true);

@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import org.vaadin.dialogs.ConfirmDialog;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
@@ -20,17 +21,15 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryRequestBO;
-import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.components.StageComboBox;
 import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.model.JuryRequest;
-import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
-import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
@@ -72,6 +71,9 @@ public class EditJuryRequestWindow extends EditWindow {
 		this.tabContainer = new TabSheet();
 		this.tabContainer.setWidth("810px");
 		this.tabContainer.setHeight("520px");
+		this.tabContainer.addStyleName(ValoTheme.TABSHEET_FRAMED);
+		this.tabContainer.addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
+		this.tabContainer.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 		
 		this.textStudent = new TextField("Acadêmico");
 		this.textStudent.setWidth("800px");
@@ -120,6 +122,8 @@ public class EditJuryRequestWindow extends EditWindow {
             	addAppraiser();
             }
         });
+		this.buttonAddAppraiser.setIcon(FontAwesome.PLUS);
+		this.buttonAddAppraiser.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 		this.buttonAddAppraiser.setWidth("100px");
 		
 		this.buttonRemoveAppraiser = new Button("Remover", new Button.ClickListener() {
@@ -128,6 +132,8 @@ public class EditJuryRequestWindow extends EditWindow {
             	removeAppraiser();
             }
         });
+		this.buttonRemoveAppraiser.setIcon(FontAwesome.TRASH);
+		this.buttonRemoveAppraiser.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonRemoveAppraiser.setWidth("100px");
 		
 		VerticalLayout v1 = new VerticalLayout(this.buttonAddAppraiser, this.buttonRemoveAppraiser);
@@ -151,6 +157,8 @@ public class EditJuryRequestWindow extends EditWindow {
             	addSubstitute();
             }
         });
+		this.buttonAddSubstitute.setIcon(FontAwesome.PLUS);
+		this.buttonAddSubstitute.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 		this.buttonAddSubstitute.setWidth("100px");
 		
 		this.buttonRemoveSubstitute = new Button("Remover", new Button.ClickListener() {
@@ -159,6 +167,8 @@ public class EditJuryRequestWindow extends EditWindow {
             	removeSubstitute();
             }
         });
+		this.buttonRemoveSubstitute.setIcon(FontAwesome.TRASH);
+		this.buttonRemoveSubstitute.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonRemoveSubstitute.setWidth("100px");
 		
 		VerticalLayout v2 = new VerticalLayout(this.buttonAddSubstitute, this.buttonRemoveSubstitute);

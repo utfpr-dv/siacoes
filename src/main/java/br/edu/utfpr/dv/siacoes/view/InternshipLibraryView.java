@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vaadin.event.SelectionEvent;
-import com.vaadin.event.SelectionEvent.SelectionListener;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Button.ClickEvent;
@@ -17,7 +16,6 @@ import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.InternshipFinalDocumentBO;
 import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
-import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
 
 public class InternshipLibraryView extends ListView {
 	
@@ -25,14 +23,18 @@ public class InternshipLibraryView extends ListView {
 	
 	private final Button buttonDownloadFile;
 	
-	private Button.ClickListener listenerClickDownload;
-	
 	public InternshipLibraryView(){
 		super(SystemModule.SIGES);
 		
 		this.setCaption("Relatórios de Estágio");
 		
-		this.buttonDownloadFile = new Button("Download");
+		this.buttonDownloadFile = new Button("Download", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	download();
+            }
+        });
+		this.buttonDownloadFile.setIcon(FontAwesome.DOWNLOAD);
 		this.addActionButton(this.buttonDownloadFile);
 		
 		this.setAddVisible(false);
@@ -47,16 +49,8 @@ public class InternshipLibraryView extends ListView {
 		this.getGrid().addColumn("Título", String.class);
 		this.getGrid().addColumn("Acadêmico", String.class);
 		this.getGrid().addColumn("Empresa", String.class);
-		this.getGrid().addSelectionListener(new SelectionListener() {
-			@Override
-			public void select(SelectionEvent event) {
-				prepareDownload();
-			}
-		});
 		
 		this.getGrid().getColumns().get(0).setWidth(120);
-		
-		this.prepareDownload();
 		
 		try {
 			InternshipFinalDocumentBO bo = new InternshipFinalDocumentBO();
@@ -73,41 +67,23 @@ public class InternshipLibraryView extends ListView {
 		}
 	}
 	
-	private void prepareDownload(){
+	private void download() {
 		Object value = getIdSelected();
 		
-		this.buttonDownloadFile.removeClickListener(this.listenerClickDownload);
-    	
-    	if(value != null){
+		if(value == null) {
+			Notification.show("Download do Relatório de Estágio", "Selecione um registro para baixar o relatório de estágio.", Notification.Type.WARNING_MESSAGE);
+		} else {
 			try {
 				InternshipFinalDocumentBO bo = new InternshipFinalDocumentBO();
             	InternshipFinalDocument p = bo.findById((int)value);
             	
-            	new ExtensionUtils().extendToDownload(p.getTitle() + ".pdf", p.getFile(), this.buttonDownloadFile);
+            	this.showReport(p.getFile());
         	} catch (Exception e) {
-        		this.listenerClickDownload = new Button.ClickListener() {
-		            @Override
-		            public void buttonClick(ClickEvent event) {
-		            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-		            	
-		            	Notification.show("Download do Relatório de Estágio", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-		            }
-		        };
-		        
-        		this.buttonDownloadFile.addClickListener(this.listenerClickDownload);
+            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+            	
+            	Notification.show("Download do Relatório de Estágio", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
-    	}else{
-    		new ExtensionUtils().removeAllExtensions(this.buttonDownloadFile);
-    		
-    		this.listenerClickDownload = new Button.ClickListener() {
-	            @Override
-	            public void buttonClick(ClickEvent event) {
-	            	Notification.show("Download do Relatório de Estágio", "Selecione um registro para baixar o relatório de estágio.", Notification.Type.WARNING_MESSAGE);
-	            }
-	        };
-    		
-    		this.buttonDownloadFile.addClickListener(this.listenerClickDownload);
-    	}
+		}
 	}
 	
 	@Override

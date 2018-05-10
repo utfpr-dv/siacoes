@@ -11,6 +11,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
@@ -91,6 +92,9 @@ public class EditThemeSuggestionWindow extends EditWindow {
 		
 		this.tab = new TabSheet();
 		this.tab.setWidth("820px");
+		this.tab.addStyleName(ValoTheme.TABSHEET_FRAMED);
+		this.tab.addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
+		this.tab.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 		this.tab.addTab(tab1, "Descrição");
 		this.tab.addTab(this.textProposal, "Proposta");
 		this.tab.addTab(this.textObjetives, "Objetivos");

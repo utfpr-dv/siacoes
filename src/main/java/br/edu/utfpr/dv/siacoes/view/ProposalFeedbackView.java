@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
@@ -47,6 +48,7 @@ public class ProposalFeedbackView extends ListView {
 		this.setDeleteVisible(false);
 		
 		this.setEditCaption("Emitir Parecer");
+		this.setEditIcon(FontAwesome.CHECK);
 		
 		this.buttonPrintFeedback = new Button("Imprimir Parecer", new Button.ClickListener() {
             @Override
@@ -55,6 +57,7 @@ public class ProposalFeedbackView extends ListView {
             }
         });
 		this.buttonPrintFeedback.setWidth("150px");
+		this.buttonPrintFeedback.setIcon(FontAwesome.PRINT);
 		
 		this.buttonDownloadProposal = new Button("Baixar Proposta", new Button.ClickListener() {
             @Override
@@ -63,6 +66,7 @@ public class ProposalFeedbackView extends ListView {
             }
         });
 		this.buttonDownloadProposal.setWidth("150px");
+		this.buttonDownloadProposal.setIcon(FontAwesome.DOWNLOAD);
 		
 		this.addActionButton(this.buttonPrintFeedback);
 		this.addActionButton(this.buttonDownloadProposal);

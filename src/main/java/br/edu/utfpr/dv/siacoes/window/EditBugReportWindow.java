@@ -11,6 +11,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.BugReportBO;
@@ -95,6 +96,9 @@ public class EditBugReportWindow extends EditWindow {
 		
 		this.tab = new TabSheet();
 		this.tab.setWidth("810px");
+		this.tab.addStyleName(ValoTheme.TABSHEET_FRAMED);
+		this.tab.addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
+		this.tab.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 		
 		HorizontalLayout h1 = new HorizontalLayout(this.comboType, this.textReportDate);
 		h1.setSpacing(true);

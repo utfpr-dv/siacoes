@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import org.vaadin.dialogs.ConfirmDialog;
 
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
@@ -108,7 +109,6 @@ public class InternshipView extends ListView {
             }
         });
 		
-		
 		this.addActionButton(this.buttonJury);	
 		
 		this.buttonProfessorStatement = new Button("Declaração", new Button.ClickListener() {
@@ -135,6 +135,7 @@ public class InternshipView extends ListView {
             	finalReportClick();
             }
         });
+		this.buttonFinalReport.setIcon(FontAwesome.UPLOAD);
 		
 		this.addActionButton(this.buttonFinalReport);
 		
@@ -153,6 +154,7 @@ public class InternshipView extends ListView {
             	finalDocumentClick();
             }
         });
+		this.buttonFinalDocument.setIcon(FontAwesome.UPLOAD);
 		
 		this.addActionButton(this.buttonFinalDocument);
 	}
@@ -163,6 +165,7 @@ public class InternshipView extends ListView {
 			this.setAddVisible(false);
 			this.setDeleteVisible(false);
 			this.setEditCaption("Visualizar");
+			this.setEditIcon(FontAwesome.SEARCH);
 			
 			this.buttonJury.setVisible(false);
 			this.buttonProfessorStatement.setVisible(Session.isUserProfessor());
@@ -172,6 +175,7 @@ public class InternshipView extends ListView {
 			
 			if(this.profile == UserProfile.PROFESSOR){
 				this.buttonFinalDocument.setCaption("Val. Relat. Final");
+				this.buttonFinalDocument.setIcon(FontAwesome.CHECK);
 			}
 		}else{
 			this.buttonProfessorStatement.setCaption("Declaração Professor");

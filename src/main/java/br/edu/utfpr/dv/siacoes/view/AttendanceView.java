@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.EventRouter;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
@@ -95,6 +96,7 @@ public class AttendanceView extends ListView {
 		
 		this.buttonPrint = new Button("Imprimir");
 		this.buttonPrint.setWidth("150px");
+		this.buttonPrint.setIcon(FontAwesome.PRINT);
 		
 		this.addActionButton(this.buttonPrint);
 	}

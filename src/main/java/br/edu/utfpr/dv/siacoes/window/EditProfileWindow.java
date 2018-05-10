@@ -8,6 +8,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
@@ -85,6 +86,9 @@ public class EditProfileWindow extends EditWindow {
 		this.tab = new TabSheet();
 		this.tab.setWidth("820px");
 		this.tab.setHeight("350px");
+		this.tab.addStyleName(ValoTheme.TABSHEET_FRAMED);
+		this.tab.addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
+		this.tab.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 		
 		this.tab.addTab(tab1, "Perfil");
 		this.tab.addTab(tab2, "Informações Profissionais");

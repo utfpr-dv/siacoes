@@ -8,6 +8,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.model.Jury;
@@ -43,6 +44,9 @@ public class JuryGradesWindow extends BasicWindow {
 			
 			TabSheet tab = new TabSheet();
 			tab.setSizeFull();
+			tab.addStyleName(ValoTheme.TABSHEET_FRAMED);
+			tab.addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
+			tab.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 			
 			VerticalLayout layoutMain = new VerticalLayout(tab);
 			layoutMain.setSpacing(true);

@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
@@ -61,6 +62,7 @@ public class ThesisView extends ListView {
             	downloadFile();
             }
         });
+		this.buttonDownloadThesis.setIcon(FontAwesome.DOWNLOAD);
 		this.addActionButton(this.buttonDownloadThesis);
 		
 		this.buttonJury = new Button("Banca", new Button.ClickListener() {
@@ -76,6 +78,7 @@ public class ThesisView extends ListView {
             	sendFeedbackClick();
             }
         });
+		this.buttonSendFeedback.setIcon(FontAwesome.UPLOAD);
 		
 		this.buttonStatements = new Button("Declarações", new Button.ClickListener() {
             @Override
@@ -83,6 +86,7 @@ public class ThesisView extends ListView {
             	downloadStatements();
             }
         });
+		this.buttonStatements.setIcon(FontAwesome.FILE_PDF_O);
 		
 		this.buttonSupervisorStatement = new Button("Dec. Orientação", new Button.ClickListener() {
             @Override

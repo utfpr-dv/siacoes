@@ -1,14 +1,11 @@
 ﻿package br.edu.utfpr.dv.siacoes.window;
 
-import java.util.UUID;
-
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.ValoTheme;
 
-import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.view.ListView;
-import br.edu.utfpr.dv.siacoes.view.PDFView;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
@@ -33,6 +30,8 @@ public abstract class EditWindow extends BasicWindow {
             }
         });
 		this.buttonSave.setWidth("150px");
+		this.buttonSave.addStyleName(ValoTheme.BUTTON_PRIMARY);
+		this.buttonSave.setIcon(FontAwesome.SAVE);
 		
 		this.layoutFields = new VerticalLayout();
 		this.layoutFields.setSpacing(true);
