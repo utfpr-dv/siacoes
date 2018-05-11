@@ -114,8 +114,8 @@ public class EditStudentProfileWindow extends EditWindow {
 		});
 		
 		this.imagePhoto = new Image();
-		this.imagePhoto.setStyleName("ImagePhoto");
-		this.imagePhoto.setSizeUndefined();
+		this.imagePhoto.setWidth("200px");
+		this.imagePhoto.setHeight("200px");
 		
 		this.tab = new TabSheet();
 		this.tab.setWidth("820px");

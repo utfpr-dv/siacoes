@@ -81,8 +81,8 @@ public class EditDepartmentWindow extends EditWindow {
 		});
 		
 		this.imageLogo = new Image();
-		this.imageLogo.setStyleName("ImageLogo");
 		this.imageLogo.setSizeUndefined();
+		this.imageLogo.setHeight("200px");
 		
 		this.addField(new HorizontalLayout(this.textName, this.comboCampus));
 		this.addField(this.textFullName);

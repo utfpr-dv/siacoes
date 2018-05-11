@@ -13,6 +13,7 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
+import br.edu.utfpr.dv.siacoes.SiacoesUI;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.components.FileUploaderListener;
@@ -76,8 +77,8 @@ public class EditCampusWindow extends EditWindow {
 		});
 		
 		this.imageLogo = new Image();
-		this.imageLogo.setStyleName("ImageLogo");
 		this.imageLogo.setSizeUndefined();
+		this.imageLogo.setHeight("200px");
 		
 		this.addField(new HorizontalLayout(this.textName, this.checkActive));
 		this.addField(this.textInitials);

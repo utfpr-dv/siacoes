@@ -134,6 +134,7 @@ public class EditUserDepartmentWindow extends EditWindow {
 	@Override
 	public void save() {
 		try {
+			this.department.setProfile((UserProfile)this.comboProfile.getValue());
 			this.department.setDepartment(this.comboDepartment.getDepartment());
 			this.department.setSigacManager(this.checkSigacManager.getValue());
 			this.department.setSigesManager(this.checkSigesManager.getValue());

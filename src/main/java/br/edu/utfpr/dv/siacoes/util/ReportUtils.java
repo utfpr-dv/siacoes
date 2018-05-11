@@ -1,6 +1,5 @@
 ﻿package br.edu.utfpr.dv.siacoes.util;
 
-import java.awt.Image;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -13,15 +12,12 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.ImageIcon;
-
 import com.vaadin.server.Extension;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Button;
 
-import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.bo.DepartmentBO;
 import br.edu.utfpr.dv.siacoes.model.Campus;
