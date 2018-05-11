@@ -138,6 +138,8 @@ public class EditProfileWindow extends EditWindow {
 			this.user.setResearch(this.textResearch.getValue());
 			
 			this.parentWindow.saveProfile(this.user, this.profile, this.add);
+			
+			this.close();
 		} catch(Exception e) {
 			Notification.show("Editar Perfil", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
