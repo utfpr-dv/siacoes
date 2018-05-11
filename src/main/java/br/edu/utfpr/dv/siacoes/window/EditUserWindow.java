@@ -7,6 +7,7 @@ import org.vaadin.dialogs.ConfirmDialog;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
@@ -118,6 +119,8 @@ public class EditUserWindow extends EditWindow {
             	addProfile();
             }
         });
+		this.buttonAddProfile.setIcon(FontAwesome.PLUS);
+		this.buttonAddProfile.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 		this.buttonAddProfile.setWidth("150px");
 		
 		this.buttonEditProfile = new Button("Editar", new Button.ClickListener() {
@@ -126,6 +129,8 @@ public class EditUserWindow extends EditWindow {
             	editProfile();
             }
         });
+		this.buttonEditProfile.setIcon(FontAwesome.EDIT);
+		this.buttonEditProfile.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		this.buttonEditProfile.setWidth("150px");
 		
 		this.buttonRemoveProfile = new Button("Remover", new Button.ClickListener() {
@@ -134,6 +139,8 @@ public class EditUserWindow extends EditWindow {
             	removeProfile();
             }
         });
+		this.buttonRemoveProfile.setIcon(FontAwesome.TRASH_O);
+		this.buttonRemoveProfile.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonRemoveProfile.setWidth("150px");
 		
 		HorizontalLayout h2 = new HorizontalLayout(this.buttonAddProfile, this.buttonEditProfile, this.buttonRemoveProfile);
@@ -152,6 +159,8 @@ public class EditUserWindow extends EditWindow {
             	addDepartment();
             }
         });
+		this.buttonAddDepartment.setIcon(FontAwesome.PLUS);
+		this.buttonAddDepartment.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 		this.buttonAddDepartment.setWidth("150px");
 		
 		this.buttonEditDepartment = new Button("Editar", new Button.ClickListener() {
@@ -160,6 +169,8 @@ public class EditUserWindow extends EditWindow {
             	editDepartment();
             }
         });
+		this.buttonEditDepartment.setIcon(FontAwesome.EDIT);
+		this.buttonEditDepartment.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		this.buttonEditDepartment.setWidth("150px");
 		
 		this.buttonRemoveDepartment = new Button("Remover", new Button.ClickListener() {
@@ -168,6 +179,8 @@ public class EditUserWindow extends EditWindow {
             	removeDepartment();
             }
         });
+		this.buttonRemoveDepartment.setIcon(FontAwesome.TRASH_O);
+		this.buttonRemoveDepartment.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonRemoveDepartment.setWidth("150px");
 		
 		HorizontalLayout h3 = new HorizontalLayout(this.buttonAddDepartment, this.buttonEditDepartment, this.buttonRemoveDepartment);

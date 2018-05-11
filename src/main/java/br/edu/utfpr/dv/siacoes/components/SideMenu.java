@@ -1037,6 +1037,9 @@ public class SideMenu extends CustomComponent {
 			if(Session.isUserSupervisor() || Session.isUserStudent()) {
 				layout.addComponent(new MenuEntry("Registro de Reuniões", 1, AttendanceView.NAME));
 			}
+			if((Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()) && !this.sigetConfig.isRegisterProposal()){
+				layout.addComponent(new MenuEntry("Registros de Orientação", 1, ProposalView.NAME));
+			}
 		}
 		
 		layout.addComponent(new MenuEntry("Bancas", 0));

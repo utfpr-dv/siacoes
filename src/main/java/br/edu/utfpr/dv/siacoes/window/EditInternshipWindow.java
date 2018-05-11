@@ -245,7 +245,7 @@ public class EditInternshipWindow extends EditWindow {
             	deleteStudentReport();
             }
         });
-		this.buttonDeleteStudentReport.setIcon(FontAwesome.TRASH);
+		this.buttonDeleteStudentReport.setIcon(FontAwesome.TRASH_O);
 		this.buttonDeleteStudentReport.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonDeleteStudentReport.setWidth("150px");
 		
@@ -279,7 +279,7 @@ public class EditInternshipWindow extends EditWindow {
             	deleteSupervisorReport();
             }
         });
-		this.buttonDeleteSupervisorReport.setIcon(FontAwesome.TRASH);
+		this.buttonDeleteSupervisorReport.setIcon(FontAwesome.TRASH_O);
 		this.buttonDeleteSupervisorReport.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonDeleteSupervisorReport.setWidth("150px");
 		
@@ -313,7 +313,7 @@ public class EditInternshipWindow extends EditWindow {
             	deleteCompanySupervisorReport();
             }
         });
-		this.buttonDeleteCompanySupervisorReport.setIcon(FontAwesome.TRASH);
+		this.buttonDeleteCompanySupervisorReport.setIcon(FontAwesome.TRASH_O);
 		this.buttonDeleteCompanySupervisorReport.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonDeleteCompanySupervisorReport.setWidth("150px");
 		

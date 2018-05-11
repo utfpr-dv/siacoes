@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Button;
@@ -48,6 +49,7 @@ public class DownloadFeedbackWindow extends BasicWindow {
             	downloadFeedback();
             }
         });
+		this.buttonDownload.setIcon(FontAwesome.DOWNLOAD);
 		this.buttonDownload.setWidth("150px");
 		
 		VerticalLayout vl = new VerticalLayout(this.grid, this.buttonDownload);
@@ -81,12 +83,11 @@ public class DownloadFeedbackWindow extends BasicWindow {
 	private void downloadFeedback() {
 		Object value = this.grid.getSelectedRow();
 		
-		if(value != null){
+		if(value != null) {
 			int id = this.appraisers.get((int)value - 1).getIdJuryAppraiser();
 			
 			try {
-				JuryAppraiserBO bo = new JuryAppraiserBO();
-            	JuryAppraiser ja = bo.findById(id);
+            	JuryAppraiser ja = new JuryAppraiserBO().findById(id);
             	
             	if(ja.getFile() != null) {
             		this.showReport(ja.getFile());

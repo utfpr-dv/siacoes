@@ -91,6 +91,7 @@ public class JuryView extends ListView {
             	downloadFile();
             }
         });
+		this.buttonFile.setIcon(FontAwesome.DOWNLOAD);
 		
 		this.buttonForm = new Button("Ficha de Avaliação", new Button.ClickListener() {
             @Override
@@ -98,6 +99,7 @@ public class JuryView extends ListView {
             	downloadForm();
             }
         });
+		this.buttonForm.setIcon(FontAwesome.CLIPBOARD);
 		
 		this.buttonParticipants = new Button("Lista de Presença", new Button.ClickListener() {
             @Override
@@ -105,6 +107,7 @@ public class JuryView extends ListView {
             	downloadParticipants();
             }
         });
+		this.buttonParticipants.setIcon(FontAwesome.LIST_ALT);
 		
 		this.buttonParticipantsReport = new Button("Lista de Ouvintes", new Button.ClickListener() {
             @Override
@@ -112,6 +115,7 @@ public class JuryView extends ListView {
             	downloadParticipantsReport();
             }
         });
+		this.buttonParticipantsReport.setIcon(FontAwesome.FILE_PDF_O);
 		
 		this.buttonTerm = new Button("Termo de Aprovação", new Button.ClickListener() {
             @Override
@@ -160,6 +164,7 @@ public class JuryView extends ListView {
 			this.addActionButton(this.buttonStatements);
 			this.setEditVisible(true);
 			this.setEditCaption("Banca");
+			this.setEditIcon(FontAwesome.CALENDAR_CHECK_O);
 		}
 	}
 	

@@ -15,6 +15,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.renderers.DateRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ProposalAppraiserBO;
@@ -31,6 +32,8 @@ import br.edu.utfpr.dv.siacoes.window.EditProposalWindow;
 public class ProposalView extends ListView {
 
 	public static final String NAME = "proposal";
+	
+	private SigetConfig config;
 	
 	private final SemesterComboBox comboSemester;
 	private final YearField textYear;
@@ -50,31 +53,33 @@ public class ProposalView extends ListView {
 		this.setAddVisible(false);
 		this.setDeleteVisible(false);
 		
-		this.buttonDownload = new Button("Proposta", new Button.ClickListener() {
+		this.config = new SigetConfig();
+		try {
+			this.config = new SigetConfigBO().findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		this.buttonDownload = new Button("Down. da Proposta", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
             	downloadFile();
             }
         });
 		this.buttonDownload.setIcon(FontAwesome.DOWNLOAD);
-		this.addActionButton(this.buttonDownload);
-		
-		SigetConfig config = new SigetConfig();
-		try {
-			SigetConfigBO bo = new SigetConfigBO();
-			
-			config = bo.findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(this.config.isRegisterProposal()) {
+			this.addActionButton(this.buttonDownload);
 		}
+		
 		this.buttonInvalidate = new Button("Invalidar Proposta", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
             	invalidateProposal();
             }
         });
-		if(config.isRegisterProposal()) {
+		this.buttonInvalidate.setIcon(FontAwesome.REMOVE);
+		this.buttonInvalidate.addStyleName(ValoTheme.BUTTON_DANGER);
+		if(this.config.isRegisterProposal()) {
 			this.addActionButton(this.buttonInvalidate);
 		}
 		this.buttonCloseFeedback = new Button("Encerrar Avaliações", new Button.ClickListener() {
@@ -83,7 +88,8 @@ public class ProposalView extends ListView {
             	closeFeedback();
             }
         });
-		if(config.isRegisterProposal()) {
+		this.buttonCloseFeedback.setIcon(FontAwesome.CALENDAR_TIMES_O);
+		if(this.config.isRegisterProposal()) {
 			this.addActionButton(this.buttonCloseFeedback);
 		}
 		
@@ -92,6 +98,11 @@ public class ProposalView extends ListView {
 		this.textYear = new YearField();
 		
 		this.addFilterField(new HorizontalLayout(this.comboSemester, this.textYear));
+		
+		if(!this.config.isRegisterProposal()) {
+			this.setEditCaption("Visualizar");
+			this.setEditIcon(FontAwesome.SEARCH);
+		}
 	}
 	
 	protected void loadGrid(){
@@ -201,7 +212,7 @@ public class ProposalView extends ListView {
 			ProposalBO bo = new ProposalBO();
 			Proposal p = bo.findById((int)id);
 			
-			UI.getCurrent().addWindow(new EditProposalWindow(p, this, true));
+			UI.getCurrent().addWindow(new EditProposalWindow(p, this, this.config.isRegisterProposal()));
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

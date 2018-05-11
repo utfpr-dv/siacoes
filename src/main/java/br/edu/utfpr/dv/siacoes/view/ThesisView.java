@@ -71,6 +71,7 @@ public class ThesisView extends ListView {
             	juryClick();
             }
         });
+		this.buttonJury.setIcon(FontAwesome.CALENDAR_CHECK_O);
 		
 		this.buttonSendFeedback = new Button("Feedback", new Button.ClickListener() {
             @Override
@@ -94,6 +95,7 @@ public class ThesisView extends ListView {
             	downloadSupervisorStatement();
             }
         });
+		this.buttonSupervisorStatement.setIcon(FontAwesome.FILE_PDF_O);
 		
 		this.buttonCosupervisorStatement = new Button("Dec. Coorientação", new Button.ClickListener() {
             @Override
@@ -101,6 +103,7 @@ public class ThesisView extends ListView {
             	downloadCosupervisorStatement();
             }
         });
+		this.buttonCosupervisorStatement.setIcon(FontAwesome.FILE_PDF_O);
 		
 		if(Session.isUserProfessor()){
 			this.addActionButton(this.buttonSendFeedback);
@@ -116,6 +119,7 @@ public class ThesisView extends ListView {
 		this.setDeleteVisible(false);
 		
 		this.setEditCaption("Visualizar");
+		this.setEditIcon(FontAwesome.SEARCH);
 		
 		this.comboSemester = new SemesterComboBox();
 		

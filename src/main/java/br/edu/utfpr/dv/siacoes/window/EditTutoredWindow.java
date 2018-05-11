@@ -23,7 +23,6 @@ import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.bo.ThesisBO;
-import br.edu.utfpr.dv.siacoes.model.Document;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.Project;
@@ -31,7 +30,6 @@ import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
-import br.edu.utfpr.dv.siacoes.util.ExtensionUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditTutoredWindow extends EditWindow {

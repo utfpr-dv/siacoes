@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.ui.Button.ClickEvent;
 
 import br.edu.utfpr.dv.siacoes.bo.ProposalAppraiserBO;
@@ -45,6 +47,8 @@ public class DownloadProposalFeedbackWindow extends BasicWindow {
             	viewComments();
             }
         });
+		this.buttonComments.setIcon(FontAwesome.SEARCH);
+		this.buttonComments.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		this.buttonComments.setWidth("150px");
 		
 		VerticalLayout vl = new VerticalLayout(this.grid, this.buttonComments);

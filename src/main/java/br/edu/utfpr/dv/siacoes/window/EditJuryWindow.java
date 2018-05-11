@@ -127,7 +127,7 @@ public class EditJuryWindow extends EditWindow {
             	removeAppraiser();
             }
         });
-		this.buttonRemoveAppraiser.setIcon(FontAwesome.TRASH);
+		this.buttonRemoveAppraiser.setIcon(FontAwesome.TRASH_O);
 		this.buttonRemoveAppraiser.addStyleName(ValoTheme.BUTTON_DANGER);
 		
 		this.buttonAppraiserScore = new Button("Lançar Notas", new Button.ClickListener() {
@@ -183,7 +183,7 @@ public class EditJuryWindow extends EditWindow {
             	removeParticipant();
             }
         });
-		this.buttonRemoveParticipant.setIcon(FontAwesome.TRASH);
+		this.buttonRemoveParticipant.setIcon(FontAwesome.TRASH_O);
 		this.buttonRemoveParticipant.addStyleName(ValoTheme.BUTTON_DANGER);
 		
 		this.buttonParticipantStatement = new Button("Gerar Declaração", new Button.ClickListener() {

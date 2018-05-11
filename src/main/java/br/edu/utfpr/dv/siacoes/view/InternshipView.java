@@ -108,7 +108,7 @@ public class InternshipView extends ListView {
             	juryClick();
             }
         });
-		
+		this.buttonJury.setIcon(FontAwesome.CALENDAR_CHECK_O);
 		this.addActionButton(this.buttonJury);	
 		
 		this.buttonProfessorStatement = new Button("Declaração", new Button.ClickListener() {
@@ -117,7 +117,7 @@ public class InternshipView extends ListView {
             	downloadProfessorStatement();
             }
         });
-		
+		this.buttonProfessorStatement.setIcon(FontAwesome.FILE_PDF_O);
 		this.addActionButton(this.buttonProfessorStatement);
 		
 		this.buttonStudentStatement = new Button("Declaração", new Button.ClickListener() {
@@ -126,7 +126,7 @@ public class InternshipView extends ListView {
             	downloadStudentStatement();
             }
         });
-		
+		this.buttonStudentStatement.setIcon(FontAwesome.FILE_PDF_O);
 		this.addActionButton(this.buttonStudentStatement);
 		
 		this.buttonFinalReport = new Button("Enviar Relatório", new Button.ClickListener() {
@@ -136,7 +136,6 @@ public class InternshipView extends ListView {
             }
         });
 		this.buttonFinalReport.setIcon(FontAwesome.UPLOAD);
-		
 		this.addActionButton(this.buttonFinalReport);
 		
 		this.buttonJuryFeedback = new Button("Feedback da Banca", new Button.ClickListener() {
@@ -145,7 +144,7 @@ public class InternshipView extends ListView {
             	juryFeedback();
             }
         });
-		
+		this.buttonJuryFeedback.setIcon(FontAwesome.CHECK);
 		this.addActionButton(this.buttonJuryFeedback);
 		
 		this.buttonFinalDocument = new Button("Versão Final", new Button.ClickListener() {
@@ -178,8 +177,8 @@ public class InternshipView extends ListView {
 				this.buttonFinalDocument.setIcon(FontAwesome.CHECK);
 			}
 		}else{
-			this.buttonProfessorStatement.setCaption("Declaração Professor");
-			this.buttonStudentStatement.setCaption("Declaração Acadêmico");
+			this.buttonProfessorStatement.setCaption("Declaração Prof.");
+			this.buttonStudentStatement.setCaption("Declaração Acad.");
 		}
 	}
 

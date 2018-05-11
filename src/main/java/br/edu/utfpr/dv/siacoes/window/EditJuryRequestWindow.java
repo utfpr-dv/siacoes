@@ -132,7 +132,7 @@ public class EditJuryRequestWindow extends EditWindow {
             	removeAppraiser();
             }
         });
-		this.buttonRemoveAppraiser.setIcon(FontAwesome.TRASH);
+		this.buttonRemoveAppraiser.setIcon(FontAwesome.TRASH_O);
 		this.buttonRemoveAppraiser.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonRemoveAppraiser.setWidth("100px");
 		
@@ -167,7 +167,7 @@ public class EditJuryRequestWindow extends EditWindow {
             	removeSubstitute();
             }
         });
-		this.buttonRemoveSubstitute.setIcon(FontAwesome.TRASH);
+		this.buttonRemoveSubstitute.setIcon(FontAwesome.TRASH_O);
 		this.buttonRemoveSubstitute.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonRemoveSubstitute.setWidth("100px");
 		

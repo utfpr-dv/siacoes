@@ -71,6 +71,7 @@ public class TutoredView extends ListView {
             	supervisorAgreement();
             }
         });
+		this.buttonSupervisorAgreement.setIcon(FontAwesome.CHECK);
 		this.buttonSupervisorAgreement.setDescription("Preencher Termo de Concordância de Orientação");
 		
 		this.buttonPrintSupervisorAgreement = new Button("Imp. Termo de Conc.", new Button.ClickListener() {
@@ -87,6 +88,7 @@ public class TutoredView extends ListView {
             	supervisorIndication();
             }
         });
+		this.buttonSupervisorIndication.setIcon(FontAwesome.USER_PLUS);
 		this.buttonSupervisorIndication.setDescription("Indicar avaliadores para a Proposta de TCC 1");
 		
 		this.buttonJuryRequest = new Button("Solic. Agend. Banca", new Button.ClickListener() {
@@ -95,6 +97,7 @@ public class TutoredView extends ListView {
             	juryRequest();
             }
         });
+		this.buttonJuryRequest.setIcon(FontAwesome.CALENDAR_PLUS_O);
 		this.buttonJuryRequest.setDescription("Solicitar agendamento de banca");
 		
 		this.buttonPrintJuryRequest = new Button("Imp. Agend. de Banca", new Button.ClickListener() {
@@ -111,6 +114,7 @@ public class TutoredView extends ListView {
             	supervisorChange();
             }
         });
+		this.buttonSupervisorChange.setIcon(FontAwesome.USERS);
 		this.buttonSupervisorChange.setDescription("Solicitar alteração de orientador");
 		
 		this.buttonStatementStage1 = new Button("Declaração TCC 1", new Button.ClickListener() {
@@ -119,6 +123,7 @@ public class TutoredView extends ListView {
             	downloadProfessorStatement(1);
             }
         });
+		this.buttonStatementStage1.setIcon(FontAwesome.FILE_PDF_O);
 		this.buttonStatementStage1.setDescription("Imprimir Declaração de Orientação de TCC 1");
 		
 		this.buttonStatementStage2 = new Button("Declaração TCC 2", new Button.ClickListener() {
@@ -127,6 +132,7 @@ public class TutoredView extends ListView {
             	downloadProfessorStatement(2);
             }
         });
+		this.buttonStatementStage2.setIcon(FontAwesome.FILE_PDF_O);
 		this.buttonStatementStage2.setDescription("Imprimir Declaração de Orientação de TCC 2");
 		
 		this.setAddVisible(false);
@@ -139,16 +145,16 @@ public class TutoredView extends ListView {
 			this.config = new SigetConfig();
 		}
 		
-		if(config.isSupervisorAgreement()) {
+		if(this.config.isSupervisorAgreement()) {
 			this.addActionButton(this.buttonSupervisorAgreement);
 			this.addActionButton(this.buttonPrintSupervisorAgreement);
 		}
 		
-		if(config.getSupervisorIndication() > 0) {
+		if(this.config.isRegisterProposal() && (this.config.getSupervisorIndication() > 0)) {
 			this.addActionButton(this.buttonSupervisorIndication);
 		}
 		
-		if(config.isSupervisorJuryRequest()) {
+		if(this.config.isSupervisorJuryRequest()) {
 			this.addActionButton(this.buttonJuryRequest);
 			this.addActionButton(this.buttonPrintJuryRequest);
 		}

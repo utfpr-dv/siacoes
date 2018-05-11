@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import org.vaadin.dialogs.ConfirmDialog;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
@@ -165,6 +166,8 @@ public class EditProposalWindow extends EditWindow {
             	addAppraiser();
             }
         });
+		this.buttonAddAppraiser.setIcon(FontAwesome.PLUS);
+		this.buttonAddAppraiser.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 		
 		this.buttonViewAppraiser = new Button("Visualizar Observações", new Button.ClickListener() {
             @Override
@@ -172,6 +175,8 @@ public class EditProposalWindow extends EditWindow {
             	editAppraiser();
             }
         });
+		this.buttonViewAppraiser.setIcon(FontAwesome.SEARCH);
+		this.buttonViewAppraiser.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		
 		this.buttonDeleteAppraiser = new Button("Remover Avaliador", new Button.ClickListener() {
             @Override
@@ -179,6 +184,8 @@ public class EditProposalWindow extends EditWindow {
             	deleteAppraiser();
             }
         });
+		this.buttonDeleteAppraiser.setIcon(FontAwesome.TRASH_O);
+		this.buttonDeleteAppraiser.addStyleName(ValoTheme.BUTTON_DANGER);
 		
 		HorizontalLayout layoutButtons = new HorizontalLayout(this.buttonAddAppraiser, this.buttonViewAppraiser, this.buttonDeleteAppraiser);
 		layoutButtons.setSpacing(true);
@@ -193,11 +200,15 @@ public class EditProposalWindow extends EditWindow {
 		this.tab.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 		this.tab.addTab(tab1, "Proposta");
 		
-		if(Session.isUserManager(SystemModule.SIGET)){
-			this.tab.addTab(tab2, "Avaliadores");
-			
-			this.loadGridAppraisers();
-		}else if(Session.isUserStudent()){
+		if(Session.isUserManager(SystemModule.SIGET)) {
+			if(submitProposal) {
+				this.tab.addTab(tab2, "Avaliadores");
+				
+				this.loadGridAppraisers();
+			} else {
+				this.setSaveButtonEnabled(false);
+			}
+		} else if(Session.isUserStudent()) {
 			try {
 				DeadlineBO dbo = new DeadlineBO();
 				Semester semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());

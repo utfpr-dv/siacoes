@@ -93,7 +93,7 @@ public abstract class ListView extends BasicView {
             }
         });
 		this.buttonDelete.setWidth("150px");
-		this.buttonDelete.setIcon(FontAwesome.TRASH);
+		this.buttonDelete.setIcon(FontAwesome.TRASH_O);
 		this.buttonDelete.addStyleName(ValoTheme.BUTTON_DANGER);
 		
 		this.layoutButtons = new VerticalLayout(buttonAdd, buttonEdit, buttonDelete);
