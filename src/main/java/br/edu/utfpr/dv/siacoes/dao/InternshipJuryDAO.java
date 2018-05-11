@@ -181,7 +181,7 @@ public class InternshipJuryDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement("SELECT internship.iddepartment FROM internshipjury " +
-					"INNER JOIN internship ON internship.idinternship=internshipjury.internship " +
+					"INNER JOIN internship ON internship.idinternship=internshipjury.idinternship " +
 					"WHERE internshipjury.idinternshipjury=?");
 		
 			stmt.setInt(1, idInternshipJury);
