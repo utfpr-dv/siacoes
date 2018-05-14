@@ -86,7 +86,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Acadêmico (a):]]></text>
+				<text><![CDATA[Acadêmico(a):]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="110" y="30" width="370" height="20" uuid="01aab6f5-615e-4fd9-9741-de8d5183b5eb"/>
@@ -138,7 +138,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Avaliador (a):]]></text>
+				<text><![CDATA[Avaliador(a):]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="110" y="97" width="370" height="20" uuid="4506e861-00c8-48e2-aa9e-e3f93c051d7e"/>
@@ -158,7 +158,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Ficha de Avaliação do Estágio Supervisionado Obrigatório]]></text>
+				<text><![CDATA[Ficha de Avaliação do Estágio Curricular Obrigatório]]></text>
 			</staticText>
 		</band>
 	</columnHeader>

@@ -577,7 +577,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="11" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{result} == br.edu.utfpr.dv.siacoes.model.Jury.JuryResult.APPROVED, "(X)", "(  )") + "APROVAÇÃO SEM RESSALVAS"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{result} == br.edu.utfpr.dv.siacoes.model.Jury.JuryResult.APPROVED, "(X)", "(  )") + " APROVAÇÃO SEM RESSALVAS"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="1" y="201" width="480" height="18" uuid="f05202d4-fe7f-4400-b266-c5246853e1b6"/>
@@ -590,7 +590,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="11" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{result} == br.edu.utfpr.dv.siacoes.model.Jury.JuryResult.APPROVEDWITHRESERVATIONS, "(X)", "(  )") + "APROVAÇÃO COM RESSALVAS"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{result} == br.edu.utfpr.dv.siacoes.model.Jury.JuryResult.APPROVEDWITHRESERVATIONS, "(X)", "(  )") + " APROVAÇÃO COM RESSALVAS"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="1" y="232" width="480" height="18" uuid="96ff4bdd-6cee-4ff6-aa5e-21b1764944c1"/>
@@ -603,7 +603,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="11" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{result} == br.edu.utfpr.dv.siacoes.model.Jury.JuryResult.DISAPPROVED, "(X)", "(  )") + "REPROVAÇÃO"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{result} == br.edu.utfpr.dv.siacoes.model.Jury.JuryResult.DISAPPROVED, "(X)", "(  )") + " REPROVAÇÃO"]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

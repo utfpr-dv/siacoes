@@ -297,6 +297,7 @@ public class InternshipJuryBO {
 				JuryFormAppraiserReport appraiserReport = new JuryFormAppraiserReport();
 				JuryFormAppraiserScoreReport scoreReport = new JuryFormAppraiserScoreReport();
 				double scoreSum = 0, writingPonderosity = 0, oralPonderosity = 0, argumentationPonderosity = 0;
+				boolean isSupervisor = false;
 				
 				appraiserReport.setName(appraiser.getAppraiser().getName());
 				appraiserReport.setComments(appraiser.getComments());
@@ -364,6 +365,7 @@ public class InternshipJuryBO {
 					
 					member = member + 1;
 				}else{
+					isSupervisor = true;
 					appraiserReport.setDescription("Orientador");
 					report.setSupervisorScore(appraiserReport.getScore());
 				}
@@ -371,7 +373,11 @@ public class InternshipJuryBO {
 				scoreReport.setName(appraiserReport.getName());
 				scoreReport.setDescription(appraiserReport.getDescription());
 				
-				report.getAppraisers().add(appraiserReport);
+				if(isSupervisor) {
+					report.getAppraisers().add(0, appraiserReport);
+				} else {
+					report.getAppraisers().add(appraiserReport);	
+				}
 			}
 			
 			if((report.getAppraiser1Score() > 0) && (report.getAppraiser2Score() > 0) && (report.getSupervisorScore() > 0) && (report.getCompanySupervisorScore() > 0)){
