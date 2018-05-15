@@ -71,6 +71,7 @@ public class CompanySupervisorView extends ListView {
 	@Override
 	public void addClick() {
 		User user = new User();
+		user.setExternal(true);
 		user.setProfiles(new ArrayList<UserProfile>());
 		user.getProfiles().add(UserProfile.COMPANYSUPERVISOR);
 		UI.getCurrent().addWindow(new EditCompanySupervisorWindow(user, this));
@@ -86,7 +87,7 @@ public class CompanySupervisorView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Empresa", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			Notification.show("Editar Supervisor", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
 	

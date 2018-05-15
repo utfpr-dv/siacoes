@@ -106,7 +106,7 @@ public class SupervisorComboBox extends ComboBox {
 			} else if(this.getFilter() == SupervisorFilter.INSTITUTION) {
 				this.list = bo.listInstitutionalSupervisors(true);
 			} else {
-				this.list = bo.listAllSupervisors(true);
+				this.list = bo.listAllSupervisors(true, false);
 			}
 			
 			this.removeAllItems();

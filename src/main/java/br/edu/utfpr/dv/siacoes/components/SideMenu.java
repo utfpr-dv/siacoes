@@ -79,6 +79,7 @@ import br.edu.utfpr.dv.siacoes.view.DocumentView;
 import br.edu.utfpr.dv.siacoes.view.EmailMessageView;
 import br.edu.utfpr.dv.siacoes.view.EvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.EventCalendarView;
+import br.edu.utfpr.dv.siacoes.view.ExternalSupervisorView;
 import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.FinalSubmissionView;
 import br.edu.utfpr.dv.siacoes.view.InternshipJuryView;
@@ -841,7 +842,10 @@ public class SideMenu extends CustomComponent {
 		}
 		
 		if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager() || Session.isUserProfessor() || Session.isUserSupervisor() || Session.isUserStudent()) {
-			layout.addComponent(new MenuEntry("Projeto de TCC 1", 0));
+			if(!Session.isUserSupervisor() || this.sigetConfig.isRequestFinalDocumentStage1()) {
+				layout.addComponent(new MenuEntry("Projeto de TCC 1", 0));
+			}
+			
 			if(Session.isUserStudent()){
 				layout.addComponent(new MenuEntry("Submeter Projeto", 1, new MenuEntryClickListener() {
 					@Override
@@ -1043,6 +1047,7 @@ public class SideMenu extends CustomComponent {
 		
 		if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager() || Session.isUserProfessor() || Session.isUserSupervisor() || Session.isUserStudent()) {
 			layout.addComponent(new MenuEntry("Orientação", 0));
+			
 			if(Session.isUserStudent()){
 				layout.addComponent(new MenuEntry("Lista de Orientadores", 1, SupervisorView.NAME));
 				layout.addComponent(new MenuEntry("Registrar Orientação", 1, new MenuEntryClickListener() {
@@ -1084,8 +1089,11 @@ public class SideMenu extends CustomComponent {
 			if(Session.isUserSupervisor() || Session.isUserStudent()) {
 				layout.addComponent(new MenuEntry("Registro de Reuniões", 1, AttendanceView.NAME));
 			}
-			if((Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()) && !this.sigetConfig.isRegisterProposal()){
-				layout.addComponent(new MenuEntry("Registros de Orientação", 1, ProposalView.NAME));
+			if((Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager())) {
+				if(!this.sigetConfig.isRegisterProposal()) {
+					layout.addComponent(new MenuEntry("Registros de Orientação", 1, ProposalView.NAME));
+				}
+				layout.addComponent(new MenuEntry("Orientadores Externos", 1, ExternalSupervisorView.NAME));
 			}
 		}
 		

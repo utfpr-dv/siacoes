@@ -69,11 +69,11 @@ public class UserBO {
 		}
 	}
 	
-	public List<User> listAllSupervisors(boolean onlyActives) throws Exception{
+	public List<User> listAllSupervisors(boolean onlyActives, boolean onlyExternal) throws Exception{
 		try {
 			UserDAO dao = new UserDAO();
 			
-			return dao.listAllSupervisors(onlyActives);
+			return dao.listAllSupervisors(onlyActives, onlyExternal);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -206,10 +206,10 @@ public class UserBO {
 			if((user.getProfiles() == null) || (user.getProfiles().size() == 0)){
 				throw new Exception("Informe ao menos um perfil para o usuário.");
 			}
-			if((!user.hasProfile(UserProfile.COMPANYSUPERVISOR) || (user.getProfiles().size() > 1)) && (user.getLogin().isEmpty())){
+			if(((!user.hasProfile(UserProfile.COMPANYSUPERVISOR) && !user.hasProfile(UserProfile.SUPERVISOR)) || (user.getProfiles().size() > 1)) && (user.getLogin().isEmpty())){
 				throw new Exception("Informe o login.");
 			}
-			if((!user.hasProfile(UserProfile.COMPANYSUPERVISOR) || (user.getProfiles().size() > 1)) && (user.getPassword().isEmpty())){
+			if(((!user.hasProfile(UserProfile.COMPANYSUPERVISOR) && !user.hasProfile(UserProfile.SUPERVISOR)) || (user.getProfiles().size() > 1)) && (user.getPassword().isEmpty())){
 				throw new Exception("Informe a senha.");
 			}
 			if(user.getName().isEmpty()){

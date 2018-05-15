@@ -396,7 +396,7 @@ public class UserDAO {
 		}
 	}
 	
-	public List<User> listAllSupervisors(boolean onlyActives) throws SQLException{
+	public List<User> listAllSupervisors(boolean onlyActives, boolean onlyExternal) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -408,7 +408,9 @@ public class UserDAO {
 			rs = stmt.executeQuery("SELECT DISTINCT \"user\".*, company.name AS companyName " +
 						"FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser " +
 						"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-						"WHERE \"user\".login <> 'admin' AND userprofile.profile IN (1, 5) " + (onlyActives ? " AND \"user\".active = 1 " : "") + 
+						"WHERE \"user\".login <> 'admin' AND userprofile.profile IN (1, 5) " + 
+							(onlyActives ? " AND \"user\".active = 1 " : "") + 
+							(onlyExternal ? " AND \"user\".external = 1 " : "") +
 						" ORDER BY \"user\".name");
 			List<User> list = new ArrayList<User>();
 			

@@ -10,6 +10,8 @@ import com.vaadin.ui.TextField;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.components.CompanyComboBox;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.util.StringUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditCompanySupervisorWindow extends EditWindow {
@@ -68,15 +70,23 @@ public class EditCompanySupervisorWindow extends EditWindow {
 	@Override
 	public void save() {
 		try{
-			UserBO bo = new UserBO();
-			
 			this.user.setCompany(this.comboCompany.getCompany());
 			this.user.setName(this.textName.getValue());
 			this.user.setEmail(this.textEmail.getValue());
 			this.user.setPhone(this.textPhone.getValue());
 			this.user.setActive(this.checkActive.getValue());
 			
-			bo.save(this.user);
+			if(this.user.getIdUser() == 0) {
+				this.user.setLogin(this.user.getEmail());
+				this.user.setSalt(StringUtils.generateSalt());
+				this.user.setPassword(this.user.getEmail() + this.user.getSalt());
+			}
+			
+			if((this.user.getProfiles() != null) && (this.user.getProfiles().size() == 0)) {
+				this.user.getProfiles().add(UserProfile.COMPANYSUPERVISOR);
+			}
+			
+			new UserBO().save(this.user);
 			
 			Notification.show("Salvar Supervisor", "Supervisor salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
 			

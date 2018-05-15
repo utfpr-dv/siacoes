@@ -1,26 +1,19 @@
 ﻿package br.edu.utfpr.dv.siacoes.view;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
 
 import br.edu.utfpr.dv.siacoes.Session;
-import br.edu.utfpr.dv.siacoes.bo.AttendanceBO;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
-import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
-import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
-import br.edu.utfpr.dv.siacoes.window.EditEmailConfigWindow;
-import br.edu.utfpr.dv.siacoes.window.EditUserWindow;
 import br.edu.utfpr.dv.siacoes.window.SupervisorAreaWindow;
 
 public class SupervisorView extends ListView {
