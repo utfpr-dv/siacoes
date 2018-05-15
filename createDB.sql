@@ -3,7 +3,8 @@ CREATE TABLE `appconfig` (
 	`host` VARCHAR(255) NOT NULL,
 	`sigacenabled` TINYINT NOT NULL,
 	`sigesenabled` TINYINT NOT NULL,
-	`sigetenabled` TINYINT NOT NULL
+	`sigetenabled` TINYINT NOT NULL,
+	`mobileenabled` TINYINT NOT NULL
 );
 
 CREATE TABLE `ldapconfig` (

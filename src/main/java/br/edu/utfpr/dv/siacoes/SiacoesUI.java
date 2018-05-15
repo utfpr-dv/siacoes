@@ -53,6 +53,7 @@ import br.edu.utfpr.dv.siacoes.view.JuryParticipantsReportView;
 import br.edu.utfpr.dv.siacoes.view.JurySemesterChartView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
 import br.edu.utfpr.dv.siacoes.view.MainView;
+import br.edu.utfpr.dv.siacoes.view.MobileView;
 import br.edu.utfpr.dv.siacoes.view.PDFView;
 import br.edu.utfpr.dv.siacoes.view.PasswordView;
 import br.edu.utfpr.dv.siacoes.view.ProjectView;
@@ -147,6 +148,7 @@ public class SiacoesUI extends UI {
         getNavigator().addView(JuryParticipantsReportView.NAME, JuryParticipantsReportView.class);
         getNavigator().addView(InternshipJuryParticipantsReportView.NAME, InternshipJuryParticipantsReportView.class);
         getNavigator().addView(PasswordView.NAME, PasswordView.class);
+        getNavigator().addView(MobileView.NAME, MobileView.class);
         
         getNavigator().setErrorView(Error404View.class);
         
@@ -163,7 +165,7 @@ public class SiacoesUI extends UI {
                 boolean isLoginView = event.getNewView() instanceof LoginView;
                 boolean isMainView = event.getNewView() instanceof MainView;
                 
-                if ((event.getNewView() instanceof AuthenticateView) || (event.getNewView() instanceof CertificateView) || (event.getNewView() instanceof PasswordView)){
+                if ((event.getNewView() instanceof AuthenticateView) || (event.getNewView() instanceof CertificateView) || (event.getNewView() instanceof PasswordView) || (event.getNewView() instanceof MobileView)){
                 	return true;
                 } else if (!isLoggedIn && !isLoginView) {
                     // Redirect to login view always if a user has not yet

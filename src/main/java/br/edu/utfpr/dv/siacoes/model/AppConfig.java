@@ -1,12 +1,24 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import br.edu.utfpr.dv.siacoes.dao.ConnectionDAO;
 
@@ -61,6 +73,7 @@ public class AppConfig {
 	private boolean sigacEnabled;
 	private boolean sigesEnabled;
 	private boolean sigetEnabled;
+	private boolean mobileEnabled;
 	
 	private AppConfig(){
 		this.setTheme(AppTheme.DEFAULT);
@@ -82,6 +95,19 @@ public class AppConfig {
 	public void setHost(String host) {
 		this.host = host;
 	}
+	public byte[] getHostQRCode(int width, int height) throws WriterException, IOException {
+		String charset = "UTF-8";
+		Map hintMap = new HashMap();
+		hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+		
+		BitMatrix matrix = new MultiFormatWriter().encode(new String(this.getHost().getBytes(charset), charset), BarcodeFormat.QR_CODE, width, height, hintMap);
+		
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		
+		MatrixToImageWriter.writeToStream(matrix, "jpeg", stream);
+		
+		return stream.toByteArray();
+	}
 	public boolean isSigacEnabled() {
 		return sigacEnabled;
 	}
@@ -99,6 +125,12 @@ public class AppConfig {
 	}
 	public void setSigetEnabled(boolean sigetEnabled) {
 		this.sigetEnabled = sigetEnabled;
+	}
+	public boolean isMobileEnabled() {
+		return mobileEnabled;
+	}
+	public void setMobileEnabled(boolean mobileEnabled) {
+		this.mobileEnabled = mobileEnabled;
 	}
 
 	private static AppConfig instance = null;
@@ -134,6 +166,7 @@ public class AppConfig {
 				this.setSigacEnabled(rs.getInt("sigacenabled") == 1);
 				this.setSigesEnabled(rs.getInt("sigesenabled") == 1);
 				this.setSigetEnabled(rs.getInt("sigetenabled") == 1);
+				this.setMobileEnabled(rs.getInt("mobileenabled") == 1);
 			}
 		}finally{
 			if((rs != null) && !rs.isClosed())
@@ -157,9 +190,9 @@ public class AppConfig {
 			stmt2 = conn.createStatement();
 			rs = stmt2.executeQuery("SELECT * FROM appconfig");
 			if(rs.next()){
-				stmt = conn.prepareStatement("UPDATE appconfig SET theme=?, host=?, sigacenabled=?, sigesenabled=?, sigetenabled=?");	
+				stmt = conn.prepareStatement("UPDATE appconfig SET theme=?, host=?, sigacenabled=?, sigesenabled=?, sigetenabled=?, mobileenabled=?");	
 			}else{
-				stmt = conn.prepareStatement("INSERT INTO appconfig(theme, host, sigacenabled, sigesenabled, sigetenabled) VALUES(?, ?, ?, ?, ?)");
+				stmt = conn.prepareStatement("INSERT INTO appconfig(theme, host, sigacenabled, sigesenabled, sigetenabled, mobileenabled) VALUES(?, ?, ?, ?, ?, ?)");
 			}
 			
 			stmt.setInt(1, this.getTheme().getValue());
@@ -167,6 +200,7 @@ public class AppConfig {
 			stmt.setInt(3, this.isSigacEnabled() ? 1 : 0);
 			stmt.setInt(4, this.isSigesEnabled() ? 1 : 0);
 			stmt.setInt(5, this.isSigetEnabled() ? 1 : 0);
+			stmt.setInt(6, this.isMobileEnabled() ? 1 : 0);
 			
 			stmt.execute();
 			

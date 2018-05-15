@@ -3,7 +3,8 @@ CREATE TABLE appconfig (
 	host VARCHAR(255) NOT NULL,
 	sigacenabled SMALLINT NOT NULL,
 	sigesenabled SMALLINT NOT NULL,
-	sigetenabled SMALLINT NOT NULL
+	sigetenabled SMALLINT NOT NULL,
+	mobileenabled SMALLINT NOT NULL
 );
 
 CREATE TABLE ldapconfig (

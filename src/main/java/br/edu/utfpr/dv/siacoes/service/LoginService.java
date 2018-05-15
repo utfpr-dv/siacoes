@@ -20,6 +20,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
+import br.edu.utfpr.dv.siacoes.model.AppConfig;
 import br.edu.utfpr.dv.siacoes.model.Credential;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
@@ -30,6 +31,10 @@ public class LoginService {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response validateLogin(Credential credentials) {
+		if(!AppConfig.getInstance().isMobileEnabled()) {
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
+		
 		try {
 			UserBO bo = new UserBO();
 			User user = bo.validateLogin(credentials);

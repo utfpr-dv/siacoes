@@ -11,6 +11,7 @@ import javax.servlet.http.Cookie;
 
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinService;
@@ -20,6 +21,8 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Notification;
@@ -312,6 +315,50 @@ public class SideMenu extends CustomComponent {
         this.layoutExpanded.addComponent(this.buildUserMenu());
         this.layoutExpanded.addComponent(this.buildLinkMenu());
         this.layoutExpanded.addComponent(this.accordionMenu);
+        
+        if(AppConfig.getInstance().isMobileEnabled()) {
+	        Label l1 = new Label("Efetue o download do SIACOES Mobile na loja de aplicativos do seu celular.");
+	        this.layoutExpanded.addComponent(l1);
+	        this.layoutExpanded.setComponentAlignment(l1, Alignment.TOP_CENTER);
+	        
+	        Link linkAppStore = new Link(null, new ExternalResource("https://www.apple.com/br/ios/app-store"));
+			linkAppStore.setIcon(new ThemeResource("images/appstore100.png"));
+			linkAppStore.setWidth("100px");
+			this.layoutExpanded.addComponent(linkAppStore);
+			this.layoutExpanded.setComponentAlignment(linkAppStore, Alignment.TOP_CENTER);
+			
+			VerticalLayout v1 = new VerticalLayout();
+			v1.setHeight("5px");
+			this.layoutExpanded.addComponent(v1);
+			
+			Link linkPlayStore = new Link(null, new ExternalResource("https://play.google.com/store"));
+			linkPlayStore.setIcon(new ThemeResource("images/playstore100.png"));
+			linkPlayStore.setWidth("100px");
+			this.layoutExpanded.addComponent(linkPlayStore);
+			this.layoutExpanded.setComponentAlignment(linkPlayStore, Alignment.TOP_CENTER);
+			
+	        Label l2 = new Label("Leia o QRCode abaixo para configurar o acesso de seu aplicativo.");
+	        this.layoutExpanded.addComponent(l2);
+	        this.layoutExpanded.setComponentAlignment(l2, Alignment.TOP_CENTER);
+	        
+	        Image imageQRCode = new Image();
+	        imageQRCode.setWidth("100px");
+	        imageQRCode.setHeight("100px");
+			StreamResource resource = new StreamResource(
+	            new StreamResource.StreamSource() {
+	                @Override
+	                public InputStream getStream() {
+	                    try {
+							return new ByteArrayInputStream(AppConfig.getInstance().getHostQRCode(100, 100));
+						} catch (Exception e) {
+							return null;
+						}
+	                }
+	            }, "qrcode.png");
+			imageQRCode.setSource(resource);
+			this.layoutExpanded.addComponent(imageQRCode);
+			this.layoutExpanded.setComponentAlignment(imageQRCode, Alignment.TOP_CENTER);
+        }
         
         this.menuContent.addComponent(this.layoutExpanded);
         

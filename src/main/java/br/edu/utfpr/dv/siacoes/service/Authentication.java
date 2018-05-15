@@ -6,6 +6,8 @@ import java.security.Principal;
 import javax.annotation.Priority;
 import javax.ws.rs.ext.Provider;
 
+import br.edu.utfpr.dv.siacoes.model.AppConfig;
+
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -22,9 +24,13 @@ public class Authentication implements ContainerRequestFilter {
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 		String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+		
+		if(!AppConfig.getInstance().isMobileEnabled()) {
+			throw new NotAuthorizedException("O acesso via dispositivos móveis não está habilitado.");
+		}
 
-		if (authorizationHeader == null || !authorizationHeader.toLowerCase().startsWith("bearer ")) {
-			throw new NotAuthorizedException("Needs provide authorization header");
+		if(authorizationHeader == null || !authorizationHeader.toLowerCase().startsWith("bearer ")) {
+			throw new NotAuthorizedException("É necessário fornecer as credenciais de acesso.");
 		}
 		
 		String token = authorizationHeader.substring("Bearer".length()).trim();
@@ -33,7 +39,7 @@ public class Authentication implements ContainerRequestFilter {
 			String login = new LoginService().validateToken(token);
 
 			if((login == null) || login.trim().isEmpty()) {
-				throw new NotAuthorizedException("User not found");
+				throw new NotAuthorizedException("Usuário não encontrado.");
 			}
 
 			modifyRequestContext(requestContext, login);

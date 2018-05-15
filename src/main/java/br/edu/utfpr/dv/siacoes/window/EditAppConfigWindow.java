@@ -19,6 +19,7 @@ public class EditAppConfigWindow extends EditWindow {
 	private final CheckBox checkSigacEnabled;
 	private final CheckBox checkSigesEnabled;
 	private final CheckBox checkSigetEnabled;
+	private final CheckBox checkMobileEnabled;
 	
 	public EditAppConfigWindow(){
 		super("Configurações do Sistema", null);
@@ -39,11 +40,14 @@ public class EditAppConfigWindow extends EditWindow {
 		
 		this.checkSigetEnabled = new CheckBox("Habilitar módulo de Trabalho de Conclusão de Curso");
 		
+		this.checkMobileEnabled = new CheckBox("Habilitar o acesso pelo aplicativo SIACOES Mobile");
+		
 		this.addField(this.comboTheme);
 		this.addField(this.textHost);
 		this.addField(this.checkSigacEnabled);
 		this.addField(this.checkSigesEnabled);
 		this.addField(this.checkSigetEnabled);
+		this.addField(this.checkMobileEnabled);
 		
 		this.loadConfig();
 	}
@@ -54,6 +58,7 @@ public class EditAppConfigWindow extends EditWindow {
 		this.checkSigacEnabled.setValue(AppConfig.getInstance().isSigacEnabled());
 		this.checkSigesEnabled.setValue(AppConfig.getInstance().isSigesEnabled());
 		this.checkSigetEnabled.setValue(AppConfig.getInstance().isSigetEnabled());
+		this.checkMobileEnabled.setValue(AppConfig.getInstance().isMobileEnabled());
 	}
 
 	@Override
@@ -66,6 +71,7 @@ public class EditAppConfigWindow extends EditWindow {
 			AppConfig.getInstance().setSigacEnabled(this.checkSigacEnabled.getValue());
 			AppConfig.getInstance().setSigesEnabled(this.checkSigesEnabled.getValue());
 			AppConfig.getInstance().setSigetEnabled(this.checkSigetEnabled.getValue());
+			AppConfig.getInstance().setMobileEnabled(this.checkMobileEnabled.getValue());
 			
 			AppConfig.getInstance().save();
 			

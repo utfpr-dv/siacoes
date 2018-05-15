@@ -128,6 +128,16 @@ public class Session {
 			}
 			
 			Session.setUser(user);
+			if(Session.getUser().getProfiles().size() > 0) {
+				Session.setSelectedProfile(Session.getUser().getProfiles().get(0));
+			} else {
+				Session.setSelectedProfile(UserProfile.STUDENT);
+			}
+			if(Session.getListDepartments().size() > 0) {
+				Session.setSelectedDepartment(Session.getListDepartments().get(0));
+			} else {
+				Session.setSelectedDepartment(null);
+			}
 		}
 	}
 	
@@ -135,6 +145,16 @@ public class Session {
 		if(VaadinSession.getCurrent().getAttribute("admin") != null){
 			Session.setUser(Session.getAdministrator());
 			Session.setAdministrator(null);
+			if(Session.getUser().getProfiles().size() > 0) {
+				Session.setSelectedProfile(Session.getUser().getProfiles().get(0));
+			} else {
+				Session.setSelectedProfile(UserProfile.STUDENT);
+			}
+			if(Session.getListDepartments().size() > 0) {
+				Session.setSelectedDepartment(Session.getListDepartments().get(0));
+			} else {
+				Session.setSelectedDepartment(null);
+			}
 		}
 	}
 	
@@ -145,6 +165,8 @@ public class Session {
 	public static void logoff(){
 		Session.setUser(null);
         Session.setAdministrator(null);
+        Session.setSelectedProfile(null);
+        Session.setSelectedDepartment(null);
 	}
 	
 	public static boolean isUserProfessor(){
