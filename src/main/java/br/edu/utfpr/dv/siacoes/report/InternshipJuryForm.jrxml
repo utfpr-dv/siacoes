@@ -63,6 +63,9 @@
 	<field name="result" class="br.edu.utfpr.dv.siacoes.model.Jury.JuryResult">
 		<fieldDescription><![CDATA[result]]></fieldDescription>
 	</field>
+	<field name="appraisersSignatures" class="java.util.List">
+		<fieldDescription><![CDATA[appraisersSignatures]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -257,7 +260,7 @@
 			</staticText>
 			<subreport>
 				<reportElement positionType="Float" x="0" y="124" width="480" height="26" uuid="8b0721bb-44da-4103-8bc1-0413b509f427"/>
-				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{appraisers})]]></dataSourceExpression>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{appraisersSignatures})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["br/edu/utfpr/dv/siacoes/report/JuryFormAppraiserList.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>

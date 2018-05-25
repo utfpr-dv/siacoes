@@ -384,16 +384,30 @@ public class InternshipJuryBO {
 				} else {
 					isSupervisor = true;
 					appraiserReport.setDescription("Orientador");
-					report.setSupervisorScore(appraiserReport.getScore());
+					
+					if(jury.isSupervisorFillJuryForm()) {
+						report.setSupervisorScore(appraiserReport.getScore());
+					} else {
+						report.setSupervisorScore(jury.getSupervisorScore());
+					}
 				}
 				
 				scoreReport.setName(appraiserReport.getName());
 				scoreReport.setDescription(appraiserReport.getDescription());
 				
+				JuryFormAppraiserReport signature = new JuryFormAppraiserReport();
+				signature.setName(appraiserReport.getName());
+				signature.setDescription(appraiserReport.getDescription());
+				
 				if(isSupervisor) {
-					report.getAppraisers().add(0, appraiserReport);
+					if(jury.isSupervisorFillJuryForm()) {
+						report.getAppraisers().add(0, appraiserReport);
+					}
+					
+					report.getAppraisersSignatures().add(0, signature);
 				} else {
-					report.getAppraisers().add(appraiserReport);	
+					report.getAppraisers().add(appraiserReport);
+					report.getAppraisersSignatures().add(signature);
 				}
 			}
 			

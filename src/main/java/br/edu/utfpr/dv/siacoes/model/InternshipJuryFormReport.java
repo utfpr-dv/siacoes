@@ -23,6 +23,7 @@ public class InternshipJuryFormReport {
 	private double finalScore;
 	private JuryResult result;
 	private List<JuryFormAppraiserReport> appraisers;
+	private List<JuryFormAppraiserReport> appraisersSignatures;
 	
 	public InternshipJuryFormReport(){
 		this.setTitle("");
@@ -38,6 +39,7 @@ public class InternshipJuryFormReport {
 		this.setSupervisorScore(0);
 		this.setCompanySupervisorScore(0);
 		this.setAppraisers(new ArrayList<JuryFormAppraiserReport>());
+		this.setAppraisersSignatures(new ArrayList<JuryFormAppraiserReport>());
 		this.setResult(JuryResult.NONE);
 	}
 	
@@ -124,6 +126,12 @@ public class InternshipJuryFormReport {
 	}
 	public void setAppraisers(List<JuryFormAppraiserReport> appraisers) {
 		this.appraisers = appraisers;
+	}
+	public List<JuryFormAppraiserReport> getAppraisersSignatures() {
+		return appraisersSignatures;
+	}
+	public void setAppraisersSignatures(List<JuryFormAppraiserReport> appraisersSignatures) {
+		this.appraisersSignatures = appraisersSignatures;
 	}
 	public JuryResult getResult() {
 		return result;
