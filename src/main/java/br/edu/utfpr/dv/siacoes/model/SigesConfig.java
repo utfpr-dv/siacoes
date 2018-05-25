@@ -10,6 +10,7 @@ public class SigesConfig {
 	public double companySupervisorPonderosity;
 	private boolean showGradesToStudent;
 	private SupervisorFilter supervisorFilter;
+	private boolean supervisorFillJuryForm;
 	
 	public SigesConfig(){
 		this.setDepartment(new Department());
@@ -18,6 +19,7 @@ public class SigesConfig {
 		this.setCompanySupervisorPonderosity(1);
 		this.setShowGradesToStudent(false);
 		this.setSupervisorFilter(SupervisorFilter.DEPARTMENT);
+		this.setSupervisorFillJuryForm(false);
 	}
 	
 	public Department getDepartment() {
@@ -55,6 +57,12 @@ public class SigesConfig {
 	}
 	public void setSupervisorFilter(SupervisorFilter supervisorFilter) {
 		this.supervisorFilter = supervisorFilter;
+	}
+	public boolean isSupervisorFillJuryForm() {
+		return supervisorFillJuryForm;
+	}
+	public void setSupervisorFillJuryForm(boolean supervisorFillJuryForm) {
+		this.supervisorFillJuryForm = supervisorFillJuryForm;
 	}
 	
 }

@@ -23,6 +23,9 @@ public class InternshipJury {
 	private double companySupervisorPonderosity;
 	private double companySupervisorScore;
 	private JuryResult result;
+	private String supervisorAbsenceReason;
+	private double supervisorScore;
+	private boolean supervisorFillJuryForm;
 
 	public InternshipJury(){
 		this.setIdInternshipJury(0);
@@ -38,6 +41,9 @@ public class InternshipJury {
 		this.setCompanySupervisorPonderosity(0);
 		this.setCompanySupervisorScore(0);
 		this.setResult(JuryResult.NONE);
+		this.setSupervisorAbsenceReason("");
+		this.setSupervisorScore(0);
+		this.setSupervisorFillJuryForm(false);
 	}
 	
 	public int getIdInternshipJury() {
@@ -123,6 +129,24 @@ public class InternshipJury {
 	}
 	public void setResult(JuryResult result) {
 		this.result = result;
+	}
+	public String getSupervisorAbsenceReason() {
+		return supervisorAbsenceReason;
+	}
+	public void setSupervisorAbsenceReason(String supervisorAbsenceReason) {
+		this.supervisorAbsenceReason = supervisorAbsenceReason;
+	}
+	public double getSupervisorScore() {
+		return supervisorScore;
+	}
+	public void setSupervisorScore(double supervisorScore) {
+		this.supervisorScore = supervisorScore;
+	}
+	public boolean isSupervisorFillJuryForm() {
+		return supervisorFillJuryForm;
+	}
+	public void setSupervisorFillJuryForm(boolean supervisorFillJuryForm) {
+		this.supervisorFillJuryForm = supervisorFillJuryForm;
 	}
 	public User getSupervisor(){
 		if((this.getInternship().getSupervisor() == null) || (this.getInternship().getSupervisor().getIdUser() == 0)){

@@ -22,6 +22,7 @@ public class EditSigesWindow extends EditWindow {
 	private final TextField textCompanySupervisorPonderosity;
 	private final CheckBox checkShowGradesToStudent;
 	private final NativeSelect comboSupervisorFilter;
+	private final CheckBox checkSupervisorFillJuryForm;
 	
 	public EditSigesWindow(SigesConfig config, ListView parentView){
 		super("Editar Configurações", parentView);
@@ -39,6 +40,8 @@ public class EditSigesWindow extends EditWindow {
 		
 		this.checkShowGradesToStudent = new CheckBox("Permitir que o acadêmico visualize as notas atribuídas pela banca");
 		
+		this.checkSupervisorFillJuryForm = new CheckBox("O orientador deverá preencher a mesma ficha de avaliação da banca");
+		
 		this.comboSupervisorFilter = new NativeSelect("Orientador deve pertencer ao");
 		this.comboSupervisorFilter.setWidth("400px");
 		this.comboSupervisorFilter.setNullSelectionAllowed(false);
@@ -52,6 +55,7 @@ public class EditSigesWindow extends EditWindow {
 		this.addField(this.textCompanySupervisorPonderosity);
 		this.addField(this.checkShowGradesToStudent);
 		this.addField(this.comboSupervisorFilter);
+		this.addField(this.checkSupervisorFillJuryForm);
 		
 		this.loadConfigurations();
 	}
@@ -62,6 +66,7 @@ public class EditSigesWindow extends EditWindow {
 		this.textCompanySupervisorPonderosity.setValue(String.format("%.2f", this.config.getCompanySupervisorPonderosity()));
 		this.checkShowGradesToStudent.setValue(this.config.isShowGradesToStudent());
 		this.comboSupervisorFilter.setValue(this.config.getSupervisorFilter());
+		this.checkSupervisorFillJuryForm.setValue(this.config.isSupervisorFillJuryForm());
 	}
 
 	@Override
@@ -74,6 +79,7 @@ public class EditSigesWindow extends EditWindow {
 			this.config.setCompanySupervisorPonderosity(Double.parseDouble(this.textCompanySupervisorPonderosity.getValue().replace(",", ".")));
 			this.config.setShowGradesToStudent(this.checkShowGradesToStudent.getValue());
 			this.config.setSupervisorFilter((SupervisorFilter)this.comboSupervisorFilter.getValue());
+			this.config.setSupervisorFillJuryForm(this.checkSupervisorFillJuryForm.getValue());
 			
 			bo.save(this.config);
 			

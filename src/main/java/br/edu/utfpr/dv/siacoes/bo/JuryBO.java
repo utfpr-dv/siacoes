@@ -337,7 +337,7 @@ public class JuryBO {
 				if(find) {
 					jury.setSupervisorAbsenceReason("");
 				} else if(jury.getSupervisorAbsenceReason().trim().isEmpty()) {
-					throw new Exception("Informe o motido do Professor Orientador ou o Coorientador não estar presidindo a banca.");
+					throw new Exception("Informe o motivo do Professor Orientador ou o Coorientador não estar presidindo a banca.");
 				}
 				if(findSupervisor && findCosupervisor) {
 					throw new Exception("O Coorientador não pode fazer parte da banca quando o orientador já compõe a mesma");

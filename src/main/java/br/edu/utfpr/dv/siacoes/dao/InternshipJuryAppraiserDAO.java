@@ -109,7 +109,7 @@ public class InternshipJuryAppraiserDAO {
 					"INNER JOIN \"user\" student ON student.idUser=internship.idStudent " +
 					"INNER JOIN company ON company.idCompany=internship.idCompany " +
 					"WHERE internshipjuryappraiser.idInternshipJury = " + String.valueOf(idInternshipJury) +
-					" ORDER BY appraiser.name");
+					" ORDER BY internshipjuryappraiser.chair DESC, internshipjuryappraiser.substitute, appraiser.name");
 			List<InternshipJuryAppraiser> list = new ArrayList<InternshipJuryAppraiser>();
 			
 			while(rs.next()){
@@ -132,19 +132,21 @@ public class InternshipJuryAppraiserDAO {
 		
 		try{
 			if(insert){
-				stmt = this.conn.prepareStatement("INSERT INTO internshipjuryappraiser(idInternshipJury, idAppraiser, file, fileType, comments) VALUES(?, ?, NULL, 0, '')", Statement.RETURN_GENERATED_KEYS);
+				stmt = this.conn.prepareStatement("INSERT INTO internshipjuryappraiser(idInternshipJury, idAppraiser, chair, substitute, file, fileType, comments) VALUES(?, ?, ?, ?, NULL, 0, '')", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = this.conn.prepareStatement("UPDATE internshipjuryappraiser SET idInternshipJury=?, idAppraiser=?, file=?, fileType=?, comments=? WHERE idInternshipJuryAppraiser=?");
+				stmt = this.conn.prepareStatement("UPDATE internshipjuryappraiser SET idInternshipJury=?, idAppraiser=?, chair=?, substitute=?, file=?, fileType=?, comments=? WHERE idInternshipJuryAppraiser=?");
 			}
 			
 			stmt.setInt(1, appraiser.getInternshipJury().getIdInternshipJury());
 			stmt.setInt(2, appraiser.getAppraiser().getIdUser());
+			stmt.setInt(3, (appraiser.isChair() ? 1 : 0));
+			stmt.setInt(4, (appraiser.isSubstitute() ? 1 : 0));
 			
 			if(!insert){
-				stmt.setBytes(3, appraiser.getFile());
-				stmt.setInt(4, appraiser.getFileType().getValue());
-				stmt.setString(5, appraiser.getComments());
-				stmt.setInt(6, appraiser.getIdInternshipJuryAppraiser());
+				stmt.setBytes(5, appraiser.getFile());
+				stmt.setInt(66, appraiser.getFileType().getValue());
+				stmt.setString(7, appraiser.getComments());
+				stmt.setInt(8, appraiser.getIdInternshipJuryAppraiser());
 			}
 			
 			stmt.execute();
@@ -178,6 +180,8 @@ public class InternshipJuryAppraiserDAO {
 		p.getAppraiser().setName(rs.getString("appraiserName"));
 		p.setFile(rs.getBytes("file"));
 		p.setComments(rs.getString("comments"));
+		p.setSubstitute(rs.getInt("substitute") == 1);
+		p.setChair(rs.getInt("chair") == 1);
 		p.setFileType(DocumentType.valueOf(rs.getInt("fileType")));
 		p.getInternshipJury().setInternship(new Internship());
 		p.getInternshipJury().getInternship().setIdInternship(rs.getInt("idInternship"));

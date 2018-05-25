@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import br.edu.utfpr.dv.siacoes.dao.JuryDAO;
 import br.edu.utfpr.dv.siacoes.dao.JuryRequestDAO;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;

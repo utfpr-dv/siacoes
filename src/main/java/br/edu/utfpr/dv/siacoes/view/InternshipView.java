@@ -289,12 +289,10 @@ public class InternshipView extends ListView {
     		Notification.show("Selecionar Registro", "Selecione o registro para marcar a banca.", Notification.Type.WARNING_MESSAGE);
     	}else{
     		try {
-    			InternshipBO bo = new InternshipBO();
-    			Internship internship = bo.findById((int)id);
+    			Internship internship = new InternshipBO().findById((int)id);
     			
     			if(internship.getType() == InternshipType.REQUIRED){
-    				InternshipJuryBO bo2 = new InternshipJuryBO();
-    				InternshipJury jury = bo2.findByInternship((int)id);
+    				InternshipJury jury = new InternshipJuryBO().findByInternship((int)id);
     				
     				UI.getCurrent().addWindow(new EditInternshipJuryWindow(jury, this));
     			}else{

@@ -92,6 +92,7 @@ CREATE  TABLE sigesconfig (
   companySupervisorPonderosity REAL NOT NULL ,
   showgradestostudent SMALLINT NOT NULL ,
   supervisorfilter SMALLINT NOT NULL ,
+  supervisorFillJuryForm SMALLINT NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigesconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -300,6 +301,9 @@ CREATE  TABLE internshipjury (
   companySupervisorPonderosity REAL NOT NULL ,
   companySupervisorScore REAL NOT NULL ,
   result smallint NOT NULL,
+  supervisorAbsenceReason TEXT NOT NULL ,
+  supervisorScore REAL NOT NULL ,
+  supervisorFillJuryForm SMALLINT NOT NULL ,
   PRIMARY KEY (idinternshipjury) ,
   CONSTRAINT fk_internshipjury_idinternship FOREIGN KEY (idinternship) REFERENCES internship (idinternship) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -312,6 +316,8 @@ CREATE  TABLE internshipjuryappraiser (
   file BYTEA NULL ,
   filetype SMALLINT NOT NULL ,
   comments TEXT NOT NULL ,
+  substitute SMALLINT NOT NULL ,
+  chair SMALLINT NOT NULL ,
   PRIMARY KEY (idinternshipjuryappraiser) ,
   CONSTRAINT fk_internshipjuryappraiser_idinternshipjury FOREIGN KEY (idinternshipjury) REFERENCES internshipjury (idinternshipjury) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_internshipjuryappraiser_idappraiser FOREIGN KEY (idappraiser) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION

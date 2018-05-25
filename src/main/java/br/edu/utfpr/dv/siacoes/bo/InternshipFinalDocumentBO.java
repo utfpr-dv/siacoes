@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.dao.InternshipFinalDocumentDAO;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Internship;

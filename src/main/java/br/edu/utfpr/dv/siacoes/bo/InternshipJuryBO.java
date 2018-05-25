@@ -26,6 +26,7 @@ import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserScoreReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.JuryStudentReport;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
@@ -86,7 +87,21 @@ public class InternshipJuryBO {
 		try {
 			InternshipJuryDAO dao = new InternshipJuryDAO();
 			
-			return dao.findByInternship(idInternship);
+			InternshipJury jury = dao.findByInternship(idInternship);
+			
+			if(jury == null) {
+				jury = new InternshipJury();
+				
+				jury.setInternship(new Internship());
+				jury.getInternship().setIdInternship(idInternship);
+				
+				int idDepartment = new InternshipBO().findIdDepartment(idInternship);
+				SigesConfig config = new SigesConfigBO().findByDepartment(idDepartment);
+				
+				jury.setSupervisorFillJuryForm(config.isSupervisorFillJuryForm());
+			}
+			
+			return jury;
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -125,20 +140,22 @@ public class InternshipJuryBO {
 				InternshipJuryAppraiserBO bo = new InternshipJuryAppraiserBO();
 				
 				User supervisor = jury.getSupervisor();
-				boolean find = false;
+				boolean findSupervisor = false;
 				
 				for(InternshipJuryAppraiser appraiser : jury.getAppraisers()){
 					if(bo.appraiserHasJury(jury.getIdInternshipJury(), appraiser.getAppraiser().getIdUser(), jury.getDate())){
 						throw new Exception("O membro " + appraiser.getAppraiser().getName() + " já tem uma banca marcada que conflita com este horário.");
 					}
 					
-					if(appraiser.getAppraiser().getIdUser() == supervisor.getIdUser()){
-						find = true;
+					if(appraiser.getAppraiser().getIdUser() == supervisor.getIdUser()) {
+						findSupervisor = true;
 					}
 				}
 				
-				if(!find){
-					throw new Exception("O orientador deve participar da banca.");
+				if(findSupervisor) {
+					jury.setSupervisorAbsenceReason("");
+				} else if(jury.getSupervisorAbsenceReason().trim().isEmpty()) {
+					throw new Exception("Informe o motivo do Professor Orientador não estar presidindo a banca.");
 				}
 			}
 			
@@ -354,7 +371,7 @@ public class InternshipJuryBO {
 				
 				appraiserReport.setScore(this.round(scoreSum));
 				
-				if(appraiser.getAppraiser().getIdUser() != supervisor.getIdUser()){
+				if((appraiser.getAppraiser().getIdUser() != supervisor.getIdUser()) && !appraiser.isSubstitute()) {
 					appraiserReport.setDescription("Aval. " + String.valueOf(member));
 					
 					if(member == 1){
@@ -364,7 +381,7 @@ public class InternshipJuryBO {
 					}
 					
 					member = member + 1;
-				}else{
+				} else {
 					isSupervisor = true;
 					appraiserReport.setDescription("Orientador");
 					report.setSupervisorScore(appraiserReport.getScore());

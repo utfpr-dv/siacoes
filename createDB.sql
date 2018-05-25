@@ -92,6 +92,7 @@ CREATE  TABLE `sigesconfig` (
   `companySupervisorPonderosity` DOUBLE NOT NULL ,
   `showgradestostudent` TINYINT NOT NULL ,
   `supervisorfilter` SMALLINT NOT NULL ,
+  `supervisorFillJuryForm` TINYINT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigesconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -300,6 +301,9 @@ CREATE  TABLE `internshipjury` (
   `companySupervisorPonderosity` DOUBLE NOT NULL ,
   `companySupervisorScore` DOUBLE NOT NULL ,
   `result` TINYINT NOT NULL,
+  `supervisorAbsenceReason` TEXT NOT NULL ,
+  `supervisorScore` DOUBLE NOT NULL ,
+  `supervisorFillJuryForm` TINYINT NOT NULL ,
   PRIMARY KEY (`idinternshipjury`) ,
   INDEX `fk_internshipjury_idinternship_idx` (`idinternship` ASC) ,
   CONSTRAINT `fk_internshipjury_idinternship` FOREIGN KEY (`idinternship` ) REFERENCES `internship` (`idinternship` ) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -312,6 +316,8 @@ CREATE  TABLE `internshipjuryappraiser` (
   `file` MEDIUMBLOB NULL ,
   `filetype` SMALLINT NOT NULL ,
   `comments` TEXT NOT NULL ,
+  `substitute` TINYINT NOT NULL ,
+  `chair` TINYINT NOT NULL ,
   PRIMARY KEY (`idinternshipjuryappraiser`) ,
   INDEX `fk_internshipjuryappraiser_idinternshipjury_idx` (`idinternshipjury` ASC) ,
   INDEX `fk_internshipjuryappraiser_idappraiser_idx` (`idappraiser` ASC) ,

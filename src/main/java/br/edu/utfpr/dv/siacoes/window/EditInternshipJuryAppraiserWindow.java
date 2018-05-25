@@ -3,10 +3,13 @@
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.OptionGroup;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
+import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 
 public class EditInternshipJuryAppraiserWindow extends EditWindow {
@@ -14,6 +17,8 @@ public class EditInternshipJuryAppraiserWindow extends EditWindow {
 	private final EditInternshipJuryWindow parentWindow;
 	
 	private final SupervisorComboBox comboProfessor;
+	private final OptionGroup optionAppraiserType;
+	private final CheckBox checkChair;
 	
 	public EditInternshipJuryAppraiserWindow(EditInternshipJuryWindow parentWindow){
 		super("Adicionar Membro", null);
@@ -22,7 +27,16 @@ public class EditInternshipJuryAppraiserWindow extends EditWindow {
 		
 		this.comboProfessor = new SupervisorComboBox("Membro", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		
+		this.optionAppraiserType = new OptionGroup();
+		this.optionAppraiserType.addItem("Titular");
+		this.optionAppraiserType.addItem("Suplente");
+		this.optionAppraiserType.select(this.optionAppraiserType.getItemIds().iterator().next());
+		
+		this.checkChair = new CheckBox("Presidente da Banca");
+		
 		this.addField(this.comboProfessor);
+		this.addField(this.optionAppraiserType);
+		this.addField(this.checkChair);
 	}
 	
 	@Override
@@ -32,7 +46,15 @@ public class EditInternshipJuryAppraiserWindow extends EditWindow {
 				throw new Exception("Selecione o membro.");
 			}
 			
-			this.parentWindow.addAppraiser(this.comboProfessor.getProfessor());
+			InternshipJuryAppraiser appraiser = new InternshipJuryAppraiser();
+			
+			appraiser.setAppraiser(this.comboProfessor.getProfessor());
+			appraiser.setChair(this.checkChair.getValue());
+			if(this.optionAppraiserType.getValue() != this.optionAppraiserType.getItemIds().iterator().next()) {
+				appraiser.setSubstitute(true);
+			}
+			
+			this.parentWindow.addAppraiser(appraiser);
 			
 			this.close();
 		}catch(Exception e){

@@ -58,6 +58,8 @@ public class EditInternshipJuryWindow extends EditWindow {
 	private final TimeField textEndTime;
 	private final TextArea textComments;
 	private final TextField textCompanySupervisorScore;
+	private final TextField textSupervisorScore;
+	private final TextArea textSupervisorAbsenceReason;
 	private final TabSheet tabContainer;
 	private final NativeSelect comboResult;
 	
@@ -71,14 +73,14 @@ public class EditInternshipJuryWindow extends EditWindow {
 		}
 		
 		this.tabContainer = new TabSheet();
-		this.tabContainer.setWidth("800px");
-		this.tabContainer.setHeight("400px");
+		this.tabContainer.setWidth("810px");
+		this.tabContainer.setHeight("450px");
 		this.tabContainer.addStyleName(ValoTheme.TABSHEET_FRAMED);
 		this.tabContainer.addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
 		this.tabContainer.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 		
 		this.textLocal = new TextField("Local");
-		this.textLocal.setWidth("690px");
+		this.textLocal.setWidth("800px");
 		this.textLocal.setMaxLength(100);
 		
 		this.textDate = new DateField("Data");
@@ -87,6 +89,9 @@ public class EditInternshipJuryWindow extends EditWindow {
 		
 		this.textCompanySupervisorScore = new TextField("Nota do Supervisor na Empresa");
 		this.textCompanySupervisorScore.setWidth("100px");
+		
+		this.textSupervisorScore = new TextField("Nota do Orientador");
+		this.textSupervisorScore.setWidth("100px");
 		
 		this.textStartTime = new TimeField("Horário Inicial");
 		this.textStartTime.set24HourClock(true);
@@ -104,9 +109,14 @@ public class EditInternshipJuryWindow extends EditWindow {
 		this.comboResult.select(JuryResult.NONE);
 		
 		this.textComments = new TextArea("Observações");
-		this.textComments.setWidth("690px");
+		this.textComments.setWidth("800px");
 		this.textComments.setHeight("150px");
 		this.textComments.addStyleName("textscroll");
+		
+		this.textSupervisorAbsenceReason = new TextArea("Motivo da ausência do Professor Orientador na banca");
+		this.textSupervisorAbsenceReason.setWidth("800px");
+		this.textSupervisorAbsenceReason.setHeight("75px");
+		this.textSupervisorAbsenceReason.addStyleName("textscroll");
 		
 		VerticalLayout tab1 = new VerticalLayout();
 		tab1.setSpacing(true);
@@ -114,10 +124,11 @@ public class EditInternshipJuryWindow extends EditWindow {
 		HorizontalLayout h1 = new HorizontalLayout(this.textDate, this.textStartTime, this.textEndTime);
 		h1.setSpacing(true);
 		tab1.addComponent(h1);
-		HorizontalLayout h2 = new HorizontalLayout(this.textCompanySupervisorScore, this.comboResult);
+		HorizontalLayout h2 = new HorizontalLayout(this.textCompanySupervisorScore, this.textSupervisorScore, this.comboResult);
 		h2.setSpacing(true);
 		tab1.addComponent(h2);
 		tab1.addComponent(this.textComments);
+		tab1.addComponent(this.textSupervisorAbsenceReason);
 		
 		this.layoutAppraisers = new HorizontalLayout();
 		
@@ -224,7 +235,10 @@ public class EditInternshipJuryWindow extends EditWindow {
 		this.textEndTime.setValue(this.jury.getEndTime());
 		this.textComments.setValue(this.jury.getComments());
 		this.textCompanySupervisorScore.setValue(String.format("%.2f", this.jury.getCompanySupervisorScore()));
+		this.textSupervisorScore.setValue(String.format("%.2f", this.jury.getSupervisorScore()));
 		this.comboResult.setValue(this.jury.getResult());
+		
+		this.textSupervisorScore.setVisible(!this.jury.isSupervisorFillJuryForm());
 		
 		if(this.jury.getIdInternshipJury() == 0){
 			InternshipJuryAppraiser appraiser = new InternshipJuryAppraiser();
@@ -271,21 +285,23 @@ public class EditInternshipJuryWindow extends EditWindow {
 		this.loadGridParticipants();
 	}
 	
-	private void loadGridAppraisers(){
+	private void loadGridAppraisers() {
 		this.gridAppraisers = new Grid();
 		this.gridAppraisers.addColumn("Membro", String.class);
 		this.gridAppraisers.addColumn("Nome", String.class);
 		this.gridAppraisers.setWidth("690px");
 		this.gridAppraisers.setHeight("300px");
 		
-		if(this.jury.getAppraisers() != null){
-			User supervisor = this.jury.getSupervisor();
-			int member = 1;
+		if(this.jury.getAppraisers() != null) {
+			int member = 1, substitute = 1;
 			
-			for(InternshipJuryAppraiser appraiser : this.jury.getAppraisers()){
-				if(appraiser.getAppraiser().getIdUser() == supervisor.getIdUser()){
-					this.gridAppraisers.addRow("Orientador", appraiser.getAppraiser().getName());
-				}else{
+			for(InternshipJuryAppraiser appraiser : this.jury.getAppraisers()) {
+				if(appraiser.isChair()) {
+					this.gridAppraisers.addRow("Presidente", appraiser.getAppraiser().getName());
+				} else if (appraiser.isSubstitute()) {
+					this.gridAppraisers.addRow("Suplente " + String.valueOf(substitute), appraiser.getAppraiser().getName());
+					substitute = substitute + 1;
+				}else {
 					this.gridAppraisers.addRow("Membro " + String.valueOf(member), appraiser.getAppraiser().getName());
 					member = member + 1;
 				}
@@ -324,7 +340,9 @@ public class EditInternshipJuryWindow extends EditWindow {
 			this.jury.setEndTime(this.textEndTime.getValue());
 			this.jury.setDate(this.textDate.getValue());
 			this.jury.setCompanySupervisorScore(Double.parseDouble(this.textCompanySupervisorScore.getValue().replace(",", ".")));
+			this.jury.setSupervisorScore(Double.parseDouble(this.textSupervisorScore.getValue().replace(",", ".")));
 			this.jury.setResult((JuryResult)this.comboResult.getValue());
+			this.jury.setSupervisorAbsenceReason(this.textSupervisorAbsenceReason.getValue());
 			
 			bo.save(this.jury);
 			
@@ -343,15 +361,11 @@ public class EditInternshipJuryWindow extends EditWindow {
 		UI.getCurrent().addWindow(new EditInternshipJuryAppraiserWindow(this));
 	}
 	
-	public void addAppraiser(User appraiser) throws Exception{
+	public void addAppraiser(InternshipJuryAppraiser appraiser) throws Exception{
 		InternshipJuryBO bo = new InternshipJuryBO();
 		
-		if(bo.canAddAppraiser(this.jury, appraiser)){
-			InternshipJuryAppraiser ja = new InternshipJuryAppraiser();
-			
-			ja.setAppraiser(appraiser);
-			
-			this.jury.getAppraisers().add(ja);
+		if(bo.canAddAppraiser(this.jury, appraiser.getAppraiser())){
+			this.jury.getAppraisers().add(appraiser);
 			
 			this.loadGridAppraisers();
 		}

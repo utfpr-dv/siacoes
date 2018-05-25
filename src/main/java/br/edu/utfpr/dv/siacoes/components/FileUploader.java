@@ -5,9 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -18,9 +15,7 @@ import java.util.logging.Logger;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.pdfa.Foundries;
 import org.verapdf.pdfa.PDFAParser;
-import org.verapdf.pdfa.PDFAValidator;
 import org.verapdf.pdfa.VeraGreenfieldFoundryProvider;
-import org.verapdf.pdfa.results.ValidationResult;
 
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
@@ -162,20 +157,25 @@ public class FileUploader extends HorizontalLayout {
 	}
 	
 	private boolean validatePDFA(byte[] file) {
-		String tempName = UUID.randomUUID().toString() + ".pdf";
-		
-		Path path = Paths.get(tempName);
+		FileOutputStream fos = null;
 		
 		this.validatePDFAFile = false;
 		
 		try {
-			Files.write(path, file);
+			File tempFile = File.createTempFile(UUID.randomUUID().toString(), ".pdf");
+			tempFile.deleteOnExit();
+			fos = new FileOutputStream(tempFile);
+			fos.write(file);
+			fos.flush();
 			
 			VeraGreenfieldFoundryProvider.initialise();
-			PDFAParser parser = Foundries.defaultInstance().createParser(path.toFile());
+			PDFAParser parser = Foundries.defaultInstance().createParser(tempFile);
+			return !parser.getFlavour().toString().equals("0");
+			
+			/*System.out.println(parser.getFlavour().toString());
 			PDFAValidator validator = Foundries.defaultInstance().createValidator(parser.getFlavour(), false);
 			ValidationResult result = validator.validate(parser);
-		    return result.isCompliant();
+		    return result.isCompliant();*/
 		} catch (IOException e1) {
 			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
 			
@@ -190,7 +190,9 @@ public class FileUploader extends HorizontalLayout {
 			return false;
 		} finally {
 			try {
-				Files.delete(path);
+				if(fos != null) {
+					fos.close();
+				}
 			} catch (IOException e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			}
@@ -271,7 +273,7 @@ public class FileUploader extends HorizontalLayout {
 	            input.read(buffer);
 	            
 	            if(validatePDFAFile && !validatePDFA(buffer)) {
-	            	throw new Exception("O arquivo precisa estar no formato PDF/A-1b (padrão utilizado para arquivamento de longo prazo de documentos eletrônicos).");
+	            	throw new Exception("O arquivo precisa estar no formato PDF/A (padrão utilizado para arquivamento de longo prazo de documentos eletrônicos).");
 	            }
 	            
 	            uploadedFile = buffer;
