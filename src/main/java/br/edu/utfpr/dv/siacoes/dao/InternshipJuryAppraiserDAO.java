@@ -144,7 +144,7 @@ public class InternshipJuryAppraiserDAO {
 			
 			if(!insert){
 				stmt.setBytes(5, appraiser.getFile());
-				stmt.setInt(66, appraiser.getFileType().getValue());
+				stmt.setInt(6, appraiser.getFileType().getValue());
 				stmt.setString(7, appraiser.getComments());
 				stmt.setInt(8, appraiser.getIdInternshipJuryAppraiser());
 			}
