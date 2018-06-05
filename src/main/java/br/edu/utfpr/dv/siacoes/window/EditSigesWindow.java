@@ -4,9 +4,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
@@ -50,12 +53,21 @@ public class EditSigesWindow extends EditWindow {
 		this.comboSupervisorFilter.addItem(SupervisorFilter.INSTITUTION);
 		this.comboSupervisorFilter.addItem(SupervisorFilter.EVERYONE);
 		
-		this.addField(this.textMinimumScore);
-		this.addField(this.textSupervisorPonderosity);
-		this.addField(this.textCompanySupervisorPonderosity);
-		this.addField(this.checkShowGradesToStudent);
-		this.addField(this.comboSupervisorFilter);
-		this.addField(this.checkSupervisorFillJuryForm);
+		VerticalLayout v1 = new VerticalLayout(this.comboSupervisorFilter);
+		v1.setSpacing(true);
+		v1.setMargin(true);
+		Panel panel1 = new Panel("Orientação");
+		panel1.setContent(v1);
+		this.addField(panel1);
+		
+		HorizontalLayout h1 = new HorizontalLayout(this.textMinimumScore, this.textSupervisorPonderosity, this.textCompanySupervisorPonderosity);
+		h1.setSpacing(true);
+		VerticalLayout v2 = new VerticalLayout(h1, this.checkSupervisorFillJuryForm, this.checkShowGradesToStudent);
+		v2.setSpacing(true);
+		v2.setMargin(true);
+		Panel panel2 = new Panel("Banca");
+		panel2.setContent(v2);
+		this.addField(panel2);
 		
 		this.loadConfigurations();
 	}

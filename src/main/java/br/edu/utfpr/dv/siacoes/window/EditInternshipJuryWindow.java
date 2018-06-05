@@ -110,7 +110,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 		
 		this.textComments = new TextArea("Observações");
 		this.textComments.setWidth("800px");
-		this.textComments.setHeight("150px");
+		this.textComments.setHeight("100px");
 		this.textComments.addStyleName("textscroll");
 		
 		this.textSupervisorAbsenceReason = new TextArea("Motivo da ausência do Professor Orientador na banca");
@@ -184,6 +184,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 		layoutGridButtons.setSpacing(true);
 		
 		VerticalLayout tab2 = new VerticalLayout(this.layoutAppraisers, layoutGridButtons);
+		tab2.setSpacing(true);
 		
 		this.layoutParticipants = new HorizontalLayout();
 		
@@ -217,6 +218,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 		layoutGridButtons2.setSpacing(true);
 		
 		VerticalLayout tab3 = new VerticalLayout(this.layoutParticipants, layoutGridButtons2);
+		tab3.setSpacing(true);
 		
 		this.tabContainer.addTab(tab1, "Dados da Banca");
 		this.tabContainer.addTab(tab2, "Membros");
@@ -289,8 +291,8 @@ public class EditInternshipJuryWindow extends EditWindow {
 		this.gridAppraisers = new Grid();
 		this.gridAppraisers.addColumn("Membro", String.class);
 		this.gridAppraisers.addColumn("Nome", String.class);
-		this.gridAppraisers.setWidth("690px");
-		this.gridAppraisers.setHeight("300px");
+		this.gridAppraisers.setWidth("800px");
+		this.gridAppraisers.setHeight("370px");
 		
 		if(this.jury.getAppraisers() != null) {
 			int member = 1, substitute = 1;
@@ -316,8 +318,8 @@ public class EditInternshipJuryWindow extends EditWindow {
 		this.gridParticipants = new Grid();
 		this.gridParticipants.addColumn("RA", String.class);
 		this.gridParticipants.addColumn("Nome", String.class);
-		this.gridParticipants.setWidth("690px");
-		this.gridParticipants.setHeight("300px");
+		this.gridParticipants.setWidth("800px");
+		this.gridParticipants.setHeight("370px");
 		
 		if(this.jury.getAppraisers() != null){
 			for(InternshipJuryStudent student : this.jury.getParticipants()){

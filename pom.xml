@@ -446,9 +446,7 @@
 	                                    <artifactId>vaadin-maven-plugin</artifactId>
 	                                    <versionRange>[1.0.1,)</versionRange>
 	                                    <goals>
-	                                        <goal>
-	                                            update-widgetset
-	                                        </goal>
+	                                        <goal>update-widgetset</goal>
 	                                    </goals>
 	                                </pluginExecutionFilter>
 	                                <action>
