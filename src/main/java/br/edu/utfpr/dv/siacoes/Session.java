@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.http.Cookie;
+
+import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinSession;
 
 import br.edu.utfpr.dv.siacoes.model.User;
@@ -167,6 +170,10 @@ public class Session {
         Session.setAdministrator(null);
         Session.setSelectedProfile(null);
         Session.setSelectedDepartment(null);
+        Cookie cookie = new Cookie("credentials", null);
+        cookie.setMaxAge(60 * 24 * 3600);
+		cookie.setPath("/");
+        VaadinService.getCurrentResponse().addCookie(cookie);
 	}
 	
 	public static boolean isUserProfessor(){

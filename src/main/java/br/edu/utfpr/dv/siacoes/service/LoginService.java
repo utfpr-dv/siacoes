@@ -51,7 +51,7 @@ public class LoginService {
 	
 	private static String secret;
 	
-	private synchronized String getSecret() {
+	public synchronized String getSecret() {
 		if((LoginService.secret == null) || LoginService.secret.isEmpty()) {
 			LoginService.secret = UUID.randomUUID().toString();
 		}

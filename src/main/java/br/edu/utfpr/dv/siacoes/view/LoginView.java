@@ -1,12 +1,21 @@
 ﻿package br.edu.utfpr.dv.siacoes.view;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.http.Cookie;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.GridLayout;
@@ -19,6 +28,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ActivitySubmissionBO;
@@ -28,9 +38,13 @@ import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
+import br.edu.utfpr.dv.siacoes.components.SideMenu.SideMenuState;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.Credential;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.service.LoginService;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class LoginView extends CustomComponent implements View {
 	
@@ -46,6 +60,7 @@ public class LoginView extends CustomComponent implements View {
     private final Button buttonForgotPassword;
     private final Panel panelLogin;
     private final GridLayout layoutStats;
+    private final CheckBox checkStayConnected;
     
     private String redirect;
     
@@ -80,11 +95,13 @@ public class LoginView extends CustomComponent implements View {
     	this.textPassword.setNullRepresentation("");
     	this.textPassword.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
     	this.textPassword.setIcon(FontAwesome.LOCK);
+    	
+    	this.checkStayConnected = new CheckBox("Permanecer conectado");
         
     	this.buttonLogin = new Button("Login", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-            	login();
+            	login(textLogin.getValue(), textPassword.getValue(), checkStayConnected.getValue());
             }
         });
     	this.buttonLogin.setWidth("300px");
@@ -98,7 +115,7 @@ public class LoginView extends CustomComponent implements View {
         });
     	this.buttonForgotPassword.setWidth("300px");
     	
-        VerticalLayout layoutLogin = new VerticalLayout(this.textLogin, this.textPassword, this.buttonLogin, this.buttonForgotPassword, this.info, this.infoAluno, this.infoServidor);
+        VerticalLayout layoutLogin = new VerticalLayout(this.textLogin, this.textPassword, this.checkStayConnected, this.buttonLogin, this.buttonForgotPassword, this.info, this.infoAluno, this.infoServidor);
         layoutLogin.setSizeUndefined();
         layoutLogin.setResponsive(true);
         layoutLogin.setSpacing(true);
@@ -191,16 +208,72 @@ public class LoginView extends CustomComponent implements View {
 			}
 		}
     	
+    	Credential credentials = this.getCredentials();
+    	if(credentials != null) {
+    		this.login(credentials.getLogin(), credentials.getPassword(), false);
+    	}
+    	
         textLogin.focus();
     }
     
-    private void login(){
-    	String username = this.textLogin.getValue();
-        String password = this.textPassword.getValue();
-        
-        try{
+    private void saveCookieLogin(String username, String password) {
+    	try {
+			Date now = new Date();
+			Algorithm algorithm = Algorithm.HMAC256(new LoginService().getSecret());
+			
+			String token = JWT.create().withIssuedAt(now).withIssuer(username).withKeyId(password).sign(algorithm);
+			
+			Cookie cookie = new Cookie("credentials", token);
+			
+			cookie.setMaxAge(60 * 24 * 3600);
+			cookie.setPath("/");
+			
+			VaadinService.getCurrentResponse().addCookie(cookie);
+		} catch (IllegalArgumentException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+		} catch (UnsupportedEncodingException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+		}
+    }
+    
+    private Credential getCredentials() {
+    	try {
+	    	Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
+			
+			for (Cookie cookie : cookies) {
+				if (("credentials".equals(cookie.getName())) && (cookie.getValue() != null)) {
+					Date now = new Date();
+					Algorithm algorithm = Algorithm.HMAC256(new LoginService().getSecret());
+				    JWTVerifier verifier = JWT.require(algorithm).build();
+				    DecodedJWT decodedToken = verifier.verify(cookie.getValue());
+					
+					if(decodedToken.getIssuedAt().before(now)) {
+						Credential credentials = new Credential();
+						
+						credentials.setLogin(decodedToken.getIssuer());
+						credentials.setPassword(decodedToken.getKeyId());
+						
+						return credentials;
+					}
+			    }
+			}
+    	} catch (IllegalArgumentException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+		} catch (UnsupportedEncodingException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+		}
+		
+		return null;
+    }
+    
+    private void login(String username, String password, boolean stayConnected){
+    	try{
         	UserBO bo = new UserBO();
         	User user = bo.validateLogin(username, password);
+        	
+        	if(stayConnected) {
+        		this.saveCookieLogin(username, password);
+        	}
         	
         	Session.setUser(user);
         	if((user.getProfiles() != null) && (user.getProfiles().size() > 0)) {
