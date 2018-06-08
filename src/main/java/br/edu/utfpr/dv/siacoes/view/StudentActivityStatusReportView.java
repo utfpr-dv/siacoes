@@ -1,5 +1,6 @@
 ﻿package br.edu.utfpr.dv.siacoes.view;
 
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.NativeSelect;
 
 import br.edu.utfpr.dv.siacoes.Session;
@@ -13,6 +14,7 @@ public class StudentActivityStatusReportView extends ReportView {
 	public static final String NAME = "studentactivitystatusreport";
 	
 	private final NativeSelect comboStage;
+	private final CheckBox checkStudentsWithoutPoints;
 
 	public StudentActivityStatusReportView(){
 		super(SystemModule.SIGAC);
@@ -28,13 +30,16 @@ public class StudentActivityStatusReportView extends ReportView {
 		//this.comboStage.addItem(StudentStage.GRADUATED);
 		this.comboStage.setValue(StudentStage.REGULAR);
 		
+		this.checkStudentsWithoutPoints = new CheckBox("Filtrar apenas acadêmicos que ainda não atingiram a pontuação necessária");
+		
 		this.addFilterField(this.comboStage);
+		this.addFilterField(this.checkStudentsWithoutPoints);
 	}
 	
 	@Override
 	public byte[] generateReport() throws Exception {
 		ActivitySubmissionBO bo = new ActivitySubmissionBO();
-		return bo.getStudentActivityStatusReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), (StudentStage)this.comboStage.getValue());
+		return bo.getStudentActivityStatusReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), (StudentStage)this.comboStage.getValue(), this.checkStudentsWithoutPoints.getValue());
 	}
 
 }

@@ -448,12 +448,13 @@ public class ActivitySubmissionDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			rs = stmt.executeQuery("SELECT \"user\".iduser, \"user\".name AS studentName, \"user\".registerSemester, \"user\".registerYear, \"user\".studentCode, " +
+			rs = stmt.executeQuery("SELECT \"user\".iduser, \"user\".name AS studentName, userDepartment.registerSemester, userDepartment.registerYear, \"user\".studentCode, " +
 					"CASE WHEN finaldocument.idProject IS NOT NULL THEN 2 WHEN proposal.idProposal IS NOT NULL THEN 1 ELSE 0 END AS stage " +
-					"FROM \"user\" LEFT JOIN proposal ON (proposal.idStudent=\"user\".idUser AND proposal.idDepartment=\"user\".idDepartment AND proposal.invalidated=0) " +
+					"FROM \"user\" INNER JOIN userDepartment ON \"user\".idUser=userDepartment.idUser " +
+					"LEFT JOIN proposal ON (proposal.idStudent=\"user\".idUser AND proposal.idDepartment=userDepartment.idDepartment AND proposal.invalidated=0) " +
 					"LEFT JOIN project ON project.idProposal=proposal.idProposal " +
 					"LEFT JOIN finaldocument ON (finaldocument.idProject=project.idProject AND finaldocument.supervisorfeedback=" + String.valueOf(DocumentFeedback.APPROVED.getValue()) + ") " +
-					"WHERE \"user\".idDepartment=" + String.valueOf(idDepartment) + 
+					"WHERE userDepartment.idDepartment=" + String.valueOf(idDepartment) + 
 					" ORDER BY stage DESC, \"user\".name");
 			
 			List<StudentActivityStatusReport> list = new ArrayList<StudentActivityStatusReport>();

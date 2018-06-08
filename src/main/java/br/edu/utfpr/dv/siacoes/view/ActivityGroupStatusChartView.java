@@ -21,6 +21,7 @@ import org.dussan.vaadin.dcharts.options.SeriesDefaults;
 import org.dussan.vaadin.dcharts.options.Title;
 import org.dussan.vaadin.dcharts.renderers.legend.EnhancedLegendRenderer;
 
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.NativeSelect;
 
 import br.edu.utfpr.dv.siacoes.Session;
@@ -35,6 +36,7 @@ public class ActivityGroupStatusChartView extends ChartView {
 	public static final String NAME = "activitygroupstatuschart";
 	
 	private final NativeSelect comboStage;
+	private final CheckBox checkStudentsWithoutPoints;
 	
 	public ActivityGroupStatusChartView() {
 		super(SystemModule.SIGAC);
@@ -50,12 +52,15 @@ public class ActivityGroupStatusChartView extends ChartView {
 		//this.comboStage.addItem(StudentStage.GRADUATED);
 		this.comboStage.setValue(StudentStage.REGULAR);
 		
+		this.checkStudentsWithoutPoints = new CheckBox("Filtrar apenas acadêmicos que ainda não atingiram a pontuação necessária");
+		
 		this.addFilterField(this.comboStage);
+		this.addFilterField(this.checkStudentsWithoutPoints);
 	}
 
 	@Override
 	public DCharts generateChart() throws Exception {
-		List<ActivityGroupStatus> list = new ActivitySubmissionBO().getStudentActivityGroupStatus(Session.getSelectedDepartment().getDepartment().getIdDepartment(), (StudentStage)this.comboStage.getValue());
+		List<ActivityGroupStatus> list = new ActivitySubmissionBO().getStudentActivityGroupStatus(Session.getSelectedDepartment().getDepartment().getIdDepartment(), (StudentStage)this.comboStage.getValue(), this.checkStudentsWithoutPoints.getValue());
 		
 		DataSeries dataSeries = new DataSeries();
 		Series series = new Series();

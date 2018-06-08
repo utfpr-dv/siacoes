@@ -1,6 +1,5 @@
 ﻿package br.edu.utfpr.dv.siacoes.view;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,13 +37,11 @@ import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
-import br.edu.utfpr.dv.siacoes.components.SideMenu.SideMenuState;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Credential;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.service.LoginService;
-import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class LoginView extends CustomComponent implements View {
 	
@@ -229,11 +226,7 @@ public class LoginView extends CustomComponent implements View {
 			cookie.setPath("/");
 			
 			VaadinService.getCurrentResponse().addCookie(cookie);
-		} catch (IllegalArgumentException e) {
-			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-		} catch (UnsupportedEncodingException e) {
-			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-		}
+		} catch (Exception e) { }
     }
     
     private Credential getCredentials() {
@@ -257,11 +250,7 @@ public class LoginView extends CustomComponent implements View {
 					}
 			    }
 			}
-    	} catch (IllegalArgumentException e) {
-			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-		} catch (UnsupportedEncodingException e) {
-			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-		}
+    	} catch (Exception e) { }
 		
 		return null;
     }
