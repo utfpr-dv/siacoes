@@ -171,26 +171,12 @@ public class EventCalendarView extends BasicView {
 				}
 			}
 			
+			this.calendar.setStartDate(DateUtils.getSunday(DateUtils.getToday().getTime()));
+			this.calendar.setEndDate(DateUtils.addDay(this.calendar.getStartDate(), 6));
+			
 			if((listThesis.size() == 0) && (listInternship.size() == 0)){
-				this.calendar.setStartDate(DateUtils.getSunday(DateUtils.getToday().getTime()));
-				this.calendar.setEndDate(DateUtils.addDay(this.calendar.getStartDate(), 6));
-				
 				Notification.show("Listar Eventos", "Não há bancas agendadas para este semestre.", Notification.Type.WARNING_MESSAGE);
 			}else{
-				if((listThesis.size() > 0) && (listInternship.size() == 0)){
-					this.calendar.setStartDate(listThesis.get(0).getDate());
-				}else if((listThesis.size() == 0) && (listInternship.size() > 0)){
-					this.calendar.setStartDate(listInternship.get(0).getDate());
-				}else{
-					if(listThesis.get(0).getDate().before(listInternship.get(0).getDate())){
-						this.calendar.setStartDate(listThesis.get(0).getDate());
-					}else{
-						this.calendar.setStartDate(listInternship.get(0).getDate());
-					}
-				}
-				this.calendar.setStartDate(DateUtils.getSunday(this.calendar.getStartDate()));
-				this.calendar.setEndDate(DateUtils.addDay(this.calendar.getStartDate(), 6));
-				
 				for(Jury jury : listThesis){
 					String title = "Banca de TCC " + String.valueOf(jury.getStage());
 					String student = "Acadêmico(a): " + jury.getStudent().getName();
