@@ -33,7 +33,8 @@ public class EmailMessage {
 		INTERNSHIPFINALDOCUMENTVALIDATED(26),
 		PROPOSALAPPRAISERSUPERVISORINDICATION(27),
 		PROPOSALAPPRAISERFEEDBACKSUPERVISOR(28),
-		PROPOSALAPPRAISERFEEDBACKSTUDENT(29);
+		PROPOSALAPPRAISERFEEDBACKSTUDENT(29),
+		USERREGISTRED(30);
 		
 		private final int value; 
 		MessageType(int value){ 
@@ -114,6 +115,8 @@ public class EmailMessage {
 					return "Feedback da Proposta de TCC 1 (Orientador)";
 				case PROPOSALAPPRAISERFEEDBACKSTUDENT:
 					return "Feedback da Proposta de TCC 1 (Estudante)";
+				case USERREGISTRED:
+					return "Usuário Cadastrado";
 				default:
 					return "";
 			}

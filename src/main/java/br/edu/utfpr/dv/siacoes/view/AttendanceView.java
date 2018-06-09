@@ -53,6 +53,17 @@ public class AttendanceView extends ListView {
 		this.comboProposal = new NativeSelect("Proposta");
 		this.comboProposal.setWidth("400px");
 		this.comboProposal.setNullSelectionAllowed(false);
+		this.comboProposal.addValueChangeListener(new ValueChangeListener() {
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				if(comboProposal.getValue() != null){
+					selectStage();
+				}
+			}
+		});
+		
+		this.comboStage = new StageComboBox();
+		this.comboStage.setShowBoth(true);
 		
 		if(Session.isUserProfessor()){
 			this.comboStudent = new StudentComboBox("Acadêmico", Session.getUser().getIdUser());
@@ -77,8 +88,6 @@ public class AttendanceView extends ListView {
 			
 			this.comboStudent.setVisible(false);
 		}
-		
-		this.comboStage = new StageComboBox();
 		
 		this.addFilterField(this.comboStudent);
 		this.addFilterField(this.comboProposal);
@@ -119,7 +128,7 @@ public class AttendanceView extends ListView {
 	    	List<Attendance> list = new ArrayList<Attendance>();
 	    	
 	    	if((this.comboStudent.getStudent() != null) && (this.comboProposal.getValue() != null) && (this.comboSupervisor.getValue() != null)) {
-	    		list = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), ((User)this.comboSupervisor.getValue()).getIdUser(), ((Proposal)this.comboProposal.getValue()).getIdProposal(), this.comboStage.getStage());
+	    		list = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), ((User)this.comboSupervisor.getValue()).getIdUser(), ((Proposal)this.comboProposal.getValue()).getIdProposal(), (this.comboStage.isBothSelected() ? 0 : this.comboStage.getStage()));
 	    	}
 	    	
 	    	for(Attendance a : list){
@@ -143,6 +152,8 @@ public class AttendanceView extends ListView {
 			if(list.size() > 0){
 				this.comboProposal.select(list.get(0));	
 			}
+			
+			selectStage();
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -162,6 +173,22 @@ public class AttendanceView extends ListView {
 				if(list.size() > 0){
 					this.comboSupervisor.select(list.get(0));	
 				}
+			}
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			Notification.show("Listar Acompanhamentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		}
+	}
+	
+	private void selectStage() {
+		try {
+			if(this.comboProposal.getValue() != null) {
+				int stage = new ProposalBO().getProposalStage(((Proposal)this.comboProposal.getValue()).getIdProposal());
+				
+				this.comboStage.setStage(stage);
+			} else {
+				this.comboStage.setStage(1);
 			}
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);

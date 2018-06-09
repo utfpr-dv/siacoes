@@ -14,8 +14,10 @@ import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 
 public class ProposalDAO {
 	
@@ -450,32 +452,46 @@ public class ProposalDAO {
 		}
 	}
 	
-	public int getProposalStage(int idProposal) throws SQLException{
+	public int getProposalStage(int idProposal) throws SQLException {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
 		
-		try{
+		try {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			rs = stmt.executeQuery("SELECT idProject FROM project WHERE idProposal=" + String.valueOf(idProposal));
+			rs = stmt.executeQuery("SELECT idProject, semester, year FROM project WHERE idProposal=" + String.valueOf(idProposal));
 			
-			if(rs.next()){
+			if(rs.next()) {
 				int idProject = rs.getInt("idProject");
+				int semester = rs.getInt("semester");
+				int year = rs.getInt("year");
 				
 				rs.close();
 				rs = stmt.executeQuery("SELECT idThesis FROM thesis WHERE idProject=" + String.valueOf(idProject));
 				
-				if(rs.next()){
+				if(rs.next()) {
 					return 2;
-				}else{
-					return 1;
+				} else {
+					rs.close();
+					rs = stmt.executeQuery("SELECT department.idCampus FROM proposal INNER JOIN department ON department.idDepartment=proposal.idDepartment WHERE proposal.idProposal=" + String.valueOf(idProposal));
+					int idCampus = 0;
+					if(rs.next()) {
+						idCampus = rs.getInt("idCampus");
+					}
+					Semester s = new SemesterDAO().findByDate(idCampus, DateUtils.getNow().getTime());
+					
+					if((year < s.getYear()) || (semester < s.getSemester())) {
+						return 2;
+					} else {
+						return 1;
+					}
 				}
-			}else{
+			} else {
 				return 0;
 			}
-		}finally{
+		} finally {
 			if((rs != null) && !rs.isClosed())
 				rs.close();
 			if((stmt != null) && !stmt.isClosed())

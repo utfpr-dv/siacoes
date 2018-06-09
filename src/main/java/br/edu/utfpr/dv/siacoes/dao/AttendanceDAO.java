@@ -124,7 +124,7 @@ public class AttendanceDAO {
 					"INNER JOIN \"user\" student ON student.idUser=attendance.idStudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=attendance.idSupervisor " +
 					"WHERE attendance.idStudent=" + String.valueOf(idStudent) + " AND attendance.idSupervisor=" + String.valueOf(idSupervisor) + 
-					" AND attendance.idProposal=" + String.valueOf(idProposal) + " AND attendance.stage=" + String.valueOf(stage) + 
+					" AND attendance.idProposal=" + String.valueOf(idProposal) + ((stage == 0) ? "" : " AND attendance.stage=" + String.valueOf(stage)) + 
 					" ORDER BY attendance.date DESC, attendance.startTime DESC");
 			List<Attendance> list = new ArrayList<Attendance>();
 			

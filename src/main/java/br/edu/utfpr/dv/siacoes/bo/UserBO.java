@@ -13,7 +13,10 @@ import br.edu.utfpr.dv.siacoes.dao.UserDAO;
 import br.edu.utfpr.dv.siacoes.ldap.LdapConfig;
 import br.edu.utfpr.dv.siacoes.ldap.LdapUtils;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
+import br.edu.utfpr.dv.siacoes.model.AppConfig;
 import br.edu.utfpr.dv.siacoes.model.Credential;
+import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.service.LoginService;
@@ -201,7 +204,10 @@ public class UserBO {
 		}
 	}
 	
-	public int save(User user) throws Exception{
+	public int save(User user) throws Exception {
+		int ret = 0;
+		boolean isInsert = (user.getIdUser() == 0);
+		
 		try {
 			if((user.getProfiles() == null) || (user.getProfiles().size() == 0)){
 				throw new Exception("Informe ao menos um perfil para o usuário.");
@@ -221,12 +227,30 @@ public class UserBO {
 			
 			UserDAO dao = new UserDAO();
 			
-			return dao.save(user);
+			ret = dao.save(user);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			throw new Exception(e.getMessage());
 		}
+		
+		if(isInsert) {
+			try {
+				EmailMessageBO bo = new EmailMessageBO();
+				List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+				
+				keys.add(new EmailMessageEntry<String, String>("name", user.getName()));
+				keys.add(new EmailMessageEntry<String, String>("email", user.getEmail()));
+				keys.add(new EmailMessageEntry<String, String>("profile", user.getProfiles().get(0).toString()));
+				keys.add(new EmailMessageEntry<String, String>("host", AppConfig.getInstance().getHost()));
+				
+				bo.sendEmail(user.getIdUser(), MessageType.USERREGISTRED, keys);
+			} catch(Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			}
+		}
+		
+		return ret;
 	}
 	
 	public boolean loginIsStudent(String login){

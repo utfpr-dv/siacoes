@@ -159,24 +159,25 @@ public class InternshipView extends ListView {
 	}
 	
 	private void configureProfile(){
-		if((this.profile != UserProfile.MANAGER) || !Session.isUserManager(this.getModule())){
-			this.setFiltersVisible(this.profile == UserProfile.MANAGER);
+		if((this.profile != UserProfile.MANAGER) || !Session.isUserManager(this.getModule())) {
+			this.setFiltersVisible(false);
 			this.setAddVisible(false);
 			this.setDeleteVisible(false);
 			this.setEditCaption("Visualizar");
 			this.setEditIcon(FontAwesome.SEARCH);
 			
 			this.buttonJury.setVisible(false);
-			this.buttonProfessorStatement.setVisible(Session.isUserProfessor());
-			this.buttonStudentStatement.setVisible(Session.isUserStudent());
+			this.buttonProfessorStatement.setVisible(this.profile == UserProfile.PROFESSOR);
+			this.buttonStudentStatement.setVisible(this.profile == UserProfile.STUDENT);
 			this.buttonFinalReport.setVisible(this.profile == UserProfile.STUDENT);
 			this.buttonJuryFeedback.setVisible(this.profile == UserProfile.STUDENT || this.profile == UserProfile.PROFESSOR);
+			this.buttonFinalDocument.setVisible(this.profile == UserProfile.STUDENT || this.profile == UserProfile.PROFESSOR);
 			
 			if(this.profile == UserProfile.PROFESSOR){
 				this.buttonFinalDocument.setCaption("Val. Relat. Final");
 				this.buttonFinalDocument.setIcon(FontAwesome.CHECK);
 			}
-		}else{
+		} else {
 			this.buttonProfessorStatement.setCaption("Declaração Prof.");
 			this.buttonStudentStatement.setCaption("Declaração Acad.");
 		}
@@ -213,6 +214,8 @@ public class InternshipView extends ListView {
 				list = bo.list(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status);
 			}else if(this.profile == UserProfile.PROFESSOR){
 				list = bo.listBySupervisor(Session.getUser().getIdUser());
+			}else if(this.profile == UserProfile.COMPANYSUPERVISOR){
+				list = bo.listByCompanySupervisor(Session.getUser().getIdUser());
 			}else{
 				list = bo.listByStudent(Session.getUser().getIdUser());
 			}
@@ -438,9 +441,11 @@ public class InternshipView extends ListView {
 	public void enter(ViewChangeEvent event){
 		super.enter(event);
 		
-		if(Session.isUserProfessor()){
+		if(Session.isUserProfessor()) {
 			this.profile = UserProfile.PROFESSOR;
-		}else{
+		} else if(Session.isUserCompanySupervisor()) {
+			this.profile = UserProfile.COMPANYSUPERVISOR;
+		} else {
 			this.profile = UserProfile.STUDENT;
 		}
 		

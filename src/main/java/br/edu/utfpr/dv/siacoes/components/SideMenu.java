@@ -747,7 +747,7 @@ public class SideMenu extends CustomComponent {
 			layout.addComponent(new MenuEntry("Acadêmicos", 1, StudentView.NAME));
 		}
 		
-		if(Session.isUserManager(SystemModule.SIGES) || Session.isUserDepartmentManager() || Session.isUserProfessor() || Session.isUserStudent()) {
+		if(Session.isUserManager(SystemModule.SIGES) || Session.isUserDepartmentManager() || Session.isUserProfessor() || Session.isUserCompanySupervisor() || Session.isUserStudent()) {
 			layout.addComponent(new MenuEntry("Estágio", 0));
 			if(Session.isUserManager(SystemModule.SIGES) || Session.isUserDepartmentManager()){
 				layout.addComponent(new MenuEntry("Registro de Estágio", 1, InternshipView.NAME + "/1"));
@@ -755,6 +755,8 @@ public class SideMenu extends CustomComponent {
 			}
 			if(Session.isUserProfessor()){
 				layout.addComponent(new MenuEntry("Meus Orientados", 1, InternshipView.NAME));
+			}else if(Session.isUserCompanySupervisor()){
+				layout.addComponent(new MenuEntry("Meus Estagiários", 1, InternshipView.NAME));
 			}else if(Session.isUserStudent()){
 				layout.addComponent(new MenuEntry("Meus Estágios", 1, InternshipView.NAME));
 			}
