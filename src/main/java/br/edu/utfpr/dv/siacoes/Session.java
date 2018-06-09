@@ -14,7 +14,6 @@ import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.UserDepartment;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.bo.UserDepartmentBO;
-import br.edu.utfpr.dv.siacoes.model.Department;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 
 public class Session {
@@ -71,6 +70,7 @@ public class Session {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static List<UserDepartment> getListDepartments() {
 		if(VaadinSession.getCurrent().getAttribute("listdepartment") == null) {
 			Session.loadListDepartments();
@@ -174,6 +174,7 @@ public class Session {
         cookie.setMaxAge(60 * 24 * 3600);
 		cookie.setPath("/");
         VaadinService.getCurrentResponse().addCookie(cookie);
+        VaadinSession.getCurrent().close();
 	}
 	
 	public static boolean isUserProfessor(){
