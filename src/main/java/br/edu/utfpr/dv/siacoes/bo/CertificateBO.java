@@ -286,6 +286,9 @@ public class CertificateBO {
 		if((appraiser == null) || (appraiser.getIdJuryAppraiser() == 0)){
 			throw new Exception("É preciso salvar o membro antes de gerar a declaração.");
 		}
+		if(appraiser.isSubstitute()){
+			throw new Exception("A declaração somente pode ser gerada para membros titulares da banca.");
+		}
 		if(!new JuryAppraiserScoreBO().hasScore(appraiser.getJury().getIdJury(), appraiser.getAppraiser().getIdUser())){
 			throw new Exception("A declaração somente pode ser emitida após o lançamento das notas.");
 		}
@@ -322,7 +325,9 @@ public class CertificateBO {
 			pdfMerge.setDestinationStream(output);
 			
 			for(JuryAppraiser appraiser : appraiserList){
-				pdfMerge.addSource(new ByteArrayInputStream(this.getJuryProfessorStatement(appraiser)));
+				if(!appraiser.isSubstitute()) {
+					pdfMerge.addSource(new ByteArrayInputStream(this.getJuryProfessorStatement(appraiser)));
+				}
 			}
 			
 			pdfMerge.mergeDocuments(null);
@@ -425,6 +430,9 @@ public class CertificateBO {
 		if((appraiser == null) || (appraiser.getIdInternshipJuryAppraiser() == 0)){
 			throw new Exception("É preciso salvar o membro antes de gerar a declaração.");
 		}
+		if(appraiser.isSubstitute()){
+			throw new Exception("A declaração somente pode ser gerada para membros titulares da banca.");
+		}
 		if(!new InternshipJuryAppraiserScoreBO().hasScore(appraiser.getInternshipJury().getIdInternshipJury(), appraiser.getAppraiser().getIdUser())){
 			throw new Exception("A declaração somente pode ser emitida após o lançamento das notas.");
 		}
@@ -461,7 +469,9 @@ public class CertificateBO {
 			pdfMerge.setDestinationStream(output);
 			
 			for(InternshipJuryAppraiser appraiser : appraiserList){
-				pdfMerge.addSource(new ByteArrayInputStream(this.getInternshipJuryProfessorStatement(appraiser)));
+				if(!appraiser.isSubstitute()) {
+					pdfMerge.addSource(new ByteArrayInputStream(this.getInternshipJuryProfessorStatement(appraiser)));
+				}
 			}
 			
 			pdfMerge.mergeDocuments(null);
