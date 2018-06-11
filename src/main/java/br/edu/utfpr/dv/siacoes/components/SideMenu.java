@@ -1009,7 +1009,7 @@ public class SideMenu extends CustomComponent {
 						try {
 							Jury jury = new JuryBO().findByThesis(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 							
-							if(jury.getIdJury() == 0) {
+							if((jury == null) || (jury.getIdJury() == 0) || jury.getDate().after(DateUtils.getNow().getTime())) {
 								throw new Exception("O Termo de Aprovação somente é gerado após o envio da Monografia e a composição da Banca.");
 							}
 							

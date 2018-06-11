@@ -183,7 +183,7 @@ public class JuryBO {
 		}
 		
 		if(p == null){
-			throw new Exception("É necessário submeter o projeto para obter o feedback da banca examinadora.");
+			throw new Exception("Não foi localizada a submissão do Projeto.");
 		}else{
 			Jury jury = new JuryDAO().findByProject(p.getIdProject());
 			
@@ -282,12 +282,12 @@ public class JuryBO {
 		}
 		
 		if(thesis == null){
-			throw new Exception("É necessário submeter o projeto para obter o feedback da banca examinadora.");
+			throw new Exception("Não foi localizada a submissão da Monografia.");
 		}else{
 			Jury jury = new JuryDAO().findByThesis(thesis.getIdThesis());
 			
 			if((jury == null) || (jury.getIdJury() == 0)) {
-				throw new Exception("A banca examinadora do projeto ainda não foi agendada.");
+				throw new Exception("A banca examinadora da monografia ainda não foi agendada.");
 			}
 			
 			return jury;
