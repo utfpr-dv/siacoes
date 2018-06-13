@@ -78,8 +78,6 @@ public class EditCompanySupervisorWindow extends EditWindow {
 			
 			if(this.user.getIdUser() == 0) {
 				this.user.setLogin(this.user.getEmail());
-				this.user.setSalt(StringUtils.generateSalt());
-				this.user.setPassword(this.user.getEmail() + this.user.getSalt());
 			}
 			
 			if((this.user.getProfiles() != null) && (this.user.getProfiles().size() == 0)) {

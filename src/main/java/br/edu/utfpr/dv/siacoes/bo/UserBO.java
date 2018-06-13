@@ -209,6 +209,10 @@ public class UserBO {
 		boolean isInsert = (user.getIdUser() == 0);
 		
 		try {
+			if(isInsert && user.getPassword().isEmpty()) {
+				user.setSalt(StringUtils.generateSalt());
+				user.setPassword(StringUtils.generateSHA3Hash(user.getLogin() + user.getSalt()));
+			}
 			if((user.getProfiles() == null) || (user.getProfiles().size() == 0)){
 				throw new Exception("Informe ao menos um perfil para o usuário.");
 			}
@@ -226,6 +230,10 @@ public class UserBO {
 			}
 			
 			UserDAO dao = new UserDAO();
+			
+			if(dao.loginExists(user.getLogin(), user.getIdUser())) {
+				throw new Exception("O login informado já está em uso.");
+			}
 			
 			ret = dao.save(user);
 		} catch (SQLException e) {

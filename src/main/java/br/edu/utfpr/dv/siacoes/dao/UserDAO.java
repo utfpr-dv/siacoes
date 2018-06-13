@@ -16,6 +16,33 @@ import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 
 public class UserDAO {
 	
+	public boolean loginExists(String login, int idUser) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement(
+					"SELECT \"user\".idUser FROM \"user\" " +
+					"WHERE \"user\".login = ? AND \"user\".idUser <> ?");
+		
+			stmt.setString(1, login);
+			stmt.setInt(2, idUser);
+			
+			rs = stmt.executeQuery();
+			
+			return rs.next();
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public User findByLogin(String login) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;

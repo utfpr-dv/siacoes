@@ -26,7 +26,6 @@ import br.edu.utfpr.dv.siacoes.components.CompanyComboBox;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.model.UserDepartment;
-import br.edu.utfpr.dv.siacoes.util.StringUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditUserWindow extends EditWindow {
@@ -225,11 +224,7 @@ public class EditUserWindow extends EditWindow {
 			this.user.setLogin(this.textLogin.getValue());
 			this.user.setExternal(this.checkExternal.getValue());
 			this.user.setActive(this.checkActive.getValue());
-				
-			if(this.user.getPassword().isEmpty()) {
-				this.user.setSalt(StringUtils.generateSalt());
-				this.user.setPassword(StringUtils.generateSHA3Hash(this.user.getLogin() + this.user.getSalt()));
-			}
+			this.user.setName(this.textName.getValue());
 			
 			bo.save(user);
 			
