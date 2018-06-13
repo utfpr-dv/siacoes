@@ -195,10 +195,17 @@ public class JuryView extends ListView {
 		this.getGrid().addColumn("Data e Hora", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy HH:mm")));
 		this.getGrid().addColumn("Local", String.class);
 		this.getGrid().addColumn("TCC", Integer.class);
+		this.getGrid().addColumn("Membro", String.class);
 		this.getGrid().addColumn("Acadêmico", String.class);
 		this.getGrid().addColumn("Título", String.class);
-		this.getGrid().getColumns().get(0).setWidth(165);
-		this.getGrid().getColumns().get(2).setWidth(65);
+		this.getGrid().getColumns().get(0).setWidth(150);
+		this.getGrid().getColumns().get(1).setWidth(200);
+		this.getGrid().getColumns().get(2).setWidth(50);
+		this.getGrid().getColumns().get(3).setWidth(100);
+		
+		if(Session.isUserStudent() || this.listAll) {
+			this.getGrid().getColumns().get(3).setHidden(true);
+		}
 		
 		try {
 			JuryBO bo = new JuryBO();
@@ -224,6 +231,7 @@ public class JuryView extends ListView {
 	    	for(Jury jury : list){
 	    		String title = "";
 	    		String student = "";
+	    		String member = "";
 	    		
 	    		if((jury.getThesis() != null) && (jury.getThesis().getIdThesis() != 0)){
 	    			ThesisBO tbo = new ThesisBO();
@@ -239,7 +247,12 @@ public class JuryView extends ListView {
 	    			student = project.getStudent().getName();
 	    		}
 	    		
-				Object itemId = this.getGrid().addRow(jury.getDate(), jury.getLocal(), jury.getStage(), student, title);
+	    		if((Session.isUserProfessor() || Session.isUserSupervisor()) && !this.listAll) {
+	    			JuryAppraiser appraiser = new JuryAppraiserBO().findByAppraiser(jury.getIdJury(), Session.getUser().getIdUser());
+	    			member = (appraiser.isSubstitute() ? "Suplente" : (appraiser.isChair() ? "Presidente" : "Titular"));
+	    		}
+	    		
+				Object itemId = this.getGrid().addRow(jury.getDate(), jury.getLocal(), jury.getStage(), member, student, title);
 				this.addRowId(itemId, jury.getIdJury());
 			}
 		} catch (Exception e) {

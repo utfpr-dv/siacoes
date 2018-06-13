@@ -64,7 +64,7 @@ public class CalendarEventWindow extends Window {
 			this.textLocal.setValue(event.getJury().getLocal());
 			
 			for(JuryAppraiser appraiser : event.getJury().getAppraisers()){
-				this.textAppraisers.setValue(this.textAppraisers.getValue() + appraiser.getAppraiser().getName() + "\n");
+				this.textAppraisers.setValue(this.textAppraisers.getValue() + appraiser.getAppraiser().getName() + (appraiser.isSubstitute() ? " (suplente)" : (appraiser.isChair() ? " (presidente)" : "")) + "\n");
 			}
 		}else{
 			this.setCaption("Banca de Estágio");
@@ -76,7 +76,7 @@ public class CalendarEventWindow extends Window {
 			this.textLocal.setValue(event.getInternshipJury().getLocal());
 			
 			for(InternshipJuryAppraiser appraiser : event.getInternshipJury().getAppraisers()){
-				this.textAppraisers.setValue(this.textAppraisers.getValue() + appraiser.getAppraiser().getName() + "\n");
+				this.textAppraisers.setValue(this.textAppraisers.getValue() + appraiser.getAppraiser().getName() + (appraiser.isSubstitute() ? " (suplente)" : (appraiser.isChair() ? " (presidente)" : "")) + "\n");
 			}
 		}
 		

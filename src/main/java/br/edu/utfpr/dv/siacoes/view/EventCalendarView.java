@@ -29,6 +29,7 @@ import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.components.CalendarEvent;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
+import br.edu.utfpr.dv.siacoes.model.AppConfig;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.Jury;
@@ -121,6 +122,15 @@ public class EventCalendarView extends BasicView {
 		if(Session.isUserStudent()){
 			this.checkListOnlyMy.setVisible(false);
 		}
+		if(!AppConfig.getInstance().isSigetEnabled() || !AppConfig.getInstance().isSigesEnabled()) {
+			this.optionFilterType.setVisible(false);
+			
+			if(AppConfig.getInstance().isSigetEnabled()) {
+				this.optionFilterType.select(EventCalendarView.ONLYTHESIS);
+			} else {
+				this.optionFilterType.select(EventCalendarView.ONLYINTERNSHIP);
+			}
+		}
 		
 		this.loadEvents();
 	}
@@ -143,7 +153,6 @@ public class EventCalendarView extends BasicView {
 			List<Jury> listThesis = new ArrayList<Jury>();
 			List<InternshipJury> listInternship = new ArrayList<InternshipJury>();
 			BasicEventProvider provider = new BasicEventProvider();
-			int startHour = 23, endHour = 0;
 			
 			List<com.vaadin.ui.components.calendar.event.CalendarEvent> listEvents = this.calendar.getEvents(this.calendar.getStartDate(), this.calendar.getEndDate());
 			
@@ -186,7 +195,7 @@ public class EventCalendarView extends BasicView {
 					jury.setAppraisers(new JuryAppraiserBO().listAppraisers(jury.getIdJury()));
 					
 					for(JuryAppraiser appraiser : jury.getAppraisers()){
-						appraisers += appraiser.getAppraiser().getName() + "; ";
+						appraisers += appraiser.getAppraiser().getName() + (appraiser.isSubstitute() ? " (suplente)" : (appraiser.isChair() ? " (presidente)" : "")) + "; ";
 					}
 					
 					CalendarEvent event = new CalendarEvent(title + " - " + student + " - " + local, title + " - " + student + " - " + local + " - " + appraisers, jury.getDate(), DateUtils.addHour(jury.getDate(), 1));
@@ -194,13 +203,6 @@ public class EventCalendarView extends BasicView {
 					event.setJury(jury);
 					
 					provider.addEvent(event);
-					
-					if(DateUtils.getHour(jury.getDate()) > endHour){
-						endHour = DateUtils.getHour(jury.getDate()) + 2;
-					}
-					if(DateUtils.getHour(jury.getDate()) < startHour){
-						startHour = DateUtils.getHour(jury.getDate()) - 1;
-					}
 				}
 				
 				for(InternshipJury jury : listInternship){
@@ -212,7 +214,7 @@ public class EventCalendarView extends BasicView {
 					jury.setAppraisers(new InternshipJuryAppraiserBO().listAppraisers(jury.getIdInternshipJury()));
 					
 					for(InternshipJuryAppraiser appraiser : jury.getAppraisers()){
-						appraisers += appraiser.getAppraiser().getName() + "; ";
+						appraisers += appraiser.getAppraiser().getName() + (appraiser.isSubstitute() ? " (suplente)" : (appraiser.isChair() ? " (presidente)" : "")) + "; ";
 					}
 					
 					CalendarEvent event = new CalendarEvent(title + " - " + student + " - " + local, title + " - " + student + " - " + local + " - " + appraisers, jury.getDate(), DateUtils.addHour(jury.getDate(), 1));
@@ -220,26 +222,13 @@ public class EventCalendarView extends BasicView {
 					event.setInternshipJury(jury);
 					
 					provider.addEvent(event);
-					
-					if(DateUtils.getHour(jury.getDate()) > endHour){
-						endHour = DateUtils.getHour(jury.getDate()) + 2;
-					}
-					if(DateUtils.getHour(jury.getDate()) < startHour){
-						startHour = DateUtils.getHour(jury.getDate()) - 1;
-					}
 				}
 				
 				this.calendar.setEventProvider(provider);
 			}
 			
-			if(startHour < 0){
-				startHour = 0;
-			}
-			if(endHour > 23){
-				endHour = 23;
-			}
-			this.calendar.setFirstVisibleHourOfDay(startHour);
-			this.calendar.setLastVisibleHourOfDay(endHour);
+			this.calendar.setFirstVisibleHourOfDay(7);
+			this.calendar.setLastVisibleHourOfDay(23);
     	} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

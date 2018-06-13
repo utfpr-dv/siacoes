@@ -1,6 +1,5 @@
 ﻿package br.edu.utfpr.dv.siacoes.window;
 
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,6 +24,7 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
+import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryStudentBO;
@@ -243,14 +243,6 @@ public class EditInternshipJuryWindow extends EditWindow {
 		this.textSupervisorScore.setVisible(!this.jury.isSupervisorFillJuryForm());
 		
 		if(this.jury.getIdInternshipJury() == 0){
-			InternshipJuryAppraiser appraiser = new InternshipJuryAppraiser();
-			appraiser.setAppraiser(this.jury.getSupervisor());
-			
-			this.jury.setAppraisers(new ArrayList<InternshipJuryAppraiser>());
-			this.jury.getAppraisers().add(appraiser);
-			
-			this.jury.setParticipants(new ArrayList<InternshipJuryStudent>());
-			
 			this.textStartTime.setVisible(false);
 			this.textEndTime.setVisible(false);
 		}else {
@@ -303,7 +295,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 				} else if (appraiser.isSubstitute()) {
 					this.gridAppraisers.addRow("Suplente " + String.valueOf(substitute), appraiser.getAppraiser().getName());
 					substitute = substitute + 1;
-				}else {
+				} else {
 					this.gridAppraisers.addRow("Membro " + String.valueOf(member), appraiser.getAppraiser().getName());
 					member = member + 1;
 				}
@@ -438,17 +430,19 @@ public class EditInternshipJuryWindow extends EditWindow {
 		}
 	}
 	
-	private void addScore(){
+	private void addScore() {
 		int index = this.getAppraiserSelectedIndex();
 		
-		if(index == -1){
+		if(index == -1) {
 			Notification.show("Selecionar Membro", "Selecione o membro para lançar as notas.", Notification.Type.WARNING_MESSAGE);
-		}else{
+		} else {
 			InternshipJuryAppraiser appraiser = this.jury.getAppraisers().get(index);
 			
-			if((appraiser == null) || (appraiser.getIdInternshipJuryAppraiser() == 0)){
+			if((appraiser == null) || (appraiser.getIdInternshipJuryAppraiser() == 0)) {
 				Notification.show("Lançar Notas", "É necessário salvar a banca antes de lançar as notas.", Notification.Type.WARNING_MESSAGE);
-			}else{
+			} else if(appraiser.isChair() && !this.jury.isSupervisorFillJuryForm()) {
+				Notification.show("Lançar Notas", "A nota do orientador deve ser lançada no campo \"Nota do Orientador\".", Notification.Type.WARNING_MESSAGE);
+			} else {
 				UI.getCurrent().addWindow(new EditInternshipJuryAppraiserScoreWindow(appraiser));	
 			}
 		}

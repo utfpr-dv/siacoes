@@ -697,32 +697,34 @@ public class EditInternshipWindow extends EditWindow {
 					tab.addTab(tab1, "Geral");
 					
 					for(JuryFormAppraiserReport appraiser : report.getAppraisers()) {
-						TextField textAppraiser = new TextField("Avaliador:");
-						textAppraiser.setWidth("100%");
-						textAppraiser.setEnabled(false);
-						textAppraiser.setValue(appraiser.getName());
-						
-						Grid gridScores = new Grid();
-						gridScores.setWidth("100%");
-						gridScores.setHeight("150px");
-						gridScores.addColumn("Quesito", String.class);
-						gridScores.addColumn("Peso", Double.class);
-						gridScores.addColumn("Nota", Double.class);
-						
-						for(JuryFormAppraiserDetailReport scores : appraiser.getDetail()) {
-							gridScores.addRow(scores.getEvaluationItem(), scores.getPonderosity(), scores.getScore());
+						if(!appraiser.getName().equals(this.internship.getSupervisor().getName()) || jury.isSupervisorFillJuryForm()) {
+							TextField textAppraiser = new TextField("Avaliador:");
+							textAppraiser.setWidth("100%");
+							textAppraiser.setEnabled(false);
+							textAppraiser.setValue(appraiser.getName());
+							
+							Grid gridScores = new Grid();
+							gridScores.setWidth("100%");
+							gridScores.setHeight("150px");
+							gridScores.addColumn("Quesito", String.class);
+							gridScores.addColumn("Peso", Double.class);
+							gridScores.addColumn("Nota", Double.class);
+							
+							for(JuryFormAppraiserDetailReport scores : appraiser.getDetail()) {
+								gridScores.addRow(scores.getEvaluationItem(), scores.getPonderosity(), scores.getScore());
+							}
+							
+							TextArea textAppraiserComments = new TextArea("Comentários");
+							textAppraiserComments.setWidth("100%");
+							textAppraiserComments.setHeight("75px");
+							textAppraiserComments.setEnabled(false);
+							textAppraiserComments.setValue(appraiser.getComments());
+							
+							VerticalLayout tabAppraiser = new VerticalLayout(textAppraiser, gridScores, textAppraiserComments);
+							tabAppraiser.setSpacing(true);
+							
+							tab.addTab(tabAppraiser, appraiser.getDescription());
 						}
-						
-						TextArea textAppraiserComments = new TextArea("Comentários");
-						textAppraiserComments.setWidth("100%");
-						textAppraiserComments.setHeight("75px");
-						textAppraiserComments.setEnabled(false);
-						textAppraiserComments.setValue(appraiser.getComments());
-						
-						VerticalLayout tabAppraiser = new VerticalLayout(textAppraiser, gridScores, textAppraiserComments);
-						tabAppraiser.setSpacing(true);
-						
-						tab.addTab(tabAppraiser, appraiser.getDescription());
 					}
 					
 					this.tabContainer.addTab(tab, "Avaliação");
