@@ -66,10 +66,12 @@ public class EditThemeSuggestionWindow extends EditWindow {
 		this.textObjetives = new TextArea();
 		this.textObjetives.setWidth("810px");
 		this.textObjetives.setHeight("280px");
+		this.textObjetives.addStyleName("textscroll");
 		
 		this.textProposal = new TextArea();
 		this.textProposal.setWidth("810px");
 		this.textProposal.setHeight("280px");
+		this.textProposal.addStyleName("textscroll");
 		
 		this.checkActive = new CheckBox("Ativo");
 		
