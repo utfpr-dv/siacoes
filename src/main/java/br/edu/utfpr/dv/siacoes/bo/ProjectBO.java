@@ -142,9 +142,6 @@ public class ProjectBO {
 		if((project.getSemester() == 0) || (project.getYear() == 0)){
 			throw new Exception("Informe o ano e semestre do projeto.");
 		}
-		if(project.getAbstract().isEmpty()){
-			throw new Exception("Informe o resumo do projeto.");
-		}
 	}
 	
 	public int save(Project project) throws Exception{

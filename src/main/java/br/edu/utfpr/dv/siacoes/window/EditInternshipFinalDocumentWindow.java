@@ -127,19 +127,25 @@ public class EditInternshipFinalDocumentWindow extends EditWindow {
 		this.addField(new HorizontalLayout(this.comboFeedback, this.textFeedbackDate));
 		this.addField(this.textComments);
 		
-		if(Session.isUserProfessor()){
+		this.loadInternship();
+		
+		if(Session.isUserProfessor()) {
 			this.uploadFile.setVisible(false);
 			this.addButton(this.buttonDownloadFile);
-		}else{
+		} else {
 			this.comboFeedback.setEnabled(false);
 			this.textComments.setReadOnly(true);
+			
+			if(this.doc.getSupervisorFeedback() == DocumentFeedback.APPROVED) {
+				this.uploadFile.setEnabled(false);
+				this.setSaveButtonEnabled(false);
+			}
 		}
 		
-		this.loadThesis();
 		this.textTitle.focus();
 	}
 	
-	private void loadThesis(){
+	private void loadInternship(){
 		try{
 			InternshipBO ibo = new InternshipBO();
 			Internship internship = ibo.findById(this.doc.getInternship().getIdInternship());
