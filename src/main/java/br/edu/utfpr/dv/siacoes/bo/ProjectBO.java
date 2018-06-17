@@ -279,6 +279,10 @@ public class ProjectBO {
 			}
 			
 			p = new Project(Session.getUser(), proposal);
+			
+			SupervisorChangeBO sbo = new SupervisorChangeBO();
+			p.setSupervisor(sbo.findCurrentSupervisor(proposal.getIdProposal()));
+			p.setCosupervisor(sbo.findCurrentCosupervisor(proposal.getIdProposal()));
 		}
 		
 		return p;
