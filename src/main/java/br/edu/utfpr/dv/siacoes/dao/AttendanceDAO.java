@@ -259,7 +259,7 @@ public class AttendanceDAO {
 		}
 	}
 	
-	public List<AttendanceReport> getAttendanceReport(int idDepartment, int semester, int year, int stage) throws SQLException{
+	public List<AttendanceReport> getAttendanceReport(int idDepartment, int semester, int year, int stage, boolean includeCosupervisor) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -282,7 +282,7 @@ public class AttendanceDAO {
 			
 			while(rs.next()){
 				ProposalDAO dao = new ProposalDAO();
-				List<User> supervisors = dao.listSupervisors(rs.getInt("idproposal"));
+				List<User> supervisors = dao.listSupervisors(rs.getInt("idproposal"), includeCosupervisor);
 				
 				for(User s : supervisors){
 					for(int i = 1; i <= 2; i++){

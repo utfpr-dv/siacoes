@@ -275,12 +275,6 @@ public class InternshipJuryBO {
 	}
 	
 	public boolean canRemoveAppraiser(InternshipJury jury, User appraiser) throws Exception{
-		User supervisor = jury.getSupervisor();
-		
-		if(appraiser.getIdUser() == supervisor.getIdUser()){
-			throw new Exception("O orientador deve estar na banca.");
-		}
-		
 		if(jury.getIdInternshipJury() != 0){
 			InternshipJuryAppraiserScoreBO bo = new InternshipJuryAppraiserScoreBO();
 			if(bo.hasScore(jury.getIdInternshipJury(), appraiser.getIdUser())){

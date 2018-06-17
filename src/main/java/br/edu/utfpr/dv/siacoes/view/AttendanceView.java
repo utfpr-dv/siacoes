@@ -167,7 +167,7 @@ public class AttendanceView extends ListView {
 			
 			if(this.comboProposal.getValue() != null){
 				ProposalBO bo = new ProposalBO();
-				List<User> list = bo.listSupervisors(((Proposal)this.comboProposal.getValue()).getIdProposal());
+				List<User> list = bo.listSupervisors(((Proposal)this.comboProposal.getValue()).getIdProposal(), true);
 				
 				this.comboSupervisor.addItems(list);
 				if(list.size() > 0){

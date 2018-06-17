@@ -21,7 +21,7 @@ import br.edu.utfpr.dv.siacoes.model.Semester;
 
 public class ProposalDAO {
 	
-	public List<User> listSupervisors(int idProposal) throws SQLException{
+	public List<User> listSupervisors(int idProposal, boolean includeCosupervisor) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -36,16 +36,16 @@ public class ProposalDAO {
 					"WHERE proposal.idProposal=" + String.valueOf(idProposal) +
 					" UNION " +
 					"SELECT \"user\".idUser, \"user\".name " + 
+					"FROM \"user\" INNER JOIN supervisorchange ON \"user\".idUser=supervisorchange.idNewSupervisor " +
+					"WHERE supervisorchange.idProposal=" + String.valueOf(idProposal) +
+					(includeCosupervisor ? " UNION " +
+					"SELECT \"user\".idUser, \"user\".name " + 
 					"FROM \"user\" INNER JOIN proposal ON \"user\".idUser=proposal.idCosupervisor " +
 					"WHERE proposal.idProposal=" + String.valueOf(idProposal) +
 					" UNION " +
 					"SELECT \"user\".idUser, \"user\".name " + 
-					"FROM \"user\" INNER JOIN supervisorchange ON \"user\".idUser=supervisorchange.idNewSupervisor " +
-					"WHERE supervisorchange.idProposal=" + String.valueOf(idProposal) +
-					" UNION " +
-					"SELECT \"user\".idUser, \"user\".name " + 
 					"FROM \"user\" INNER JOIN supervisorchange ON \"user\".idUser=supervisorchange.idNewCosupervisor " +
-					"WHERE supervisorchange.idProposal=" + String.valueOf(idProposal) +
+					"WHERE supervisorchange.idProposal=" + String.valueOf(idProposal) : "") +
 					" ORDER BY name");
 			
 			while(rs.next()){
@@ -233,6 +233,10 @@ public class ProposalDAO {
 			
 			if(thesis == null){
 				project = pdao.findCurrentProject(idStudent, idDepartment, semester, year);
+				
+				if(project == null) {
+					project = pdao.findApprovedProject(idStudent, idDepartment, semester, year, new SigetConfigDAO().findByDepartment(idDepartment).isRequestFinalDocumentStage1());
+				}
 			}else{
 				project = pdao.findById(thesis.getProject().getIdProject());	
 			}

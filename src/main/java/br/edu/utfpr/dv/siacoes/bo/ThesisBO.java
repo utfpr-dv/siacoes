@@ -213,6 +213,10 @@ public class ThesisBO {
 			}
 			
 			thesis = new Thesis(new UserBO().findById(idUser), project);
+			
+			SupervisorChangeBO sbo = new SupervisorChangeBO();
+			thesis.setSupervisor(sbo.findCurrentSupervisor(project.getProposal().getIdProposal()));
+			thesis.setCosupervisor(sbo.findCurrentCosupervisor(project.getProposal().getIdProposal()));
 		}
 		
 		return thesis;

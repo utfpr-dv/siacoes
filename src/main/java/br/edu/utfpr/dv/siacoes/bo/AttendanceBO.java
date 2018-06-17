@@ -92,11 +92,11 @@ public class AttendanceBO {
 		}
 	}
 	
-	public byte[] getAttendanceReport(int idDepartment, int semester, int year, int stage, boolean showDetail) throws Exception{
+	public byte[] getAttendanceReport(int idDepartment, int semester, int year, int stage, boolean includeCosupervisor, boolean showDetail) throws Exception{
 		try {
 			AttendanceDAO dao = new AttendanceDAO();
 			
-			List<AttendanceReport> list = dao.getAttendanceReport(idDepartment, semester, year, stage);
+			List<AttendanceReport> list = dao.getAttendanceReport(idDepartment, semester, year, stage, includeCosupervisor);
 			
 			ByteArrayOutputStream report;
 			

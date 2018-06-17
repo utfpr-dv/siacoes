@@ -234,6 +234,7 @@ public class EditProposalWindow extends EditWindow {
             	downloadFile();
             }
         });
+		this.buttonDownloadProposal.setIcon(FontAwesome.DOWNLOAD);
 		this.addButton(this.buttonDownloadProposal);
 		this.buttonDownloadProposal.setWidth("250px");
 		

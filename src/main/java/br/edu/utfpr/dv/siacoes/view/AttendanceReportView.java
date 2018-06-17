@@ -18,6 +18,7 @@ public class AttendanceReportView extends ReportView {
 	private final SemesterComboBox comboSemester;
 	private final StageComboBox comboStage;
 	private final YearField textYear;
+	private final CheckBox checkIncludeCosupervisor;
 	private final CheckBox checkDetail;
 
 	public AttendanceReportView(){
@@ -32,6 +33,8 @@ public class AttendanceReportView extends ReportView {
 		
 		this.textYear = new YearField();
 		
+		this.checkIncludeCosupervisor = new CheckBox("Mostrar reuniões com o coorientador");
+		
 		this.checkDetail = new CheckBox("Mostrar relatório detalhado");
 		
 		this.addFilterField(new HorizontalLayout(this.comboSemester, this.textYear, this.comboStage));
@@ -41,7 +44,7 @@ public class AttendanceReportView extends ReportView {
 	@Override
 	public byte[] generateReport() throws Exception {
 		AttendanceBO bo = new AttendanceBO();
-		return bo.getAttendanceReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), (this.comboStage.isBothSelected() ? 0 : this.comboStage.getStage()), this.checkDetail.getValue());
+		return bo.getAttendanceReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), (this.comboStage.isBothSelected() ? 0 : this.comboStage.getStage()), this.checkIncludeCosupervisor.getValue(), this.checkDetail.getValue());
 	}
 
 }

@@ -240,11 +240,6 @@ public class JuryBO {
 					jury.setAppraisers(new ArrayList<JuryAppraiser>());
 					jury.setParticipants(new ArrayList<JuryStudent>());
 					
-					JuryAppraiser appraiser = new JuryAppraiser();
-					appraiser.setAppraiser(jury.getSupervisor());
-					
-					jury.getAppraisers().add(appraiser);
-					
 					int idJury = new ProjectBO().findIdJury(new ThesisBO().findIdProject(idThesis));
 					if(idJury > 0) {
 						List<JuryAppraiser> appraisers = new JuryAppraiserBO().listAppraisers(idJury);
@@ -455,12 +450,6 @@ public class JuryBO {
 	}
 	
 	public boolean canRemoveAppraiser(Jury jury, User appraiser) throws Exception{
-		User supervisor = jury.getSupervisor();
-		
-		if(appraiser.getIdUser() == supervisor.getIdUser()){
-			throw new Exception("O orientador deve estar na banca.");
-		}
-		
 		if(jury.getIdJury() != 0){
 			JuryAppraiserScoreBO bo = new JuryAppraiserScoreBO();
 			if(bo.hasScore(jury.getIdJury(), appraiser.getIdUser())){

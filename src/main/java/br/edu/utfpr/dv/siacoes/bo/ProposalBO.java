@@ -24,11 +24,11 @@ import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class ProposalBO {
 	
-	public List<User> listSupervisors(int idProposal) throws Exception{
+	public List<User> listSupervisors(int idProposal, boolean includeCosupervisor) throws Exception{
 		try {
 			ProposalDAO dao = new ProposalDAO();
 			
-			return dao.listSupervisors(idProposal);
+			return dao.listSupervisors(idProposal, includeCosupervisor);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

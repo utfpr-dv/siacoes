@@ -3,6 +3,7 @@
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
@@ -130,6 +131,7 @@ public class EditThesisWindow extends EditWindow {
             	downloadFile();
             }
         });
+		this.buttonDownloadFile.setIcon(FontAwesome.DOWNLOAD);
 		this.buttonDownloadFile.setVisible(false);
 		
 		VerticalLayout v1 = new VerticalLayout();
@@ -189,6 +191,7 @@ public class EditThesisWindow extends EditWindow {
 		this.uploadFile.setEnabled(this.thesis.getStudent().getIdUser() == Session.getUser().getIdUser());
 		
 		this.addButton(this.buttonDownloadFile);
+		this.buttonDownloadFile.setWidth("250px");
 	}
 	
 	private void loadThesis(){
