@@ -2,6 +2,7 @@
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,10 +10,12 @@ import java.util.logging.Logger;
 import br.edu.utfpr.dv.siacoes.dao.ThesisDAO;
 import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
+import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.SupervisorFeedbackReport;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
@@ -122,11 +125,39 @@ public class ThesisBO {
 	
 	public int save(Thesis thesis) throws Exception{
 		try {
+			boolean isInsert = (thesis.getIdThesis() == 0);
+			byte[] oldFile = null;
 			this.validate(thesis);
 			
 			ThesisDAO dao = new ThesisDAO();
 			
-			return dao.save(thesis);
+			if(!isInsert) {
+				oldFile = dao.getFile(thesis.getIdThesis());
+			}
+			
+			int ret = dao.save(thesis);
+			
+			try {
+				EmailMessageBO bo = new EmailMessageBO();
+				List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+				
+				keys.add(new EmailMessageEntry<String, String>("documenttype", "Monografia de TCC 2"));
+				keys.add(new EmailMessageEntry<String, String>("student", thesis.getStudent().getName()));
+				keys.add(new EmailMessageEntry<String, String>("title", thesis.getTitle()));
+				keys.add(new EmailMessageEntry<String, String>("supervisor", thesis.getSupervisor().getName()));
+				
+				if(isInsert) {
+					bo.sendEmail(thesis.getStudent().getIdUser(), MessageType.PROJECTORTHESISSUBMITEDSTUDENT, keys);
+					bo.sendEmail(thesis.getSupervisor().getIdUser(), MessageType.PROJECTORTHESISSUBMITEDSUPERVISOR, keys);
+				} else if (!Arrays.equals(thesis.getFile(), oldFile)) {
+					bo.sendEmail(thesis.getStudent().getIdUser(), MessageType.PROJECTORTHESISCHANGEDSTUDENT, keys);
+					bo.sendEmail(thesis.getSupervisor().getIdUser(), MessageType.PROJECTORTHESISCHANGEDSUPERVISOR, keys);
+				}
+			} catch(Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			}
+			
+			return ret;
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

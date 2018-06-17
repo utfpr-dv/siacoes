@@ -13,8 +13,8 @@ public class EmailMessage {
 		PROPOSALREGISTERSUPERVISOR(6),
 		PROPOSALSUBMITEDSTUDENT(7),
 		PROPOSALSUBMITEDSUPERVISOR(8),
-		PROPOSALCHANGESTUDENT(9),
-		PROPOSALCHANGESUPERVISOR(10),
+		PROPOSALCHANGEDSTUDENT(9),
+		PROPOSALCHANGEDSUPERVISOR(10),
 		PROPOSALAPPRAISERREGISTER(11),
 		PROPOSALAPPRAISERFEEDBACK(12),
 		JURYINCLUDEDSTUDENT(13),
@@ -34,7 +34,11 @@ public class EmailMessage {
 		PROPOSALAPPRAISERSUPERVISORINDICATION(27),
 		PROPOSALAPPRAISERFEEDBACKSUPERVISOR(28),
 		PROPOSALAPPRAISERFEEDBACKSTUDENT(29),
-		USERREGISTRED(30);
+		USERREGISTRED(30),
+		PROJECTORTHESISSUBMITEDSTUDENT(31),
+		PROJECTORTHESISSUBMITEDSUPERVISOR(32),
+		PROJECTORTHESISCHANGEDSTUDENT(33),
+		PROJECTORTHESISCHANGEDSUPERVISOR(34);
 		
 		private final int value; 
 		MessageType(int value){ 
@@ -73,9 +77,9 @@ public class EmailMessage {
 					return "Submissão de Proposta de TCC 1 (Estudante)";
 				case PROPOSALSUBMITEDSUPERVISOR:
 					return "Submissão de Proposta de TCC 1 (Orientador)";
-				case PROPOSALCHANGESTUDENT:
+				case PROPOSALCHANGEDSTUDENT:
 					return "Ressubmissão de Proposta de TCC 1 (Estudante)";
-				case PROPOSALCHANGESUPERVISOR:
+				case PROPOSALCHANGEDSUPERVISOR:
 					return "Ressubmissão de Proposta de TCC 1 (Orientador)";
 				case PROPOSALAPPRAISERREGISTER:
 					return "Indicação de Avaliador da Proposta de TCC 1 (Responsável TCC)";
@@ -117,6 +121,14 @@ public class EmailMessage {
 					return "Feedback da Proposta de TCC 1 (Estudante)";
 				case USERREGISTRED:
 					return "Usuário Cadastrado";
+				case PROJECTORTHESISSUBMITEDSTUDENT:
+					return "Submissão de Projeto ou Monografia (Estudante)";
+				case PROJECTORTHESISSUBMITEDSUPERVISOR:
+					return "Submissão de Projeto ou Monografia (Orientador)";
+				case PROJECTORTHESISCHANGEDSTUDENT:
+					return "Ressubmissão de Projeto ou Monografia (Estudante)";
+				case PROJECTORTHESISCHANGEDSUPERVISOR:
+					return "Ressubmissão de Projeto ou Monografia (Orientador)";
 				default:
 					return "";
 			}

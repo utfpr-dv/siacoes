@@ -2,6 +2,7 @@
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,12 +11,14 @@ import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.dao.ProjectDAO;
 import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
+import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.SupervisorFeedbackReport;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
@@ -146,11 +149,39 @@ public class ProjectBO {
 	
 	public int save(Project project) throws Exception{
 		try {
+			boolean isInsert = (project.getIdProject() == 0);
+			byte[] oldFile = null;
 			this.validate(project);
 			
 			ProjectDAO dao = new ProjectDAO();
 			
-			return dao.save(project);
+			if(!isInsert) {
+				oldFile = dao.getFile(project.getIdProject());
+			}
+			
+			int ret = dao.save(project);
+			
+			try {
+				EmailMessageBO bo = new EmailMessageBO();
+				List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+				
+				keys.add(new EmailMessageEntry<String, String>("documenttype", "Projeto de TCC 1"));
+				keys.add(new EmailMessageEntry<String, String>("student", project.getStudent().getName()));
+				keys.add(new EmailMessageEntry<String, String>("title", project.getTitle()));
+				keys.add(new EmailMessageEntry<String, String>("supervisor", project.getSupervisor().getName()));
+				
+				if(isInsert) {
+					bo.sendEmail(project.getStudent().getIdUser(), MessageType.PROJECTORTHESISSUBMITEDSTUDENT, keys);
+					bo.sendEmail(project.getSupervisor().getIdUser(), MessageType.PROJECTORTHESISSUBMITEDSUPERVISOR, keys);
+				} else if (!Arrays.equals(project.getFile(), oldFile)) {
+					bo.sendEmail(project.getStudent().getIdUser(), MessageType.PROJECTORTHESISCHANGEDSTUDENT, keys);
+					bo.sendEmail(project.getSupervisor().getIdUser(), MessageType.PROJECTORTHESISCHANGEDSUPERVISOR, keys);
+				}
+			} catch(Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			}
+			
+			return ret;
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

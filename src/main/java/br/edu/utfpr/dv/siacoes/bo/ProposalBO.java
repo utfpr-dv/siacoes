@@ -235,10 +235,10 @@ public class ProposalBO {
 						bo.sendEmail(proposal.getCosupervisor().getIdUser(), MessageType.PROPOSALSUBMITEDSUPERVISOR, keys);
 					}
 				}else if(!Arrays.equals(proposal.getFile(), oldFile)){
-					bo.sendEmail(proposal.getStudent().getIdUser(), MessageType.PROPOSALCHANGESTUDENT, keys);
-					bo.sendEmail(proposal.getSupervisor().getIdUser(), MessageType.PROPOSALCHANGESUPERVISOR, keys);
+					bo.sendEmail(proposal.getStudent().getIdUser(), MessageType.PROPOSALCHANGEDSTUDENT, keys);
+					bo.sendEmail(proposal.getSupervisor().getIdUser(), MessageType.PROPOSALCHANGEDSUPERVISOR, keys);
 					if((proposal.getCosupervisor() != null) && (proposal.getCosupervisor().getIdUser() != 0)){
-						bo.sendEmail(proposal.getCosupervisor().getIdUser(), MessageType.PROPOSALCHANGESUPERVISOR, keys);
+						bo.sendEmail(proposal.getCosupervisor().getIdUser(), MessageType.PROPOSALCHANGEDSUPERVISOR, keys);
 					}
 				}
 			}
