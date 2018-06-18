@@ -256,24 +256,45 @@ public class ThesisBO {
 	public List<byte[]> prepareDocuments(int idUser, int idDepartment, int semester, int year) throws Exception {
 		List<byte[]> ret = new ArrayList<byte[]>();
 		Thesis thesis = this.findCurrentThesis(idUser, idDepartment, semester, year);
+		int idProposal = 0, idSupervisor = 0;
 		
 		if(thesis == null){
 			thesis = this.findLastThesis(idUser, idDepartment, semester, year);
+			
+			if(thesis == null) {
+				Project project = new ProjectBO().findLastProject(idUser, idDepartment, semester, year);
+				
+				if(project == null) {
+					throw new Exception("Não foi encontrada nenhuma submissão de TCC 1.");
+				} else {
+					idProposal = project.getProposal().getIdProposal();
+					idSupervisor = new SupervisorChangeBO().findCurrentSupervisor(idProposal).getIdUser();
+				}
+			}
 		}
 		
-		if(thesis == null){
-			throw new Exception("É necessário submeter a monografia para imprimir os documentos.");
-		}else{
-			ProjectBO pbo = new ProjectBO();
-			Project project = pbo.findById(thesis.getProject().getIdProject());
-			
-			AttendanceBO abo = new AttendanceBO();
-			AttendanceReport attendance = abo.getReport(idUser, project.getProposal().getIdProposal(), thesis.getSupervisor().getIdUser(), 2);
-			
-			List<AttendanceReport> list = new ArrayList<AttendanceReport>();
-			list.add(attendance);
-			
-			ret.add(new ReportUtils().createPdfStream(list, "Attendances", idDepartment).toByteArray());
+		if(thesis != null) {
+			idProposal = new ThesisDAO().findIdProposal(thesis.getIdThesis());
+			idSupervisor = thesis.getSupervisor().getIdUser();
+		}
+		
+		AttendanceBO abo = new AttendanceBO();
+		AttendanceReport attendance = abo.getReport(idUser, idProposal, idSupervisor, 2);
+		
+		List<AttendanceReport> list = new ArrayList<AttendanceReport>();
+		list.add(attendance);
+		
+		ret.add(new ReportUtils().createPdfStream(list, "Attendances", idDepartment).toByteArray());
+		
+		if(new SigetConfigBO().findByDepartment(idDepartment).isSupervisorJuryAgreement()) {
+			if(thesis == null) {
+				thesis = new Thesis();
+				thesis.setTitle(attendance.getTitle());
+				thesis.getStudent().setIdUser(idUser);
+				thesis.getStudent().setName(attendance.getStudent());
+				thesis.getSupervisor().setIdUser(idSupervisor);
+				thesis.getSupervisor().setName(attendance.getSupervisor());
+			}
 			
 			List<SupervisorFeedbackReport> list2 = new ArrayList<SupervisorFeedbackReport>();
 			list2.add(this.getSupervisorFeedbackReport(thesis));

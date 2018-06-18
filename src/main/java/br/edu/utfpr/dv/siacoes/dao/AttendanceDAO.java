@@ -10,8 +10,10 @@ import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.Attendance;
 import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
+import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.Semester;
+import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
 
 public class AttendanceDAO {
@@ -216,21 +218,32 @@ public class AttendanceDAO {
 		ResultSet rs = null;
 		
 		try{
-			ProposalDAO dao = new ProposalDAO();
-			Proposal proposal = dao.findById(idProposal);
-			
 			AttendanceReport report = new AttendanceReport();
 			
 			report.setStage(stage);
-			report.setTitle(proposal.getTitle());
-			report.setStudent(proposal.getStudent().getName());
-			report.setSupervisor(proposal.getSupervisor().getName());
 			
-			if(stage == 1){
+			Thesis thesis = new ThesisDAO().findByProposal(idProposal);
+			
+			if(thesis != null) {
+				report.setTitle(thesis.getTitle());
+			} else {
+				Project project = new ProjectDAO().findByProposal(idProposal);
 				
-			}else{
-				
+				if(project != null) {
+					report.setTitle(project.getTitle());
+				} else {
+					Proposal proposal = new ProposalDAO().findById(idProposal);
+					
+					if(proposal != null) {
+						report.setTitle(proposal.getTitle());
+					} else {
+						report.setTitle("");
+					}
+				}
 			}
+			
+			report.setStudent(new UserDAO().findById(idStudent).getName());
+			report.setSupervisor(new UserDAO().findById(idSupervisor).getName());
 			
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();

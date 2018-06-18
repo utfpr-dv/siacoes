@@ -53,6 +53,7 @@ public class SigetConfig {
 	private String repositoryLink;
 	private boolean supervisorJuryRequest;
 	private boolean supervisorAgreement;
+	private boolean supervisorJuryAgreement;
 	
 	public SigetConfig(){
 		this.setDepartment(new Department());
@@ -68,6 +69,7 @@ public class SigetConfig {
 		this.setRepositoryLink("");
 		this.setSupervisorAgreement(false);
 		this.setSupervisorJuryRequest(false);
+		this.setSupervisorJuryAgreement(false);
 	}
 	
 	public Department getDepartment() {
@@ -147,6 +149,12 @@ public class SigetConfig {
 	}
 	public void setSupervisorAgreement(boolean supervisorAgreement) {
 		this.supervisorAgreement = supervisorAgreement;
+	}
+	public boolean isSupervisorJuryAgreement() {
+		return supervisorJuryAgreement;
+	}
+	public void setSupervisorJuryAgreement(boolean supervisorJuryAgreement) {
+		this.supervisorJuryAgreement = supervisorJuryAgreement;
 	}
 
 }

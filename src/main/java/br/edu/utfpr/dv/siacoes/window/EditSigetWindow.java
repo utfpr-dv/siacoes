@@ -27,13 +27,14 @@ public class EditSigetWindow extends EditWindow {
 	private final CheckBox checkShowGradesToStudent;
 	private final NativeSelect comboSupervisorFilter;
 	private final NativeSelect comboCosupervisorFilter;
-	private final YearField textSupervisorIndicator;
+	private final YearField textSupervisorIndication;
 	private final YearField textMaxTutoredStage1;
 	private final YearField textMaxTutoredStage2;
 	private final CheckBox checkRequestFinalDocumentStage1;
 	private final TextField textRepositoryLink;
 	private final CheckBox checkSupervisorJuryRequest;
 	private final CheckBox checkSupervisorAgreement;
+	private final CheckBox checkSupervisorJuryAgreement;
 	
 	public EditSigetWindow(SigetConfig config, ListView parentView){
 		super("Editar Configurações", parentView);
@@ -63,8 +64,8 @@ public class EditSigetWindow extends EditWindow {
 		this.comboCosupervisorFilter.addItem(SupervisorFilter.INSTITUTION);
 		this.comboCosupervisorFilter.addItem(SupervisorFilter.EVERYONE);
 		
-		this.textSupervisorIndicator = new YearField();
-		this.textSupervisorIndicator.setCaption("Número de indicações do orientador para Proposta de TCC 1");
+		this.textSupervisorIndication = new YearField();
+		this.textSupervisorIndication.setCaption("Número de indicações do orientador para Proposta de TCC 1");
 		
 		this.textMaxTutoredStage1 = new YearField();
 		this.textMaxTutoredStage1.setCaption("Número máximo de orientados para TCC 1");
@@ -82,6 +83,8 @@ public class EditSigetWindow extends EditWindow {
 		
 		this.checkSupervisorAgreement = new CheckBox("Exigir termo de concordância de orientação");
 		
+		this.checkSupervisorJuryAgreement = new CheckBox("Exigir parecer do orientador para a apresentação do trabalho em banca pública");
+		
 		GridLayout g1 = new GridLayout(2, 2);
 		g1.setSpacing(true);
 		g1.addComponent(this.comboSupervisorFilter, 0, 0);
@@ -94,7 +97,7 @@ public class EditSigetWindow extends EditWindow {
 		panel1.setContent(v4);
 		this.addField(panel1);
 		
-		VerticalLayout v1 = new VerticalLayout(this.checkShowGradesToStudent, this.checkSupervisorJuryRequest);
+		VerticalLayout v1 = new VerticalLayout(this.checkShowGradesToStudent, this.checkSupervisorJuryRequest, this.checkSupervisorJuryAgreement);
 		v1.setSpacing(true);
 		HorizontalLayout h1 = new HorizontalLayout(this.textMinimumScore, v1);
 		h1.setSpacing(true);
@@ -105,7 +108,7 @@ public class EditSigetWindow extends EditWindow {
 		
 		VerticalLayout v2 = new VerticalLayout(this.checkSupervisorAgreement, this.checkRegisterProposal, this.checkRequestFinalDocumentStage1);
 		v2.setSpacing(true);
-		HorizontalLayout h2 = new HorizontalLayout(v2, this.textSupervisorIndicator);
+		HorizontalLayout h2 = new HorizontalLayout(v2, this.textSupervisorIndication);
 		h2.setSpacing(true);
 		h2.setMargin(true);
 		Panel panel3 = new Panel("TCC 1");
@@ -128,13 +131,14 @@ public class EditSigetWindow extends EditWindow {
 		this.checkShowGradesToStudent.setValue(this.config.isShowGradesToStudent());
 		this.comboSupervisorFilter.setValue(this.config.getSupervisorFilter());
 		this.comboCosupervisorFilter.setValue(this.config.getCosupervisorFilter());
-		this.textSupervisorIndicator.setYear(this.config.getSupervisorIndication());
+		this.textSupervisorIndication.setYear(this.config.getSupervisorIndication());
 		this.textMaxTutoredStage1.setYear(this.config.getMaxTutoredStage1());
 		this.textMaxTutoredStage2.setYear(this.config.getMaxTutoredStage2());
 		this.checkRequestFinalDocumentStage1.setValue(this.config.isRequestFinalDocumentStage1());
 		this.textRepositoryLink.setValue(this.config.getRepositoryLink());
 		this.checkSupervisorJuryRequest.setValue(this.config.isSupervisorJuryRequest());
 		this.checkSupervisorAgreement.setValue(this.config.isSupervisorAgreement());
+		this.checkSupervisorJuryAgreement.setValue(this.config.isSupervisorJuryAgreement());
 	}
 
 	@Override
@@ -147,13 +151,14 @@ public class EditSigetWindow extends EditWindow {
 			this.config.setShowGradesToStudent(this.checkShowGradesToStudent.getValue());
 			this.config.setSupervisorFilter((SupervisorFilter)this.comboSupervisorFilter.getValue());
 			this.config.setCosupervisorFilter((SupervisorFilter)this.comboCosupervisorFilter.getValue());
-			this.config.setSupervisorIndication(this.textSupervisorIndicator.getYear());
+			this.config.setSupervisorIndication(this.textSupervisorIndication.getYear());
 			this.config.setMaxTutoredStage1(this.textMaxTutoredStage1.getYear());
 			this.config.setMaxTutoredStage2(this.textMaxTutoredStage2.getYear());
 			this.config.setRequestFinalDocumentStage1(this.checkRequestFinalDocumentStage1.getValue());
 			this.config.setRepositoryLink(this.textRepositoryLink.getValue());
 			this.config.setSupervisorJuryRequest(this.checkSupervisorJuryRequest.getValue());
 			this.config.setSupervisorAgreement(this.checkSupervisorAgreement.getValue());
+			this.config.setSupervisorJuryAgreement(this.checkSupervisorJuryAgreement.getValue());
 			
 			bo.save(this.config);
 			

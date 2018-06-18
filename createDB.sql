@@ -111,6 +111,7 @@ CREATE  TABLE `sigetconfig` (
   `repositorylink` varchar(255) NOT NULL ,
   `supervisorjuryrequest` TINYINT NOT NULL ,
   `supervisoragreement` TINYINT NOT NULL ,
+  `supervisorjuryagreement` TINYINT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigetconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );

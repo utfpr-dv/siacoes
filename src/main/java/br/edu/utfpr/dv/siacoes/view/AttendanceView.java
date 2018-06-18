@@ -21,6 +21,7 @@ import com.vaadin.ui.renderers.DateRenderer;
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.AttendanceBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
+import br.edu.utfpr.dv.siacoes.bo.SupervisorChangeBO;
 import br.edu.utfpr.dv.siacoes.components.StageComboBox;
 import br.edu.utfpr.dv.siacoes.components.StudentComboBox;
 import br.edu.utfpr.dv.siacoes.model.Attendance;
@@ -166,12 +167,19 @@ public class AttendanceView extends ListView {
 			this.comboSupervisor.clear();
 			
 			if(this.comboProposal.getValue() != null){
-				ProposalBO bo = new ProposalBO();
-				List<User> list = bo.listSupervisors(((Proposal)this.comboProposal.getValue()).getIdProposal(), true);
+				List<User> list = new ProposalBO().listSupervisors(((Proposal)this.comboProposal.getValue()).getIdProposal(), true);
 				
 				this.comboSupervisor.addItems(list);
 				if(list.size() > 0){
 					this.comboSupervisor.select(list.get(0));	
+				}
+				
+				User supervisor = new SupervisorChangeBO().findCurrentSupervisor(((Proposal)this.comboProposal.getValue()).getIdProposal());
+				for(User u : list) {
+					if(u.getIdUser() == supervisor.getIdUser()) {
+						this.comboSupervisor.select(u);
+						break;
+					}
 				}
 			}
 		} catch (Exception e) {

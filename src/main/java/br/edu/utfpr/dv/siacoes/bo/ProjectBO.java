@@ -291,21 +291,49 @@ public class ProjectBO {
 	public List<byte[]> prepareDocuments(int idUser, int idDepartment, int semester, int year) throws Exception {
 		List<byte[]> ret = new ArrayList<byte[]>();
 		Project p = this.findCurrentProject(idUser, idDepartment, semester, year);
+		int idProposal = 0, idSupervisor = 0;
 		
 		if(p == null){
 			p = this.findLastProject(idUser, idDepartment, semester, year);
+			
+			if(p == null) {
+				Proposal proposal = new ProposalBO().findCurrentProposal(idUser, idDepartment, semester, year);
+				
+				if(proposal == null) {
+					proposal = new ProposalBO().findLastProposal(idUser, idDepartment);
+				}
+				
+				if(proposal == null) {
+					throw new Exception("Não foi encontrado nenhum registro de orientação para imprimir a documentação.");
+				} else {
+					idProposal = proposal.getIdProposal();
+					idSupervisor = new SupervisorChangeBO().findCurrentSupervisor(idProposal).getIdUser();
+				}
+			}
 		}
 		
-		if(p == null){
-			throw new Exception("É necessário submeter o projeto para imprimir os documentos.");
-		}else{
-			AttendanceBO abo = new AttendanceBO();
-			AttendanceReport attendance = abo.getReport(idUser, p.getProposal().getIdProposal(), p.getSupervisor().getIdUser(), 1);
-			
-			List<AttendanceReport> list = new ArrayList<AttendanceReport>();
-			list.add(attendance);
-			
-			ret.add(new ReportUtils().createPdfStream(list, "Attendances", idDepartment).toByteArray());
+		if(p != null) {
+			idProposal = p.getProposal().getIdProposal();
+			idSupervisor = p.getSupervisor().getIdUser();
+		}
+		
+		AttendanceBO abo = new AttendanceBO();
+		AttendanceReport attendance = abo.getReport(idUser, idProposal, idSupervisor, 1);
+		
+		List<AttendanceReport> list = new ArrayList<AttendanceReport>();
+		list.add(attendance);
+		
+		ret.add(new ReportUtils().createPdfStream(list, "Attendances", idDepartment).toByteArray());
+		
+		if(new SigetConfigBO().findByDepartment(idDepartment).isSupervisorJuryAgreement()) {
+			if(p == null) {
+				p = new Project();
+				p.setTitle(attendance.getTitle());
+				p.getStudent().setIdUser(idUser);
+				p.getStudent().setName(attendance.getStudent());
+				p.getSupervisor().setIdUser(idSupervisor);
+				p.getSupervisor().setName(attendance.getSupervisor());
+			}
 			
 			List<SupervisorFeedbackReport> list2 = new ArrayList<SupervisorFeedbackReport>();
 			list2.add(this.getSupervisorFeedbackReport(p));
