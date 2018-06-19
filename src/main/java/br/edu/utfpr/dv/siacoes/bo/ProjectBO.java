@@ -256,19 +256,19 @@ public class ProjectBO {
 	public Project prepareProject(int idUser, int idDepartment, int semester, int year) throws Exception {
 		Project p = new ProjectBO().findCurrentProject(idUser, idDepartment, semester, year);
 		
-		if(p == null){
+		if(p == null) {
 			Deadline d = new DeadlineBO().findBySemester(idDepartment, semester, year);
 			
-			if((d == null) || DateUtils.getToday().getTime().after(d.getProjectDeadline())){
+			if((d == null) || DateUtils.getToday().getTime().after(d.getProjectDeadline())) {
 				throw new Exception("A submissão de projetos já foi encerrada.");
 			}
 			
 			Proposal proposal = new ProposalBO().findCurrentProposal(idUser, idDepartment, semester, year);
 			
-			if(proposal == null){
-				if(new SigetConfigBO().findByDepartment(idDepartment).isRegisterProposal()){
+			if(proposal == null) {
+				if(new SigetConfigBO().findByDepartment(idDepartment).isRegisterProposal()) {
 					throw new Exception("Não foi encontrada a submissão da proposta. É necessário primeiramente submeter a proposta.");
-				}else{
+				} else {
 					throw new Exception("Não foi encontrada o registro de orientação. É necessário primeiramente registrar a orientação.");
 				}
 			}
@@ -283,6 +283,12 @@ public class ProjectBO {
 			SupervisorChangeBO sbo = new SupervisorChangeBO();
 			p.setSupervisor(sbo.findCurrentSupervisor(proposal.getIdProposal()));
 			p.setCosupervisor(sbo.findCurrentCosupervisor(proposal.getIdProposal()));
+			
+			if(config.isValidateAttendances()) {
+				if(!new AttendanceBO().validateFrequency(idUser, p.getSupervisor().getIdUser(), p.getProposal().getIdProposal(), 1, config.getAttendanceFrequency())) {
+					throw new Exception("As reuniões de orientação registradas não atendem à frequência mínima exigida. As reuniões com o orientador devem ocorrer com frequência " + config.getAttendanceFrequency().toString() + ".");
+				}
+			}
 		}
 		
 		return p;

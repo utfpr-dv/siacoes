@@ -771,5 +771,36 @@ public class ProposalDAO {
 				conn.close();
 		}
 	}
+	
+	public int findIdCampus(int idProject) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT campus.idCampus FROM campus " +
+					"INNER JOIN department ON department.idCampus=campus.idCampus " +
+					"INNER JOIN proposal ON proposal.idDepartment=department.idDepartment " +
+					"WHERE proposal.idProposal=?");
+		
+			stmt.setInt(1, idProject);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getInt("idCampus");
+			}else{
+				return 0;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
 
 }

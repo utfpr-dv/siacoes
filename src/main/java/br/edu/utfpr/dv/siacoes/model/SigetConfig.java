@@ -40,6 +40,46 @@ public class SigetConfig {
 		}
 	}
 	
+	public enum AttendanceFrequency {
+		WEEKLY(0), BIWEEKLY(1), MONTHLY(2), BIMONTHLY(3), QUARTERLY(4);
+		
+		private final int value; 
+		AttendanceFrequency(int value){ 
+			this.value = value; 
+		}
+		
+		public int getValue(){ 
+			return value;
+		}
+		
+		public static AttendanceFrequency valueOf(int value){
+			for(AttendanceFrequency u : AttendanceFrequency.values()){
+				if(u.getValue() == value){
+					return u;
+				}
+			}
+			
+			return null;
+		}
+		
+		public String toString(){
+			switch(this){
+				case WEEKLY:
+					return "Semanal";
+				case BIWEEKLY:
+					return "Quinzenal";
+				case MONTHLY:
+					return "Mensal";
+				case BIMONTHLY:
+					return "Bimestral";
+				case QUARTERLY:
+					return "Trimestral";
+				default:
+					return "";
+			}
+		}
+	}
+	
 	public Department department;
 	public double minimumScore;
 	private boolean registerProposal;
@@ -54,6 +94,8 @@ public class SigetConfig {
 	private boolean supervisorJuryRequest;
 	private boolean supervisorAgreement;
 	private boolean supervisorJuryAgreement;
+	private boolean validateAttendances;
+	private AttendanceFrequency attendanceFrequency;
 	
 	public SigetConfig(){
 		this.setDepartment(new Department());
@@ -70,6 +112,8 @@ public class SigetConfig {
 		this.setSupervisorAgreement(false);
 		this.setSupervisorJuryRequest(false);
 		this.setSupervisorJuryAgreement(false);
+		this.setValidateAttendances(false);
+		this.setAttendanceFrequency(AttendanceFrequency.MONTHLY);
 	}
 	
 	public Department getDepartment() {
@@ -155,6 +199,18 @@ public class SigetConfig {
 	}
 	public void setSupervisorJuryAgreement(boolean supervisorJuryAgreement) {
 		this.supervisorJuryAgreement = supervisorJuryAgreement;
+	}
+	public boolean isValidateAttendances() {
+		return validateAttendances;
+	}
+	public void setValidateAttendances(boolean validateAttendances) {
+		this.validateAttendances = validateAttendances;
+	}
+	public AttendanceFrequency getAttendanceFrequency() {
+		return attendanceFrequency;
+	}
+	public void setAttendanceFrequency(AttendanceFrequency attendanceFrequency) {
+		this.attendanceFrequency = attendanceFrequency;
 	}
 
 }

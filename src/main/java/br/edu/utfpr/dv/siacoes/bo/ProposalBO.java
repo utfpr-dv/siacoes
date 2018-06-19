@@ -417,4 +417,16 @@ public class ProposalBO {
 		}
 	}
 	
+	public int findIdCampus(int idProposal) throws Exception {
+		try {
+			ProposalDAO dao = new ProposalDAO();
+			
+			return dao.findIdCampus(idProposal);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 }

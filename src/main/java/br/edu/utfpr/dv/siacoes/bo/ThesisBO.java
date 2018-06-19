@@ -12,6 +12,7 @@ import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Project;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.SupervisorFeedbackReport;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
@@ -248,6 +249,13 @@ public class ThesisBO {
 			SupervisorChangeBO sbo = new SupervisorChangeBO();
 			thesis.setSupervisor(sbo.findCurrentSupervisor(project.getProposal().getIdProposal()));
 			thesis.setCosupervisor(sbo.findCurrentCosupervisor(project.getProposal().getIdProposal()));
+			
+			SigetConfig config = new SigetConfigBO().findByDepartment(idDepartment);
+			if(config.isValidateAttendances()) {
+				if(!new AttendanceBO().validateFrequency(idUser, thesis.getSupervisor().getIdUser(), project.getProposal().getIdProposal(), 2, config.getAttendanceFrequency())) {
+					throw new Exception("As reuniões de orientação registradas não atendem à frequência mínima exigida. As reuniões com o orientador devem ocorrer com frequência " + config.getAttendanceFrequency().toString() + ".");
+				}
+			}
 		}
 		
 		return thesis;

@@ -112,6 +112,8 @@ CREATE  TABLE sigetconfig (
   supervisorjuryrequest SMALLINT NOT NULL ,
   supervisoragreement SMALLINT NOT NULL ,
   supervisorjuryagreement SMALLINT NOT NULL ,
+  validateattendances SMALLINT NOT NULL ,
+  attendancefrequency SMALLINT NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigetconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );

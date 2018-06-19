@@ -2,6 +2,8 @@
 
 import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,6 +11,8 @@ import java.util.logging.Logger;
 import br.edu.utfpr.dv.siacoes.dao.AttendanceDAO;
 import br.edu.utfpr.dv.siacoes.model.Attendance;
 import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig.AttendanceFrequency;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class AttendanceBO {
@@ -128,6 +132,93 @@ public class AttendanceBO {
 	
 	public boolean delete(Attendance attendance) throws Exception{
 		return this.delete(attendance.getIdAttendance());
+	}
+	
+	public boolean validateFrequency(int idStudent, int idSupervisor, int idProposal, int stage, AttendanceFrequency frequency) throws Exception {
+		List<Attendance> list = this.listByStudent(idStudent, idSupervisor, idProposal, stage);
+		Date startDate, endDate = DateUtils.getToday().getTime();
+		int numberAttendances = 0;
+		
+		if(stage == 2) {
+			/*Project project = new ProjectBO().findByProposal(idProposal);
+			
+			if(project.getSemester() == 2) {
+				startDate = new SemesterBO().findBySemester(new ProjectBO().findIdCampus(project.getIdProject()), 1, project.getYear() + 1).getStartDate();
+			} else {
+				startDate = new SemesterBO().findBySemester(new ProjectBO().findIdCampus(project.getIdProject()), 2, project.getYear()).getStartDate();
+			}*/
+			
+			startDate = new SemesterBO().findByDate(new ProposalBO().findIdCampus(idProposal), endDate).getStartDate();
+		} else {
+			startDate = new ProposalBO().findById(idProposal).getSubmissionDate();
+		}
+		
+		List<Pair> list2 = new ArrayList<Pair>();
+		for(Attendance attendance : list) {
+			int key = 0, year = DateUtils.getYear(attendance.getDate());
+			boolean find = false;
+			
+			if((frequency == AttendanceFrequency.WEEKLY) || (frequency == AttendanceFrequency.BIWEEKLY)) {
+				key = DateUtils.getWeekOfYear(attendance.getDate());
+			} else {
+				key = DateUtils.getMonth(attendance.getDate());
+			}
+			
+			if((frequency == AttendanceFrequency.BIWEEKLY) || (frequency == AttendanceFrequency.BIMONTHLY)) {
+				key = key / 2;
+			} else if(frequency == AttendanceFrequency.QUARTERLY) {
+				key = key / 3;
+			}
+			
+			for(Pair p : list2) {
+				if((p.getKey() == key) && (p.getYear() == year)) {
+					find = true;
+				}
+			}
+			
+			if(!find) {
+				list2.add(new Pair(key, year));
+			}
+		}
+		
+		if(frequency == AttendanceFrequency.WEEKLY) {
+			numberAttendances = DateUtils.getDifferenceInWeeks(startDate, endDate);
+		} else if(frequency == AttendanceFrequency.BIWEEKLY) {
+			numberAttendances = DateUtils.getDifferenceInWeeks(startDate, endDate) / 2;
+		} else if(frequency == AttendanceFrequency.MONTHLY) {
+			numberAttendances = DateUtils.getDifferenceInMonths(startDate, endDate);
+		} else if(frequency == AttendanceFrequency.BIMONTHLY) {
+			numberAttendances = DateUtils.getDifferenceInMonths(startDate, endDate) / 2;
+		} else if(frequency == AttendanceFrequency.QUARTERLY) {
+			numberAttendances = DateUtils.getDifferenceInMonths(startDate, endDate) / 3;
+		}
+		
+		return (list2.size() >= numberAttendances);
+	}
+	
+	private class Pair {
+		
+		private int key;
+		private int year;
+		
+		public Pair(int key, int year) {
+			this.setKey(key);
+			this.setYear(year);
+		}
+		
+		public int getKey() {
+			return key;
+		}
+		public void setKey(int key) {
+			this.key = key;
+		}
+		public int getYear() {
+			return year;
+		}
+		public void setYear(int year) {
+			this.year = year;
+		}
+		
 	}
 	
 }

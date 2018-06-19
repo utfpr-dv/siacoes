@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class DateUtils {
 
@@ -55,6 +56,42 @@ public class DateUtils {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		return cal.get(Calendar.YEAR);
+	}
+	
+	public static int getMoth(){
+		Calendar today = DateUtils.getToday();
+		
+		return today.get(Calendar.MONTH);
+	}
+	
+	public static int getMonth(Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		return cal.get(Calendar.MONTH);
+	}
+	
+	public static int getWeekOfYear(){
+		Calendar today = DateUtils.getToday();
+		
+		return today.get(Calendar.WEEK_OF_YEAR);
+	}
+	
+	public static int getWeekOfYear(Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		return cal.get(Calendar.WEEK_OF_YEAR);
+	}
+	
+	public static int getWeekOfMonth(){
+		Calendar today = DateUtils.getToday();
+		
+		return today.get(Calendar.WEEK_OF_MONTH);
+	}
+	
+	public static int getWeekOfMonth(Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		return cal.get(Calendar.WEEK_OF_MONTH);
 	}
 	
 	public static int getHour(Date date){
@@ -145,6 +182,26 @@ public class DateUtils {
 		}
 		
 		return cal.getTime();
+	}
+	
+	public static int getDifferenceInMonths(Date startDate, Date endDate) {
+		Calendar startCalendar = new GregorianCalendar();
+		startCalendar.setTime(startDate);
+		Calendar endCalendar = new GregorianCalendar();
+		endCalendar.setTime(endDate);
+
+		int diffYear = endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR);
+		return diffYear * 12 + endCalendar.get(Calendar.MONTH) - startCalendar.get(Calendar.MONTH);
+	}
+	
+	public static int getDifferenceInWeeks(Date startDate, Date endDate) {
+		Calendar startCalendar = new GregorianCalendar();
+		startCalendar.setTime(startDate);
+		Calendar endCalendar = new GregorianCalendar();
+		endCalendar.setTime(endDate);
+
+		int diffYear = endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR);
+		return diffYear * 52 + endCalendar.get(Calendar.WEEK_OF_YEAR) - startCalendar.get(Calendar.WEEK_OF_YEAR);
 	}
 	
 }

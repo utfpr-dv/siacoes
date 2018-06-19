@@ -15,6 +15,7 @@ import com.vaadin.ui.VerticalLayout;
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig.AttendanceFrequency;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
@@ -35,6 +36,8 @@ public class EditSigetWindow extends EditWindow {
 	private final CheckBox checkSupervisorJuryRequest;
 	private final CheckBox checkSupervisorAgreement;
 	private final CheckBox checkSupervisorJuryAgreement;
+	private final CheckBox checkValidateAttendances;
+	private final NativeSelect comboAttendanceFrequency;
 	
 	public EditSigetWindow(SigetConfig config, ListView parentView){
 		super("Editar Configurações", parentView);
@@ -85,6 +88,17 @@ public class EditSigetWindow extends EditWindow {
 		
 		this.checkSupervisorJuryAgreement = new CheckBox("Exigir parecer do orientador para a apresentação do trabalho em banca pública");
 		
+		this.checkValidateAttendances = new CheckBox("Validar reuniões de orientação para submissão de TCC 1 e TCC 2");
+		
+		this.comboAttendanceFrequency = new NativeSelect("Frequência de Reuniões");
+		this.comboAttendanceFrequency.setWidth("400px");
+		this.comboAttendanceFrequency.setNullSelectionAllowed(false);
+		this.comboAttendanceFrequency.addItem(AttendanceFrequency.WEEKLY);
+		this.comboAttendanceFrequency.addItem(AttendanceFrequency.BIWEEKLY);
+		this.comboAttendanceFrequency.addItem(AttendanceFrequency.MONTHLY);
+		this.comboAttendanceFrequency.addItem(AttendanceFrequency.BIMONTHLY);
+		this.comboAttendanceFrequency.addItem(AttendanceFrequency.QUARTERLY);
+		
 		GridLayout g1 = new GridLayout(2, 2);
 		g1.setSpacing(true);
 		g1.addComponent(this.comboSupervisorFilter, 0, 0);
@@ -97,15 +111,6 @@ public class EditSigetWindow extends EditWindow {
 		panel1.setContent(v4);
 		this.addField(panel1);
 		
-		VerticalLayout v1 = new VerticalLayout(this.checkShowGradesToStudent, this.checkSupervisorJuryRequest, this.checkSupervisorJuryAgreement);
-		v1.setSpacing(true);
-		HorizontalLayout h1 = new HorizontalLayout(this.textMinimumScore, v1);
-		h1.setSpacing(true);
-		h1.setMargin(true);
-		Panel panel2 = new Panel("Banca");
-		panel2.setContent(h1);
-		this.addField(panel2);
-		
 		VerticalLayout v2 = new VerticalLayout(this.checkSupervisorAgreement, this.checkRegisterProposal, this.checkRequestFinalDocumentStage1);
 		v2.setSpacing(true);
 		HorizontalLayout h2 = new HorizontalLayout(v2, this.textSupervisorIndication);
@@ -114,6 +119,22 @@ public class EditSigetWindow extends EditWindow {
 		Panel panel3 = new Panel("TCC 1");
 		panel3.setContent(h2);
 		this.addField(panel3);
+		
+		HorizontalLayout h3 = new HorizontalLayout(this.comboAttendanceFrequency, this.checkValidateAttendances);
+		h3.setSpacing(true);
+		h3.setMargin(true);
+		Panel panel5 = new Panel("Submissão de TCC 1 e TCC 2");
+		panel5.setContent(h3);
+		this.addField(panel5);
+		
+		VerticalLayout v1 = new VerticalLayout(this.checkShowGradesToStudent, this.checkSupervisorJuryRequest, this.checkSupervisorJuryAgreement);
+		v1.setSpacing(true);
+		HorizontalLayout h1 = new HorizontalLayout(this.textMinimumScore, v1);
+		h1.setSpacing(true);
+		h1.setMargin(true);
+		Panel panel2 = new Panel("Banca");
+		panel2.setContent(h1);
+		this.addField(panel2);
 		
 		VerticalLayout v3 = new VerticalLayout(this.textRepositoryLink);
 		v3.setSpacing(true);
@@ -139,6 +160,8 @@ public class EditSigetWindow extends EditWindow {
 		this.checkSupervisorJuryRequest.setValue(this.config.isSupervisorJuryRequest());
 		this.checkSupervisorAgreement.setValue(this.config.isSupervisorAgreement());
 		this.checkSupervisorJuryAgreement.setValue(this.config.isSupervisorJuryAgreement());
+		this.checkValidateAttendances.setValue(this.config.isValidateAttendances());
+		this.comboAttendanceFrequency.setValue(this.config.getAttendanceFrequency());
 	}
 
 	@Override
@@ -159,6 +182,8 @@ public class EditSigetWindow extends EditWindow {
 			this.config.setSupervisorJuryRequest(this.checkSupervisorJuryRequest.getValue());
 			this.config.setSupervisorAgreement(this.checkSupervisorAgreement.getValue());
 			this.config.setSupervisorJuryAgreement(this.checkSupervisorJuryAgreement.getValue());
+			this.config.setValidateAttendances(this.checkValidateAttendances.getValue());
+			this.config.setAttendanceFrequency((AttendanceFrequency)this.comboAttendanceFrequency.getValue());
 			
 			bo.save(this.config);
 			
