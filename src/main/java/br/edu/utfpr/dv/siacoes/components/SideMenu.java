@@ -899,9 +899,14 @@ public class SideMenu extends CustomComponent {
 						@Override
 						public void menuClick() {
 							try {
-								Jury jury = new JuryBO().findByProject(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+								JuryBO bo = new JuryBO();
+								Jury jury = bo.findByProject(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								
-								UI.getCurrent().addWindow(new JuryGradesWindow(jury));
+								if(bo.hasScores(jury.getIdJury())) {
+									UI.getCurrent().addWindow(new JuryGradesWindow(jury));	
+								} else {
+									Notification.show("Notas da Banca", "As notas ainda não foram lançacas.", Notification.Type.WARNING_MESSAGE);
+								}
 		        	    	} catch (Exception e) {
 		        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 		        	    		
@@ -991,9 +996,14 @@ public class SideMenu extends CustomComponent {
 						@Override
 						public void menuClick() {
 							try {
-								Jury jury = new JuryBO().findByThesis(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
+								JuryBO bo = new JuryBO();
+								Jury jury = bo.findByThesis(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 								
-								UI.getCurrent().addWindow(new JuryGradesWindow(jury));
+								if(bo.hasScores(jury.getIdJury())) {
+									UI.getCurrent().addWindow(new JuryGradesWindow(jury));	
+								} else {
+									Notification.show("Notas da Banca", "As notas ainda não foram lançacas.", Notification.Type.WARNING_MESSAGE);
+								}
 		        	    	} catch (Exception e) {
 		        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 		        	    		
