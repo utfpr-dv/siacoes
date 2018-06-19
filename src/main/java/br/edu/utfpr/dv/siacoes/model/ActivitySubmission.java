@@ -179,16 +179,22 @@ public class ActivitySubmission {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public double getScore(){
-		if(this.getFeedback() == ActivityFeedback.APPROVED){
-			if(this.getActivity().getUnit().isFillAmount()){
-				return (this.getActivity().getScore() * this.getValidatedAmount());
-			}else{
-				return this.getActivity().getScore();
+	public double getScore() {
+		double score = 0;
+		
+		if(this.getFeedback() == ActivityFeedback.APPROVED) {
+			if(this.getActivity().getUnit().isFillAmount()) {
+				score = this.getActivity().getScore() * this.getValidatedAmount();
+			} else {
+				score = this.getActivity().getScore();
 			}
-		}else{
-			return 0;
+			
+			if((this.getActivity().getMaximumInSemester() > 0) && (score > this.getActivity().getMaximumInSemester())) {
+				score = this.getActivity().getMaximumInSemester();
+			}
 		}
+		
+		return score;
 	}
 	public int getStage() {
 		return stage;
