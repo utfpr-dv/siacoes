@@ -724,9 +724,9 @@ public class JuryBO {
 			
 			for(JuryAppraiser appraiser : appraisers){
 				if(c.getAppraisers().isEmpty()){
-					c.setAppraisers(appraiser.getAppraiser().getName());
+					c.setAppraisers(appraiser.getAppraiser().getName() + (appraiser.isSubstitute() ? " (suplente)" : (appraiser.isChair() ? " (presidente)" : "")));
 				}else{
-					c.setAppraisers(c.getAppraisers() + "\n" + appraiser.getAppraiser().getName());	
+					c.setAppraisers(c.getAppraisers() + "\n" + appraiser.getAppraiser().getName() + (appraiser.isSubstitute() ? " (suplente)" : (appraiser.isChair() ? " (presidente)" : "")));	
 				}
 			}
 			
