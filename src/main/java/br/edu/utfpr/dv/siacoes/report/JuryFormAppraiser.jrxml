@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="JuryFormAppraiser" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="d066e92b-b4bc-457d-ba3e-cdcacb930d7f">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -41,6 +41,9 @@
 	<field name="score" class="java.lang.Double">
 		<fieldDescription><![CDATA[score]]></fieldDescription>
 	</field>
+	<field name="local" class="java.lang.String">
+		<fieldDescription><![CDATA[local]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -55,7 +58,7 @@
 			</textField>
 			<staticText>
 				<reportElement x="0" y="36" width="110" height="20" uuid="5ff15536-705d-4d10-849e-ac2f0f21b65d"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -68,7 +71,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="56" width="110" height="20" uuid="7e65c09a-a2db-4f17-844c-5e55e7ab46c1"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -81,7 +84,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="76" width="110" height="20" uuid="a9155896-e50a-4198-a627-7ab73164f685"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -94,7 +97,7 @@
 			</staticText>
 			<textField>
 				<reportElement x="110" y="36" width="370" height="20" uuid="01aab6f5-615e-4fd9-9741-de8d5183b5eb"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -106,8 +109,8 @@
 				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="110" y="56" width="370" height="20" uuid="5ddb9968-0864-4651-ade6-5748940d3c1e"/>
-				<box>
+				<reportElement x="110" y="56" width="100" height="20" uuid="5ddb9968-0864-4651-ade6-5748940d3c1e"/>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -120,7 +123,7 @@
 			</textField>
 			<textField>
 				<reportElement x="110" y="76" width="370" height="20" uuid="b24e3ad8-4d32-4465-bc0c-1da82ee47104"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -133,7 +136,7 @@
 			</textField>
 			<staticText>
 				<reportElement x="0" y="103" width="110" height="20" uuid="14110538-3840-4a86-a603-d5320fe932c5"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -146,7 +149,7 @@
 			</staticText>
 			<textField>
 				<reportElement x="110" y="103" width="370" height="20" uuid="4506e861-00c8-48e2-aa9e-e3f93c051d7e"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -157,13 +160,39 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="210" y="56" width="50" height="20" uuid="a6d62828-a986-4d0b-a4e0-528ed5758f1d"/>
+				<box leftPadding="3">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[Local:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="260" y="56" width="220" height="20" uuid="d67dd361-b0c1-40cd-a3f6-9654dfe3ab2c"/>
+				<box leftPadding="3">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{local}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="49" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="6" width="380" height="20" uuid="84f46fb3-5d14-4b90-9234-d5538b2fb155"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -236,7 +265,7 @@
 			</staticText>
 			<textField>
 				<reportElement x="0" y="46" width="481" height="70" uuid="d41fc3c5-6135-4e9a-9b1a-1e665a65eda2"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>

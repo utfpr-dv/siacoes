@@ -10,6 +10,7 @@ public class JuryFormAppraiserReport {
 	private String title;
 	private String company;
 	private Date date;
+	private String local;
 	private String student;
 	private String description;
 	private String name;
@@ -22,6 +23,7 @@ public class JuryFormAppraiserReport {
 		this.setTitle("");
 		this.setCompany("");
 		this.setDate(new Date());
+		this.setLocal("");
 		this.setStudent("");
 		this.setDescription("");
 		this.setName("");
@@ -89,6 +91,12 @@ public class JuryFormAppraiserReport {
 	}
 	public void setDetail(List<JuryFormAppraiserDetailReport> detail) {
 		this.detail = detail;
+	}
+	public String getLocal() {
+		return local;
+	}
+	public void setLocal(String local) {
+		this.local = local;
 	}
 
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="JuryForm2" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="aaaa9f03-6de2-4449-a217-db75b3350ee7">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -89,7 +89,7 @@
 			</staticText>
 			<textField>
 				<reportElement positionType="Float" x="0" y="378" width="481" height="70" uuid="b4b5321c-a903-4c03-8dbd-78bdbeaddbcc"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -102,7 +102,7 @@
 			</textField>
 			<staticText>
 				<reportElement x="0" y="51" width="110" height="20" uuid="8b22b975-7e98-4439-8183-be551cccc9ff"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -115,7 +115,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="71" width="110" height="20" uuid="c53ba733-0ed9-468a-8cf8-4c877bef24f4"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -128,7 +128,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="111" width="110" height="20" uuid="3f80ceac-ac54-4418-9e80-a086dc85a915"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -141,7 +141,7 @@
 			</staticText>
 			<textField>
 				<reportElement x="110" y="51" width="370" height="20" uuid="443ec177-ad17-4758-b68e-a0499fb5770b"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -154,7 +154,7 @@
 			</textField>
 			<textField>
 				<reportElement x="110" y="71" width="130" height="20" uuid="ba81d460-3bc7-46f6-ac13-1b6e0a36416c"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -167,7 +167,7 @@
 			</textField>
 			<textField>
 				<reportElement x="110" y="111" width="230" height="20" uuid="77633935-efd9-4c7d-8fef-219df022dab2"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -231,7 +231,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="31" width="110" height="20" uuid="d40be7df-7c08-4635-a361-70b0d49b90af"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -244,7 +244,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="150" y="31" width="140" height="20" uuid="b1ce8f12-3217-4346-a2e1-d1d9965883bf"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -257,7 +257,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="330" y="31" width="150" height="20" uuid="9c2e09e6-75bc-4f2b-b42b-33e6bd7a0b5d"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -296,7 +296,7 @@
 			</textField>
 			<staticText>
 				<reportElement x="240" y="71" width="110" height="20" uuid="9337f776-a868-47c5-b5c3-a39d56198d11"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -309,7 +309,7 @@
 			</staticText>
 			<textField>
 				<reportElement x="350" y="71" width="130" height="20" uuid="301ab141-bb96-4be4-a15f-df67da1ced43"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -322,7 +322,7 @@
 			</textField>
 			<staticText>
 				<reportElement x="0" y="91" width="110" height="20" uuid="4c14fc3d-d594-47e5-b0bd-1897c6dd597b"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -335,7 +335,7 @@
 			</staticText>
 			<textField>
 				<reportElement x="110" y="91" width="370" height="20" uuid="cc01ddd9-a7d1-4c45-9e96-df8bd6b5371b"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>

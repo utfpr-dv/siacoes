@@ -10,6 +10,7 @@ public class InternshipJuryFormReport {
 	
 	private String title;
 	private Date date;
+	private String local;
 	private String student;
 	private String comments;
 	private String company;
@@ -28,6 +29,7 @@ public class InternshipJuryFormReport {
 	public InternshipJuryFormReport(){
 		this.setTitle("");
 		this.setDate(new Date());
+		this.setLocal("");
 		this.setStudent("");
 		this.setComments("");
 		this.setCompany("");
@@ -138,6 +140,12 @@ public class InternshipJuryFormReport {
 	}
 	public void setResult(JuryResult result) {
 		this.result = result;
+	}
+	public String getLocal() {
+		return local;
+	}
+	public void setLocal(String local) {
+		this.local = local;
 	}
 
 }

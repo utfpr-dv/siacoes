@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="JuryForm2" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="aaaa9f03-6de2-4449-a217-db75b3350ee7">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -66,6 +66,9 @@
 	<field name="appraisersSignatures" class="java.util.List">
 		<fieldDescription><![CDATA[appraisersSignatures]]></fieldDescription>
 	</field>
+	<field name="local" class="java.lang.String">
+		<fieldDescription><![CDATA[local]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -113,7 +116,7 @@
 			</staticText>
 			<textField>
 				<reportElement positionType="Float" x="0" y="555" width="481" height="70" uuid="b4b5321c-a903-4c03-8dbd-78bdbeaddbcc"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -143,7 +146,7 @@
 			</subreport>
 			<staticText>
 				<reportElement x="0" y="36" width="110" height="20" uuid="8b22b975-7e98-4439-8183-be551cccc9ff"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -156,7 +159,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="56" width="110" height="20" uuid="c53ba733-0ed9-468a-8cf8-4c877bef24f4"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -169,7 +172,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="76" width="110" height="20" uuid="3f80ceac-ac54-4418-9e80-a086dc85a915"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -182,7 +185,7 @@
 			</staticText>
 			<textField>
 				<reportElement x="110" y="36" width="370" height="20" uuid="443ec177-ad17-4758-b68e-a0499fb5770b"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -194,8 +197,8 @@
 				<textFieldExpression><![CDATA[$F{company}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="110" y="56" width="370" height="20" uuid="ba81d460-3bc7-46f6-ac13-1b6e0a36416c"/>
-				<box>
+				<reportElement x="110" y="56" width="100" height="20" uuid="ba81d460-3bc7-46f6-ac13-1b6e0a36416c"/>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -208,7 +211,7 @@
 			</textField>
 			<textField>
 				<reportElement x="110" y="76" width="230" height="20" uuid="77633935-efd9-4c7d-8fef-219df022dab2"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -221,7 +224,7 @@
 			</textField>
 			<staticText>
 				<reportElement x="0" y="103" width="480" height="20" uuid="e5af87d9-1f05-4cb9-8b41-5e32a325905d"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -376,7 +379,7 @@
 			</staticText>
 			<staticText>
 				<reportElement positionType="Float" x="0" y="370" width="300" height="60" uuid="f68d0028-38e0-4612-88f7-16c0b168c609"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -389,7 +392,7 @@
 			</staticText>
 			<staticText>
 				<reportElement positionType="Float" x="0" y="430" width="300" height="20" uuid="68208538-71db-4b3a-a098-693f6cef582a"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -454,7 +457,7 @@
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="0" y="450" width="300" height="30" uuid="0a39723d-a112-429d-9c73-f8b1e5247f90"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -467,7 +470,7 @@
 			</staticText>
 			<staticText>
 				<reportElement positionType="Float" x="0" y="480" width="300" height="30" uuid="a8a43372-292e-45fe-acc3-9624884e5214"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -532,7 +535,7 @@
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="0" y="510" width="360" height="20" uuid="9b8b5057-4e5e-4e4d-a9b0-60a6bc2a1b99"/>
-				<box>
+				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -607,6 +610,32 @@
 					<font fontName="Arial" size="11" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[IF($F{result} == br.edu.utfpr.dv.siacoes.model.Jury.JuryResult.DISAPPROVED, "(X)", "(  )") + " REPROVAÇÃO"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="210" y="56" width="50" height="20" uuid="4e2f4ef4-16bb-479f-b1f4-e6cbb93fd9cc"/>
+				<box leftPadding="3">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[Local:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="260" y="56" width="220" height="20" uuid="9c6c620e-ab4f-4ade-8ea1-2a7dfca54f34"/>
+				<box leftPadding="3">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{local}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

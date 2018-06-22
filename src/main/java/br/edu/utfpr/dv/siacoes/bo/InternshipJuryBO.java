@@ -291,6 +291,7 @@ public class InternshipJuryBO {
 			InternshipJury jury = this.findById(idJury);
 			
 			report.setDate(jury.getDate());
+			report.setLocal(jury.getLocal());
 			report.setComments(jury.getComments());
 			report.setSupervisorPonderosity(jury.getSupervisorPonderosity());
 			report.setCompanySupervisorPonderosity(jury.getCompanySupervisorPonderosity());
@@ -323,6 +324,7 @@ public class InternshipJuryBO {
 					appraiserReport.setName(appraiser.getAppraiser().getName());
 					appraiserReport.setComments(appraiser.getComments());
 					appraiserReport.setDate(report.getDate());
+					appraiserReport.setLocal(report.getLocal());
 					appraiserReport.setStudent(report.getStudent());
 					appraiserReport.setTitle(report.getTitle());
 					appraiserReport.setCompany(report.getCompany());

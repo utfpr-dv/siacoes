@@ -476,6 +476,7 @@ public class JuryBO {
 			Proposal proposal;
 			
 			report.setDate(jury.getDate());
+			report.setLocal(jury.getLocal());
 			
 			if(jury.getSupervisorAbsenceReason().trim().isEmpty()) {
 				report.setComments(jury.getComments());	
@@ -521,6 +522,7 @@ public class JuryBO {
 					appraiserReport.setName(appraiser.getAppraiser().getName());
 					appraiserReport.setComments(appraiser.getComments());
 					appraiserReport.setDate(report.getDate());
+					appraiserReport.setLocal(report.getLocal());
 					appraiserReport.setStage(report.getStage());
 					appraiserReport.setStudent(report.getStudent());
 					appraiserReport.setTitle(report.getTitle());

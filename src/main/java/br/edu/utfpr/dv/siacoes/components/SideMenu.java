@@ -905,7 +905,7 @@ public class SideMenu extends CustomComponent {
 								if(bo.hasScores(jury.getIdJury())) {
 									UI.getCurrent().addWindow(new JuryGradesWindow(jury));	
 								} else {
-									Notification.show("Notas da Banca", "As notas ainda não foram lançacas.", Notification.Type.WARNING_MESSAGE);
+									Notification.show("Notas da Banca", "As notas ainda não foram lançacas.", Notification.Type.ERROR_MESSAGE);
 								}
 		        	    	} catch (Exception e) {
 		        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
@@ -1002,7 +1002,7 @@ public class SideMenu extends CustomComponent {
 								if(bo.hasScores(jury.getIdJury())) {
 									UI.getCurrent().addWindow(new JuryGradesWindow(jury));	
 								} else {
-									Notification.show("Notas da Banca", "As notas ainda não foram lançacas.", Notification.Type.WARNING_MESSAGE);
+									Notification.show("Notas da Banca", "As notas ainda não foram lançacas.", Notification.Type.ERROR_MESSAGE);
 								}
 		        	    	} catch (Exception e) {
 		        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
