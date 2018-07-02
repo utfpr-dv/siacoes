@@ -196,8 +196,8 @@ public class EditFinalDocumentWindow extends EditWindow {
 		}
 		
 		this.textTitle.setValue(this.thesis.getTitle());
-		this.comboSemester.setSemester(this.thesis.getThesis().getSemester());
-		this.textYear.setYear(this.thesis.getThesis().getYear());
+		this.comboSemester.setSemester(this.thesis.getSemester());
+		this.textYear.setYear(this.thesis.getYear());	
 		this.textSubmissionDate.setValue(this.thesis.getSubmissionDate());
 		this.checkPrivate.setValue(this.thesis.isPrivate());
 		this.checkCompanyInfo.setValue(this.thesis.isCompanyInfo());

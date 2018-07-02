@@ -304,7 +304,7 @@ public class FinalDocumentBO {
 				}else{
 					ft = new FinalDocument();
 					ft.setTitle(project.getTitle());
-					ft.setProject(project);	
+					ft.setProject(project);
 				}
 			}
 		}

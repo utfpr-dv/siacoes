@@ -146,5 +146,17 @@ public class FinalDocument {
 		else
 			return 1;
 	}
+	public int getSemester() {
+		if((this.getThesis() != null) && (this.getThesis().getIdThesis() != 0))
+			return this.getThesis().getSemester();
+		else
+			return this.getProject().getSemester();
+	}
+	public int getYear() {
+		if((this.getThesis() != null) && (this.getThesis().getIdThesis() != 0))
+			return this.getThesis().getYear();
+		else
+			return this.getProject().getYear();
+	}
 
 }
