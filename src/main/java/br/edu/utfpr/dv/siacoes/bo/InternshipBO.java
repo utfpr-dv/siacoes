@@ -153,10 +153,11 @@ public class InternshipBO {
 			throw new Exception("Informe o título do relatório final.");
 		}
 		
-		if(internship.getType() == InternshipType.NONREQUIRED){
-			InternshipJuryBO jbo = new InternshipJuryBO();
+		boolean isInsert = (internship.getIdInternship() == 0);
+		
+		if(!isInsert && (internship.getType() == InternshipType.NONREQUIRED)){
+			InternshipJury jury = new InternshipJuryBO().findByInternship(internship.getIdInternship());
 			
-			InternshipJury jury = jbo.findByInternship(internship.getIdInternship());
 			if((jury != null) && (jury.getIdInternshipJury() != 0)){
 				throw new Exception("Este estágio não pode ser alterado para Não Obrigatório pois já foi marcada banca.");
 			}
@@ -164,7 +165,6 @@ public class InternshipBO {
 		
 		Connection conn = ConnectionDAO.getInstance().getConnection();
 		int ret = 0;
-		boolean isInsert = (internship.getIdInternship() == 0);
 		
 		try{
 			conn.setAutoCommit(false);

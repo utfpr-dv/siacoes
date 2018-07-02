@@ -86,10 +86,12 @@ import br.edu.utfpr.dv.siacoes.view.InternshipJuryView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCompanyChartView;
 import br.edu.utfpr.dv.siacoes.view.InternshipEvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.InternshipFinalDocumentView;
+import br.edu.utfpr.dv.siacoes.view.InternshipJuryGradesReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipJuryParticipantsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
 import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipView;
+import br.edu.utfpr.dv.siacoes.view.JuryGradesReportView;
 import br.edu.utfpr.dv.siacoes.view.JuryParticipantsReportView;
 import br.edu.utfpr.dv.siacoes.view.JurySemesterChartView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
@@ -764,8 +766,10 @@ public class SideMenu extends CustomComponent {
 		
 		layout.addComponent(new MenuEntry("Bancas", 0));
 		layout.addComponent(new MenuEntry("Agenda de Bancas", 1, InternshipJuryView.NAME + "/1"));
-		if(Session.isUserManager(SystemModule.SIGES) || Session.isUserDepartmentManager() || Session.isUserProfessor() || Session.isUserStudent()) {
-			layout.addComponent(new MenuEntry((Session.isUserProfessor() ? "Minhas Bancas" : "Bancas que Assisti"), 1, InternshipJuryView.NAME));
+		if(Session.isUserStudent()) {
+			layout.addComponent(new MenuEntry("Bancas que Assisti", 1, InternshipJuryView.NAME));
+		} else if(Session.isUserSupervisor()) {
+			layout.addComponent(new MenuEntry("Minhas Bancas", 1, InternshipJuryView.NAME));
 		}
 		
 		if(Session.isUserManager(SystemModule.SIGES)){
@@ -783,6 +787,7 @@ public class SideMenu extends CustomComponent {
 			layout.addComponent(new MenuEntry("Relatórios", 0));
 			layout.addComponent(new MenuEntry("Documentos Faltantes", 1, InternshipMissingDocumentsReportView.NAME));
 			layout.addComponent(new MenuEntry("Participação em Bancas", 1, InternshipJuryParticipantsReportView.NAME));
+			layout.addComponent(new MenuEntry("Notas da Banca", 1, InternshipJuryGradesReportView.NAME));
 			
 			layout.addComponent(new MenuEntry("Gráficos", 0));
 			layout.addComponent(new MenuEntry("Estagiários por Empresa", 1, InternshipCompanyChartView.NAME));
@@ -1111,8 +1116,10 @@ public class SideMenu extends CustomComponent {
 		
 		layout.addComponent(new MenuEntry("Bancas", 0));
 		layout.addComponent(new MenuEntry("Agenda de Bancas", 1, JuryView.NAME + "/1"));
-		if(Session.isUserSupervisor() || Session.isUserStudent()) {
-			layout.addComponent(new MenuEntry((Session.isUserSupervisor() ? "Minhas Bancas" : "Bancas que Assisti"), 1, JuryView.NAME));
+		if(Session.isUserStudent()) {
+			layout.addComponent(new MenuEntry("Bancas que Assisti", 1, JuryView.NAME));
+		} else if(Session.isUserSupervisor()) {
+			layout.addComponent(new MenuEntry("Minhas Bancas", 1, JuryView.NAME));
 		}
 		
 		if(Session.isUserManager(SystemModule.SIGET)){
@@ -1141,6 +1148,7 @@ public class SideMenu extends CustomComponent {
 			layout.addComponent(new MenuEntry("Relatórios", 0));
 			layout.addComponent(new MenuEntry("Reuniões de Orientação", 1, AttendanceReportView.NAME));
 			layout.addComponent(new MenuEntry("Participação em Bancas", 1, JuryParticipantsReportView.NAME));
+			layout.addComponent(new MenuEntry("Notas da Banca", 1, JuryGradesReportView.NAME));
 			
 			layout.addComponent(new MenuEntry("Gráficos", 0));
 			layout.addComponent(new MenuEntry("Orientados por Orientador", 1, TutoredSupervisorChartView.NAME));

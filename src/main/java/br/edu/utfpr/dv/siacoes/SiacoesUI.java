@@ -46,10 +46,12 @@ import br.edu.utfpr.dv.siacoes.view.InternshipJuryView;
 import br.edu.utfpr.dv.siacoes.view.InternshipCompanyChartView;
 import br.edu.utfpr.dv.siacoes.view.InternshipEvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.InternshipFinalDocumentView;
+import br.edu.utfpr.dv.siacoes.view.InternshipJuryGradesReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipJuryParticipantsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
 import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipView;
+import br.edu.utfpr.dv.siacoes.view.JuryGradesReportView;
 import br.edu.utfpr.dv.siacoes.view.JuryParticipantsReportView;
 import br.edu.utfpr.dv.siacoes.view.JurySemesterChartView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
@@ -151,6 +153,8 @@ public class SiacoesUI extends UI {
         getNavigator().addView(PasswordView.NAME, PasswordView.class);
         getNavigator().addView(MobileView.NAME, MobileView.class);
         getNavigator().addView(ExternalSupervisorView.NAME, ExternalSupervisorView.class);
+        getNavigator().addView(JuryGradesReportView.NAME, JuryGradesReportView.class);
+        getNavigator().addView(InternshipJuryGradesReportView.NAME, InternshipJuryGradesReportView.class);
         
         getNavigator().setErrorView(Error404View.class);
         

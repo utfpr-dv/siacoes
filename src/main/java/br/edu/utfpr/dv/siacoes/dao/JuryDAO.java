@@ -135,7 +135,7 @@ public class JuryDAO {
 		}
 	}
 	
-	public List<Jury> listBySemester(int idDepartment, int semester, int year) throws SQLException{
+	public List<Jury> listBySemester(int idDepartment, int semester, int year, int stage) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -150,7 +150,11 @@ public class JuryDAO {
 					"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
 					"LEFT JOIN project p ON p.idProject=thesis.idProject " + 
 					"LEFT JOIN proposal proposal2 ON proposal2.idProposal=p.idProposal " +
-					"WHERE (proposal1.idDepartment=" + String.valueOf(idDepartment) + " OR proposal2.idDepartment=" + String.valueOf(idDepartment) + ") AND (project.semester=" + String.valueOf(semester) + " OR thesis.semester=" + String.valueOf(semester) + ") AND (project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + ") ORDER BY jury.date");
+					"WHERE (proposal1.idDepartment=" + String.valueOf(idDepartment) + " OR proposal2.idDepartment=" + String.valueOf(idDepartment) + 
+						") AND (project.semester=" + String.valueOf(semester) + " OR thesis.semester=" + String.valueOf(semester) + 
+						") AND (project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + 
+						") " + (stage == 2 ? " AND jury.idThesis IS NOT NULL " : (stage == 1 ? " AND jury.idProject IS NOT NULL " : "")) +
+					"ORDER BY jury.date");
 			
 			List<Jury> list = new ArrayList<Jury>();
 			

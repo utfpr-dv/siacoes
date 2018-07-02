@@ -6,14 +6,19 @@ import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.beanutils.BeanComparator;
 
 import br.edu.utfpr.dv.siacoes.dao.JuryDAO;
 import br.edu.utfpr.dv.siacoes.model.CalendarReport;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Jury;
+import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserScore;
@@ -22,6 +27,7 @@ import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserDetailReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserScoreReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
+import br.edu.utfpr.dv.siacoes.model.JuryGrade;
 import br.edu.utfpr.dv.siacoes.model.JuryRequest;
 import br.edu.utfpr.dv.siacoes.model.JuryStudent;
 import br.edu.utfpr.dv.siacoes.model.JuryStudentReport;
@@ -40,11 +46,11 @@ import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class JuryBO {
 	
-	public List<Jury> listBySemester(int idDepartment, int semester, int year) throws Exception{
+	public List<Jury> listBySemester(int idDepartment, int semester, int year, int stage) throws Exception{
 		try {
 			JuryDAO dao = new JuryDAO();
 			
-			return dao.listBySemester(idDepartment, semester, year);
+			return dao.listBySemester(idDepartment, semester, year, stage);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -680,12 +686,19 @@ public class JuryBO {
 		}
 	}
 	
-	public List<CalendarReport> getCalendarReport(int idDepartment, int idUser, int semester, int year) throws Exception{
+	public byte[] getScheduleReport(int idDepartment, int idUser, int semester, int year, int stage) throws Exception {
+		List<CalendarReport> report = this.getScheduleReportList(idDepartment, idUser, semester, year, stage);
+		
+		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(report, "Calendar", idDepartment);
+		return rep.toByteArray();
+	}
+	
+	public List<CalendarReport> getScheduleReportList(int idDepartment, int idUser, int semester, int year, int stage) throws Exception{
 		List<Jury> list;
 		List<CalendarReport> report = new ArrayList<CalendarReport>();
 		
 		if(idUser == 0){
-			list = this.listBySemester(idDepartment, semester, year);
+			list = this.listBySemester(idDepartment, semester, year, stage);
 		}else{
 			UserBO bo = new UserBO();
 			User user = bo.findById(idUser);
@@ -828,6 +841,110 @@ public class JuryBO {
 		list.add(report);
 		
 		return new ReportUtils().createPdfStream(list, "JuryParticipants", this.findIdDepartment(idJury)).toByteArray();
+	}
+	
+	public byte[] getJuryGradesReport(int idDepartment, int semester, int year, int stage, boolean listAll) throws Exception {
+		List<JuryGrade> list = this.getJuryGradesReportList(idDepartment, semester, year, stage, listAll);
+		
+		return new ReportUtils().createPdfStream(list, "JuryGrades", idDepartment).toByteArray();
+	}
+	
+	public List<JuryGrade> getJuryGradesReportList(int idDepartment, int semester, int year, int stage, boolean listAll) throws Exception {
+		SigetConfig config = new SigetConfigBO().findByDepartment(idDepartment);
+		List<JuryGrade> report = new ArrayList<JuryGrade>();
+		
+		if(listAll) {
+			if((stage == 0) || (stage == 1)) {
+				List<Proposal> list1 = new ProposalBO().listBySemester(idDepartment, semester, year);
+				
+				for(Proposal proposal : list1) {
+					JuryGrade grade = new JuryGrade();
+					
+					grade.setStudent(proposal.getStudent().getName());
+					grade.setStage(1);
+					grade.setJuryDate(null);
+					
+					Project project = new ProjectBO().findByProposal(proposal.getIdProposal());
+					
+					if((project != null) && (project.getIdProject() != 0)) {
+						Jury jury = this.findByProject(project.getIdProject());
+						
+						if((jury != null) && (jury.getIdJury() != 0)) {
+							grade.setJuryDate(jury.getDate());
+							
+							JuryFormReport form = this.getJuryFormReport(jury.getIdJury());
+							grade.setScore(form.getScore());
+							
+							if(grade.getScore() >= config.getMinimumScore()) {
+								grade.setResult(JuryResult.APPROVED);
+							} else {
+								grade.setResult(JuryResult.DISAPPROVED);
+							}
+						}
+					}
+					
+					report.add(grade);
+				}
+			}
+			
+			if((stage == 0) || (stage == 1)) {
+				List<Thesis> list2 = new ThesisBO().listBySemester(idDepartment, semester, year);
+				
+				for(Thesis thesis : list2) {
+					JuryGrade grade = new JuryGrade();
+					
+					grade.setStudent(thesis.getStudent().getName());
+					grade.setStage(2);
+					grade.setJuryDate(null);
+					
+					Jury jury = this.findByThesis(thesis.getIdThesis());
+					
+					if((jury != null) && (jury.getIdJury() != 0)) {
+						grade.setJuryDate(jury.getDate());
+						
+						JuryFormReport form = this.getJuryFormReport(jury.getIdJury());
+						grade.setScore(form.getScore());
+						
+						if(grade.getScore() >= config.getMinimumScore()) {
+							grade.setResult(JuryResult.APPROVED);
+						} else {
+							grade.setResult(JuryResult.DISAPPROVED);
+						}
+					}
+					
+					report.add(grade);
+				}
+			}
+		} else {
+			List<Jury> list = this.listBySemester(idDepartment, semester, year, stage);
+			
+			for(Jury jury : list) {
+				if((stage == 0) || (stage == jury.getStage())) {
+					JuryGrade grade = new JuryGrade();
+					
+					grade.setStudent(jury.getStudent().getName());
+					grade.setJuryDate(jury.getDate());
+					grade.setStage(jury.getStage());
+					
+					JuryFormReport form = this.getJuryFormReport(jury.getIdJury());
+					grade.setScore(form.getScore());
+					
+					if(grade.getScore() >= config.getMinimumScore()) {
+						grade.setResult(JuryResult.APPROVED);
+					} else {
+						grade.setResult(JuryResult.DISAPPROVED);
+					}
+					
+					report.add(grade);
+				}
+			}
+		}
+		
+		@SuppressWarnings("unchecked")
+		Comparator<JuryGrade> comparator = new BeanComparator("student");
+		Collections.sort(report, comparator);
+		
+		return report;
 	}
 	
 }

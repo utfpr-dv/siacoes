@@ -633,7 +633,7 @@ public class EditInternshipWindow extends EditWindow {
 				InternshipJury jury = bo.findByInternship(this.internship.getIdInternship());
 				
 				if((jury.getIdInternshipJury() != 0) && (bo.hasScores(jury.getIdInternshipJury()))) {
-					InternshipJuryFormReport report = bo.getFormReport(jury.getIdInternshipJury());
+					InternshipJuryFormReport report = bo.getJuryFormReport(jury.getIdInternshipJury());
 					
 					TabSheet tab = new TabSheet();
 					tab.setSizeFull();

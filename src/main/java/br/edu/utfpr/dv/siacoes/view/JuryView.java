@@ -29,8 +29,8 @@ import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.bo.ThesisBO;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
+import br.edu.utfpr.dv.siacoes.components.StageComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
-import br.edu.utfpr.dv.siacoes.model.CalendarReport;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryStudent;
@@ -39,7 +39,6 @@ import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
-import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.window.EditJuryAppraiserFeedbackWindow;
 import br.edu.utfpr.dv.siacoes.window.EditJuryWindow;
 
@@ -49,15 +48,17 @@ public class JuryView extends ListView {
 	
 	private final SemesterComboBox comboSemester;
 	private final YearField textYear;
+	private final StageComboBox comboStage;
 	private final Button buttonFile;
 	private final Button buttonForm;
 	private final Button buttonTerm;
-	private final Button buttonCalendar;
+	private final Button buttonSchedule;
 	private final Button buttonStatements;
 	private final Button buttonSingleStatement;
 	private final Button buttonSendFeedback;
 	private final Button buttonParticipants;
 	private final Button buttonParticipantsReport;
+	private final Button buttonGrades;
 	
 	private boolean listAll = false;
 
@@ -79,7 +80,10 @@ public class JuryView extends ListView {
 		this.textYear = new YearField();
 		this.textYear.setYear(semester.getYear());
 		
-		this.addFilterField(new HorizontalLayout(this.comboSemester, this.textYear));
+		this.comboStage = new StageComboBox(true);
+		this.comboStage.selectBoth();
+		
+		this.addFilterField(new HorizontalLayout(this.comboSemester, this.textYear, this.comboStage));
 		
 		this.setAddVisible(false);
 		this.setEditVisible(false);
@@ -148,10 +152,23 @@ public class JuryView extends ListView {
         });
 		this.buttonSingleStatement.setIcon(FontAwesome.FILE_PDF_O);
 		
-		this.buttonCalendar = new Button("Imprimir");
-		this.buttonCalendar.setIcon(FontAwesome.PRINT);
+		this.buttonSchedule = new Button("Imprimir", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	printSchedule();
+            }
+        });
+		this.buttonSchedule.setIcon(FontAwesome.PRINT);
 		
-		this.addActionButton(this.buttonCalendar);
+		this.buttonGrades = new Button("Relat. de Notas", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	juryGradesReport();
+            }
+        });
+		this.buttonGrades.setIcon(FontAwesome.FILE_PDF_O);
+		
+		this.addActionButton(this.buttonSchedule);
 		this.addActionButton(this.buttonFile);
 		this.addActionButton(this.buttonForm);
 		this.addActionButton(this.buttonParticipants);
@@ -162,6 +179,7 @@ public class JuryView extends ListView {
 		
 		if(Session.isUserManager(this.getModule())){
 			this.addActionButton(this.buttonStatements);
+			this.addActionButton(this.buttonGrades);
 			this.setEditVisible(true);
 			this.setEditCaption("Banca");
 			this.setEditIcon(FontAwesome.CALENDAR_CHECK_O);
@@ -186,7 +204,9 @@ public class JuryView extends ListView {
 			this.buttonParticipantsReport.setVisible(Session.isUserProfessor());
 			this.buttonSendFeedback.setVisible(Session.isUserProfessor());
 			this.buttonStatements.setVisible(false);
-			this.buttonCalendar.setVisible(Session.isUserProfessor());
+			this.buttonSchedule.setVisible(Session.isUserProfessor() || Session.isUserSupervisor());
+			this.buttonGrades.setVisible(false);
+			this.comboStage.setVisible(false);
 		}
 	}
 	
@@ -210,22 +230,15 @@ public class JuryView extends ListView {
 		try {
 			JuryBO bo = new JuryBO();
 			List<Jury> list;
-			List<CalendarReport> report = null;
 			
 			if(this.listAll){
-				list = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
-				report = bo.getCalendarReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), 0, this.comboSemester.getSemester(), this.textYear.getYear());
+				list = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), this.comboStage.getStage());
 			}else{
 				if(Session.isUserProfessor() || Session.isUserSupervisor()){
 					list = bo.listByAppraiser(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
-					report = bo.getCalendarReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
 				}else{
 					list = bo.listByStudent(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
 				}
-			}
-			
-			if(this.listAll || Session.isUserProfessor()){
-				new ReportUtils().prepareForPdfReport("Calendar", "Agenda de Defesas", report, Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.buttonCalendar);
 			}
 			
 	    	for(Jury jury : list){
@@ -471,6 +484,35 @@ public class JuryView extends ListView {
 	        	
 	        	Notification.show("Gerar Declarações", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
+		}
+	}
+	
+	private void printSchedule() {
+		try {
+			JuryBO bo = new JuryBO();
+			byte[] report = null;
+			
+			if(this.listAll) {
+				report = bo.getScheduleReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), 0, this.comboSemester.getSemester(), this.textYear.getYear(), this.comboStage.getStage());
+			} else if(Session.isUserProfessor() || Session.isUserSupervisor()){
+				report = bo.getScheduleReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear(), 0);
+			}
+			
+			this.showReport(report);
+		} catch(Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	
+        	Notification.show("Imprimir Agenda de Bancas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		}
+	}
+	
+	private void juryGradesReport() {
+		try {
+			this.showReport(new JuryBO().getJuryGradesReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), this.comboStage.getStage(), false));
+		} catch(Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	
+        	Notification.show("Relatório de Notas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
 	

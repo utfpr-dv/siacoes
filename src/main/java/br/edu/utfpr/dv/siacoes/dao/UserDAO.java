@@ -115,8 +115,9 @@ public class UserDAO {
 			
 			String sql = "SELECT \"user\".*, company.name AS companyName " +
 					"FROM \"user\" INNER JOIN userdepartment ON userdepartment.iduser=\"user\".iduser " +
+					"INNER JOIN userprofile ON (userprofile.idUser=\"user\".idUser AND userprofile.profile=userdepartment.profile) " +
 					"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-					"WHERE userdepartment.iddepartment = ? ";
+					"WHERE userdepartment.iddepartment = ? AND userdepartment.profile = 1 ";
 			
 			switch(module){
 				case SIGAC:
@@ -165,8 +166,9 @@ public class UserDAO {
 			stmt = conn.prepareStatement(
 				"SELECT \"user\".*, company.name AS companyName " +
 				"FROM \"user\" INNER JOIN userdepartment ON userdepartment.iduser=\"user\".iduser " +
+				"INNER JOIN userprofile ON (userprofile.idUser=\"user\".idUser AND userprofile.profile=userdepartment.profile) " +
 				"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-				"WHERE userdepartment.iddepartment = ? AND userdepartment.departmentmanager=1 " +
+				"WHERE userdepartment.iddepartment = ? AND userdepartment.profile = 1 AND userdepartment.departmentmanager=1 " +
 				"ORDER BY userdepartment.profile");
 	
 			stmt.setInt(1, idDepartment);

@@ -166,7 +166,7 @@ public class EventCalendarView extends BasicView {
 				if(this.checkListOnlyMy.getValue()){
 					listThesis = bo.listByAppraiser(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
 				}else{
-					listThesis = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
+					listThesis = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), 0);
 				}
 			}
 			

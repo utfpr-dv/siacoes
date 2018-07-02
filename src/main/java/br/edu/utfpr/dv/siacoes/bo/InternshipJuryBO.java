@@ -7,10 +7,14 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.beanutils.BeanComparator;
 
 import br.edu.utfpr.dv.siacoes.dao.InternshipJuryDAO;
 import br.edu.utfpr.dv.siacoes.model.CalendarReport;
@@ -26,6 +30,7 @@ import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserDetailReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserScoreReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
+import br.edu.utfpr.dv.siacoes.model.JuryGrade;
 import br.edu.utfpr.dv.siacoes.model.JuryStudentReport;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.model.User;
@@ -285,7 +290,16 @@ public class InternshipJuryBO {
 		return true;
 	}
 	
-	public InternshipJuryFormReport getFormReport(int idJury) throws Exception{
+	public byte[] getJuryForm(int idJury) throws Exception {
+		InternshipJuryFormReport report = this.getJuryFormReport(idJury);
+		
+		List<InternshipJuryFormReport> list = new ArrayList<InternshipJuryFormReport>();
+		list.add(report);
+		
+		return new ReportUtils().createPdfStream(list, "InternshipJuryForm", this.findIdDepartment(idJury)).toByteArray();
+	}
+	
+	public InternshipJuryFormReport getJuryFormReport(int idJury) throws Exception{
 		try {
 			InternshipJuryFormReport report = new InternshipJuryFormReport();
 			InternshipJury jury = this.findById(idJury);
@@ -438,7 +452,14 @@ public class InternshipJuryBO {
 	    return bd.doubleValue();
 	}
 	
-	public List<CalendarReport> getCalendarReport(int idDepartment, int idUser, int semester, int year) throws Exception{
+	public byte[] getScheduleReport(int idDepartment, int idUser, int semester, int year) throws Exception {
+		List<CalendarReport> report = this.getScheduleReportList(idDepartment, idUser, semester, year);
+		
+		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(report, "InternshipCalendar", idDepartment);
+		return rep.toByteArray();
+	}
+	
+	public List<CalendarReport> getScheduleReportList(int idDepartment, int idUser, int semester, int year) throws Exception{
 		List<InternshipJury> list;
 		List<CalendarReport> report = new ArrayList<CalendarReport>();
 		
@@ -533,7 +554,7 @@ public class InternshipJuryBO {
 	}
 	
 	public byte[] getJuryParticipantsSignature(int idInternshipJury) throws Exception {
-		InternshipJuryFormReport report = this.getFormReport(idInternshipJury);
+		InternshipJuryFormReport report = this.getJuryFormReport(idInternshipJury);
 		
 		JuryFormReport report2 = new JuryFormReport();
 		
@@ -546,6 +567,77 @@ public class InternshipJuryBO {
 		list.add(report2);
 		
 		return new ReportUtils().createPdfStream(list, "JuryParticipants", this.findIdDepartment(idInternshipJury)).toByteArray();
+	}
+	
+	public byte[] getJuryGradesReport(int idDepartment, int semester, int year, boolean listAll) throws Exception {
+		List<JuryGrade> list = this.getJuryGradesReportList(idDepartment, semester, year, listAll);
+		
+		return new ReportUtils().createPdfStream(list, "InternshipJuryGrades", idDepartment).toByteArray();
+	}
+	
+	public List<JuryGrade> getJuryGradesReportList(int idDepartment, int semester, int year, boolean listAll) throws Exception {
+		List<JuryGrade> report = new ArrayList<JuryGrade>();
+		
+		if(listAll) {
+			List<Internship> list = new InternshipBO().list(idDepartment, year - 1, 0, 0, 0, 1, -1);
+			List<Internship> list2 = new InternshipBO().list(idDepartment, year, 0, 0, 0, 1, -1);
+			
+			for(Internship internship : list2) {
+				boolean find = false;
+				
+				for(Internship i : list) {
+					if(i.getIdInternship() == internship.getIdInternship()) {
+						find = true;
+					}
+				}
+				
+				if(!find) {
+					list.add(internship);
+				}
+			}
+			
+			for(Internship internship : list) {
+				JuryGrade grade = new JuryGrade();
+				
+				grade.setStudent(internship.getStudent().getName());
+				grade.setJuryDate(null);
+				grade.setStage(0);
+				
+				InternshipJury jury = this.findByInternship(internship.getIdInternship());
+				
+				if((jury != null) && (jury.getIdInternshipJury() != 0)) {
+					grade.setResult(jury.getResult());
+					grade.setJuryDate(jury.getDate());
+					
+					InternshipJuryFormReport form = this.getJuryFormReport(jury.getIdInternshipJury());
+					grade.setScore(form.getFinalScore());	
+				}
+				
+				report.add(grade);
+			}
+		} else {
+			List<InternshipJury> list = this.listBySemester(idDepartment, semester, year);
+			
+			for(InternshipJury jury : list) {
+				JuryGrade grade = new JuryGrade();
+				
+				grade.setStudent(jury.getStudent().getName());
+				grade.setJuryDate(jury.getDate());
+				grade.setStage(0);
+				grade.setResult(jury.getResult());
+				
+				InternshipJuryFormReport form = this.getJuryFormReport(jury.getIdInternshipJury());
+				grade.setScore(form.getFinalScore());
+				
+				report.add(grade);
+			}
+		}
+		
+		@SuppressWarnings("unchecked")
+		Comparator<JuryGrade> comparator = new BeanComparator("student");
+		Collections.sort(report, comparator);
+		
+		return report;
 	}
 
 }
