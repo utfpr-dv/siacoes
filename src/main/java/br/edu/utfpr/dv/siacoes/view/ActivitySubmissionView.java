@@ -280,7 +280,7 @@ public class ActivitySubmissionView extends ListView {
                 	try {
                 		FinalSubmissionBO bo = new FinalSubmissionBO();
                 		
-                		FinalSubmission submission = bo.registerFinalSubmission(comboStudent.getStudent().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
+                		FinalSubmission submission = bo.registerFinalSubmission(comboStudent.getStudent().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), Session.getUser().getIdUser());
                 		
                 		Notification.show("Finalizar Processo", "O processo de aprovação do acadêmico foi realizado com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
 					} catch (Exception e) {

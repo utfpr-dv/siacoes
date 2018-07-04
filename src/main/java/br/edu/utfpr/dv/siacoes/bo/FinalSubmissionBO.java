@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.dao.FinalSubmissionDAO;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionFooterReport;
 import br.edu.utfpr.dv.siacoes.model.FinalSubmission;
@@ -13,7 +12,7 @@ import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class FinalSubmissionBO {
 	
-	public FinalSubmission registerFinalSubmission(int idStudent, int idDepartment) throws Exception{
+	public FinalSubmission registerFinalSubmission(int idStudent, int idDepartment, int idFeedbackUser) throws Exception{
 		try{
 			if(this.studentHasSubmission(idStudent, idDepartment)) {
 				throw new Exception("O acadêmico já concluiu as Atividades Complementares.");
@@ -28,13 +27,13 @@ public class FinalSubmissionBO {
 			
 			for(ActivitySubmissionFooterReport item : footer) {
 				if(item.getTotal() < item.getMinimum()) {
-					finalScore = finalScore + item.getTotal();
-					
 					throw new Exception("O acadêmico ainda não atintiu a pontuação mínima no grupo " + item.getSequence() + " (" + item.getGroup() + ")");
 				}
+				
+				finalScore = finalScore + item.getTotal();
 			}
 			
-			if(new SigacConfigBO().findByDepartment(idDepartment).getMinimumScore() > finalScore) {
+			if(finalScore < new SigacConfigBO().findByDepartment(idDepartment).getMinimumScore()) {
 				throw new Exception("O acadêmico ainda não atintiu a pontuação mínima exigida para aprovação.");
 			}
 			
@@ -42,7 +41,7 @@ public class FinalSubmissionBO {
 			
 			submission.getDepartment().setIdDepartment(idDepartment);
 			submission.getStudent().setIdUser(idStudent);
-			submission.getFeedbackUser().setIdUser(Session.getUser().getIdUser());
+			submission.getFeedbackUser().setIdUser(idFeedbackUser);
 			submission.setFinalScore(finalScore);
 			submission.setDate(DateUtils.getToday().getTime());
 			submission.setReport(report);
