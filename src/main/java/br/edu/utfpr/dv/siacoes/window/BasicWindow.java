@@ -14,6 +14,7 @@ public class BasicWindow extends Window {
 		super(title);
 		this.setModal(true);
 		this.setResizable(false);
+		this.center();
 	}
 
 	protected void showReport(byte[] pdfReport) {

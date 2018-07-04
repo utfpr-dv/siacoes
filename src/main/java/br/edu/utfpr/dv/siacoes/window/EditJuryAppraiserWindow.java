@@ -3,15 +3,20 @@
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.FontAwesome;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.Button.ClickEvent;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
+import br.edu.utfpr.dv.siacoes.model.User;
 
 public class EditJuryAppraiserWindow extends EditWindow {
 
@@ -20,6 +25,7 @@ public class EditJuryAppraiserWindow extends EditWindow {
 	private final SupervisorComboBox comboProfessor;
 	private final OptionGroup optionAppraiserType;
 	private final CheckBox checkChair;
+	private final Button buttonSchedule;
 	private final boolean edit;
 	
 	public EditJuryAppraiserWindow(EditJuryWindow parentWindow) {
@@ -27,6 +33,8 @@ public class EditJuryAppraiserWindow extends EditWindow {
 		
 		this.parentWindow = parentWindow;
 		this.edit = false;
+		
+		this.buttonSchedule = new Button();
 		
 		this.comboProfessor = new SupervisorComboBox("Membro", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		
@@ -47,6 +55,16 @@ public class EditJuryAppraiserWindow extends EditWindow {
 		
 		this.parentWindow = parentWindow;
 		this.edit = false;
+		
+		this.buttonSchedule = new Button("Agenda do Professor", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	professorSchecule();
+            }
+        });
+		this.buttonSchedule.setIcon(FontAwesome.CALENDAR_O);
+		this.addButton(this.buttonSchedule);
+		this.buttonSchedule.setWidth("250px");
 		
 		this.comboProfessor = new SupervisorComboBox((substitute ? "Suplente" : "Membro"), Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		
@@ -71,6 +89,8 @@ public class EditJuryAppraiserWindow extends EditWindow {
 		
 		this.parentWindow = parentWindow;
 		this.edit = true;
+		
+		this.buttonSchedule = new Button();
 		
 		this.comboProfessor = new SupervisorComboBox("Membro", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		this.comboProfessor.setProfessor(appraiser.getAppraiser());
@@ -125,6 +145,16 @@ public class EditJuryAppraiserWindow extends EditWindow {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			Notification.show("Adicionar Membro", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		}
+	}
+	
+	private void professorSchecule() {
+		User professor = this.comboProfessor.getProfessor();
+		
+		if((professor == null) || (professor.getIdUser() == 0)) {
+			Notification.show("Agenda do Professor", "Selecione o professor para visualizar a agenda.", Notification.Type.WARNING_MESSAGE);
+		} else {
+			UI.getCurrent().addWindow(new ProfessorScheculeWindow(professor));
 		}
 	}
 

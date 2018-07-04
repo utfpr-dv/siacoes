@@ -15,6 +15,7 @@ import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
+import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.bo.SupervisorChangeBO;
 import br.edu.utfpr.dv.siacoes.bo.TutoredBO;
@@ -23,11 +24,13 @@ import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.JuryRequest;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Tutored;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.window.EditJuryRequestWindow;
 import br.edu.utfpr.dv.siacoes.window.EditSupervisorAgreementWindow;
 import br.edu.utfpr.dv.siacoes.window.EditSupervisorChangeWindow;
@@ -59,9 +62,18 @@ public class TutoredView extends ListView {
 		
 		this.setProfilePerimissions(UserProfile.SUPERVISOR);
 		
+		Semester semester;
+		try {
+			semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+		} catch (Exception e) {
+			semester = new Semester();
+		}
+		
 		this.comboSemester = new SemesterComboBox();
+		this.comboSemester.select(semester.getSemester());
 		
 		this.textYear = new YearField();
+		this.textYear.setYear(semester.getYear());
 		
 		this.addFilterField(new HorizontalLayout(this.comboSemester, this.textYear));
 		

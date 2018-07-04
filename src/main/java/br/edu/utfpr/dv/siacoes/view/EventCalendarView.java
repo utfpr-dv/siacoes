@@ -200,7 +200,7 @@ public class EventCalendarView extends BasicView {
 					
 					CalendarEvent event = new CalendarEvent(title + " - " + student + " - " + local, title + " - " + student + " - " + local + " - " + appraisers, jury.getDate(), DateUtils.addHour(jury.getDate(), 1));
 					
-					if((jury.getThesis() != null) && (jury.getThesis().getIdThesis() != 0)) {
+					if(jury.getStage() == 2) {
 						event.setEnd(DateUtils.addMinute(event.getEnd(), 30));
 					}
 					
