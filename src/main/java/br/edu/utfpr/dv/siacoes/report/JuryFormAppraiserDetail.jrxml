@@ -102,7 +102,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{score} == 0, "", $F{score})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{score} == 0, "", TEXT($F{score}, "0.00"))]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="380" y="0" width="50" height="20" uuid="c14e979a-4e2d-4736-8ccc-6ef3c99a05fb"/>

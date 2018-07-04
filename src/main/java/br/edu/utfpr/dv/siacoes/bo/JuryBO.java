@@ -309,6 +309,10 @@ public class JuryBO {
 			if(jury.getIdJury() == 0) {
 				jury.setStartTime(jury.getDate());
 				jury.setEndTime(DateUtils.addHour(jury.getStartTime(), 1));
+				
+				if((jury.getThesis() != null) && (jury.getThesis().getIdThesis() != 0)) {
+					jury.setEndTime(DateUtils.addMinute(jury.getEndTime(), 30));
+				}
 			}
 			if(jury.getAppraisers() != null){
 				JuryAppraiserBO bo = new JuryAppraiserBO();
@@ -316,6 +320,7 @@ public class JuryBO {
 				User supervisor = jury.getSupervisor();
 				User cosupervisor = jury.getCosupervisor();
 				boolean find = false, findSupervisor = false, findCosupervisor = false;
+				int countChair = 0;
 				
 				for(JuryAppraiser appraiser : jury.getAppraisers()){
 					if(bo.appraiserHasJury(jury.getIdJury(), appraiser.getAppraiser().getIdUser(), jury.getDate())){
@@ -333,6 +338,14 @@ public class JuryBO {
 					if(appraiser.isChair() && ((appraiser.getAppraiser().getIdUser() == supervisor.getIdUser()) || ((cosupervisor != null) && (appraiser.getAppraiser().getIdUser() == cosupervisor.getIdUser())))){
 						find = true;
 					}
+					
+					if(appraiser.isSubstitute()) {
+						appraiser.setChair(false);
+					}
+					
+					if(appraiser.isChair()) {
+						countChair++;
+					}
 				}
 				
 				if(find) {
@@ -342,6 +355,11 @@ public class JuryBO {
 				}
 				if(findSupervisor && findCosupervisor) {
 					throw new Exception("O Coorientador não pode fazer parte da banca quando o orientador já compõe a mesma");
+				}
+				if(countChair == 0) {
+					throw new Exception("É preciso indicar o presidente da banca.");
+				} else if(countChair > 1) {
+					throw new Exception("Apenas um membro pode ser presidente da banca.");
 				}
 			}
 			

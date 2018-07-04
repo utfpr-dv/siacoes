@@ -3,6 +3,7 @@
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.DateField;
@@ -119,6 +120,7 @@ public class EditInternshipFinalDocumentWindow extends EditWindow {
             	downloadFile();
             }
         });
+		this.buttonDownloadFile.setIcon(FontAwesome.DOWNLOAD);
 		
 		this.addField(new HorizontalLayout(this.comboCampus, this.comboDepartment));
 		this.addField(this.textTitle);

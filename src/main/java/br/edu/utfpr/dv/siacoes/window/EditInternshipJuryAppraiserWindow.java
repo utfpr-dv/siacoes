@@ -19,11 +19,13 @@ public class EditInternshipJuryAppraiserWindow extends EditWindow {
 	private final SupervisorComboBox comboProfessor;
 	private final OptionGroup optionAppraiserType;
 	private final CheckBox checkChair;
+	private final boolean edit;
 	
 	public EditInternshipJuryAppraiserWindow(EditInternshipJuryWindow parentWindow){
 		super("Adicionar Membro", null);
 		
 		this.parentWindow = parentWindow;
+		this.edit = false;
 		
 		this.comboProfessor = new SupervisorComboBox("Membro", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		
@@ -33,6 +35,29 @@ public class EditInternshipJuryAppraiserWindow extends EditWindow {
 		this.optionAppraiserType.select(this.optionAppraiserType.getItemIds().iterator().next());
 		
 		this.checkChair = new CheckBox("Presidente da Banca");
+		
+		this.addField(this.comboProfessor);
+		this.addField(this.optionAppraiserType);
+		this.addField(this.checkChair);
+	}
+	
+	public EditInternshipJuryAppraiserWindow(InternshipJuryAppraiser appraiser, EditInternshipJuryWindow parentWindow) {
+		super("Editar Membro", null);
+		
+		this.parentWindow = parentWindow;
+		this.edit = true;
+		
+		this.comboProfessor = new SupervisorComboBox("Membro", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
+		this.comboProfessor.setProfessor(appraiser.getAppraiser());
+		this.comboProfessor.setEnabled(false);
+		
+		this.optionAppraiserType = new OptionGroup();
+		this.optionAppraiserType.addItem("Titular");
+		this.optionAppraiserType.addItem("Suplente");
+		this.optionAppraiserType.select(appraiser.isSubstitute() ? "Suplente" : "Titular");
+		
+		this.checkChair = new CheckBox("Presidente da Banca");
+		this.checkChair.setValue(appraiser.isChair());
 		
 		this.addField(this.comboProfessor);
 		this.addField(this.optionAppraiserType);
@@ -54,7 +79,11 @@ public class EditInternshipJuryAppraiserWindow extends EditWindow {
 				appraiser.setSubstitute(true);
 			}
 			
-			this.parentWindow.addAppraiser(appraiser);
+			if(this.edit) {
+				this.parentWindow.editAppraiser(appraiser);
+			} else {
+				this.parentWindow.addAppraiser(appraiser);
+			}
 			
 			this.close();
 		}catch(Exception e){

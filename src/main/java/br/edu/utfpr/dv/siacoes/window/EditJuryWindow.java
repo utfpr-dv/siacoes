@@ -47,6 +47,7 @@ public class EditJuryWindow extends EditWindow {
 	private Grid gridAppraisers;
 	private Grid gridParticipants;
 	private final Button buttonAddAppraiser;
+	private final Button buttonEditAppraiser;
 	private final Button buttonRemoveAppraiser;
 	private final Button buttonAppraiserScore;
 	private final Button buttonAppraiserStatement;
@@ -121,6 +122,15 @@ public class EditJuryWindow extends EditWindow {
 		this.buttonAddAppraiser.setIcon(FontAwesome.PLUS);
 		this.buttonAddAppraiser.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 		
+		this.buttonEditAppraiser = new Button("Editar Membro", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	editAppraiser();
+            }
+        });
+		this.buttonEditAppraiser.setIcon(FontAwesome.EDIT);
+		this.buttonEditAppraiser.addStyleName(ValoTheme.BUTTON_PRIMARY);
+		
 		this.buttonRemoveAppraiser = new Button("Remover Membro", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
@@ -160,7 +170,7 @@ public class EditJuryWindow extends EditWindow {
             }
         });
 		
-		HorizontalLayout layoutGridButtons = new HorizontalLayout(this.buttonAddAppraiser, this.buttonRemoveAppraiser, this.buttonAppraiserScore, this.buttonAppraiserStatement);
+		HorizontalLayout layoutGridButtons = new HorizontalLayout(this.buttonAddAppraiser, this.buttonEditAppraiser, this.buttonRemoveAppraiser, this.buttonAppraiserScore, this.buttonAppraiserStatement);
 		layoutGridButtons.setSpacing(true);
 		
 		VerticalLayout tab2 = new VerticalLayout(this.layoutAppraisers, layoutGridButtons);
@@ -380,6 +390,35 @@ public class EditJuryWindow extends EditWindow {
 		this.loadGridParticipants();
 	}
 	
+	private void editAppraiser() {
+		int index = this.getAppraiserSelectedIndex();
+		
+		if(index == -1) {
+			Notification.show("Selecionar Membro", "Selecione o membro para editar.", Notification.Type.WARNING_MESSAGE);
+		} else {
+			try {
+				if(new JuryBO().canRemoveAppraiser(this.jury, this.jury.getAppraisers().get(index).getAppraiser())) {
+					UI.getCurrent().addWindow(new EditJuryAppraiserWindow(this.jury.getAppraisers().get(index), this));
+				}
+			} catch (Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				
+				Notification.show("Editar Membro", e.getMessage().replace("removido", "editado"), Notification.Type.ERROR_MESSAGE);
+			}
+		}
+	}
+	
+	public void editAppraiser(JuryAppraiser appraiser) {
+		for(JuryAppraiser a : this.jury.getAppraisers()) {
+			if(a.getAppraiser().getIdUser() == appraiser.getAppraiser().getIdUser()) {
+				a.setChair(appraiser.isChair());
+				a.setSubstitute(appraiser.isSubstitute());
+				
+				this.loadGridAppraisers();
+			}
+		}
+	}
+	
 	private void removeAppraiser(){
 		int index = this.getAppraiserSelectedIndex();
 		
@@ -441,6 +480,8 @@ public class EditJuryWindow extends EditWindow {
 			
 			if((appraiser == null) || (appraiser.getIdJuryAppraiser() == 0)){
 				Notification.show("Lançar Notas", "É necessário salvar a banca antes de lançar as notas.", Notification.Type.WARNING_MESSAGE);
+			} else if(appraiser.isSubstitute()) {
+				Notification.show("Lançar Notas", "A nota somente pode ser atribuída por membros titulares da banca.", Notification.Type.WARNING_MESSAGE);
 			}else{
 				UI.getCurrent().addWindow(new EditJuryAppraiserScoreWindow(appraiser));
 			}

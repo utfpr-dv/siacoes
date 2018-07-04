@@ -13,6 +13,7 @@ import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class JuryAppraiserDAO {
 	
@@ -211,6 +212,11 @@ public class JuryAppraiserDAO {
 			stmt = this.conn.prepareStatement(
 					"SELECT SUM(total) AS total FROM (" +
 					"SELECT COUNT(*) AS total FROM jury INNER JOIN juryappraiser ON juryappraiser.idJury=jury.idJury " +
+					"INNER JOIN project ON project.idproject=jury.idproject " +
+					"WHERE jury.idJury <> ? AND juryappraiser.idAppraiser = ? AND jury.date BETWEEN ? AND ? " +
+					" UNION ALL " +
+					"SELECT COUNT(*) AS total FROM jury INNER JOIN juryappraiser ON juryappraiser.idJury=jury.idJury " +
+					"INNER JOIN thesis ON thesis.idthesis=jury.idthesis " +
 					"WHERE jury.idJury <> ? AND juryappraiser.idAppraiser = ? AND jury.date BETWEEN ? AND ? " +
 					" UNION ALL " +
 					"SELECT COUNT(*) AS total FROM internshipjury INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJury=internshipjury.idInternshipJury " +
@@ -220,9 +226,13 @@ public class JuryAppraiserDAO {
 			stmt.setInt(2, idUser);
 			stmt.setTimestamp(3, new java.sql.Timestamp(startDate.getTime()));
 			stmt.setTimestamp(4, new java.sql.Timestamp(endDate.getTime()));
-			stmt.setInt(5, idUser);
-			stmt.setTimestamp(6, new java.sql.Timestamp(startDate.getTime()));
-			stmt.setTimestamp(7, new java.sql.Timestamp(endDate.getTime()));
+			stmt.setInt(5, idJury);
+			stmt.setInt(6, idUser);
+			stmt.setTimestamp(7, new java.sql.Timestamp(DateUtils.addMinute(startDate, -30).getTime()));
+			stmt.setTimestamp(8, new java.sql.Timestamp(DateUtils.addMinute(endDate, 30).getTime()));
+			stmt.setInt(9, idUser);
+			stmt.setTimestamp(10, new java.sql.Timestamp(startDate.getTime()));
+			stmt.setTimestamp(11, new java.sql.Timestamp(endDate.getTime()));
 			
 			rs = stmt.executeQuery();
 			rs.next();

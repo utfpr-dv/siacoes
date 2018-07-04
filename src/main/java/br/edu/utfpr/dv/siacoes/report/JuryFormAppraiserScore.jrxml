@@ -61,7 +61,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{scoreWriting} == 0, "", TEXT($F{scoreWriting}, "0.0"))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{scoreWriting} == 0, "", TEXT($F{scoreWriting}, "0.00"))]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="210" y="0" width="90" height="20" uuid="7d861ebc-fd4e-4643-a279-6b21aa9a88cd"/>
@@ -74,7 +74,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{scoreOral} == 0, "", TEXT($F{scoreOral}, "0.0"))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{scoreOral} == 0, "", TEXT($F{scoreOral}, "0.00"))]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="300" y="0" width="90" height="20" uuid="6ab6a44e-c0e5-4932-b044-56b0ad7ad740"/>
@@ -87,7 +87,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{scoreArgumentation} == 0, "", TEXT($F{scoreArgumentation}, "0.0"))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{scoreArgumentation} == 0, "", TEXT($F{scoreArgumentation}, "0.00"))]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="390" y="0" width="90" height="20" uuid="89a89cf1-b25c-466a-90c8-5c822fd1067a"/>
@@ -100,7 +100,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{score} == 0, "", TEXT($F{score}, "0.0"))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{score} == 0, "", TEXT($F{score}, "0.00"))]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

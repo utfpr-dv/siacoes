@@ -155,6 +155,7 @@ public class InternshipJuryBO {
 				
 				User supervisor = jury.getSupervisor();
 				boolean findSupervisor = false;
+				int countChair = 0;
 				
 				for(InternshipJuryAppraiser appraiser : jury.getAppraisers()){
 					if(bo.appraiserHasJury(jury.getIdInternshipJury(), appraiser.getAppraiser().getIdUser(), jury.getDate())){
@@ -164,12 +165,25 @@ public class InternshipJuryBO {
 					if(appraiser.getAppraiser().getIdUser() == supervisor.getIdUser()) {
 						findSupervisor = true;
 					}
+					
+					if(appraiser.isSubstitute()) {
+						appraiser.setChair(false);
+					}
+					
+					if(appraiser.isChair()) {
+						countChair++;
+					}
 				}
 				
 				if(findSupervisor) {
 					jury.setSupervisorAbsenceReason("");
 				} else if(jury.getSupervisorAbsenceReason().trim().isEmpty()) {
 					throw new Exception("Informe o motivo do Professor Orientador não estar presidindo a banca.");
+				}
+				if(countChair == 0) {
+					throw new Exception("É preciso indicar o presidente da banca.");
+				} else if(countChair > 1) {
+					throw new Exception("Apenas um membro pode ser presidente da banca.");
 				}
 			}
 			

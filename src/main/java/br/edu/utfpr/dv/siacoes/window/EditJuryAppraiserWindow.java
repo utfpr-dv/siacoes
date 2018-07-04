@@ -20,11 +20,13 @@ public class EditJuryAppraiserWindow extends EditWindow {
 	private final SupervisorComboBox comboProfessor;
 	private final OptionGroup optionAppraiserType;
 	private final CheckBox checkChair;
+	private final boolean edit;
 	
 	public EditJuryAppraiserWindow(EditJuryWindow parentWindow) {
 		super("Adicionar Membro", null);
 		
 		this.parentWindow = parentWindow;
+		this.edit = false;
 		
 		this.comboProfessor = new SupervisorComboBox("Membro", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		
@@ -44,6 +46,7 @@ public class EditJuryAppraiserWindow extends EditWindow {
 		super("Adicionar Membro", null);
 		
 		this.parentWindow = parentWindow;
+		this.edit = false;
 		
 		this.comboProfessor = new SupervisorComboBox((substitute ? "Suplente" : "Membro"), Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		
@@ -63,6 +66,29 @@ public class EditJuryAppraiserWindow extends EditWindow {
 		this.addField(this.comboProfessor);
 	}
 	
+	public EditJuryAppraiserWindow(JuryAppraiser appraiser, EditJuryWindow parentWindow) {
+		super("Editar Membro", null);
+		
+		this.parentWindow = parentWindow;
+		this.edit = true;
+		
+		this.comboProfessor = new SupervisorComboBox("Membro", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
+		this.comboProfessor.setProfessor(appraiser.getAppraiser());
+		this.comboProfessor.setEnabled(false);
+		
+		this.optionAppraiserType = new OptionGroup();
+		this.optionAppraiserType.addItem("Titular");
+		this.optionAppraiserType.addItem("Suplente");
+		this.optionAppraiserType.select(appraiser.isSubstitute() ? "Suplente" : "Titular");
+		
+		this.checkChair = new CheckBox("Presidente da Banca");
+		this.checkChair.setValue(appraiser.isChair());
+		
+		this.addField(this.comboProfessor);
+		this.addField(this.optionAppraiserType);
+		this.addField(this.checkChair);
+	}
+	
 	@Override
 	public void save() {
 		try{
@@ -79,7 +105,11 @@ public class EditJuryAppraiserWindow extends EditWindow {
 			}
 			
 			if(this.parentWindow instanceof EditJuryWindow) {
-				((EditJuryWindow)this.parentWindow).addAppraiser(appraiser);
+				if(this.edit) {
+					((EditJuryWindow)this.parentWindow).editAppraiser(appraiser);
+				} else {
+					((EditJuryWindow)this.parentWindow).addAppraiser(appraiser);
+				}
 			} else if(this.parentWindow instanceof EditJuryRequestWindow) {
 				JuryAppraiserRequest request = new JuryAppraiserRequest();
 				
