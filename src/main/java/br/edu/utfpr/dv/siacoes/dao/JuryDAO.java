@@ -459,9 +459,8 @@ public class JuryDAO {
 			}
 			
 			stmt = conn.prepareStatement(
-					"SELECT SUM(juryappraiserscore.score * evaluationitem.ponderosity) / SUM(evaluationitem.ponderosity) AS score" +
-					"FROM juryappraiserscore INNER JOIN evaluationitem ON evaluationitem.idEvaluationItem=juryappraiserscore.idEvaluationItem " +
-					"INNER JOIN juryappraiser ON juryappraiser.idJuryAppraiser=juryappraiserscore.idJuryAppraiser " +
+					"SELECT SUM(juryappraiserscore.score) AS score " +
+					"FROM juryappraiserscore INNER JOIN juryappraiser ON juryappraiser.idJuryAppraiser=juryappraiserscore.idJuryAppraiser " +
 					"WHERE juryappraiser.substitute=0 AND juryappraiser.idJury=? GROUP BY juryappraiser.idJuryAppraiser");
 			stmt.setInt(1, idJury);
 			

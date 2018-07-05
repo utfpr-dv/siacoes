@@ -17,6 +17,7 @@ import com.vaadin.ui.renderers.DateRenderer;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.FinalDocumentBO;
+import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
@@ -35,6 +36,7 @@ public class FinalDocumentView extends ListView {
 	private final CheckBox checkListAll;
 	private final SemesterComboBox comboSemester;
 	private final YearField textYear;
+	private final Button buttonGrades;
 	private final Button buttonLibraryReport;
 	
 	private Button.ClickListener listenerClickLibraryReport;
@@ -64,14 +66,24 @@ public class FinalDocumentView extends ListView {
 		this.buttonLibraryReport = new Button("Relat. Biblioteca");
 		this.buttonLibraryReport.setIcon(FontAwesome.FILE_PDF_O);
 		
+		this.buttonGrades = new Button("Relat. de Notas", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	juryGradesReport();
+            }
+        });
+		this.buttonGrades.setIcon(FontAwesome.FILE_PDF_O);
+		
 		if(!Session.isUserManager(this.getModule())){
 			this.checkListAll.setVisible(false);
 			
+			this.buttonGrades.setVisible(false);
 			this.buttonLibraryReport.setVisible(false);
 		}
 		
 		this.addFilterField(new HorizontalLayout(this.comboSemester, this.textYear, this.checkListAll));
 		
+		this.addActionButton(this.buttonGrades);
 		this.addActionButton(this.buttonLibraryReport);
 		
 		this.setAddVisible(false);
@@ -97,6 +109,9 @@ public class FinalDocumentView extends ListView {
 		this.getGrid().getColumns().get(5).setWidth(125);
 		this.getGrid().getColumns().get(6).setWidth(100);
 		this.getGrid().getColumns().get(7).setWidth(125);
+		
+		this.buttonGrades.setEnabled(this.checkListAll.getValue());
+		this.buttonLibraryReport.setEnabled(this.checkListAll.getValue());
 		
 		try{
 			FinalDocumentBO bo = new FinalDocumentBO();
@@ -127,6 +142,16 @@ public class FinalDocumentView extends ListView {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			Notification.show("Listar Projetos/Monografias", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		}
+	}
+	
+	private void juryGradesReport() {
+		try {
+			this.showReport(new JuryBO().getJuryGradesReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), 0, false));
+		} catch(Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	
+        	Notification.show("Relatório de Notas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
 

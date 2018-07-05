@@ -314,13 +314,9 @@ public class JuryView extends ListView {
 		if(value == null){
 			Notification.show("Imprimir Termo de Aprovação", "Selecione uma banca para gerar o termo de aprovação.", Notification.Type.WARNING_MESSAGE);
 		}else{
-			ConfirmDialog dialog = new ConfirmDialog();
-			dialog.setMessage("Selecione o modo de geração para o Termo de Aprovação.\n\n" +
+			ConfirmDialog.show(UI.getCurrent(), "Imprimir Termo de Aprovação", "Selecione o modo de geração para o Termo de Aprovação.\n\n" +
 					"Versão Impressa: documento que deverá ser assinado e armazenado na coordenação.\n" + 
-					"Versão Eletrônica: documento sem assinaturas que deverá ser incluído na versão final entregue pelo acadêmico.");
-			dialog.getOkButton().setCaption("Versão Impressa");
-			dialog.getCancelButton().setCaption("Versão Eletrônica");
-			dialog.show(UI.getCurrent(), new ConfirmDialog.Listener() {
+					"Versão Eletrônica: documento sem assinaturas que deverá ser incluído na versão final entregue pelo acadêmico.", "Versão Impressa", "Versão Eletrônica", new ConfirmDialog.Listener() {
                 public void onClose(ConfirmDialog d) {
                 	try{
         				showReport(new JuryBO().getTermOfApproval((int)value, !d.isConfirmed()));
@@ -330,7 +326,7 @@ public class JuryView extends ListView {
         	        	Notification.show("Imprimir Termo de Aprovação", e.getMessage(), Notification.Type.ERROR_MESSAGE);
         			}
                 }
-            }, true);
+            });
 		}
 	}
 	

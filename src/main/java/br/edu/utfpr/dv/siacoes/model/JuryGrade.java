@@ -2,6 +2,7 @@ package br.edu.utfpr.dv.siacoes.model;
 
 import java.util.Date;
 
+import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
 import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
 
 public class JuryGrade {
@@ -11,6 +12,7 @@ public class JuryGrade {
 	private Date juryDate;
 	private double score;
 	private JuryResult result;
+	private DocumentFeedback supervisorFeedback;
 	
 	public JuryGrade() {
 		this.setStudent("");
@@ -18,6 +20,7 @@ public class JuryGrade {
 		this.setJuryDate(new Date());
 		this.setScore(0);
 		this.setResult(JuryResult.NONE);
+		this.setSupervisorFeedback(DocumentFeedback.NONE);
 	}
 	
 	public String getStudent() {
@@ -49,6 +52,12 @@ public class JuryGrade {
 	}
 	public void setResult(JuryResult result) {
 		this.result = result;
+	}
+	public DocumentFeedback getSupervisorFeedback() {
+		return supervisorFeedback;
+	}
+	public void setSupervisorFeedback(DocumentFeedback supervisorFeedback) {
+		this.supervisorFeedback = supervisorFeedback;
 	}
 
 }

@@ -40,6 +40,8 @@ import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.EvaluationItem.EvaluationItemType;
+import br.edu.utfpr.dv.siacoes.model.FinalDocument;
+import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
@@ -668,8 +670,7 @@ public class JuryBO {
 				throw new Exception("Não é possível gerar o Termo de Aprovação pois o acadêmico não obteve a aprovação.");
 			}
 			
-			ThesisBO bo = new ThesisBO();
-			Thesis thesis = bo.findById(jury.getThesis().getIdThesis());
+			Thesis thesis = new ThesisBO().findById(jury.getThesis().getIdThesis());
 			
 			TermOfApprovalReport report = new TermOfApprovalReport();
 			
@@ -682,11 +683,18 @@ public class JuryBO {
 			report.setEndTime(jury.getEndTime());
 			report.setHideSignatures(hideSignatures);
 			
+			FinalDocument doc = new FinalDocumentBO().findByThesis(thesis.getIdThesis());
+			if((doc != null) && (doc.getIdFinalDocument() != 0)) {
+				report.setTitle(doc.getTitle());
+			}
+			
 			JuryAppraiserBO bo2 = new JuryAppraiserBO();
 			List<JuryAppraiser> list = bo2.listAppraisers(idJury);
 			
 			for(JuryAppraiser appraiser : list){
-				if(appraiser.getAppraiser().getIdUser() != thesis.getSupervisor().getIdUser()){
+				if(appraiser.isChair()){
+					report.setSupervisor(appraiser.getAppraiser().getName());
+				} else {
 					if(report.getMember1().isEmpty()){
 						report.setMember1(appraiser.getAppraiser().getName());
 					}else{
@@ -899,13 +907,26 @@ public class JuryBO {
 								grade.setResult(JuryResult.DISAPPROVED);
 							}
 						}
+						
+						if(config.isRequestFinalDocumentStage1()) {
+							FinalDocument doc = new FinalDocumentBO().findByProject(project.getIdProject());
+							if((doc != null) && (doc.getIdFinalDocument() != 0)) {
+								grade.setSupervisorFeedback(doc.getSupervisorFeedback());
+							}
+							
+							if(grade.getSupervisorFeedback() == DocumentFeedback.DISAPPROVED) {
+								grade.setResult(JuryResult.DISAPPROVED);
+							} else if(grade.getSupervisorFeedback() == DocumentFeedback.NONE) {
+								grade.setResult(JuryResult.NONE);
+							}
+						}
 					}
 					
 					report.add(grade);
 				}
 			}
 			
-			if((stage == 0) || (stage == 1)) {
+			if((stage == 0) || (stage == 2)) {
 				List<Thesis> list2 = new ThesisBO().listBySemester(idDepartment, semester, year);
 				
 				for(Thesis thesis : list2) {
@@ -930,6 +951,17 @@ public class JuryBO {
 						}
 					}
 					
+					FinalDocument doc = new FinalDocumentBO().findByThesis(thesis.getIdThesis());
+					if((doc != null) && (doc.getIdFinalDocument() != 0)) {
+						grade.setSupervisorFeedback(doc.getSupervisorFeedback());
+					}
+					
+					if(grade.getSupervisorFeedback() == DocumentFeedback.DISAPPROVED) {
+						grade.setResult(JuryResult.DISAPPROVED);
+					} else if(grade.getSupervisorFeedback() == DocumentFeedback.NONE) {
+						grade.setResult(JuryResult.NONE);
+					}
+					
 					report.add(grade);
 				}
 			}
@@ -951,6 +983,26 @@ public class JuryBO {
 						grade.setResult(JuryResult.APPROVED);
 					} else {
 						grade.setResult(JuryResult.DISAPPROVED);
+					}
+					
+					if(jury.getStage() == 2) {
+						FinalDocument doc = new FinalDocumentBO().findByThesis(jury.getThesis().getIdThesis());
+						if((doc != null) && (doc.getIdFinalDocument() != 0)) {
+							grade.setSupervisorFeedback(doc.getSupervisorFeedback());
+						}
+					} else if(config.isRequestFinalDocumentStage1()) {
+						FinalDocument doc = new FinalDocumentBO().findByProject(jury.getProject().getIdProject());
+						if((doc != null) && (doc.getIdFinalDocument() != 0)) {
+							grade.setSupervisorFeedback(doc.getSupervisorFeedback());
+						}
+					}
+					
+					if((jury.getStage() == 2) || config.isRequestFinalDocumentStage1()) {
+						if(grade.getSupervisorFeedback() == DocumentFeedback.DISAPPROVED) {
+							grade.setResult(JuryResult.DISAPPROVED);
+						} else if(grade.getSupervisorFeedback() == DocumentFeedback.NONE) {
+							grade.setResult(JuryResult.NONE);
+						}
 					}
 					
 					report.add(grade);

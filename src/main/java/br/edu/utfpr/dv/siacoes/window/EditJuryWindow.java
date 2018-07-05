@@ -277,10 +277,8 @@ public class EditJuryWindow extends EditWindow {
 				SigetConfig config = new SigetConfigBO().findByDepartment(idDepartment);
 				
 				if(config.isSupervisorJuryRequest()) {
-					if(this.jury.getJuryRequest() == null) {
-						if(this.jury.getJuryRequest().getIdJuryRequest() == 0) {
-							Notification.show("Agendamento de Banca", "O Professor Orientador não efetuou a solicitação de agendamento de banca.", Notification.Type.WARNING_MESSAGE);		
-						}
+					if((this.jury.getJuryRequest() == null) || (this.jury.getJuryRequest().getIdJuryRequest() == 0)) {
+						Notification.show("Agendamento de Banca", "O Professor Orientador não efetuou a solicitação de agendamento de banca.", Notification.Type.WARNING_MESSAGE);		
 					}
 				}
 			} catch (Exception e) {

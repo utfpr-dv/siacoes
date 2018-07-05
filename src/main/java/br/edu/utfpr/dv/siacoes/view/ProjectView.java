@@ -49,6 +49,7 @@ public class ProjectView extends ListView {
 	private final Button buttonSendFeedback;
 	private final Button buttonSupervisorStatement;
 	private final Button buttonCosupervisorStatement;
+	private final Button buttonGrades;
 	
 	public ProjectView(){
 		super(SystemModule.SIGET);
@@ -106,6 +107,14 @@ public class ProjectView extends ListView {
         });
 		this.buttonCosupervisorStatement.setIcon(FontAwesome.FILE_PDF_O);
 		
+		this.buttonGrades = new Button("Relat. de Notas", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	juryGradesReport();
+            }
+        });
+		this.buttonGrades.setIcon(FontAwesome.FILE_PDF_O);
+		
 		if(Session.isUserProfessor()){
 			this.addActionButton(this.buttonSendFeedback);
 		}
@@ -114,6 +123,7 @@ public class ProjectView extends ListView {
 			this.addActionButton(this.buttonStatements);
 			this.addActionButton(this.buttonSupervisorStatement);
 			this.addActionButton(this.buttonCosupervisorStatement);
+			this.addActionButton(this.buttonGrades);
 		}
 		
 		Semester semester;
@@ -321,6 +331,16 @@ public class ProjectView extends ListView {
 				Notification.show("Enviar Feedback", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
     	}
+	}
+	
+	private void juryGradesReport() {
+		try {
+			this.showReport(new JuryBO().getJuryGradesReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), 1, true));
+		} catch(Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	
+        	Notification.show("Relatório de Notas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		}
 	}
 
 	@Override

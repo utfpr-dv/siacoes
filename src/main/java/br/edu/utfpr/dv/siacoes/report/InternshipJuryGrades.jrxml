@@ -33,6 +33,9 @@
 	<field name="juryDate" class="java.util.Date">
 		<fieldDescription><![CDATA[juryDate]]></fieldDescription>
 	</field>
+	<field name="supervisorFeedback" class="br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback">
+		<fieldDescription><![CDATA[supervisorFeedback]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -79,25 +82,32 @@
 				<text><![CDATA[Notas de Bancas de Estágio Obrigatório]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="40" width="340" height="14" uuid="30f82b10-1544-40b2-8724-f7840e37f607"/>
+				<reportElement x="0" y="40" width="270" height="14" uuid="30f82b10-1544-40b2-8724-f7840e37f607"/>
 				<textElement>
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Acadêmico]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="350" y="40" width="31" height="14" uuid="281f09a7-d9f3-4483-9f19-d8ed79a0af86"/>
+				<reportElement x="270" y="40" width="31" height="14" uuid="281f09a7-d9f3-4483-9f19-d8ed79a0af86"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Nota]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="390" y="40" width="90" height="14" uuid="56612273-2c10-46ca-8889-e4205e9afdb4"/>
+				<reportElement x="419" y="40" width="61" height="14" uuid="56612273-2c10-46ca-8889-e4205e9afdb4"/>
 				<textElement>
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Situação]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="40" width="110" height="14" uuid="1a1b141c-cc4a-4f59-a290-f2ea7037a3f2"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Feedback Orientador]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -105,25 +115,32 @@
 		<band height="23" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="0" y="3" width="340" height="17" uuid="584378a4-700b-415b-82e9-009e961295a1"/>
+				<reportElement x="0" y="3" width="270" height="17" uuid="584378a4-700b-415b-82e9-009e961295a1"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{student}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="350" y="3" width="30" height="17" uuid="48d6fe35-f2e1-4df9-af9c-23e2ed1b715b"/>
+				<reportElement x="270" y="3" width="30" height="17" uuid="48d6fe35-f2e1-4df9-af9c-23e2ed1b715b"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[IF($F{juryDate} == null, "-", new java.text.DecimalFormat("#0.00").format($F{score}))]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="390" y="3" width="90" height="17" uuid="4a5841d7-937c-406d-91db-6a5a814dfe18"/>
+				<reportElement x="420" y="3" width="60" height="17" uuid="4a5841d7-937c-406d-91db-6a5a814dfe18"/>
 				<textElement textAlignment="Left">
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[IF($F{juryDate} == null, "-", $F{result})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="310" y="4" width="110" height="17" uuid="607386b0-cc8b-45c4-988a-6df6fac6db28"/>
+				<textElement textAlignment="Left">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{juryDate} == null, "-", $F{supervisorFeedback})]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

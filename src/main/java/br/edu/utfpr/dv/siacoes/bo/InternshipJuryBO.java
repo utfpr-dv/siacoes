@@ -20,7 +20,10 @@ import br.edu.utfpr.dv.siacoes.dao.InternshipJuryDAO;
 import br.edu.utfpr.dv.siacoes.model.CalendarReport;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.EvaluationItem.EvaluationItemType;
+import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
+import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
 import br.edu.utfpr.dv.siacoes.model.Internship;
+import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiserScore;
@@ -627,6 +630,17 @@ public class InternshipJuryBO {
 					grade.setScore(form.getFinalScore());	
 				}
 				
+				InternshipFinalDocument doc = new InternshipFinalDocumentBO().findByInternship(internship.getIdInternship());
+				if((doc != null) && (doc.getIdInternshipFinalDocument() != 0)) {
+					grade.setSupervisorFeedback(doc.getSupervisorFeedback());
+				}
+				
+				if(grade.getSupervisorFeedback() == DocumentFeedback.DISAPPROVED) {
+					grade.setResult(JuryResult.DISAPPROVED);
+				} else if(grade.getSupervisorFeedback() == DocumentFeedback.NONE) {
+					grade.setResult(JuryResult.NONE);
+				}
+				
 				report.add(grade);
 			}
 		} else {
@@ -642,6 +656,17 @@ public class InternshipJuryBO {
 				
 				InternshipJuryFormReport form = this.getJuryFormReport(jury.getIdInternshipJury());
 				grade.setScore(form.getFinalScore());
+				
+				InternshipFinalDocument doc = new InternshipFinalDocumentBO().findByInternship(jury.getInternship().getIdInternship());
+				if((doc != null) && (doc.getIdInternshipFinalDocument() != 0)) {
+					grade.setSupervisorFeedback(doc.getSupervisorFeedback());
+				}
+				
+				if(grade.getSupervisorFeedback() == DocumentFeedback.DISAPPROVED) {
+					grade.setResult(JuryResult.DISAPPROVED);
+				} else if(grade.getSupervisorFeedback() == DocumentFeedback.NONE) {
+					grade.setResult(JuryResult.NONE);
+				}
 				
 				report.add(grade);
 			}
