@@ -135,7 +135,7 @@ public class FinalDocumentDAO {
 				"FROM finaldocument INNER JOIN thesis ON thesis.idThesis=finaldocument.idThesis " +
 				"INNER JOIN \"user\" ON \"user\".idUser=thesis.idStudent " +
 				"INNER JOIN \"user\" supervisor ON supervisor.idUser=thesis.idSupervisor " +
-				"WHERE finaldocument.idfinaldocument=?");
+				"WHERE finaldocument.idThesis=?");
 		
 			stmt.setInt(1, idThesis);
 			
