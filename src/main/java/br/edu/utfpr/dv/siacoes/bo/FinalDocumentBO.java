@@ -181,22 +181,27 @@ public class FinalDocumentBO {
 				keys.add(new EmailMessageEntry<String, String>("feedback", thesis.getSupervisorFeedback().toString()));
 				
 				if(isInsert) {
-					int idSupervisor = 0;
+					int idSupervisor = 0, idStudent = 0;
 					
 					if((thesis.getThesis() != null) && (thesis.getThesis().getIdThesis() != 0)) {
 						idSupervisor = thesis.getThesis().getSupervisor().getIdUser();
+						idStudent = thesis.getThesis().getStudent().getIdUser();
 					} else {
 						idSupervisor = thesis.getProject().getSupervisor().getIdUser();
+						idStudent = thesis.getProject().getStudent().getIdUser();
 					}
 					
 					bo.sendEmail(idSupervisor, MessageType.FINALDOCUMENTSUBMITTED, keys);
+					bo.sendEmail(idStudent, MessageType.FINALDOCUMENTSUBMITTEDSTUDENT, keys);
 				} else if((thesis.getSupervisorFeedback() != DocumentFeedback.NONE) && (feedback != thesis.getSupervisorFeedback())) {
-					int idDepartment = 0;
+					int idDepartment = 0, idStudent = 0;
 					
 					if((thesis.getThesis() != null) && (thesis.getThesis().getIdThesis() != 0)) {
 						idDepartment = new ThesisBO().findIdDepartment(thesis.getThesis().getIdThesis());
+						idStudent = thesis.getThesis().getStudent().getIdUser();
 					} else {
 						idDepartment = new ProjectBO().findIdDepartment(thesis.getProject().getIdProject());
+						idStudent = thesis.getProject().getStudent().getIdUser();
 					}
 					
 					User user = new UserBO().findManager(idDepartment, SystemModule.SIGET);
@@ -204,6 +209,7 @@ public class FinalDocumentBO {
 					keys.add(new EmailMessageEntry<String, String>("manager", user.getName()));
 					
 					bo.sendEmail(user.getIdUser(), MessageType.FINALDOCUMENTVALIDATED, keys);
+					bo.sendEmail(idStudent, MessageType.FINALDOCUMENTVALIDATEDSTUDENT, keys);
 				}
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);

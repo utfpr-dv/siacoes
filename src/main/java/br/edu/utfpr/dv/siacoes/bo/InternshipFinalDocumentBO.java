@@ -117,12 +117,14 @@ public class InternshipFinalDocumentBO {
 				
 				if(isInsert) {
 					ebo.sendEmail(internship.getSupervisor().getIdUser(), MessageType.INTERNSHIPFINALDOCUMENTSUBMITTED, keys);
+					ebo.sendEmail(internship.getStudent().getIdUser(), MessageType.INTERNSHIPFINALDOCUMENTSUBMITTED, keys);
 				} else if((doc.getSupervisorFeedback() != DocumentFeedback.NONE) && (feedback != doc.getSupervisorFeedback())) {
 					User user = new UserBO().findManager(new InternshipBO().findIdDepartment(doc.getInternship().getIdInternship()), SystemModule.SIGES);
 					
 					keys.add(new EmailMessageEntry<String, String>("manager", user.getName()));
 					
 					ebo.sendEmail(user.getIdUser(), MessageType.INTERNSHIPFINALDOCUMENTVALIDATED, keys);
+					ebo.sendEmail(internship.getStudent().getIdUser(), MessageType.INTERNSHIPFINALDOCUMENTVALIDATEDSTUDENT, keys);
 				}
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);

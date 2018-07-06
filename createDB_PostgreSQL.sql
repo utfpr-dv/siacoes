@@ -800,3 +800,7 @@ INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) V
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(32, 1, '', '', '{student};{supervisor};{documenttype};{title}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(33, 1, '', '', '{student};{supervisor};{documenttype};{title}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(34, 1, '', '', '{student};{supervisor};{documenttype};{title}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(35, 1, '', '', '{documenttype};{student};{title};{supervisor}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(36, 1, '', '', '{documenttype};{student};{title};{supervisor};{feedback}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(37, 3, '', '', '{student};{company};{supervisor}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(38, 3, '', '', '{student};{company};{supervisor};{feedback}');

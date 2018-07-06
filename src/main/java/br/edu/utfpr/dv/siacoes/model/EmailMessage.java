@@ -38,7 +38,11 @@ public class EmailMessage {
 		PROJECTORTHESISSUBMITEDSTUDENT(31),
 		PROJECTORTHESISSUBMITEDSUPERVISOR(32),
 		PROJECTORTHESISCHANGEDSTUDENT(33),
-		PROJECTORTHESISCHANGEDSUPERVISOR(34);
+		PROJECTORTHESISCHANGEDSUPERVISOR(34),
+		FINALDOCUMENTSUBMITTEDSTUDENT(35),
+		FINALDOCUMENTVALIDATEDSTUDENT(36),
+		INTERNSHIPFINALDOCUMENTSUBMITTEDSTUDENT(37),
+		INTERNSHIPFINALDOCUMENTVALIDATEDSTUDENT(38);
 		
 		private final int value; 
 		MessageType(int value){ 
@@ -129,6 +133,14 @@ public class EmailMessage {
 					return "Ressubmissão de Projeto ou Monografia (Estudante)";
 				case PROJECTORTHESISCHANGEDSUPERVISOR:
 					return "Ressubmissão de Projeto ou Monografia (Orientador)";
+				case FINALDOCUMENTSUBMITTEDSTUDENT:
+					return "Versão Final de TCC Submetida (Estudante)";
+				case FINALDOCUMENTVALIDATEDSTUDENT:
+					return "Versão Final de TCC Validada (Estudante)";
+				case INTERNSHIPFINALDOCUMENTSUBMITTEDSTUDENT:
+					return "Versão Final de Estágio Submetida (Estudante)";
+				case INTERNSHIPFINALDOCUMENTVALIDATEDSTUDENT:
+					return "Versão Final de Estágio Validada (Estudante)";
 				default:
 					return "";
 			}
