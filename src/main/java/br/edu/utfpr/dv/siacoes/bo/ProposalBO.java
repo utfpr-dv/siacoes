@@ -407,9 +407,7 @@ public class ProposalBO {
 	
 	public long getCurrentProposals() throws Exception{
 		try {
-			ProposalDAO dao = new ProposalDAO();
-			
-			return dao.getCurrentProposals();
+			return new ProposalDAO().getCurrentProposals(DateUtils.getSemester(), DateUtils.getYear());
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
