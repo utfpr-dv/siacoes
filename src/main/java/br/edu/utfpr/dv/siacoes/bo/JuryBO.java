@@ -644,8 +644,8 @@ public class JuryBO {
 	    return bd.doubleValue();
 	}
 	
-	public byte[] getTermOfApproval(int idJury, boolean hideSignatures) throws Exception{
-		TermOfApprovalReport report = this.getTermOfApprovalReport(idJury, hideSignatures);
+	public byte[] getTermOfApproval(int idJury, boolean hideSignatures, boolean isManager) throws Exception{
+		TermOfApprovalReport report = this.getTermOfApprovalReport(idJury, hideSignatures, isManager);
 		
 		List<TermOfApprovalReport> list = new ArrayList<TermOfApprovalReport>();
 		list.add(report);
@@ -653,7 +653,7 @@ public class JuryBO {
 		return new ReportUtils().createPdfStream(list, "TermOfApproval", this.findIdDepartment(idJury)).toByteArray();
 	}
 	
-	public TermOfApprovalReport getTermOfApprovalReport(int idJury, boolean hideSignatures) throws Exception{
+	public TermOfApprovalReport getTermOfApprovalReport(int idJury, boolean hideSignatures, boolean isManager) throws Exception{
 		try{
 			Jury jury = this.findById(idJury);
 			
@@ -661,13 +661,15 @@ public class JuryBO {
 				throw new Exception("O Termo de Aprovação só é emitido para a defesa de TCC 2.");
 			}
 			
-			JuryDAO dao = new JuryDAO();
-			if(!dao.hasAllScores(idJury)){
-				throw new Exception("Para gerar o Termo de Aprovação é necessário que todas as notas sejam lançadas.");
-			}
-			
-			if(!dao.isApproved(idJury)){
-				throw new Exception("Não é possível gerar o Termo de Aprovação pois o acadêmico não obteve a aprovação.");
+			if(!isManager) {
+				JuryDAO dao = new JuryDAO();
+				if(!dao.hasAllScores(idJury)){
+					throw new Exception("Para gerar o Termo de Aprovação é necessário que todas as notas sejam lançadas.");
+				}
+				
+				if(!dao.isApproved(idJury)){
+					throw new Exception("Não é possível gerar o Termo de Aprovação pois o acadêmico não obteve a aprovação.");
+				}
 			}
 			
 			Thesis thesis = new ThesisBO().findById(jury.getThesis().getIdThesis());

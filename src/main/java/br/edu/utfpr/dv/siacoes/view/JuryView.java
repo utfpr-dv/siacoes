@@ -319,7 +319,7 @@ public class JuryView extends ListView {
 					"Versão Eletrônica: documento sem assinaturas que deverá ser incluído na versão final entregue pelo acadêmico.", "Versão Impressa", "Versão Eletrônica", new ConfirmDialog.Listener() {
                 public void onClose(ConfirmDialog d) {
                 	try{
-        				showReport(new JuryBO().getTermOfApproval((int)value, !d.isConfirmed()));
+        				showReport(new JuryBO().getTermOfApproval((int)value, !d.isConfirmed(), Session.isUserManager(SystemModule.SIGET)));
                 	}catch(Exception e){
         				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	        	

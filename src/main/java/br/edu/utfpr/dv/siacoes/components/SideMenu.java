@@ -1028,7 +1028,7 @@ public class SideMenu extends CustomComponent {
 								throw new Exception("O Termo de Aprovação somente é gerado após o envio da Monografia e a composição da Banca.");
 							}
 							
-							showReport(new JuryBO().getTermOfApproval(jury.getIdJury(), true));
+							showReport(new JuryBO().getTermOfApproval(jury.getIdJury(), true, false));
 						} catch (Exception e) {
 							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 							
