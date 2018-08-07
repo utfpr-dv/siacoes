@@ -198,13 +198,13 @@ public class JuryView extends ListView {
 		}else{
 			this.buttonSendFeedback.setVisible(true);
 			this.buttonTerm.setVisible(false);
-			this.buttonFile.setVisible(Session.isUserProfessor());
+			this.buttonFile.setVisible(Session.isUserSupervisor());
 			this.buttonForm.setVisible(Session.isUserProfessor());
 			this.buttonParticipants.setVisible(Session.isUserProfessor());
 			this.buttonParticipantsReport.setVisible(Session.isUserProfessor());
-			this.buttonSendFeedback.setVisible(Session.isUserProfessor());
+			this.buttonSendFeedback.setVisible(Session.isUserSupervisor());
 			this.buttonStatements.setVisible(false);
-			this.buttonSchedule.setVisible(Session.isUserProfessor() || Session.isUserSupervisor());
+			this.buttonSchedule.setVisible(Session.isUserSupervisor());
 			this.buttonGrades.setVisible(false);
 			this.comboStage.setVisible(false);
 		}
@@ -416,7 +416,7 @@ public class JuryView extends ListView {
 				CertificateBO bo = new CertificateBO();
 				byte[] report;
 				
-				if(Session.isUserProfessor()){
+				if(Session.isUserSupervisor()){
 					JuryAppraiserBO jbo = new JuryAppraiserBO();
 					JuryAppraiser appraiser = jbo.findByAppraiser((int)value, Session.getUser().getIdUser());
 					

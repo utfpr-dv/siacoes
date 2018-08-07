@@ -801,7 +801,7 @@ public class SideMenu extends CustomComponent {
 	private Component buildMenuThesis(){
 		VerticalLayout layout = new VerticalLayout();
 		
-		if(this.sigetConfig.isRegisterProposal() && (Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager() || Session.isUserProfessor() || Session.isUserStudent())) {
+		if(this.sigetConfig.isRegisterProposal() && (Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager() || Session.isUserSupervisor() || Session.isUserStudent())) {
 			layout.addComponent(new MenuEntry("Proposta de TCC 1", 0));
 			
 			if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
@@ -843,12 +843,12 @@ public class SideMenu extends CustomComponent {
 						}
 					}
 				}));
-			}else if(Session.isUserProfessor()){
+			}else if(Session.isUserSupervisor()){
 				layout.addComponent(new MenuEntry("Cadastrar Parecer", 1, ProposalFeedbackView.NAME));
 			}
 		}
 		
-		if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager() || Session.isUserProfessor() || Session.isUserSupervisor() || Session.isUserStudent()) {
+		if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager() || Session.isUserProfessor() || Session.isUserStudent()) {
 			if(!Session.isUserSupervisor() || this.sigetConfig.isRequestFinalDocumentStage1()) {
 				layout.addComponent(new MenuEntry("Projeto de TCC 1", 0));
 			}
@@ -942,13 +942,13 @@ public class SideMenu extends CustomComponent {
 					layout.addComponent(new MenuEntry("Listar Projetos", 1, ProjectView.NAME));
 				}
 				
-				if(Session.isUserSupervisor() && this.sigetConfig.isRequestFinalDocumentStage1()) {
+				if(Session.isUserProfessor() && this.sigetConfig.isRequestFinalDocumentStage1()) {
 					layout.addComponent(new MenuEntry("Validar Versão Final", 1, FinalDocumentView.NAME));
 				}
 	    	}
 		}
 		
-		if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager() || Session.isUserProfessor() || Session.isUserSupervisor() || Session.isUserStudent()) {
+		if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager() || Session.isUserProfessor() || Session.isUserStudent()) {
 			layout.addComponent(new MenuEntry("Monografia de TCC 2", 0));
 			if(Session.isUserStudent()){
 				layout.addComponent(new MenuEntry("Submeter Monografia", 1, new MenuEntryClickListener() {
@@ -1056,7 +1056,7 @@ public class SideMenu extends CustomComponent {
 					layout.addComponent(new MenuEntry("Listar Monografias", 1, ThesisView.NAME));
 				}
 				
-				if(Session.isUserSupervisor()) {
+				if(Session.isUserProfessor()) {
 					layout.addComponent(new MenuEntry("Validar Versão Final", 1, FinalDocumentView.NAME));
 				}
 	    	}

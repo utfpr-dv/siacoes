@@ -42,7 +42,7 @@ public class ProposalFeedbackView extends ListView {
 		
 		this.setCaption("Parecer da Proposta de TCC 1");
 		
-		this.setProfilePerimissions(UserProfile.PROFESSOR);
+		this.setProfilePerimissions(UserProfile.SUPERVISOR);
 		
 		this.setAddVisible(false);
 		this.setDeleteVisible(false);
