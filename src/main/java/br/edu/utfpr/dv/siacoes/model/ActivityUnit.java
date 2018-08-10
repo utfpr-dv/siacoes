@@ -5,11 +5,13 @@ public class ActivityUnit {
 	private int idActivityUnit;
 	private String description;
 	private boolean fillAmount;
+	private String amountDescription;
 	
 	public ActivityUnit(){
 		this.setIdActivityUnit(0);
 		this.setDescription("");
 		this.setFillAmount(false);
+		this.setAmountDescription("");
 	}
 	
 	public int getIdActivityUnit() {
@@ -30,7 +32,13 @@ public class ActivityUnit {
 	public void setFillAmount(boolean fillAmount) {
 		this.fillAmount = fillAmount;
 	}
-	
+	public String getAmountDescription() {
+		return amountDescription;
+	}
+	public void setAmountDescription(String amountDescription) {
+		this.amountDescription = amountDescription;
+	}
+
 	public String toString(){
 		return this.getDescription();
 	}

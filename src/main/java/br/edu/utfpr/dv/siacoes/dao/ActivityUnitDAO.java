@@ -78,16 +78,17 @@ public class ActivityUnitDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO activityunit(description, fillAmount) VALUES(?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO activityunit(description, fillAmount, amountDescription) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE activityunit SET description=?, fillAmount=? WHERE idActivityUnit=?");
+				stmt = conn.prepareStatement("UPDATE activityunit SET description=?, fillAmount=?, amountDescription=? WHERE idActivityUnit=?");
 			}
 			
 			stmt.setString(1, unit.getDescription());
 			stmt.setInt(2, (unit.isFillAmount() ? 1 : 0));
+			stmt.setString(3, unit.getAmountDescription());
 			
 			if(!insert){
-				stmt.setInt(3, unit.getIdActivityUnit());
+				stmt.setInt(4, unit.getIdActivityUnit());
 			}
 			
 			stmt.execute();
@@ -117,6 +118,7 @@ public class ActivityUnitDAO {
 		unit.setIdActivityUnit(rs.getInt("idActivityUnit"));
 		unit.setDescription(rs.getString("Description"));
 		unit.setFillAmount(rs.getInt("fillAmount") == 1);
+		unit.setAmountDescription(rs.getString("amountDescription"));
 		
 		return unit;
 	}

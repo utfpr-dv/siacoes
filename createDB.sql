@@ -370,6 +370,7 @@ CREATE TABLE `activityunit` (
   `idactivityunit` int(11) NOT NULL AUTO_INCREMENT,
   `description` varchar(50) NOT NULL,
   `fillAmount` tinyint(4) NOT NULL,
+  `amountDescription` varchar(50) NOT NULL,
   PRIMARY KEY (`idactivityunit`)
 );
 

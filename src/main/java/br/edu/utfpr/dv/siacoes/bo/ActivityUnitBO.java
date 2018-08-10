@@ -38,6 +38,12 @@ public class ActivityUnitBO {
 		if(unit.getDescription().isEmpty()){
 			throw new Exception("Informe a descrição da unidade.");
 		}
+		if(unit.isFillAmount() && unit.getAmountDescription().isEmpty()) {
+			throw new Exception("Informe a descrição da quantidade a ser informada.");
+		}
+		if(!unit.isFillAmount()) {
+			unit.setAmountDescription("");
+		}
 		
 		try{
 			ActivityUnitDAO dao = new ActivityUnitDAO();

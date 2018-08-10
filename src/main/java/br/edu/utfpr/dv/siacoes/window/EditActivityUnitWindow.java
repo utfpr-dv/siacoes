@@ -17,6 +17,7 @@ public class EditActivityUnitWindow extends EditWindow {
 	
 	private final TextField textDescription;
 	private final CheckBox checkFillAmount;
+	private final TextField textAmountDescription;
 	
 	public EditActivityUnitWindow(ActivityUnit unit, ListView parentView){
 		super("Editar Unidade", parentView);
@@ -31,10 +32,15 @@ public class EditActivityUnitWindow extends EditWindow {
 		this.textDescription.setWidth("400px");
 		this.textDescription.setMaxLength(50);
 		
-		this.checkFillAmount = new CheckBox("Preencher quantidade");
+		this.checkFillAmount = new CheckBox("Preencher Quantidade");
+		
+		this.textAmountDescription = new TextField("Descrição da Quantidade");
+		this.textAmountDescription.setWidth("400px");
+		this.textAmountDescription.setMaxLength(50);
 		
 		this.addField(this.textDescription);
 		this.addField(this.checkFillAmount);
+		this.addField(this.textAmountDescription);
 		
 		this.loadUnit();
 		this.textDescription.focus();
@@ -43,6 +49,7 @@ public class EditActivityUnitWindow extends EditWindow {
 	private void loadUnit(){
 		this.textDescription.setValue(this.unit.getDescription());
 		this.checkFillAmount.setValue(this.unit.isFillAmount());
+		this.textAmountDescription.setValue(this.unit.getAmountDescription());
 	}
 
 	@Override
@@ -52,6 +59,7 @@ public class EditActivityUnitWindow extends EditWindow {
 			
 			this.unit.setDescription(this.textDescription.getValue());
 			this.unit.setFillAmount(this.checkFillAmount.getValue());
+			this.unit.setAmountDescription(this.textAmountDescription.getValue());
 			
 			bo.save(this.unit);
 			

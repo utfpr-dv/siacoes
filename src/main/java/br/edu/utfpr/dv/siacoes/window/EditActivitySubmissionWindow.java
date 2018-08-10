@@ -26,6 +26,7 @@ import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ActivityBO;
 import br.edu.utfpr.dv.siacoes.bo.ActivityGroupBO;
 import br.edu.utfpr.dv.siacoes.bo.ActivitySubmissionBO;
+import br.edu.utfpr.dv.siacoes.bo.ActivityUnitBO;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.bo.FinalSubmissionBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
@@ -37,6 +38,7 @@ import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Activity;
 import br.edu.utfpr.dv.siacoes.model.ActivityGroup;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission;
+import br.edu.utfpr.dv.siacoes.model.ActivityUnit;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
@@ -102,6 +104,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		
 		this.textAmount = new TextField("Quantidade");
 		this.textAmount.setWidth("100px");
+		this.textAmount.setVisible(false);
 		
 		this.comboGroup = new NativeSelect("Grupo");
 		this.comboGroup.setWidth("810px");
@@ -117,6 +120,12 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		this.comboActivity = new NativeSelect("Atividade");
 		this.comboActivity.setWidth("810px");
 		this.comboActivity.setNullSelectionAllowed(false);
+		this.comboActivity.addValueChangeListener(new ValueChangeListener() {
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				showAmount();
+			}
+		});
 		
 		this.uploadFile = new FileUploader("(Formato PDF, Tam. Máx. 200 KB)");
 		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);
@@ -148,6 +157,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		
 		this.textValidatedAmount = new TextField("Quantidade Validada");
 		this.textValidatedAmount.setWidth("150px");
+		this.textValidatedAmount.setVisible(false);
 		
 		this.textFeedbackUser = new TextField("Validado por");
 		this.textFeedbackUser.setEnabled(false);
@@ -262,6 +272,29 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			Notification.show("Carregar Atividades", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		}
+	}
+	
+	private void showAmount() {
+		try {
+			Activity activity = (Activity)this.comboActivity.getValue();
+			
+			if((activity == null) || (activity.getIdActivity() == 0)) {
+				this.textAmount.setVisible(false);
+				this.textValidatedAmount.setVisible(false);
+			} else {
+				ActivityUnit unit = new ActivityUnitBO().findById(activity.getUnit().getIdActivityUnit());
+				
+				this.textAmount.setVisible(unit.isFillAmount());
+				this.textAmount.setCaption(unit.getAmountDescription());
+				
+				this.textValidatedAmount.setVisible(unit.isFillAmount());
+				this.textValidatedAmount.setCaption(unit.getAmountDescription() + " Validado(a)");
+			}
+		} catch(Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			Notification.show("Selecionar Atividade", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 	}
 	

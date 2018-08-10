@@ -370,6 +370,7 @@ CREATE TABLE activityunit (
   idactivityunit SERIAL NOT NULL,
   description VARCHAR(50) NOT NULL,
   fillAmount SMALLINT NOT NULL,
+  amountDescription VARCHAR(50) NOT NULL,
   PRIMARY KEY (idactivityunit)
 );
 

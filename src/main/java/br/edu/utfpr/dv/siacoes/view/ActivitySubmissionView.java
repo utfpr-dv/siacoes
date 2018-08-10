@@ -152,19 +152,23 @@ public class ActivitySubmissionView extends ListView {
 		this.getGrid().addColumn("Sem.", Integer.class);
 		this.getGrid().addColumn("Ano", String.class);
 		this.getGrid().addColumn("Grupo", Integer.class);
+		this.getGrid().addColumn("Atividade", String.class);
 		this.getGrid().addColumn("Descrição da Atividade", String.class);
 		this.getGrid().addColumn("Parecer", String.class);
 		this.getGrid().addColumn("Pontuação", Double.class);
 		
 		if((Session.isUserManager(this.getModule()) || Session.isUserDepartmentManager()) && (this.optionFilterType.isSelected(this.optionFilterType.getItemIds().iterator().next()))){
 			this.getGrid().getColumns().get(0).setRenderer(new HtmlRenderer());
+			this.getGrid().getColumns().get(4).setHidden(true);
+		} else {
+			this.getGrid().getColumns().get(0).setHidden(true);
 		}
 		this.getGrid().getColumns().get(1).setWidth(75);
 		this.getGrid().getColumns().get(2).setWidth(80);
 		this.getGrid().getColumns().get(3).setWidth(80);
-		this.getGrid().getColumns().get(4).setWidth(350);
-		this.getGrid().getColumns().get(5).setWidth(150);
-		this.getGrid().getColumns().get(6).setWidth(125);
+		this.getGrid().getColumns().get(5).setWidth(350);
+		this.getGrid().getColumns().get(6).setWidth(150);
+		this.getGrid().getColumns().get(7).setWidth(125);
 		
 		new ExtensionUtils().removeAllExtensions(this.buttonFinalReport);
 		this.buttonFinalReport.setEnabled(true);
@@ -238,9 +242,9 @@ public class ActivitySubmissionView extends ListView {
 						name = "<img src=\"" + yellowWarning + "\" style=\"height: 16px; width: 16px; margin-right: 5px;\" />" + name;
 					}
 					
-					itemId = this.getGrid().addRow(name, submission.getSemester(), String.valueOf(submission.getYear()), submission.getActivity().getGroup().getSequence(), submission.getDescription(), submission.getFeedback().toString(), submission.getScore());
+					itemId = this.getGrid().addRow(name, submission.getSemester(), String.valueOf(submission.getYear()), submission.getActivity().getGroup().getSequence(), submission.getActivity().getDescription(), submission.getDescription(), submission.getFeedback().toString(), submission.getScore());
 				}else{
-					itemId = this.getGrid().addRow(submission.getStudent().getName(), submission.getSemester(), String.valueOf(submission.getYear()), submission.getActivity().getGroup().getSequence(), submission.getDescription(), submission.getFeedback().toString(), submission.getScore());	
+					itemId = this.getGrid().addRow(submission.getStudent().getName(), submission.getSemester(), String.valueOf(submission.getYear()), submission.getActivity().getGroup().getSequence(), submission.getActivity().getDescription(), submission.getDescription(), submission.getFeedback().toString(), submission.getScore());	
 				}
 				
 				this.addRowId(itemId, submission.getIdActivitySubmission());
