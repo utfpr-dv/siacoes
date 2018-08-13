@@ -409,7 +409,7 @@ public class UserBO {
     		throw new Exception("Informe o usuário e a senha.");
     	}
 		
-		if(login.contains("@")){
+		if(login.contains("@utfpr.edu.br")){
 			login = login.substring(0, login.indexOf("@"));
 		}
 		
