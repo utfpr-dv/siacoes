@@ -118,7 +118,6 @@ public class EditThesisWindow extends EditWindow {
 			public void uploadSucceeded() {
 				if(uploadFile.getUploadedFile() != null) {
 					thesis.setFile(uploadFile.getUploadedFile());
-					thesis.setFileType(uploadFile.getFileType());
 				}
 				
 				buttonDownloadFile.setVisible(true);
@@ -265,7 +264,6 @@ public class EditThesisWindow extends EditWindow {
 				
 				if(this.uploadFile.getUploadedFile() != null) {
 					this.thesis.setFile(this.uploadFile.getUploadedFile());
-					this.thesis.setFileType(this.uploadFile.getFileType());
 				}
 			}
 			

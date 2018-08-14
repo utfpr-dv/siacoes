@@ -15,6 +15,7 @@ public class EditJuryAppraiserFeedbackWindow extends EditWindow {
 	private final JuryAppraiser appraiser;
 	
 	private final FileUploader uploadFile;
+	private final FileUploader uploadAdditionalFile;
 
 	public EditJuryAppraiserFeedbackWindow(JuryAppraiser appraiser){
 		super("Enviar Feedback", null);
@@ -25,11 +26,16 @@ public class EditJuryAppraiserFeedbackWindow extends EditWindow {
 			this.appraiser = appraiser;
 		}
 		
-		this.uploadFile = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
+		this.uploadFile = new FileUploader("Arquivo Comentado (Formato PDF, Tam. Máx. 5 MB)");
 		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);
 		this.uploadFile.setMaxBytesLength(6 * 1024 * 1024);
 		
+		this.uploadAdditionalFile = new FileUploader("Arquivos Complementares (Formato ZIP, Tam. Máx. 5 MB)");
+		this.uploadAdditionalFile.getAcceptedDocumentTypes().add(DocumentType.ZIP);
+		this.uploadFile.setMaxBytesLength(6 * 1024 * 1024);
+		
 		this.addField(this.uploadFile);
+		this.addField(this.uploadAdditionalFile);
 	}
 	
 	@Override
@@ -37,9 +43,12 @@ public class EditJuryAppraiserFeedbackWindow extends EditWindow {
 		if(this.uploadFile.getUploadedFile() != null) {
 			this.appraiser.setFile(this.uploadFile.getUploadedFile());
 		}
+		if(this.uploadAdditionalFile.getUploadedFile() != null) {
+			this.appraiser.setAdditionalFile(this.uploadAdditionalFile.getUploadedFile());
+		}
 		
-		if(this.appraiser.getFile() == null){
-			Notification.show("Enviar Feedback", "É necessário submeter o arquivo.", Notification.Type.ERROR_MESSAGE);
+		if((this.appraiser.getFile() == null) && (this.appraiser.getAdditionalFile() == null)){
+			Notification.show("Enviar Feedback", "É necessário submeter ao menos um arquivo.", Notification.Type.ERROR_MESSAGE);
 		}else{
 			try{
 				JuryAppraiserBO bo = new JuryAppraiserBO();

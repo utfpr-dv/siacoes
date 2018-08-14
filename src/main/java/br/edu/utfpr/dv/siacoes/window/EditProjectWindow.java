@@ -116,7 +116,6 @@ public class EditProjectWindow extends EditWindow {
 			public void uploadSucceeded() {
 				if(uploadFile.getUploadedFile() != null) {
 					project.setFile(uploadFile.getUploadedFile());
-					project.setFileType(uploadFile.getFileType());
 				}
 				
 				buttonDownloadFile.setVisible(true);
@@ -260,7 +259,6 @@ public class EditProjectWindow extends EditWindow {
 				
 				if(this.uploadFile.getUploadedFile() != null) {
 					this.project.setFile(this.uploadFile.getUploadedFile());
-					this.project.setFileType(this.uploadFile.getFileType());
 				}
 			}
 			

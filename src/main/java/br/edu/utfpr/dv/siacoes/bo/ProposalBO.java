@@ -16,7 +16,6 @@ import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Project;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
@@ -123,7 +122,6 @@ public class ProposalBO {
 			
 			proposal.setIdProposal(0);
 			proposal.setFile(null);
-			proposal.setFileType(DocumentType.UNDEFINED);
 			proposal.setTitle("A Definir");
 			proposal.setSubarea("A Definir");
 			

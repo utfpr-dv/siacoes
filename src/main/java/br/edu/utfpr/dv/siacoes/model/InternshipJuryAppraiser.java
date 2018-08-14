@@ -2,15 +2,13 @@
 
 import java.util.List;
 
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
-
 public class InternshipJuryAppraiser {
 
 	private int idInternshipJuryAppraiser;
 	private InternshipJury internshipJury;
 	private User appraiser;
 	private byte[] file;
-	private DocumentType fileType;
+	private byte[] additionalFile;
 	private List<InternshipJuryAppraiserScore> scores;
 	private String comments;
 	private boolean chair;
@@ -21,7 +19,7 @@ public class InternshipJuryAppraiser {
 		this.setInternshipJury(new InternshipJury());
 		this.setAppraiser(new User());
 		this.setFile(null);
-		this.setFileType(DocumentType.UNDEFINED);
+		this.setAdditionalFile(null);
 		this.setScores(null);
 		this.setComments("");
 		this.setChair(false);
@@ -52,11 +50,11 @@ public class InternshipJuryAppraiser {
 	public void setFile(byte[] file) {
 		this.file = file;
 	}
-	public DocumentType getFileType() {
-		return fileType;
+	public byte[] getAdditionalFile() {
+		return additionalFile;
 	}
-	public void setFileType(DocumentType fileType) {
-		this.fileType = fileType;
+	public void setAdditionalFile(byte[] additionalFile) {
+		this.additionalFile = additionalFile;
 	}
 	public List<InternshipJuryAppraiserScore> getScores(){
 		return scores;

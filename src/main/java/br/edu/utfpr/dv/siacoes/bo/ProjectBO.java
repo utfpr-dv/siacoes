@@ -17,7 +17,6 @@ import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.SupervisorFeedbackReport;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
@@ -132,9 +131,6 @@ public class ProjectBO {
 		}
 		if(project.getFile() == null){
 			throw new Exception("É necessário enviar o arquivo do projeto.");
-		}
-		if(project.getFileType() == DocumentType.UNDEFINED){
-			throw new Exception("O arquivo enviado não está no formato correto. Envie um arquivo PDF, DOC ou DOCX");
 		}
 		if((project.getStudent() == null) || (project.getStudent().getIdUser() == 0)){
 			throw new Exception("Informe o acadêmico.");

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
@@ -133,9 +132,9 @@ public class InternshipJuryAppraiserDAO {
 		
 		try{
 			if(insert){
-				stmt = this.conn.prepareStatement("INSERT INTO internshipjuryappraiser(idInternshipJury, idAppraiser, chair, substitute, file, fileType, comments) VALUES(?, ?, ?, ?, NULL, 0, '')", Statement.RETURN_GENERATED_KEYS);
+				stmt = this.conn.prepareStatement("INSERT INTO internshipjuryappraiser(idInternshipJury, idAppraiser, chair, substitute, file, additionalFile, comments) VALUES(?, ?, ?, ?, NULL, NULL, '')", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = this.conn.prepareStatement("UPDATE internshipjuryappraiser SET idInternshipJury=?, idAppraiser=?, chair=?, substitute=?, file=?, fileType=?, comments=? WHERE idInternshipJuryAppraiser=?");
+				stmt = this.conn.prepareStatement("UPDATE internshipjuryappraiser SET idInternshipJury=?, idAppraiser=?, chair=?, substitute=?, file=?, additionalFile=?, comments=? WHERE idInternshipJuryAppraiser=?");
 			}
 			
 			stmt.setInt(1, appraiser.getInternshipJury().getIdInternshipJury());
@@ -145,7 +144,7 @@ public class InternshipJuryAppraiserDAO {
 			
 			if(!insert){
 				stmt.setBytes(5, appraiser.getFile());
-				stmt.setInt(6, appraiser.getFileType().getValue());
+				stmt.setBytes(6, appraiser.getAdditionalFile());
 				stmt.setString(7, appraiser.getComments());
 				stmt.setInt(8, appraiser.getIdInternshipJuryAppraiser());
 			}
@@ -180,10 +179,10 @@ public class InternshipJuryAppraiserDAO {
 		p.getAppraiser().setIdUser(rs.getInt("idAppraiser"));
 		p.getAppraiser().setName(rs.getString("appraiserName"));
 		p.setFile(rs.getBytes("file"));
+		p.setAdditionalFile(rs.getBytes("additionalFile"));
 		p.setComments(rs.getString("comments"));
 		p.setSubstitute(rs.getInt("substitute") == 1);
 		p.setChair(rs.getInt("chair") == 1);
-		p.setFileType(DocumentType.valueOf(rs.getInt("fileType")));
 		p.getInternshipJury().setInternship(new Internship());
 		p.getInternshipJury().getInternship().setIdInternship(rs.getInt("idInternship"));
 		p.getInternshipJury().getInternship().getStudent().setName(rs.getString("studentName"));

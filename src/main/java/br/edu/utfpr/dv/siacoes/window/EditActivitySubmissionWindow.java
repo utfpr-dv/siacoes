@@ -135,7 +135,6 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			public void uploadSucceeded() {
 				if(uploadFile.getUploadedFile() != null) {
 					submission.setFile(uploadFile.getUploadedFile());
-					submission.setFileType(uploadFile.getFileType());
 				}
 				
 				loadCertificate();
@@ -364,7 +363,6 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		
 		if(this.uploadFile.getUploadedFile() != null) {
 			this.submission.setFile(this.uploadFile.getUploadedFile());
-			this.submission.setFileType(this.uploadFile.getFileType());
 		}
 		
 		if(submission.getFile() != null){
@@ -422,7 +420,6 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			
 			if(this.uploadFile.getUploadedFile() != null) {
 				this.submission.setFile(this.uploadFile.getUploadedFile());
-				this.submission.setFileType(this.uploadFile.getFileType());
 			}
 			
 			bo.save(this.submission);

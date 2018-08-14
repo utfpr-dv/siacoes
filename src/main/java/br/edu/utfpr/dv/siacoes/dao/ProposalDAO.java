@@ -15,7 +15,6 @@ import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 
@@ -583,9 +582,9 @@ public class ProposalDAO {
 			boolean insert = (proposal.getIdProposal() == 0);
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO proposal(idDepartment, semester, year, title, subarea, idStudent, idSupervisor, idCosupervisor, file, fileType, submissionDate, invalidated, supervisorFeedback, supervisorFeedbackDate, supervisorComments) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, NULL, '')", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO proposal(idDepartment, semester, year, title, subarea, idStudent, idSupervisor, idCosupervisor, file, submissionDate, invalidated, supervisorFeedback, supervisorFeedbackDate, supervisorComments) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, NULL, '')", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE proposal SET idDepartment=?, semester=?, year=?, title=?, subarea=?, idStudent=?, idSupervisor=?, idCosupervisor=?, file=?, fileType=?, submissionDate=? WHERE idProposal=?");
+				stmt = conn.prepareStatement("UPDATE proposal SET idDepartment=?, semester=?, year=?, title=?, subarea=?, idStudent=?, idSupervisor=?, idCosupervisor=?, file=?, submissionDate=? WHERE idProposal=?");
 			}
 			
 			stmt.setInt(1, proposal.getDepartment().getIdDepartment());
@@ -602,15 +601,13 @@ public class ProposalDAO {
 			}
 			if(proposal.getFile() == null){
 				stmt.setNull(9, Types.BINARY);
-				stmt.setInt(10, DocumentType.UNDEFINED.getValue());
 			}else{
 				stmt.setBytes(9, proposal.getFile());
-				stmt.setInt(10, proposal.getFileType().getValue());
 			}
-			stmt.setDate(11, new java.sql.Date(proposal.getSubmissionDate().getTime()));
+			stmt.setDate(10, new java.sql.Date(proposal.getSubmissionDate().getTime()));
 			
 			if(!insert){
-				stmt.setInt(12, proposal.getIdProposal());
+				stmt.setInt(11, proposal.getIdProposal());
 			}
 			
 			stmt.execute();
@@ -688,7 +685,6 @@ public class ProposalDAO {
 		p.setTitle(rs.getString("title"));
 		p.setSubarea(rs.getString("subarea"));
 		p.setFile(rs.getBytes("file"));
-		p.setFileType(DocumentType.valueOf(rs.getInt("fileType")));
 		p.getStudent().setIdUser(rs.getInt("idStudent"));
 		p.getStudent().setName(rs.getString("studentName"));
 		p.setSubmissionDate(rs.getDate("submissionDate"));

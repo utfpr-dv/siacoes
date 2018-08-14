@@ -13,7 +13,6 @@ import br.edu.utfpr.dv.siacoes.model.ActivityScore;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
 import br.edu.utfpr.dv.siacoes.model.ActivityValidationReport;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
 import br.edu.utfpr.dv.siacoes.model.StudentActivityStatusReport;
 import br.edu.utfpr.dv.siacoes.model.User;
@@ -255,9 +254,9 @@ public class ActivitySubmissionDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO activitysubmission(idStudent, idDepartment, idActivity, semester, year, submissionDate, file, fileType, amount, feedback, feedbackDate, validatedAmount, idfeedbackuser, comments, description, feedbackreason) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO activitysubmission(idStudent, idDepartment, idActivity, semester, year, submissionDate, file, amount, feedback, feedbackDate, validatedAmount, idfeedbackuser, comments, description, feedbackreason) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE activitysubmission SET idStudent=?, idDepartment=?, idActivity=?, semester=?, year=?, submissionDate=?, file=?, fileType=?, amount=?, feedback=?, feedbackDate=?, validatedAmount=?, idfeedbackuser=?, comments=?, description=?, feedbackreason=? WHERE idActivitySubmission=?");
+				stmt = conn.prepareStatement("UPDATE activitysubmission SET idStudent=?, idDepartment=?, idActivity=?, semester=?, year=?, submissionDate=?, file=?, amount=?, feedback=?, feedbackDate=?, validatedAmount=?, idfeedbackuser=?, comments=?, description=?, feedbackreason=? WHERE idActivitySubmission=?");
 			}
 	
 			stmt.setInt(1, submission.getStudent().getIdUser());
@@ -267,26 +266,25 @@ public class ActivitySubmissionDAO {
 			stmt.setInt(5, submission.getYear());
 			stmt.setDate(6, new java.sql.Date(submission.getSubmissionDate().getTime()));
 			stmt.setBytes(7, submission.getFile());
-			stmt.setInt(8, submission.getFileType().getValue());
-			stmt.setDouble(9, submission.getAmount());
-			stmt.setInt(10, submission.getFeedback().getValue());
+			stmt.setDouble(8, submission.getAmount());
+			stmt.setInt(9, submission.getFeedback().getValue());
 			if(submission.getFeedback() == ActivityFeedback.NONE){
-				stmt.setNull(11, Types.DATE);
+				stmt.setNull(10, Types.DATE);
 			}else{
-				stmt.setDate(11, new java.sql.Date(submission.getFeedbackDate().getTime()));
+				stmt.setDate(10, new java.sql.Date(submission.getFeedbackDate().getTime()));
 			}
-			stmt.setDouble(12, submission.getValidatedAmount());
+			stmt.setDouble(11, submission.getValidatedAmount());
 			if((submission.getFeedbackUser() == null) || (submission.getFeedbackUser().getIdUser() == 0)){
-				stmt.setNull(13, Types.INTEGER);
+				stmt.setNull(12, Types.INTEGER);
 			}else{
-				stmt.setInt(13, submission.getFeedbackUser().getIdUser());
+				stmt.setInt(12, submission.getFeedbackUser().getIdUser());
 			}
-			stmt.setString(14, submission.getComments());
-			stmt.setString(15, submission.getDescription());
-			stmt.setString(16, submission.getFeedbackReason());
+			stmt.setString(13, submission.getComments());
+			stmt.setString(14, submission.getDescription());
+			stmt.setString(15, submission.getFeedbackReason());
 			
 			if(!insert){
-				stmt.setInt(17, submission.getIdActivitySubmission());
+				stmt.setInt(16, submission.getIdActivitySubmission());
 			}
 			
 			stmt.execute();
@@ -327,7 +325,6 @@ public class ActivitySubmissionDAO {
 		submission.setYear(rs.getInt("year"));
 		submission.setSubmissionDate(rs.getDate("submissionDate"));
 		submission.setFile(rs.getBytes("file"));
-		submission.setFileType(DocumentType.valueOf(rs.getInt("fileType")));
 		submission.setAmount(rs.getDouble("amount"));
 		submission.setFeedback(ActivityFeedback.valueOf(rs.getInt("feedback")));
 		submission.setFeedbackDate(rs.getDate("feedbackDate"));

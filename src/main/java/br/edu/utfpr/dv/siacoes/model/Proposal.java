@@ -3,7 +3,6 @@
 import java.util.Date;
 import java.util.List;
 
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
@@ -16,7 +15,6 @@ public class Proposal {
 	private User supervisor;
 	private User cosupervisor;
 	private byte[] file;
-	private DocumentType fileType;
 	private List<ProposalAppraiser> appraisers;
 	private int semester;
 	private int year;
@@ -106,12 +104,6 @@ public class Proposal {
 	}
 	public void setFile(byte[] file) {
 		this.file = file;
-	}
-	public DocumentType getFileType(){
-		return fileType;
-	}
-	public void setFileType(DocumentType fileType){
-		this.fileType = fileType;
 	}
 	public List<ProposalAppraiser> getAppraisers(){
 		return this.appraisers;

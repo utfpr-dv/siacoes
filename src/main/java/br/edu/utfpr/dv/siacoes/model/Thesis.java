@@ -2,7 +2,6 @@
 
 import java.util.Date;
 
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class Thesis {
@@ -15,7 +14,6 @@ public class Thesis {
 	private User supervisor;
 	private User cosupervisor;
 	private byte[] file;
-	private DocumentType fileType;
 	private int semester;
 	private int year;
 	private Date submissionDate;
@@ -30,7 +28,6 @@ public class Thesis {
 		this.setSupervisor(new User());
 		this.setCosupervisor(null);
 		this.setFile(null);
-		this.setFileType(DocumentType.UNDEFINED);
 		this.setSemester(DateUtils.getSemester());
 		this.setYear(DateUtils.getYear());
 		this.setSubmissionDate(DateUtils.getToday().getTime());
@@ -46,7 +43,6 @@ public class Thesis {
 		this.setSupervisor(project.getSupervisor());
 		this.setCosupervisor(project.getCosupervisor());
 		this.setFile(null);
-		this.setFileType(DocumentType.UNDEFINED);
 		this.setSemester(DateUtils.getSemester());
 		this.setYear(DateUtils.getYear());
 		this.setSubmissionDate(DateUtils.getToday().getTime());
@@ -100,12 +96,6 @@ public class Thesis {
 	}
 	public void setFile(byte[] file) {
 		this.file = file;
-	}
-	public DocumentType getFileType() {
-		return fileType;
-	}
-	public void setFileType(DocumentType fileType) {
-		this.fileType = fileType;
 	}
 	public int getSemester() {
 		return semester;

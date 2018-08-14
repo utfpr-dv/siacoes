@@ -12,7 +12,6 @@ import java.util.List;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class JuryAppraiserDAO {
@@ -137,9 +136,9 @@ public class JuryAppraiserDAO {
 		
 		try{
 			if(insert){
-				stmt = this.conn.prepareStatement("INSERT INTO juryappraiser(idJury, idAppraiser, chair, substitute, file, fileType, comments) VALUES(?, ?, ?, ?, NULL, 0, '')", Statement.RETURN_GENERATED_KEYS);
+				stmt = this.conn.prepareStatement("INSERT INTO juryappraiser(idJury, idAppraiser, chair, substitute, file, additionalFile, comments) VALUES(?, ?, ?, ?, NULL, NULL, '')", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = this.conn.prepareStatement("UPDATE juryappraiser SET idJury=?, idAppraiser=?, chair=?, substitute=?, file=?, fileType=?, comments=? WHERE idJuryAppraiser=?");
+				stmt = this.conn.prepareStatement("UPDATE juryappraiser SET idJury=?, idAppraiser=?, chair=?, substitute=?, file=?, additionalFile=?, comments=? WHERE idJuryAppraiser=?");
 			}
 			
 			stmt.setInt(1, appraiser.getJury().getIdJury());
@@ -149,7 +148,7 @@ public class JuryAppraiserDAO {
 			
 			if(!insert){
 				stmt.setBytes(5, appraiser.getFile());
-				stmt.setInt(6, appraiser.getFileType().getValue());
+				stmt.setBytes(6, appraiser.getAdditionalFile());
 				stmt.setString(7, appraiser.getComments());
 				stmt.setInt(8, appraiser.getIdJuryAppraiser());
 			}
@@ -184,8 +183,8 @@ public class JuryAppraiserDAO {
 		p.getAppraiser().setIdUser(rs.getInt("idAppraiser"));
 		p.getAppraiser().setName(rs.getString("appraiserName"));
 		p.setFile(rs.getBytes("file"));
+		p.setAdditionalFile(rs.getBytes("additionalFile"));
 		p.setComments(rs.getString("comments"));
-		p.setFileType(DocumentType.valueOf(rs.getInt("fileType")));
 		p.setSubstitute(rs.getInt("substitute") == 1);
 		p.setChair(rs.getInt("chair") == 1);
 		

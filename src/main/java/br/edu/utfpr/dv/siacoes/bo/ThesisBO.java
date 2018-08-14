@@ -15,7 +15,6 @@ import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.SupervisorFeedbackReport;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
@@ -106,9 +105,6 @@ public class ThesisBO {
 		}
 		if(thesis.getFile() == null){
 			throw new Exception("É necessário enviar o arquivo da monografia.");
-		}
-		if(thesis.getFileType() == DocumentType.UNDEFINED){
-			throw new Exception("O arquivo enviado não está no formato correto. Envie um arquivo PDF, DOC ou DOCX");
 		}
 		if((thesis.getStudent() == null) || (thesis.getStudent().getIdUser() == 0)){
 			throw new Exception("Informe o acadêmico.");

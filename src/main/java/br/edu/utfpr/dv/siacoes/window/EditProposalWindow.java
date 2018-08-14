@@ -124,7 +124,6 @@ public class EditProposalWindow extends EditWindow {
 			public void uploadSucceeded() {
 				if(uploadFile.getUploadedFile() != null) {
 					proposal.setFile(uploadFile.getUploadedFile());
-					proposal.setFileType(uploadFile.getFileType());
 				}
 				
 				buttonDownloadProposal.setVisible(true);
@@ -318,17 +317,12 @@ public class EditProposalWindow extends EditWindow {
 		if(Session.isUserStudent()) {
 			if(this.uploadFile.getUploadedFile() != null) {
 				this.proposal.setFile(this.uploadFile.getUploadedFile());
-				this.proposal.setFileType(this.uploadFile.getFileType());
 			}
 			
 			if(this.submitProposal && (this.proposal.getFile() == null)){
 				if(this.proposal.getFile() == null){
 					Notification.show("Submeter Proposta", "É necessário enviar o arquivo da proposta.", Notification.Type.ERROR_MESSAGE);
 					return;	
-				}
-				if(proposal.getFileType() == DocumentType.UNDEFINED){
-					Notification.show("O arquivo enviado não está no formato correto. Envie um arquivo PDF.");
-					return;
 				}
 			}
 			

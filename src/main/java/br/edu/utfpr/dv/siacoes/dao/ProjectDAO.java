@@ -11,7 +11,6 @@ import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.User;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 
 public class ProjectDAO {
 	
@@ -455,9 +454,9 @@ public class ProjectDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO project(idProposal, semester, year, title, subarea, idStudent, idSupervisor, idCosupervisor, file, fileType, submissionDate, abstract) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO project(idProposal, semester, year, title, subarea, idStudent, idSupervisor, idCosupervisor, file, submissionDate, abstract) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE project SET idProposal=?, semester=?, year=?, title=?, subarea=?, idStudent=?, idSupervisor=?, idCosupervisor=?, file=?, fileType=?, submissionDate=?, abstract=? WHERE idProject=?");
+				stmt = conn.prepareStatement("UPDATE project SET idProposal=?, semester=?, year=?, title=?, subarea=?, idStudent=?, idSupervisor=?, idCosupervisor=?, file=?, submissionDate=?, abstract=? WHERE idProject=?");
 			}
 			
 			stmt.setInt(1, project.getProposal().getIdProposal());
@@ -473,12 +472,11 @@ public class ProjectDAO {
 				stmt.setInt(8, project.getCosupervisor().getIdUser());
 			}
 			stmt.setBytes(9, project.getFile());
-			stmt.setInt(10, project.getFileType().getValue());
-			stmt.setDate(11, new java.sql.Date(project.getSubmissionDate().getTime()));
-			stmt.setString(12, project.getAbstract());
+			stmt.setDate(10, new java.sql.Date(project.getSubmissionDate().getTime()));
+			stmt.setString(11, project.getAbstract());
 			
 			if(!insert){
-				stmt.setInt(13, project.getIdProject());
+				stmt.setInt(12, project.getIdProject());
 			}
 			
 			stmt.execute();
@@ -519,7 +517,6 @@ public class ProjectDAO {
 			p.getCosupervisor().setName(rs.getString("cosupervisorname"));
 		}
 		p.setFile(rs.getBytes("file"));
-		p.setFileType(DocumentType.valueOf(rs.getInt("fileType")));
 		p.setSemester(rs.getInt("semester"));
 		p.setYear(rs.getInt("year"));
 		p.setSubmissionDate(rs.getDate("submissionDate"));

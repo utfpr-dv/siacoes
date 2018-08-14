@@ -2,7 +2,6 @@
 
 import java.util.Date;
 
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class ActivitySubmission {
@@ -52,7 +51,6 @@ public class ActivitySubmission {
 	private int year;
 	private Date submissionDate;
 	private byte[] file;
-	private DocumentType fileType;
 	private double amount;
 	private ActivityFeedback feedback;
 	private Date feedbackDate;
@@ -72,7 +70,6 @@ public class ActivitySubmission {
 		this.setYear(DateUtils.getYear());
 		this.setSubmissionDate(new Date());
 		this.setFile(null);
-		this.setFileType(DocumentType.UNDEFINED);
 		this.setAmount(0);
 		this.setFeedback(ActivityFeedback.NONE);
 		this.setFeedbackDate(null);
@@ -136,12 +133,6 @@ public class ActivitySubmission {
 	}
 	public void setFile(byte[] file) {
 		this.file = file;
-	}
-	public DocumentType getFileType() {
-		return fileType;
-	}
-	public void setFileType(DocumentType fileType) {
-		this.fileType = fileType;
 	}
 	public double getAmount() {
 		return amount;
