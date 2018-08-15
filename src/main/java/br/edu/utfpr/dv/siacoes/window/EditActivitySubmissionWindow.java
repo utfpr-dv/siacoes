@@ -284,11 +284,16 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			} else {
 				ActivityUnit unit = new ActivityUnitBO().findById(activity.getUnit().getIdActivityUnit());
 				
-				this.textAmount.setVisible(unit.isFillAmount());
-				this.textAmount.setCaption(unit.getAmountDescription());
-				
-				this.textValidatedAmount.setVisible(unit.isFillAmount());
-				this.textValidatedAmount.setCaption(unit.getAmountDescription() + " Validado(a)");
+				if((unit == null) || (unit.getIdActivityUnit() == 0)) {
+					this.textAmount.setVisible(false);
+					this.textValidatedAmount.setVisible(false);
+				} else {
+					this.textAmount.setVisible(unit.isFillAmount());
+					this.textAmount.setCaption(unit.getAmountDescription());
+					
+					this.textValidatedAmount.setVisible(unit.isFillAmount());
+					this.textValidatedAmount.setCaption(unit.getAmountDescription() + " Validado(a)");
+				}
 			}
 		} catch(Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
