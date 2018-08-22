@@ -127,9 +127,9 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			}
 		});
 		
-		this.uploadFile = new FileUploader("(Formato PDF, Tam. Máx. 200 KB)");
+		this.uploadFile = new FileUploader("(Formato PDF, Tam. Máx. 500 KB)");
 		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);
-		this.uploadFile.setMaxBytesLength(300 * 1024);
+		this.uploadFile.setMaxBytesLength(500 * 1024);
 		this.uploadFile.setFileUploadListener(new FileUploaderListener() {
 			@Override
 			public void uploadSucceeded() {
