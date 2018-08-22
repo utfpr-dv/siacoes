@@ -46,17 +46,17 @@ public class Document {
 		public static DocumentType fromMimeType(String mimeType){
 			if(mimeType.equals("application/pdf")){
 				return DocumentType.PDF;
-			}else if(mimeType.equals("application/msword")){
+			}else if(mimeType.equals("application/msword") || mimeType.equals("application/vnd.ms-word") || mimeType.equals("application/x-msword") || mimeType.equals("application/wps-office.doc")){
 				return DocumentType.DOC;
-			}else if(mimeType.equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document")){
+			}else if(mimeType.equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document") || mimeType.equals("application/wps-office.docx")){
 				return DocumentType.DOCX;
 			}else if(mimeType.contains("application/zip") || mimeType.contains("application/octet-stream") || mimeType.equals("application/x-zip-compressed")){
 				return DocumentType.ZIP;
 			}else if(mimeType.equals("application/vnd.oasis.opendocument.text")){
 				return DocumentType.ODT;
-			}else if(mimeType.equals("application/vnd.ms-powerpoint")){
+			}else if(mimeType.equals("application/vnd.ms-powerpoint") || mimeType.equals("application/powerpoint") || mimeType.equals("application/mspowerpoint") || mimeType.equals("application/x-mspowerpoint") || mimeType.equals("application/wps-office.ppt")){
 				return DocumentType.PPT;
-			}else if(mimeType.equals("application/vnd.openxmlformats-officedocument.presentationml.presentation")){
+			}else if(mimeType.equals("application/vnd.openxmlformats-officedocument.presentationml.presentation") || mimeType.equals("application/vnd.openxmlformats-officedocument.presentationml.slideshow") || mimeType.equals("application/wps-office.pptx")){
 				return DocumentType.PPTX;
 			}else if(mimeType.equals("image/jpeg")) {
 				return DocumentType.JPEG;
