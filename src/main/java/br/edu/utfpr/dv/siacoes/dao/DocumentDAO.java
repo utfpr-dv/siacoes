@@ -111,7 +111,7 @@ public class DocumentDAO {
 				stmt = conn.prepareStatement("INSERT INTO document(idDepartment, name, type, sequence, file, module) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 				
 				Statement stmt2 = conn.createStatement();
-				rs = stmt2.executeQuery("SELECT COUNT(*) as total FROM document WHERE idDepartment=" + String.valueOf(document.getDepartment().getIdDepartment()) + " AND module=" + String.valueOf(document.getModule().getValue()));
+				rs = stmt2.executeQuery("SELECT MAX(sequence) AS total FROM document WHERE idDepartment=" + String.valueOf(document.getDepartment().getIdDepartment()) + " AND module=" + String.valueOf(document.getModule().getValue()));
 				rs.next();
 				document.setSequence(rs.getInt("total") + 1);
 				rs.close();
