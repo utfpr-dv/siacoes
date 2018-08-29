@@ -289,8 +289,9 @@ public class AttendanceDAO {
 					"INNER JOIN \"user\" supervisor ON supervisor.iduser=proposal.idsupervisor " + 
 					"LEFT JOIN project ON project.idproposal=proposal.idproposal " + 
 					"LEFT JOIN thesis ON thesis.idproject=project.idproject " +
-					"WHERE proposal.invalidated=0 AND (proposal.semester=" + String.valueOf(semester) + " OR project.semester=" + String.valueOf(semester) + " OR thesis.semester=" + String.valueOf(semester) + 
-						") AND (proposal.year=" + String.valueOf(year) + " OR project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + ") " +
+					"WHERE (proposal.invalidated=0 AND proposal.semester=" + String.valueOf(semester) + " AND proposal.year=" + String.valueOf(year) + ") " +
+						"OR (project.semester=" + String.valueOf(semester) + " AND project.year=" + String.valueOf(year) + ") " +
+						"OR (thesis.semester=" + String.valueOf(semester) + " AND thesis.year=" + String.valueOf(year) + ") " + 
 					" ORDER BY student.name");
 			
 			while(rs.next()){
