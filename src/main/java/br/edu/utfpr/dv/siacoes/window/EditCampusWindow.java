@@ -126,7 +126,7 @@ public class EditCampusWindow extends EditWindow {
 			this.campus.setSite(this.textSite.getValue());
 			this.campus.setInitials(this.textInitials.getValue());
 			
-			if(this.uploadLogo.getFileUploadListener() != null) {
+			if(this.uploadLogo.getUploadedFile() != null) {
 				this.campus.setLogo(this.uploadLogo.getUploadedFile());
 			}
 			

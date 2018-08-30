@@ -132,7 +132,7 @@ public class EditDepartmentWindow extends EditWindow {
 			this.department.setFullName(this.textFullName.getValue());
 			this.department.setInitials(this.textInitials.getValue());
 			
-			if(this.uploadLogo.getFileUploadListener() != null) {
+			if(this.uploadLogo.getUploadedFile() != null) {
 				this.department.setLogo(this.uploadLogo.getUploadedFile());
 			}
 			
