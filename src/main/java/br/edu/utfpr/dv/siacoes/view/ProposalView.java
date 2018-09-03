@@ -25,6 +25,7 @@ import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
@@ -124,17 +125,23 @@ public class ProposalView extends ListView {
 		this.getGrid().addColumn("Orientador", String.class);
 		this.getGrid().addColumn("Título", String.class);
 		this.getGrid().addColumn("Submissão", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
+		this.getGrid().addColumn("Feedback Orient.", String.class);
 		
 		this.getGrid().getColumns().get(0).setWidth(100);
 		this.getGrid().getColumns().get(1).setWidth(100);
 		this.getGrid().getColumns().get(5).setWidth(125);
+		this.getGrid().getColumns().get(6).setWidth(125);
+		
+		if(!this.config.isSupervisorAgreement()) {
+			this.getGrid().getColumns().get(6).setHidden(true);
+		}
 		
 		try {
 			ProposalBO bo = new ProposalBO();
 	    	List<Proposal> list = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 	    	
 	    	for(Proposal p : list){
-				Object itemId = this.getGrid().addRow(p.getSemester(), p.getYear(), p.getStudent().getName(), p.getSupervisor().getName(), p.getTitle(), p.getSubmissionDate());
+				Object itemId = this.getGrid().addRow(p.getSemester(), p.getYear(), p.getStudent().getName(), p.getSupervisor().getName(), p.getTitle(), p.getSubmissionDate(), (p.getSupervisorFeedback() == ProposalFeedback.APPROVED ? "Favorável" : (p.getSupervisorFeedback() == ProposalFeedback.DISAPPROVED ? "Desfavorável" : "Nenhum")));
 				this.addRowId(itemId, p.getIdProposal());
 			}
 		} catch (Exception e) {

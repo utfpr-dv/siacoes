@@ -135,20 +135,22 @@ public class ProposalBO {
 		}
 	}
 	
-	public void validate(Proposal proposal) throws Exception{
-		if(proposal.getTitle().isEmpty()){
-			throw new Exception("Informe o título da proposta.");
+	public void validate(Proposal proposal) throws Exception {
+		if(proposal.getFile() != null) {
+			if(proposal.getTitle().isEmpty()) {
+				throw new Exception("Informe o título da proposta.");
+			}
+			if(proposal.getSubarea().isEmpty()) {
+				throw new Exception("Informe a área e subárea da proposta.");
+			}
 		}
-		if(proposal.getSubarea().isEmpty()){
-			throw new Exception("Informe a área e subárea da proposta.");
-		}
-		if((proposal.getStudent() == null) || (proposal.getStudent().getIdUser() == 0)){
+		if((proposal.getStudent() == null) || (proposal.getStudent().getIdUser() == 0)) {
 			throw new Exception("Informe o acadêmico.");
 		}
-		if((proposal.getSupervisor() == null) || (proposal.getSupervisor().getIdUser() == 0)){
+		if((proposal.getSupervisor() == null) || (proposal.getSupervisor().getIdUser() == 0)) {
 			throw new Exception("Informe o Professor Orientador.");
 		}
-		if((proposal.getSemester() == 0) || (proposal.getYear() == 0)){
+		if((proposal.getSemester() == 0) || (proposal.getYear() == 0)) {
 			throw new Exception("Informe o ano e semestre da proposta.");
 		}
 		SigetConfig config = new SigetConfigBO().findByDepartment(proposal.getDepartment().getIdDepartment());
