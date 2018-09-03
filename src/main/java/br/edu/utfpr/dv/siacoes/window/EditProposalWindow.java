@@ -112,7 +112,7 @@ public class EditProposalWindow extends EditWindow {
 		this.textYear = new YearField();
 		this.textYear.setEnabled(false);
 		
-		this.textSubmissionDate = new DateField("Data de Submissão");
+		this.textSubmissionDate = new DateField("Data de Registro");
 		this.textSubmissionDate.setEnabled(false);
 		this.textSubmissionDate.setDateFormat("dd/MM/yyyy");
 		

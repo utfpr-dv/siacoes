@@ -124,16 +124,18 @@ public class ProposalView extends ListView {
 		this.getGrid().addColumn("Acadêmico", String.class);
 		this.getGrid().addColumn("Orientador", String.class);
 		this.getGrid().addColumn("Título", String.class);
-		this.getGrid().addColumn("Submissão", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
+		this.getGrid().addColumn("Registro", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
+		this.getGrid().addColumn("Prop. Env.", String.class);
 		this.getGrid().addColumn("Feedback Orient.", String.class);
 		
 		this.getGrid().getColumns().get(0).setWidth(100);
 		this.getGrid().getColumns().get(1).setWidth(100);
-		this.getGrid().getColumns().get(5).setWidth(125);
-		this.getGrid().getColumns().get(6).setWidth(125);
+		this.getGrid().getColumns().get(5).setWidth(100);
+		this.getGrid().getColumns().get(6).setWidth(100);
+		this.getGrid().getColumns().get(7).setWidth(125);
 		
 		if(!this.config.isSupervisorAgreement()) {
-			this.getGrid().getColumns().get(6).setHidden(true);
+			this.getGrid().getColumns().get(7).setHidden(true);
 		}
 		
 		try {
@@ -141,7 +143,7 @@ public class ProposalView extends ListView {
 	    	List<Proposal> list = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 	    	
 	    	for(Proposal p : list){
-				Object itemId = this.getGrid().addRow(p.getSemester(), p.getYear(), p.getStudent().getName(), p.getSupervisor().getName(), p.getTitle(), p.getSubmissionDate(), (p.getSupervisorFeedback() == ProposalFeedback.APPROVED ? "Favorável" : (p.getSupervisorFeedback() == ProposalFeedback.DISAPPROVED ? "Desfavorável" : "Nenhum")));
+				Object itemId = this.getGrid().addRow(p.getSemester(), p.getYear(), p.getStudent().getName(), p.getSupervisor().getName(), p.getTitle(), p.getSubmissionDate(), ((p.getFile() == null) ? "Não" : "Sim"), ((p.getSupervisorFeedback() == ProposalFeedback.APPROVED) ? "Favorável" : ((p.getSupervisorFeedback() == ProposalFeedback.DISAPPROVED) ? "Desfavorável" : "Nenhum")));
 				this.addRowId(itemId, p.getIdProposal());
 			}
 		} catch (Exception e) {
