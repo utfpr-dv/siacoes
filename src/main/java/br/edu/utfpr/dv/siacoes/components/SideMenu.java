@@ -93,11 +93,13 @@ import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipView;
 import br.edu.utfpr.dv.siacoes.view.JuryGradesReportView;
 import br.edu.utfpr.dv.siacoes.view.JuryParticipantsReportView;
+import br.edu.utfpr.dv.siacoes.view.JuryRequestView;
 import br.edu.utfpr.dv.siacoes.view.JurySemesterChartView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
 import br.edu.utfpr.dv.siacoes.view.MainView;
 import br.edu.utfpr.dv.siacoes.view.PDFView;
 import br.edu.utfpr.dv.siacoes.view.ProjectView;
+import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackReportView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackView;
 import br.edu.utfpr.dv.siacoes.view.ProposalView;
 import br.edu.utfpr.dv.siacoes.view.SemesterView;
@@ -844,12 +846,12 @@ public class SideMenu extends CustomComponent {
 					}
 				}));
 			}else if(Session.isUserSupervisor()){
-				layout.addComponent(new MenuEntry("Cadastrar Parecer", 1, ProposalFeedbackView.NAME));
+				layout.addComponent(new MenuEntry("Avalição de Propostas", 1, ProposalFeedbackView.NAME));
 			}
 		}
 		
 		if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager() || Session.isUserProfessor() || Session.isUserStudent()) {
-			if(!Session.isUserSupervisor() || this.sigetConfig.isRequestFinalDocumentStage1()) {
+			if(!Session.isUserSupervisor() || this.sigetConfig.isRequestFinalDocumentStage1() || Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()) {
 				layout.addComponent(new MenuEntry("Projeto de TCC 1", 0));
 			}
 			
@@ -1115,6 +1117,9 @@ public class SideMenu extends CustomComponent {
 		}
 		
 		layout.addComponent(new MenuEntry("Bancas", 0));
+		if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()) {
+			layout.addComponent(new MenuEntry("Solicitações de Bancas", 1, JuryRequestView.NAME));
+		}
 		layout.addComponent(new MenuEntry("Agenda de Bancas", 1, JuryView.NAME + "/1"));
 		if(Session.isUserStudent()) {
 			layout.addComponent(new MenuEntry("Bancas que Assisti", 1, JuryView.NAME));
@@ -1146,6 +1151,9 @@ public class SideMenu extends CustomComponent {
 		
 		if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
 			layout.addComponent(new MenuEntry("Relatórios", 0));
+			if(this.sigetConfig.isRegisterProposal()) {
+				layout.addComponent(new MenuEntry("Avaliação de Propostas de TCC 1", 1, ProposalFeedbackReportView.NAME));
+			}
 			layout.addComponent(new MenuEntry("Reuniões de Orientação", 1, AttendanceReportView.NAME));
 			layout.addComponent(new MenuEntry("Participação em Bancas", 1, JuryParticipantsReportView.NAME));
 			layout.addComponent(new MenuEntry("Notas da Banca", 1, JuryGradesReportView.NAME));

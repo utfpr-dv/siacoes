@@ -57,7 +57,11 @@ public class EditJuryRequestWindow extends EditWindow {
 	private final Button buttonAddSubstitute;
 	private final Button buttonRemoveSubstitute;
 	
-	public EditJuryRequestWindow(JuryRequest jury, ListView parentView) {
+	public EditJuryRequestWindow(JuryRequest jury,  ListView parentView) {
+		this(jury, true, parentView);
+	}
+	
+	public EditJuryRequestWindow(JuryRequest jury, boolean allowEdit, ListView parentView) {
 		super("Requisição de Banca", parentView);
 		
 		if(jury == null){
@@ -139,6 +143,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		VerticalLayout v1 = new VerticalLayout(this.buttonAddAppraiser, this.buttonRemoveAppraiser);
 		v1.setSpacing(true);
 		v1.setWidth("100px");
+		v1.setVisible(allowEdit);
 		HorizontalLayout h2 = new HorizontalLayout(this.layoutAppraisers, v1);
 		h2.setSpacing(true);
 		h2.setMargin(true);
@@ -174,6 +179,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		VerticalLayout v2 = new VerticalLayout(this.buttonAddSubstitute, this.buttonRemoveSubstitute);
 		v2.setSpacing(true);
 		v2.setWidth("100px");
+		v2.setVisible(allowEdit);
 		HorizontalLayout h3 = new HorizontalLayout(this.layoutSubstitutes, v2);
 		h3.setSpacing(true);
 		h3.setMargin(true);
@@ -188,6 +194,8 @@ public class EditJuryRequestWindow extends EditWindow {
 		this.tabContainer.addTab(tab2, "Membros");
 		
 		this.addField(this.tabContainer);
+		
+		this.setSaveButtonVisible(allowEdit);
 		
 		this.loadJury();
 	}

@@ -166,6 +166,15 @@ public class JuryRequestDAO {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
+		int semester2 = 0, year2 = 0;
+		
+		if(semester == 2) {
+			semester2 = 1;
+			year2 = year;
+		} else {
+			semester2 = 2;
+			year2 = year - 1;
+		}
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -177,8 +186,16 @@ public class JuryRequestDAO {
 					"LEFT JOIN thesis ON thesis.idProject=project.idProject " + 
 					"WHERE proposal.idDepartment=" + String.valueOf(idDepartment) + 
 					" AND (proposal.semester=" + String.valueOf(semester) + " OR project.semester=" + String.valueOf(semester) + " OR thesis.semester=" + String.valueOf(semester) + 
-					") AND (proposal.year=" + String.valueOf(year) + " OR project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + 
-					") ORDER BY juryrequest.date");
+					") AND (proposal.year=" + String.valueOf(year) + " OR project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + ") " +
+					" UNION " +
+					"SELECT juryrequest.* FROM juryrequest " +
+					"INNER JOIN proposal ON proposal.idProposal=juryrequest.idProposal " +
+					"LEFT JOIN project ON project.idProposal=proposal.idProposal " + 
+					"LEFT JOIN thesis ON thesis.idProject=project.idProject " + 
+					"WHERE juryrequest.stage=2 AND proposal.idDepartment=" + String.valueOf(idDepartment) + 
+					" AND (proposal.semester=" + String.valueOf(semester2) + " OR project.semester=" + String.valueOf(semester2) + " OR thesis.semester=" + String.valueOf(semester2) + 
+					") AND (proposal.year=" + String.valueOf(year2) + " OR project.year=" + String.valueOf(year2) + " OR thesis.year=" + String.valueOf(year2) + ") " +
+					" ORDER BY date");
 			
 			List<JuryRequest> list = new ArrayList<JuryRequest>();
 			
@@ -201,6 +218,15 @@ public class JuryRequestDAO {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
+		int semester2 = 0, year2 = 0;
+		
+		if(semester == 2) {
+			semester2 = 1;
+			year2 = year;
+		} else {
+			semester2 = 2;
+			year2 = year - 1;
+		}
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -213,8 +239,16 @@ public class JuryRequestDAO {
 					"LEFT JOIN thesis ON thesis.idProject=project.idProject " + 
 					"WHERE juryappraiserrequest.idAppraiser=" + String.valueOf(idUser) + 
 					" AND (proposal.semester=" + String.valueOf(semester) + " OR project.semester=" + String.valueOf(semester) + " OR thesis.semester=" + String.valueOf(semester) + 
-					") AND (proposal.year=" + String.valueOf(year) + " OR project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + 
-					") ORDER BY juryrequest.date");
+					") AND (proposal.year=" + String.valueOf(year) + " OR project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + ") " +
+					" UNION " +
+					"SELECT juryrequest.* FROM juryrequest " +
+					"INNER JOIN proposal ON proposal.idProposal=juryrequest.idProposal " +
+					"LEFT JOIN project ON project.idProposal=proposal.idProposal " + 
+					"LEFT JOIN thesis ON thesis.idProject=project.idProject " + 
+					"WHERE juryrequest.stage=2 AND juryappraiserrequest.idAppraiser=" + String.valueOf(idUser) + 
+					" AND (proposal.semester=" + String.valueOf(semester2) + " OR project.semester=" + String.valueOf(semester2) + " OR thesis.semester=" + String.valueOf(semester2) + 
+					") AND (proposal.year=" + String.valueOf(year2) + " OR project.year=" + String.valueOf(year2) + " OR thesis.year=" + String.valueOf(year2) + ") " +
+					" ORDER BY date");
 			
 			List<JuryRequest> list = new ArrayList<JuryRequest>();
 			

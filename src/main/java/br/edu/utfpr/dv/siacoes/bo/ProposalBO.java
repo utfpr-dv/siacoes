@@ -1,5 +1,6 @@
 ﻿package br.edu.utfpr.dv.siacoes.bo;
 
+import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -420,6 +421,41 @@ public class ProposalBO {
 			ProposalDAO dao = new ProposalDAO();
 			
 			return dao.findIdCampus(idProposal);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public List<ProposalAppraiser> listProposalFeedback(int idDepartment, int semester, int year) throws Exception {
+		List<Proposal> proposals = this.listBySemester(idDepartment, semester, year);
+		List<ProposalAppraiser> list = new ArrayList<ProposalAppraiser>();
+		
+		for(Proposal p : proposals) {
+			List<ProposalAppraiser> appraisers = new ProposalAppraiserBO().listAppraisers(p.getIdProposal());
+			
+			if(appraisers.size() > 0) {
+				for(ProposalAppraiser a : appraisers) {
+					a.setProposal(p);
+					list.add(a);
+				}
+			} else {
+				ProposalAppraiser a = new ProposalAppraiser();
+				
+				a.getAppraiser().setName("--");
+				a.setProposal(p);
+				
+				list.add(a);
+			}
+		}
+		
+		return list;
+	}
+	
+	public byte[] getProposalFeedbackReport(int idDepartment, int semester, int year) throws Exception {
+		try {
+			return new ReportUtils().createPdfStream(this.listProposalFeedback(idDepartment, semester, year), "ProposalFeedbackList", idDepartment).toByteArray();
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
