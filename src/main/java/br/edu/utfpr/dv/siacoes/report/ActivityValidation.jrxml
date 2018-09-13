@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-10-03T19:45:50 -->
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ActivitySubmissionReport" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" isFloatColumnFooter="true" uuid="e6e81bb8-16d7-4e24-8afe-fe15e90c33dc">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -12,6 +11,12 @@
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="AltBackground">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}.intValue() % 2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#EAEAEA"/>
+		</conditionalStyle>
+	</style>
 	<parameter name="brasao_republica" class="java.io.InputStream"/>
 	<parameter name="logo_utfpr" class="java.io.InputStream"/>
 	<parameter name="campus" class="java.lang.String"/>
@@ -83,28 +88,28 @@
 				<text><![CDATA[Aceitação das Atividades Complementares]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="40" width="220" height="14" uuid="30f82b10-1544-40b2-8724-f7840e37f607"/>
+				<reportElement x="0" y="40" width="264" height="14" uuid="30f82b10-1544-40b2-8724-f7840e37f607"/>
 				<textElement>
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Atividade]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="230" y="40" width="40" height="14" uuid="24fd3adf-13f1-4cd1-9135-41d465427f65"/>
+				<reportElement x="264" y="40" width="40" height="14" uuid="24fd3adf-13f1-4cd1-9135-41d465427f65"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Grupo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="280" y="40" width="60" height="14" uuid="972820ee-4bba-4f40-ab75-c9769b7cf632"/>
+				<reportElement x="304" y="40" width="60" height="14" uuid="972820ee-4bba-4f40-ab75-c9769b7cf632"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Apreciadas]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="350" y="40" width="55" height="14" uuid="94f8ca2d-ab63-4048-84cc-1fd4930a4907"/>
+				<reportElement x="364" y="40" width="55" height="14" uuid="94f8ca2d-ab63-4048-84cc-1fd4930a4907"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
@@ -120,38 +125,38 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="21" splitType="Stretch">
+		<band height="17" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="0" y="3" width="220" height="17" uuid="584378a4-700b-415b-82e9-009e961295a1"/>
+				<reportElement style="AltBackground" stretchType="RelativeToTallestObject" x="0" y="0" width="264" height="17" uuid="584378a4-700b-415b-82e9-009e961295a1"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="230" y="3" width="40" height="17" uuid="54e1d011-ef0c-4c33-ac54-f95c7994951f"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="AltBackground" stretchType="RelativeToTallestObject" x="264" y="-1" width="40" height="17" uuid="54e1d011-ef0c-4c33-ac54-f95c7994951f"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{group}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="350" y="3" width="55" height="17" uuid="12291e57-90ee-4c18-9b64-e9000e62ffde"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="AltBackground" stretchType="RelativeToTallestObject" x="364" y="-1" width="55" height="17" uuid="12291e57-90ee-4c18-9b64-e9000e62ffde"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{validated}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="279" y="3" width="61" height="17" uuid="0726e1a1-0094-4bc9-8a32-51da3330cc4e"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="AltBackground" stretchType="RelativeToTallestObject" x="304" y="0" width="60" height="17" uuid="0726e1a1-0094-4bc9-8a32-51da3330cc4e"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{submitted}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="419" y="3" width="61" height="17" uuid="48d6fe35-f2e1-4df9-af9c-23e2ed1b715b"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="AltBackground" stretchType="RelativeToTallestObject" x="419" y="0" width="61" height="17" uuid="48d6fe35-f2e1-4df9-af9c-23e2ed1b715b"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10"/>
 				</textElement>

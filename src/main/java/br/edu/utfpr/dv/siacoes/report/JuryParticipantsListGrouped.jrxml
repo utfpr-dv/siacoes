@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ActivitySubmissionReport" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" isFloatColumnFooter="true" uuid="e6e81bb8-16d7-4e24-8afe-fe15e90c33dc">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -11,6 +11,12 @@
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="AltBackground">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}.intValue() % 2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#EAEAEA"/>
+		</conditionalStyle>
+	</style>
 	<parameter name="brasao_republica" class="java.io.InputStream"/>
 	<parameter name="logo_utfpr" class="java.io.InputStream"/>
 	<parameter name="campus" class="java.lang.String"/>
@@ -53,21 +59,21 @@
 		<groupHeader>
 			<band height="50">
 				<staticText>
-					<reportElement x="0" y="0" width="340" height="14" uuid="30f82b10-1544-40b2-8724-f7840e37f607"/>
+					<reportElement x="0" y="0" width="368" height="14" uuid="30f82b10-1544-40b2-8724-f7840e37f607"/>
 					<textElement>
 						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Banca do Acadêmico]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="350" y="0" width="51" height="14" uuid="620cf112-7770-41a9-96ec-a9f2831c2a44"/>
+					<reportElement x="368" y="0" width="51" height="14" uuid="620cf112-7770-41a9-96ec-a9f2831c2a44"/>
 					<textElement textAlignment="Left">
 						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Data]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="410" y="0" width="30" height="14" uuid="281f09a7-d9f3-4483-9f19-d8ed79a0af86"/>
+					<reportElement x="419" y="0" width="30" height="14" uuid="281f09a7-d9f3-4483-9f19-d8ed79a0af86"/>
 					<textElement textAlignment="Left">
 						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
@@ -81,28 +87,28 @@
 					<text><![CDATA[Fim]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="true">
-					<reportElement x="0" y="17" width="340" height="17" uuid="584378a4-700b-415b-82e9-009e961295a1"/>
+					<reportElement style="AltBackground" x="0" y="17" width="368" height="17" uuid="584378a4-700b-415b-82e9-009e961295a1"/>
 					<textElement>
 						<font fontName="Arial"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{juryStudentName}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="350" y="17" width="51" height="17" uuid="a0add7ba-49e9-4ffc-9e6a-741b6b59b75b"/>
+					<reportElement style="AltBackground" x="368" y="17" width="51" height="17" uuid="a0add7ba-49e9-4ffc-9e6a-741b6b59b75b"/>
 					<textElement textAlignment="Right">
 						<font fontName="Arial" size="10"/>
 					</textElement>
 					<textFieldExpression><![CDATA[DATEFORMAT($F{date} ,"dd/MM/yyyy")]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="410" y="17" width="30" height="17" uuid="48d6fe35-f2e1-4df9-af9c-23e2ed1b715b"/>
+					<reportElement style="AltBackground" x="420" y="17" width="30" height="17" uuid="48d6fe35-f2e1-4df9-af9c-23e2ed1b715b"/>
 					<textElement textAlignment="Left">
 						<font fontName="Arial" size="10"/>
 					</textElement>
 					<textFieldExpression><![CDATA[DATEFORMAT($F{startTime} ,"HH:mm")]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="450" y="17" width="30" height="17" uuid="ac232c4f-d36e-402c-9b5f-993e2aee0817"/>
+					<reportElement style="AltBackground" x="450" y="17" width="30" height="17" uuid="ac232c4f-d36e-402c-9b5f-993e2aee0817"/>
 					<textElement textAlignment="Left">
 						<font fontName="Arial" size="10"/>
 					</textElement>
@@ -183,14 +189,14 @@
 		<band height="16" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField>
-				<reportElement x="20" y="0" width="400" height="15" uuid="378a240b-0ae1-45da-93ec-f6f124a3c0d8"/>
+				<reportElement style="AltBackground" x="20" y="0" width="400" height="15" uuid="378a240b-0ae1-45da-93ec-f6f124a3c0d8"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{studentName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="429" y="0" width="51" height="15" uuid="d5e9e3e9-28dd-49ad-ada7-035f38ce9b96"/>
+				<reportElement style="AltBackground" x="429" y="0" width="51" height="15" uuid="d5e9e3e9-28dd-49ad-ada7-035f38ce9b96"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>

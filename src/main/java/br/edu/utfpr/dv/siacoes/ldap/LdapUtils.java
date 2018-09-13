@@ -97,8 +97,7 @@ public class LdapUtils {
 	 * @param basedn
 	 * @param varUid
 	 */
-	public LdapUtils(String host, int port, boolean useSSL,
-			boolean ignoreCertificates, String basedn, String varUid) {
+	public LdapUtils(String host, int port, boolean useSSL, boolean ignoreCertificates, String basedn, String varUid) {
 		super();
 		this.host = host;
 		this.port = port;
@@ -106,6 +105,8 @@ public class LdapUtils {
 		this.ignoreCertificates = ignoreCertificates;
 		this.basedn = basedn;
 		this.varUid = varUid;
+
+		System.setProperty("com.sun.jndi.ldap.object.disableEndpointIdentification", String.valueOf(ignoreCertificates));
 	}
 
 	/**
@@ -115,14 +116,38 @@ public class LdapUtils {
 	 * @throws NamingException
 	 */
 	private DirContext getDirContext() throws NamingException {
-		String url = this.getUrlWithoutSsl() + "/" + this.basedn;
-		Hashtable<String, Object> env = new Hashtable<String, Object>(11);
-		env.put(Context.INITIAL_CONTEXT_FACTORY,
-				"com.sun.jndi.ldap.LdapCtxFactory");
-		env.put(Context.PROVIDER_URL, url);
+		String url = this.getUrl() + "/" + this.basedn;
+
+		Hashtable<String, Object> env = createNoUserLdapProperties(url);
+
 		DirContext ctx = null;
 		ctx = new InitialDirContext(env);
 		return ctx;
+	}
+
+	/**
+	 * Creates a non user properties for LDAP connection
+	 * 
+	 * @param url
+	 * @return
+	 */
+	private Hashtable<String, Object> createNoUserLdapProperties(String url) {
+		Hashtable<String, Object> env = new Hashtable<String, Object>(11);
+
+		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+		env.put(Context.PROVIDER_URL, url);
+
+		if (this.useSSL) {
+			env.put(Context.SECURITY_PROTOCOL, "ssl");
+		}
+
+		if (this.useSSL && this.ignoreCertificates) {
+			// env.put("java.naming.ldap.factory.socket",
+			// "br.edu.utfpr.ldaptest.TrustAllCertificatesSSLSocketFactory");
+			env.put("java.naming.ldap.factory.socket", TrustAllCertificatesSSLSocketFactory.class.getCanonicalName());
+		}
+
+		return env;
 	}
 
 	/**
@@ -134,15 +159,13 @@ public class LdapUtils {
 	 * @throws NamingException
 	 * @throws InterruptedException
 	 */
-	public void authenticate(String uid, String password)
-			throws NamingException, InterruptedException {
+	public void authenticate(String uid, String password) throws NamingException, InterruptedException {
 
 		String url = getUrl();
 		String dn = this.getDnByUid(uid);
 
 		Properties env = new Properties();
-		env.put(Context.INITIAL_CONTEXT_FACTORY,
-				"com.sun.jndi.ldap.LdapCtxFactory");
+		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 		env.put(Context.PROVIDER_URL, url);
 
 		env.put(Context.SECURITY_AUTHENTICATION, "simple");
@@ -157,8 +180,7 @@ public class LdapUtils {
 		}
 
 		if (this.useSSL && this.ignoreCertificates) {
-			env.put("java.naming.ldap.factory.socket",
-					"br.edu.utfpr.dv.siacoes.ldap.TrustAllCertificatesSSLSocketFactory");
+			env.put("java.naming.ldap.factory.socket", TrustAllCertificatesSSLSocketFactory.class.getCanonicalName());
 		}
 
 		ldap = new InitialDirContext(env);
@@ -182,18 +204,6 @@ public class LdapUtils {
 	}
 
 	/**
-	 * Returns the url based on SSL or not
-	 * 
-	 * @return
-	 */
-	private String getUrlWithoutSsl() {
-		StringBuilder url = new StringBuilder();
-		url.append("ldap://");
-		url.append(host);
-		return url.toString();
-	}
-
-	/**
 	 * Return LDAP authentication modes allowed by the server
 	 * 
 	 * @param url
@@ -206,8 +216,7 @@ public class LdapUtils {
 		DirContext ctx = new InitialDirContext();
 
 		// Read supportedSASLMechanisms from root DSE
-		Attributes attrs = ctx.getAttributes(this.getUrl(),
-				new String[] { "supportedSASLMechanisms" });
+		Attributes attrs = ctx.getAttributes(this.getUrl(), new String[] { "supportedSASLMechanisms" });
 
 		System.out.println(attrs);
 
@@ -219,13 +228,12 @@ public class LdapUtils {
 	 * Returns all LDAP tree without attributes.
 	 * 
 	 * @param uidVar
-	 *            the name of main unique identifier attribute. This is need for
-	 *            the empty filter works.
+	 *            the name of main unique identifier attribute. This is need for the
+	 *            empty filter works.
 	 * @return a list of all user entries within the LDAP Tree
 	 * @throws NamingException
 	 */
-	public Map<String, String> getAllUsers(String uidVar)
-			throws NamingException {
+	public Map<String, String> getAllUsers(String uidVar) throws NamingException {
 		Map<String, String> map = new HashMap<String, String>();
 
 		NamingEnumeration<SearchResult> enumResult = null;
@@ -241,8 +249,7 @@ public class LdapUtils {
 			// enumResult =
 			// dirContext.search("","(&(objectCategory=person)(objectClass=user)(CN=*))",
 			// controls);
-			enumResult = dirContext.search("", "(&(" + uidVar + "=*))",
-					controls);
+			enumResult = dirContext.search("", "(&(" + uidVar + "=*))", controls);
 
 			while (enumResult.hasMore()) {
 				SearchResult searchResult = (SearchResult) enumResult.next();
@@ -275,14 +282,10 @@ public class LdapUtils {
 	 * @throws InterruptedException
 	 */
 	@SuppressWarnings("rawtypes")
-	public String getDnByUid(String uid) throws CommunicationException, NamingException, InterruptedException {
-		String url = this.getUrlWithoutSsl() + "/" + this.basedn;
+	public String getDnByUid(String uid) throws NamingException, InterruptedException {
+		String url = this.getUrl() + "/" + this.basedn;
 
-		Hashtable<String, Object> env = new Hashtable<String, Object>(11);
-		env.put(Context.INITIAL_CONTEXT_FACTORY,
-				"com.sun.jndi.ldap.LdapCtxFactory");
-		env.put(Context.PROVIDER_URL, url);
-
+		Hashtable<String, Object> env = createNoUserLdapProperties(url);
 		String ret = "uid=" + uid;
 		DirContext ctx = null;
 
@@ -311,8 +314,7 @@ public class LdapUtils {
 
 			NamingEnumeration answer = null;
 
-			answer = ctx.search("", "(" + this.varUid.trim() + "=" + uid + ")",
-					controls);
+			answer = ctx.search("", "(" + this.varUid.trim() + "=" + uid + ")", controls);
 
 			while (answer.hasMore()) {
 				SearchResult sr = (SearchResult) answer.next();
@@ -347,8 +349,7 @@ public class LdapUtils {
 	 * @return a list of groups
 	 * @throws NamingException
 	 */
-	public List<String> getLdapOuByUid(String uid, String baseDn)
-			throws NamingException {
+	public List<String> getLdapOuByUid(String uid, String baseDn) throws NamingException {
 		List<String> ouList = new ArrayList<String>();
 		String split[];
 
@@ -376,17 +377,12 @@ public class LdapUtils {
 	 * @throws NamingException
 	 */
 	@SuppressWarnings("rawtypes")
-	public Map<String, String> getLdapProperties(String uid)
-			throws NamingException {
+	public Map<String, String> getLdapProperties(String uid) throws NamingException {
 		Map<String, String> mapa = new HashMap<String, String>();
 
-		String url = this.getUrlWithoutSsl() + "/" + this.basedn;
+		String url = this.getUrl() + "/" + this.basedn;
 
-		Hashtable<String, Object> env = new Hashtable<String, Object>(11);
-		env.put(Context.INITIAL_CONTEXT_FACTORY,
-				"com.sun.jndi.ldap.LdapCtxFactory");
-		env.put(Context.PROVIDER_URL, url);
-
+		Hashtable<String, Object> env = createNoUserLdapProperties(url);
 		DirContext ctx = null;
 
 		try {
@@ -396,8 +392,7 @@ public class LdapUtils {
 			SearchControls controls = new SearchControls();
 			controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 
-			NamingEnumeration answer = ctx.search("", "(" + this.varUid + "="
-					+ uid + ")", controls);
+			NamingEnumeration answer = ctx.search("", "(" + this.varUid + "=" + uid + ")", controls);
 
 			while (answer.hasMore()) {
 				SearchResult result = (SearchResult) answer.next();
@@ -444,13 +439,9 @@ public class LdapUtils {
 	public List<String> getAllLdapUidInfo() throws NamingException {
 		List<String> mapa = new ArrayList<String>();
 
-		String url = this.getUrlWithoutSsl() + "/" + this.basedn;
+		String url = this.getUrl() + "/" + this.basedn;
 
-		Hashtable<String, Object> env = new Hashtable<String, Object>(11);
-		env.put(Context.INITIAL_CONTEXT_FACTORY,
-				"com.sun.jndi.ldap.LdapCtxFactory");
-		env.put(Context.PROVIDER_URL, url);
-
+		Hashtable<String, Object> env = createNoUserLdapProperties(url);
 		DirContext ctx = null;
 
 		try {
@@ -460,8 +451,7 @@ public class LdapUtils {
 			SearchControls controls = new SearchControls();
 			controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 
-			NamingEnumeration answer = ctx.search("",
-					"(" + this.varUid + "=*)", controls);
+			NamingEnumeration answer = ctx.search("", "(" + this.varUid + "=*)", controls);
 
 			while (answer.hasMore()) {
 				SearchResult result = (SearchResult) answer.next();
@@ -492,9 +482,9 @@ public class LdapUtils {
 	}
 
 	/**
-	 * Returns all LDAP tree in a List<String>. Each position in list contains
-	 * the entire entry attributes separated by the string <code>--;;</code>. A
-	 * new entry is created when reaches <b>uidVar</b> attribute.
+	 * Returns all LDAP tree in a List<String>. Each position in list contains the
+	 * entire entry attributes separated by the string <code>--;;</code>. A new
+	 * entry is created when reaches <b>uidVar</b> attribute.
 	 * 
 	 * @param uidVar
 	 *            The name of unique identifier attribute
@@ -505,13 +495,9 @@ public class LdapUtils {
 	public List<String> getAllLdapInfo(String uidVar) throws NamingException {
 		List<String> mapa = new ArrayList<String>();
 
-		String url = this.getUrlWithoutSsl() + "/" + this.basedn;
+		String url = this.getUrl() + "/" + this.basedn;
 
-		Hashtable<String, Object> env = new Hashtable<String, Object>(11);
-		env.put(Context.INITIAL_CONTEXT_FACTORY,
-				"com.sun.jndi.ldap.LdapCtxFactory");
-		env.put(Context.PROVIDER_URL, url);
-
+		Hashtable<String, Object> env = createNoUserLdapProperties(url);
 		DirContext ctx = null;
 
 		try {
@@ -521,8 +507,7 @@ public class LdapUtils {
 			SearchControls controls = new SearchControls();
 			controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 
-			NamingEnumeration answer = ctx.search("",
-					"(" + this.varUid + "=*)", controls);
+			NamingEnumeration answer = ctx.search("", "(" + this.varUid + "=*)", controls);
 
 			while (answer.hasMore()) {
 				SearchResult result = (SearchResult) answer.next();

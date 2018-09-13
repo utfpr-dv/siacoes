@@ -3,6 +3,7 @@
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
@@ -185,6 +186,7 @@ public class EditTutoredWindow extends EditWindow {
             	downloadProposal();
             }
         });
+		this.buttonProposalDownloadFile.setIcon(FontAwesome.DOWNLOAD);
 		try {
 			this.buttonProposalDownloadFile.setVisible(new SigetConfigBO().findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment()).isRegisterProposal());
 		} catch (Exception e) {
@@ -199,6 +201,7 @@ public class EditTutoredWindow extends EditWindow {
             }
         });
 		this.buttonProposalFeedback.setVisible(this.buttonProposalDownloadFile.isVisible());
+		this.buttonProposalFeedback.setIcon(FontAwesome.CHECK);
 		
 		HorizontalLayout h3 = new HorizontalLayout(this.textProposalSemester, this.textProposalSubmissionDate, this.buttonProposalDownloadFile, this.buttonProposalFeedback);
 		h3.setSpacing(true);
@@ -242,6 +245,7 @@ public class EditTutoredWindow extends EditWindow {
             	downloadProject();
             }
         });
+		this.buttonProjectDownloadFile.setIcon(FontAwesome.DOWNLOAD);
 		
 		this.buttonProjectFeedback = new Button("Feedback do Projeto", new Button.ClickListener() {
             @Override
@@ -249,6 +253,7 @@ public class EditTutoredWindow extends EditWindow {
             	openProjectFeedback();
             }
         });
+		this.buttonProjectFeedback.setIcon(FontAwesome.CHECK);
 		
 		this.buttonProjectFinalDocument = new Button("Validar Versão Final", new Button.ClickListener() {
             @Override
@@ -256,7 +261,8 @@ public class EditTutoredWindow extends EditWindow {
             	UI.getCurrent().addWindow(new EditFinalDocumentWindow(EditTutoredWindow.this.projectFinalDocument, null));
             }
         });
-		this.buttonProjectFinalDocument.setVisible((this.projectFinalDocument != null) && (this.projectFinalDocument.getIdFinalDocument() != 0) && (this.projectFinalDocument.getProject().getSemester() == semester.getSemester()) && (this.projectFinalDocument.getProject().getYear() == semester.getYear()));
+		this.buttonProjectFinalDocument.setIcon(FontAwesome.CHECK);
+		this.buttonProjectFinalDocument.setVisible((this.projectFinalDocument != null) && (this.projectFinalDocument.getIdFinalDocument() != 0));
 		
 		HorizontalLayout h6 = new HorizontalLayout(this.textProjectSemester, this.textProjectSubmissionDate, this.buttonProjectDownloadFile, this.buttonProjectFeedback, this.buttonProjectFinalDocument);
 		h6.setSpacing(true);
@@ -305,6 +311,7 @@ public class EditTutoredWindow extends EditWindow {
             	downloadThesis();
             }
         });
+		this.buttonThesisDownloadFile.setIcon(FontAwesome.DOWNLOAD);
 		
 		this.buttonThesisFeedback = new Button("Feedback da Monografia", new Button.ClickListener() {
             @Override
@@ -312,6 +319,7 @@ public class EditTutoredWindow extends EditWindow {
             	openThesisFeedback();
             }
         });
+		this.buttonThesisFeedback.setIcon(FontAwesome.CHECK);
 		
 		this.buttonThesisFinalDocument = new Button("Validar Versão Final", new Button.ClickListener() {
             @Override
@@ -319,7 +327,8 @@ public class EditTutoredWindow extends EditWindow {
             	UI.getCurrent().addWindow(new EditFinalDocumentWindow(EditTutoredWindow.this.thesisFinalDocument, null));
             }
         });
-		this.buttonThesisFinalDocument.setVisible((this.thesisFinalDocument != null) && (this.thesisFinalDocument.getIdFinalDocument() != 0) && (this.thesisFinalDocument.getThesis().getSemester() == semester.getSemester()) && (this.thesisFinalDocument.getThesis().getYear() == semester.getYear()));
+		this.buttonThesisFinalDocument.setIcon(FontAwesome.CHECK);
+		this.buttonThesisFinalDocument.setVisible((this.thesisFinalDocument != null) && (this.thesisFinalDocument.getIdFinalDocument() != 0));
 		
 		HorizontalLayout h9 = new HorizontalLayout(this.textThesisSemester, this.textThesisSubmissionDate, this.buttonThesisDownloadFile, this.buttonThesisFeedback, this.buttonThesisFinalDocument);
 		h9.setSpacing(true);

@@ -17,18 +17,25 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserRequestBO;
+import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryRequestBO;
+import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
+import br.edu.utfpr.dv.siacoes.bo.ThesisBO;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.StageComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Semester;
+import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.JuryRequest;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.window.EditJuryRequestWindow;
+import br.edu.utfpr.dv.siacoes.window.EditJuryWindow;
 
 public class JuryRequestView extends ListView {
 	
@@ -77,6 +84,8 @@ public class JuryRequestView extends ListView {
         });
 		this.buttonConfirmRequest.setIcon(FontAwesome.CHECK);
 		this.buttonConfirmRequest.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+		
+		this.addActionButton(this.buttonConfirmRequest);
 	}
 
 	@Override
@@ -147,7 +156,41 @@ public class JuryRequestView extends ListView {
 	}
 	
 	private void confirmRequest() {
-		
+		Object id = getIdSelected();
+    	
+    	if(id == null) {
+    		Notification.show("Selecionar Registro", "Selecione o registro para confirmar o agendamento da banca.", Notification.Type.WARNING_MESSAGE);
+    	} else {
+			try {
+				JuryRequest jury = new JuryRequestBO().findById((int)id);
+				
+				if(jury.getStage() == 1) {
+					Project project = new ProjectBO().findByProposal(jury.getProposal().getIdProposal());
+					
+					if((project == null) || (project.getIdProject() == 0)) {
+						Notification.show("Confirmar Agendamento de Banca", "O agendamento só pode ser confirmado após o acadêmico submeter o projeto.", Notification.Type.WARNING_MESSAGE);
+					} else {
+						Jury j = new JuryBO().findByProject(project.getIdProject());
+						
+						UI.getCurrent().addWindow(new EditJuryWindow(j, this));
+					}
+				} else {
+					Thesis thesis = new ThesisBO().findByProposal(jury.getProposal().getIdProposal());
+					
+					if((thesis == null) || (thesis.getIdThesis() == 0)) {
+						Notification.show("Confirmar Agendamento de Banca", "O agendamento só pode ser confirmado após o acadêmico submeter a monografia.", Notification.Type.WARNING_MESSAGE);
+					} else {
+						Jury j = new JuryBO().findByThesis(thesis.getIdThesis());
+						
+						UI.getCurrent().addWindow(new EditJuryWindow(j, this));
+					}
+				}
+			} catch(Exception e){
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				
+				Notification.show("Confirmar Agendamento de Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			}
+    	}
 	}
 
 }
