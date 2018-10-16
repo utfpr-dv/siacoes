@@ -48,25 +48,31 @@ public class EditActivityWindow extends EditWindow {
 		
 		this.comboCampus = new CampusComboBox();
 		this.comboCampus.setEnabled(false);
+		this.comboCampus.setRequired(true);
 		
 		this.comboDepartment = new DepartmentComboBox(0);
 		this.comboDepartment.setEnabled(false);
+		this.comboDepartment.setRequired(true);
 		
 		this.comboGroup = new NativeSelect("Grupo");
 		this.comboGroup.setWidth("800px");
 		this.comboGroup.setNullSelectionAllowed(false);
+		this.comboGroup.setRequired(true);
 		this.loadComboGroup();
 		
 		this.textDescription = new TextField("Descrição");
 		this.textDescription.setWidth("800px");
 		this.textDescription.setMaxLength(255);
+		this.textDescription.setRequired(true);
 		
 		this.textScore = new TextField("Pontuação");
 		this.textScore.setWidth("100px");
+		this.textScore.setRequired(true);
 		
 		this.comboUnit = new NativeSelect("Unidade");
 		this.comboUnit.setWidth("400px");
 		this.comboUnit.setNullSelectionAllowed(false);
+		this.comboUnit.setRequired(true);
 		this.loadComboUnit();
 		
 		this.textMaximumInSemester = new TextField("Máximo de Pontos/Semestre");

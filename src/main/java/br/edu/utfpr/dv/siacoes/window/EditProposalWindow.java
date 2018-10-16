@@ -85,36 +85,45 @@ public class EditProposalWindow extends EditWindow {
 		
 		this.comboCampus = new CampusComboBox();
 		this.comboCampus.setEnabled(false);
+		this.comboCampus.setRequired(true);
 		
 		this.comboDepartment = new DepartmentComboBox(0);
 		this.comboDepartment.setEnabled(false);
+		this.comboDepartment.setRequired(true);
 		
 		this.textTitle = new TextField("Título");
 		this.textTitle.setWidth("400px");
 		this.textTitle.setMaxLength(255);
+		this.textTitle.setRequired(true);
 		
 		this.textSubarea = new TextField("Subárea");
 		this.textSubarea.setWidth("400px");
 		this.textSubarea.setMaxLength(255);
+		this.textSubarea.setRequired(true);
 		
 		this.textStudent = new TextField("Acadêmico");
 		this.textStudent.setEnabled(false);
 		this.textStudent.setWidth("800px");
+		this.textStudent.setRequired(true);
 		
 		this.comboSupervisor = new SupervisorComboBox("Orientador", Session.getSelectedDepartment().getDepartment().getIdDepartment(), new SigetConfigBO().getSupervisorFilter(Session.getSelectedDepartment().getDepartment().getIdDepartment()));
+		this.comboSupervisor.setRequired(true);
 		
 		this.comboCosupervisor = new SupervisorComboBox("Coorientador", Session.getSelectedDepartment().getDepartment().getIdDepartment(), new SigetConfigBO().getCosupervisorFilter(Session.getSelectedDepartment().getDepartment().getIdDepartment()));
 		this.comboCosupervisor.setNullSelectionAllowed(true);
 		
 		this.comboSemester = new SemesterComboBox();
 		this.comboSemester.setEnabled(false);
+		this.comboSemester.setRequired(true);
 		
 		this.textYear = new YearField();
 		this.textYear.setEnabled(false);
+		this.textYear.setRequired(true);
 		
 		this.textSubmissionDate = new DateField("Data de Registro");
 		this.textSubmissionDate.setEnabled(false);
 		this.textSubmissionDate.setDateFormat("dd/MM/yyyy");
+		this.textSubmissionDate.setRequired(true);
 		
 		this.uploadFile = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
 		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);

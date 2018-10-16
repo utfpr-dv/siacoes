@@ -42,8 +42,10 @@ public class EditCompanyWindow extends EditWindow {
 		
 		this.comboCity = new CityComboBox();
 		this.comboCity.setWidth("810px");
+		this.comboCity.setRequired(true);
 		
 		this.comboState = new StateComboBox();
+		this.comboState.setRequired(true);
 		this.comboState.addValueChangeListener(new ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
 				if(comboState.getStateValue() == null){
@@ -55,6 +57,7 @@ public class EditCompanyWindow extends EditWindow {
 		});
 		
 		this.comboCountry = new CountryComboBox();
+		this.comboCountry.setRequired(true);
 		this.comboCountry.addValueChangeListener(new ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
 				if(comboCountry.getCountry() == null){
@@ -68,6 +71,7 @@ public class EditCompanyWindow extends EditWindow {
 		this.textName = new TextField("Nome da Empresa");
 		this.textName.setWidth("810px");
 		this.textName.setMaxLength(100);
+		this.textName.setRequired(true);
 		
 		this.textCnpj = new TextField("CNPJ");
 		this.textCnpj.setWidth("200px");

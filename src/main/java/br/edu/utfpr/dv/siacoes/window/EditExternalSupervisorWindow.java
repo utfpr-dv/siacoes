@@ -37,10 +37,12 @@ public class EditExternalSupervisorWindow extends EditWindow {
 		this.textName = new TextField("Nome");
 		this.textName.setWidth("400px");
 		this.textName.setMaxLength(100);
+		this.textName.setRequired(true);
 		
 		this.textEmail = new TextField("E-mail");
 		this.textEmail.setWidth("400px");
 		this.textEmail.setMaxLength(100);
+		this.textEmail.setRequired(true);
 		
 		this.textInstitution = new TextField("Instituição");
 		this.textInstitution.setWidth("400px");

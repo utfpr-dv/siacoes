@@ -82,33 +82,42 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		
 		this.comboCampus = new CampusComboBox();
 		this.comboCampus.setEnabled(false);
+		this.comboCampus.setRequired(true);
 		
 		this.comboDepartment = new DepartmentComboBox(0);
 		this.comboDepartment.setEnabled(false);
+		this.comboDepartment.setRequired(true);
 		
 		this.textStudent = new TextField("Acadêmico");
 		this.textStudent.setWidth("400px");
 		this.textStudent.setEnabled(false);
+		this.textStudent.setRequired(true);
 		
 		this.textDescription = new TextField("Descrição da Atividade");
 		this.textDescription.setWidth("400px");
 		this.textDescription.setMaxLength(100);
+		this.textDescription.setRequired(true);
 		
 		this.comboSemester = new SemesterComboBox();
+		this.comboSemester.setRequired(true);
 		
 		this.textYear = new YearField();
+		this.textYear.setRequired(true);
 		
 		this.textSubmissionDate = new DateField("Data de Submissão");
 		this.textSubmissionDate.setDateFormat("dd/MM/yyyy");
 		this.textSubmissionDate.setEnabled(false);
+		this.textSubmissionDate.setRequired(true);
 		
 		this.textAmount = new TextField("Quantidade");
 		this.textAmount.setWidth("100px");
 		this.textAmount.setVisible(false);
+		this.textAmount.setRequired(true);
 		
 		this.comboGroup = new NativeSelect("Grupo");
 		this.comboGroup.setWidth("810px");
 		this.comboGroup.setNullSelectionAllowed(false);
+		this.comboGroup.setRequired(true);
 		this.loadGroups();
 		this.comboGroup.addValueChangeListener(new ValueChangeListener() {
 			@Override
@@ -120,6 +129,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		this.comboActivity = new NativeSelect("Atividade");
 		this.comboActivity.setWidth("810px");
 		this.comboActivity.setNullSelectionAllowed(false);
+		this.comboActivity.setRequired(true);
 		this.comboActivity.addValueChangeListener(new ValueChangeListener() {
 			@Override
 			public void valueChange(ValueChangeEvent event) {

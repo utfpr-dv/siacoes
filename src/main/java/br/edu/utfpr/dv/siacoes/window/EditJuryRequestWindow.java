@@ -82,21 +82,26 @@ public class EditJuryRequestWindow extends EditWindow {
 		this.textStudent = new TextField("Acadêmico");
 		this.textStudent.setWidth("800px");
 		this.textStudent.setEnabled(false);
+		this.textStudent.setRequired(true);
 		
 		this.textTitle = new TextField("Título do Trabalho");
 		this.textTitle.setWidth("800px");
 		this.textTitle.setEnabled(false);
+		this.textTitle.setRequired(true);
 		
 		this.comboStage = new StageComboBox();
 		this.comboStage.setEnabled(false);
+		this.comboStage.setRequired(true);
 		
 		this.textDate = new DateField("Data");
 		this.textDate.setDateFormat("dd/MM/yyyy HH:mm");
 		this.textDate.setResolution(Resolution.MINUTE);
+		this.textDate.setRequired(true);
 		
 		this.textLocal = new TextField("Local");
 		this.textLocal.setWidth("800px");
 		this.textLocal.setMaxLength(100);
+		this.textLocal.setRequired(true);
 		
 		this.textComments = new TextArea("Observações");
 		this.textComments.setWidth("800px");
@@ -116,6 +121,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		
 		this.comboChair = new SupervisorComboBox("Presidente da Banca", Session.getSelectedDepartment().getDepartment().getIdDepartment(), new SigetConfigBO().getSupervisorFilter(Session.getSelectedDepartment().getDepartment().getIdDepartment()));
 		this.comboChair.setWidth("800px");
+		this.comboChair.setRequired(true);
 		
 		this.layoutAppraisers = new HorizontalLayout();
 		this.layoutAppraisers.setSizeFull();

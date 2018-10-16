@@ -51,17 +51,21 @@ public class EditThemeSuggestionWindow extends EditWindow {
 		
 		this.comboCampus = new CampusComboBox();
 		this.comboCampus.setEnabled(false);
+		this.comboCampus.setRequired(true);
 		
 		this.comboDepartment = new DepartmentComboBox(0);
 		this.comboDepartment.setEnabled(false);
+		this.comboDepartment.setRequired(true);
 		
 		this.textTitle = new TextField("Título");
 		this.textTitle.setWidth("810px");
 		this.textTitle.setMaxLength(255);
+		this.textTitle.setRequired(true);
 		
 		this.textProponent = new TextField("Proponente");
 		this.textProponent.setWidth("810px");
 		this.textProponent.setMaxLength(255);
+		this.textProponent.setRequired(true);
 		
 		this.textObjetives = new TextArea();
 		this.textObjetives.setWidth("810px");
@@ -78,6 +82,7 @@ public class EditThemeSuggestionWindow extends EditWindow {
 		this.textSubmissionDate = new DateField("Data de Submissão");
 		this.textSubmissionDate.setDateFormat("dd/MM/yyyy");
 		this.textSubmissionDate.setEnabled(false);
+		this.textSubmissionDate.setRequired(true);
 		
 		HorizontalLayout h1 = new HorizontalLayout(this.comboCampus, this.comboDepartment);
 		h1.setSpacing(true);

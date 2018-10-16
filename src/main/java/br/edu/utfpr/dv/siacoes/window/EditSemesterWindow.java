@@ -37,16 +37,21 @@ public class EditSemesterWindow extends EditWindow {
 		
 		this.comboCampus = new CampusComboBox();
 		this.comboCampus.setEnabled(false);
+		this.comboCampus.setRequired(true);
 		
 		this.comboSemester = new SemesterComboBox();
+		this.comboSemester.setRequired(true);
 		
 		this.textYear = new YearField();
+		this.textYear.setRequired(true);
 		
 		this.textStartDate = new DateField("Data de Início");
 		this.textStartDate.setDateFormat("dd/MM/yyyy");
+		this.textStartDate.setRequired(true);
 		
 		this.textEndDate = new DateField("Data de Término");
 		this.textEndDate.setDateFormat("dd/MM/yyyy");
+		this.textEndDate.setRequired(true);
 		
 		this.addField(this.comboCampus);
 		this.addField(new HorizontalLayout(this.comboSemester, this.textYear));

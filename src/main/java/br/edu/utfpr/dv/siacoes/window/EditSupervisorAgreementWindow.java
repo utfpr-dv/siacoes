@@ -41,10 +41,12 @@ public class EditSupervisorAgreementWindow extends EditWindow {
 		this.textStudent = new TextField("Acadêmico");
 		this.textStudent.setWidth("800px");
 		this.textStudent.setEnabled(false);
+		this.textStudent.setRequired(true);
 		
 		this.textTitle = new TextField("Título da Proposta");
 		this.textTitle.setWidth("800px");
 		this.textTitle.setEnabled(false);
+		this.textTitle.setRequired(true);
 		
 		this.comboFeedback = new NativeSelect("Parecer");
 		this.comboFeedback.setNullSelectionAllowed(false);
@@ -52,10 +54,12 @@ public class EditSupervisorAgreementWindow extends EditWindow {
 		this.comboFeedback.addItem(ProposalFeedback.NONE);
 		this.comboFeedback.addItem(APPROVED);
 		this.comboFeedback.addItem(DISAPPROVED);
+		this.comboFeedback.setRequired(true);
 		
 		this.textFeedbackDate = new DateField("Data do Parecer");
 		this.textFeedbackDate.setDateFormat("dd/MM/yyyy");
 		this.textFeedbackDate.setEnabled(false);
+		this.textFeedbackDate.setRequired(true);
 		
 		this.textComments = new TextArea("Observações");
 		this.textComments.setWidth("800px");

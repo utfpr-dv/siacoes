@@ -42,13 +42,16 @@ public class EditInternshipEvaluationItemWindow extends EditWindow {
 		
 		this.comboCampus = new CampusComboBox();
 		this.comboCampus.setEnabled(false);
+		this.comboCampus.setRequired(true);
 		
 		this.comboDepartment = new DepartmentComboBox(0);
 		this.comboDepartment.setEnabled(false);
+		this.comboDepartment.setRequired(true);
 		
 		this.textDescription = new TextField("Descrição");
 		this.textDescription.setWidth("400px");
 		this.textDescription.setMaxLength(255);
+		this.textDescription.setRequired(true);
 		
 		this.comboType = new NativeSelect("Avaliação");
 		this.comboType.setWidth("150px");
@@ -56,9 +59,11 @@ public class EditInternshipEvaluationItemWindow extends EditWindow {
 		this.comboType.addItem(EvaluationItemType.WRITING);
 		this.comboType.addItem(EvaluationItemType.ORAL);
 		this.comboType.addItem(EvaluationItemType.ARGUMENTATION);
+		this.comboType.setRequired(true);
 		
 		this.textPonderosity = new TextField("Peso");
 		this.textPonderosity.setWidth("100px");
+		this.textPonderosity.setRequired(true);
 		
 		this.checkActive = new CheckBox("Ativo");
 		

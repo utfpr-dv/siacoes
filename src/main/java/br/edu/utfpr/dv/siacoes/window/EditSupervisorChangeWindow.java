@@ -92,10 +92,12 @@ public class EditSupervisorChangeWindow extends EditWindow {
 		this.textStudent = new TextField("Acadêmico");
 		this.textStudent.setWidth("810px");
 		this.textStudent.setEnabled(false);
+		this.textStudent.setRequired(true);
 		
 		this.textTitle = new TextField("Título");
 		this.textTitle.setWidth("800px");
 		this.textTitle.setEnabled(false);
+		this.textTitle.setRequired(true);
 		
 		this.tabData = new TabSheet();
 		this.tabData.setWidth("800px");
@@ -107,6 +109,7 @@ public class EditSupervisorChangeWindow extends EditWindow {
 		this.textCurrentSupervisor = new TextField("Orientador Atual");
 		this.textCurrentSupervisor.setWidth("390px");
 		this.textCurrentSupervisor.setEnabled(false);
+		this.textCurrentSupervisor.setRequired(true);
 		
 		this.textCurrentCosupervisor = new TextField("Coorientador Atual");
 		this.textCurrentCosupervisor.setWidth("390px");
@@ -120,6 +123,7 @@ public class EditSupervisorChangeWindow extends EditWindow {
 		this.textComments = new TextArea("Motivo/Observações");
 		this.textComments.setWidth("800px");
 		this.textComments.setMaxLength(255);
+		this.textComments.setRequired(true);
 		
 		VerticalLayout v1 = new VerticalLayout();
 		v1.setSpacing(true);

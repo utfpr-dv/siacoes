@@ -32,8 +32,10 @@ public class EditCityWindow extends EditWindow {
 		}
 		
 		this.comboState = new StateComboBox();
+		this.comboState.setRequired(true);
 		
 		this.comboCountry = new CountryComboBox();
+		this.comboCountry.setRequired(true);
 		this.comboCountry.addValueChangeListener(new ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
 				if(comboCountry.getCountry() == null){
@@ -47,6 +49,7 @@ public class EditCityWindow extends EditWindow {
 		this.textName = new TextField("Cidade");
 		this.textName.setWidth("400px");
 		this.textName.setMaxLength(100);
+		this.textName.setRequired(true);
 		
 		this.addField(this.comboCountry);
 		this.addField(this.comboState);

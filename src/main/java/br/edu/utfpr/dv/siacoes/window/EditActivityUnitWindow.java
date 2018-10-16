@@ -31,6 +31,7 @@ public class EditActivityUnitWindow extends EditWindow {
 		this.textDescription = new TextField("Descrição");
 		this.textDescription.setWidth("400px");
 		this.textDescription.setMaxLength(50);
+		this.textDescription.setRequired(true);
 		
 		this.checkFillAmount = new CheckBox("Preencher Quantidade");
 		

@@ -30,14 +30,17 @@ public class EditStateWindow extends EditWindow {
 		}
 		
 		this.comboCountry = new CountryComboBox();
+		this.comboCountry.setRequired(true);
 		
 		this.textName = new TextField("Estado");
 		this.textName.setWidth("300px");
 		this.textName.setMaxLength(100);
+		this.textName.setRequired(true);
 		
 		this.textInitials = new TextField("Sigla");
 		this.textInitials.setWidth("75px");
 		this.textInitials.setMaxLength(2);
+		this.textInitials.setRequired(true);
 		
 		this.addField(this.comboCountry);
 		this.addField(new HorizontalLayout(this.textName, this.textInitials));

@@ -59,6 +59,7 @@ public class EditSupervisorIndicationWindow extends EditWindow {
 			
 			for(int i = 0; i < this.config.getSupervisorIndication(); i++) {
 				SupervisorComboBox combo = new SupervisorComboBox("Avaliador", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
+				combo.setRequired(true);
 				
 				if(this.appraisers.size() > i) {
 					combo.setProfessor(this.appraisers.get(i).getAppraiser());

@@ -46,10 +46,12 @@ public class EditDepartmentWindow extends EditWindow {
 		
 		this.comboCampus = new CampusComboBox();
 		this.comboCampus.setFilterOnlyActives(false);
+		this.comboCampus.setRequired(true);
 		
 		this.textName = new TextField("Nome");
 		this.textName.setWidth("400px");
 		this.textName.setMaxLength(100);
+		this.textName.setRequired(true);
 		
 		this.textFullName = new TextField("Nome Detalhado");
 		this.textFullName.setWidth("800px");

@@ -66,23 +66,29 @@ public class EditFinalDocumentWindow extends EditWindow {
 		
 		this.comboCampus = new CampusComboBox();
 		this.comboCampus.setEnabled(false);
+		this.comboCampus.setRequired(true);
 		
 		this.comboDepartment = new DepartmentComboBox(0);
 		this.comboDepartment.setEnabled(false);
+		this.comboDepartment.setRequired(true);
 		
 		this.textTitle = new TextField("Título");
 		this.textTitle.setWidth("800px");
 		this.textTitle.setMaxLength(255);
+		this.textTitle.setRequired(true);
 		
 		this.comboSemester = new SemesterComboBox();
 		this.comboSemester.setEnabled(false);
+		this.comboSemester.setRequired(true);
 		
 		this.textYear = new YearField();
 		this.textYear.setEnabled(false);
+		this.textYear.setRequired(true);
 		
 		this.textSubmissionDate = new DateField("Data de Submissão");
 		this.textSubmissionDate.setEnabled(false);
 		this.textSubmissionDate.setDateFormat("dd/MM/yyyy");
+		this.textSubmissionDate.setRequired(true);
 		
 		this.uploadFile = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
 		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDFA);

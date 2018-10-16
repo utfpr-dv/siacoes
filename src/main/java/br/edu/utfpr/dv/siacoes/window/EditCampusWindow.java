@@ -46,6 +46,7 @@ public class EditCampusWindow extends EditWindow {
 		this.textName = new TextField("Câmpus");
 		this.textName.setWidth("400px");
 		this.textName.setMaxLength(100);
+		this.textName.setRequired(true);
 		
 		this.textAddress = new TextField("Endereço");
 		this.textAddress.setWidth("800px");

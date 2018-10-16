@@ -49,28 +49,36 @@ public class EditAttendanceWindow extends EditWindow {
 		this.textStudent = new TextField("Acadêmico");
 		this.textStudent.setEnabled(false);
 		this.textStudent.setWidth("400px");
+		this.textStudent.setRequired(true);
 		
 		this.textSupervisor = new TextField("Orientador");
 		this.textSupervisor.setEnabled(false);
 		this.textSupervisor.setWidth("400px");
+		this.textSupervisor.setRequired(true);
 		
 		this.textProposal = new TextField("Proposta");
 		this.textProposal.setEnabled(false);
 		this.textProposal.setWidth("810px");
+		this.textProposal.setRequired(true);
 		
 		this.comboStage = new StageComboBox();
+		this.comboStage.setRequired(true);
 		
 		this.textDate = new DateField("Data");
 		this.textDate.setDateFormat("dd/MM/yyyy");
+		this.textDate.setRequired(true);
 		
 		this.textStartTime = new TimeField("Horário Inicial");
 		this.textStartTime.set24HourClock(true);
+		this.textStartTime.setRequired(true);
 		
 		this.textEndTime = new TimeField("Horário Final");
 		this.textEndTime.set24HourClock(true);
+		this.textEndTime.setRequired(true);
 		
 		this.textComments = new TextArea("Observações/Orientações");
 		this.textComments.setWidth("810px");
+		this.textComments.setRequired(true);
 		
 		this.textNextMeeting = new TextArea("Atividades previstas para a próxima reunião");
 		this.textNextMeeting.setWidth("810px");

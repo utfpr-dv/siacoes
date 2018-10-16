@@ -31,12 +31,15 @@ public class EditActivityGroupWindow extends EditWindow {
 		this.textDescription = new TextField("Descrição");
 		this.textDescription.setWidth("600px");
 		this.textDescription.setMaxLength(255);
+		this.textDescription.setRequired(true);
 		
 		this.textMinimumScore = new TextField("Pontuação Mínima");
 		this.textMinimumScore.setWidth("100px");
+		this.textMinimumScore.setRequired(true);
 		
 		this.textMaximumScore = new TextField("Pontuação Máxima");
 		this.textMaximumScore.setWidth("100px");
+		this.textMaximumScore.setRequired(true);
 		
 		this.addField(this.textDescription);
 		this.addField(new HorizontalLayout(this.textMinimumScore, this.textMaximumScore));

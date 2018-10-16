@@ -81,10 +81,12 @@ public class EditJuryWindow extends EditWindow {
 		this.textLocal = new TextField("Local");
 		this.textLocal.setWidth("800px");
 		this.textLocal.setMaxLength(100);
+		this.textLocal.setRequired(true);
 		
 		this.textDate = new DateField("Data");
 		this.textDate.setDateFormat("dd/MM/yyyy HH:mm");
 		this.textDate.setResolution(Resolution.MINUTE);
+		this.textDate.setRequired(true);
 		
 		this.textStartTime = new TimeField("Horário Inicial");
 		this.textStartTime.set24HourClock(true);

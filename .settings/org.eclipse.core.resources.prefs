@@ -1,6 +1,9 @@
 eclipse.preferences.version=1
 encoding//src/main/java=UTF-8
+encoding//src/main/java/br/edu/utfpr/dv/siacoes/report/ActivityValidation.jrxml=UTF-8
+encoding//src/main/java/br/edu/utfpr/dv/siacoes/report/AttendanceDetailedList.jrxml=UTF-8
 encoding//src/main/java/br/edu/utfpr/dv/siacoes/report/AttendanceDetails.jrxml=UTF-8
+encoding//src/main/java/br/edu/utfpr/dv/siacoes/report/AttendanceList.jrxml=UTF-8
 encoding//src/main/java/br/edu/utfpr/dv/siacoes/report/Attendances.jrxml=UTF-8
 encoding//src/main/java/br/edu/utfpr/dv/siacoes/report/InternshipJuryForm.jrxml=UTF-8
 encoding//src/main/java/br/edu/utfpr/dv/siacoes/report/InternshipJuryFormAppraiser.jrxml=UTF-8
@@ -15,6 +18,7 @@ encoding//src/main/java/br/edu/utfpr/dv/siacoes/report/JuryGrades.jrxml=UTF-8
 encoding//src/main/java/br/edu/utfpr/dv/siacoes/report/JuryParticipantsList.jrxml=UTF-8
 encoding//src/main/java/br/edu/utfpr/dv/siacoes/report/JuryParticipantsListGrouped.jrxml=UTF-8
 encoding//src/main/java/br/edu/utfpr/dv/siacoes/report/ProposalFeedback.jrxml=UTF-8
+encoding//src/main/java/br/edu/utfpr/dv/siacoes/report/ProposalFeedbackList.jrxml=UTF-8
 encoding//src/main/java/br/edu/utfpr/dv/siacoes/report/StudentInternshipStatement.jrxml=UTF-8
 encoding//src/main/java/br/edu/utfpr/dv/siacoes/report/SupervisorAgreement.jrxml=UTF-8
 encoding//src/main/java/br/edu/utfpr/dv/siacoes/report/SupervisorChangeStatement.jrxml=UTF-8

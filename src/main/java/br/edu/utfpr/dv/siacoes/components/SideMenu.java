@@ -1181,7 +1181,7 @@ public class SideMenu extends CustomComponent {
 			layout.addComponent(new MenuEntry("Configurações", 1, new EditAppConfigWindow()));
 		}
 		
-		layout.addComponent(new MenuEntry("Reportar Erro", 0, BugReportView.NAME));
+		layout.addComponent(new MenuEntry("Sugestões e Problemas", 0, BugReportView.NAME));
 		layout.addComponent(new MenuEntry("Sobre o Sistema", 0, new AboutWindow()));
 		
 		layout.setSizeFull();

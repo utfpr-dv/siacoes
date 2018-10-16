@@ -46,13 +46,17 @@ public class EditDeadlineWindow extends EditWindow {
 		
 		this.comboCampus = new CampusComboBox();
 		this.comboCampus.setEnabled(false);
+		this.comboCampus.setRequired(true);
 		
 		this.comboDepartment = new DepartmentComboBox(0);
 		this.comboDepartment.setEnabled(false);
+		this.comboDepartment.setRequired(true);
 		
 		this.semester = new SemesterComboBox();
+		this.semester.setRequired(true);
 		
 		this.year = new YearField();
+		this.year.setRequired(true);
 		
 		SigetConfigBO bo = new SigetConfigBO();
 		SigetConfig sigetConfig = new SigetConfig();
@@ -68,18 +72,23 @@ public class EditDeadlineWindow extends EditWindow {
 			this.proposalDeadline = new DateField("Data Limite para Registro de Orientação");
 		}
 		this.proposalDeadline.setDateFormat("dd/MM/yyyy");
+		this.proposalDeadline.setRequired(true);
 		
 		this.projectDeadline = new DateField("Data Limite do Projeto");
 		this.projectDeadline.setDateFormat("dd/MM/yyyy");
+		this.projectDeadline.setRequired(true);
 		
 		this.thesisDeadline = new DateField("Data Limite da Monografia");
 		this.thesisDeadline.setDateFormat("dd/MM/yyyy");
+		this.thesisDeadline.setRequired(true);
 		
 		this.projectFinalDocumentDeadline = new DateField("Data Limite da Versão Final do Projeto");
 		this.projectFinalDocumentDeadline.setDateFormat("dd/MM/yyyy");
+		this.projectFinalDocumentDeadline.setRequired(true);
 		
 		this.thesisFinalDocumentDeadline = new DateField("Data Limite da Versão Final da Monografia");
 		this.thesisFinalDocumentDeadline.setDateFormat("dd/MM/yyyy");
+		this.thesisFinalDocumentDeadline.setRequired(true);
 		
 		this.addField(this.comboCampus);
 		this.addField(this.comboDepartment);

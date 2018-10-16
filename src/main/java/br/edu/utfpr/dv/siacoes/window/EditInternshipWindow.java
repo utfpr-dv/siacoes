@@ -112,17 +112,23 @@ public class EditInternshipWindow extends EditWindow {
 		
 		this.comboCampus = new CampusComboBox();
 		this.comboCampus.setEnabled(false);
+		this.comboCampus.setRequired(true);
 		
 		this.comboDepartment = new DepartmentComboBox(0);
 		this.comboDepartment.setEnabled(false);
+		this.comboDepartment.setRequired(true);
 		
 		this.comboStudent = new StudentComboBox("Acadêmico");
+		this.comboStudent.setRequired(true);
 		
 		this.comboSupervisor = new SupervisorComboBox("Orientador", Session.getSelectedDepartment().getDepartment().getIdDepartment(), new SigesConfigBO().getSupervisorFilter(Session.getSelectedDepartment().getDepartment().getIdDepartment()));
+		this.comboSupervisor.setRequired(true);
 		
 		this.comboCompanySupervisor = new CompanySupervisorComboBox();
+		this.comboCompanySupervisor.setRequired(true);
 		
 		this.comboCompany = new CompanyComboBox();
+		this.comboCompany.setRequired(true);
 		this.comboCompany.addValueChangeListener(new ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
 				if(comboCompany.getCompany() == null){
@@ -139,15 +145,18 @@ public class EditInternshipWindow extends EditWindow {
 		this.comboType.addItem(InternshipType.REQUIRED);
 		this.comboType.select(InternshipType.NONREQUIRED);
 		this.comboType.setNullSelectionAllowed(false);
+		this.comboType.setRequired(true);
 		
 		this.startDate = new DateField("Data de Início");
 		this.startDate.setDateFormat("dd/MM/yyyy");
+		this.startDate.setRequired(true);
 		
 		this.endDate = new DateField("Data de Término");
 		this.endDate.setDateFormat("dd/MM/yyyy");
 		
 		this.textTotalHours = new TextField("Horas");
 		this.textTotalHours.setWidth("100px");
+		this.textTotalHours.setRequired(true);
 		
 		this.textReportTitle = new TextField("Título do Relatório Final");
 		this.textReportTitle.setWidth("810px");

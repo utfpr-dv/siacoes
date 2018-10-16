@@ -19,6 +19,7 @@ public class EditJuryParticipantWindow extends EditWindow {
 		this.parentWindow = parentWindow;
 		
 		this.comboStudent = new StudentComboBox("Acadêmico");
+		this.comboStudent.setRequired(true);
 		
 		this.addField(this.comboStudent);
 	}

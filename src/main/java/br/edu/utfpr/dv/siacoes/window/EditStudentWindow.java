@@ -41,10 +41,12 @@ public class EditStudentWindow extends EditWindow {
 		this.textName = new TextField("Nome");
 		this.textName.setWidth("410px");
 		this.textName.setMaxLength(100);
+		this.textName.setRequired(true);
 		
 		this.textStudentCode = new TextField("R.A.");
 		this.textStudentCode.setWidth("200px");
 		this.textStudentCode.setMaxLength(45);
+		this.textStudentCode.setRequired(true);
 		
 		this.addField(this.textName);
 		this.addField(this.textStudentCode);

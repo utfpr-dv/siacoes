@@ -27,11 +27,13 @@ public abstract class EditWindow extends BasicWindow {
             @Override
             public void buttonClick(ClickEvent event) {
             	save();
+            	buttonSave.setEnabled(true);
             }
         });
 		this.buttonSave.setWidth("150px");
 		this.buttonSave.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		this.buttonSave.setIcon(FontAwesome.SAVE);
+		this.buttonSave.setDisableOnClick(true);
 		
 		this.layoutFields = new VerticalLayout();
 		this.layoutFields.setSpacing(true);

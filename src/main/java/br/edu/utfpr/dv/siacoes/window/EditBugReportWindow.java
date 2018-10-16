@@ -49,9 +49,11 @@ public class EditBugReportWindow extends EditWindow {
 		this.textUser = new TextField("Usuário");
 		this.textUser.setWidth("800px");
 		this.textUser.setEnabled(false);
+		this.textUser.setRequired(true);
 		
 		this.textTitle = new TextField("Descrição Resumida");
 		this.textTitle.setWidth("800px");
+		this.textTitle.setRequired(true);
 		
 		this.comboModule = new NativeSelect("Módulo");
 		this.comboModule.setWidth("800px");
@@ -61,10 +63,12 @@ public class EditBugReportWindow extends EditWindow {
 		this.comboModule.addItem(SystemModule.SIGES);
 		this.comboModule.addItem(SystemModule.SIGET);
 		this.comboModule.select(SystemModule.GENERAL);
+		this.comboModule.setRequired(true);
 		
 		this.textDescription = new TextArea("Descrição Detalhada");
 		this.textDescription.setWidth("800px");
 		this.textDescription.setHeight("150px");
+		this.textDescription.setRequired(true);
 		
 		this.comboType = new NativeSelect("Tipo");
 		this.comboType.setWidth("150px");
@@ -72,10 +76,12 @@ public class EditBugReportWindow extends EditWindow {
 		this.comboType.addItem(BugType.ERROR);
 		this.comboType.addItem(BugType.SUGESTION);
 		this.comboType.select(BugType.ERROR);
+		this.comboType.setRequired(true);
 		
 		this.textReportDate = new DateField("Data");
 		this.textReportDate.setDateFormat("dd/MM/yyyy");
 		this.textReportDate.setEnabled(false);
+		this.textReportDate.setRequired(true);
 		
 		this.comboStatus = new NativeSelect("Status");
 		this.comboStatus.setWidth("200px");

@@ -28,6 +28,7 @@ public class EditInternshipJuryAppraiserWindow extends EditWindow {
 		this.edit = false;
 		
 		this.comboProfessor = new SupervisorComboBox("Membro", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
+		this.comboProfessor.setRequired(true);
 		
 		this.optionAppraiserType = new OptionGroup();
 		this.optionAppraiserType.addItem("Titular");

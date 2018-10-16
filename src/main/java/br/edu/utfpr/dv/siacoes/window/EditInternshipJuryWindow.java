@@ -82,10 +82,12 @@ public class EditInternshipJuryWindow extends EditWindow {
 		this.textLocal = new TextField("Local");
 		this.textLocal.setWidth("800px");
 		this.textLocal.setMaxLength(100);
+		this.textLocal.setRequired(true);
 		
 		this.textDate = new DateField("Data");
 		this.textDate.setDateFormat("dd/MM/yyyy HH:mm");
 		this.textDate.setResolution(Resolution.MINUTE);
+		this.textDate.setRequired(true);
 		
 		this.textCompanySupervisorScore = new TextField("Nota do Supervisor na Empresa");
 		this.textCompanySupervisorScore.setWidth("100px");

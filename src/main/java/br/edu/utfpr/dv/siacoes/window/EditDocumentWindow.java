@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
@@ -44,6 +45,7 @@ public class EditDocumentWindow extends EditWindow {
 		this.textName = new TextField("Nome", "");
 		this.textName.setWidth("400px");
 		this.textName.setMaxLength(100);
+		this.textName.setRequired(true);
 		
 		this.uploadFile = new FileUploader("");
 		
@@ -87,14 +89,16 @@ public class EditDocumentWindow extends EditWindow {
 			
 			bo.save(this.document);
 			
-			Notification.show("Salvar Documento", "Documento salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Documento", "Documento salvo com sucesso.");
+			//Notification.show("Salvar Documento", "Documento salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Documento", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			//Notification.show("Salvar Documento", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Documento", e.getMessage());
 		}
 	}
 	

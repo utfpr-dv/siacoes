@@ -22,8 +22,10 @@ public class RegisterProfessorWindow extends EditWindow {
 		super("Registrar Professor", parentView);
 		
 		this.comboCompany = new CompanyComboBox();
+		this.comboCompany.setRequired(true);
 		
 		this.comboProfessor = new SupervisorComboBox("Professor", 0, SupervisorFilter.INSTITUTION);
+		this.comboProfessor.setRequired(true);
 		
 		this.addField(this.comboProfessor);
 		this.addField(this.comboCompany);

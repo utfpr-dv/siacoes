@@ -28,6 +28,7 @@ public class EditCountryWindow extends EditWindow {
 		this.textName = new TextField("País");
 		this.textName.setWidth("400px");
 		this.textName.setMaxLength(100);
+		this.textName.setRequired(true);
 		
 		this.addField(this.textName);
 		

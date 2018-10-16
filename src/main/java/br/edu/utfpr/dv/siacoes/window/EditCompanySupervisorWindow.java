@@ -34,10 +34,12 @@ public class EditCompanySupervisorWindow extends EditWindow {
 		}
 		
 		this.comboCompany = new CompanyComboBox();
+		this.comboCompany.setRequired(true);
 		
 		this.textName = new TextField("Nome");
 		this.textName.setWidth("400px");
 		this.textName.setMaxLength(100);
+		this.textName.setRequired(true);
 		
 		this.textPhone = new TextField("Telefone");
 		this.textPhone.setWidth("400px");
@@ -46,6 +48,7 @@ public class EditCompanySupervisorWindow extends EditWindow {
 		this.textEmail = new TextField("E-mail");
 		this.textEmail.setWidth("400px");
 		this.textEmail.setMaxLength(100);
+		this.textEmail.setRequired(true);
 		
 		this.checkActive = new CheckBox("Ativo");
 		
