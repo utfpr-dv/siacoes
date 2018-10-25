@@ -85,6 +85,7 @@ public class SiacoesUI extends UI {
 
 	@WebServlet(value = "/*", asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = false, ui = SiacoesUI.class, widgetset="br.edu.utfpr.dv.siacoes.widgetset.SiacoesWidgetset")
+	//@VaadinServletConfiguration(productionMode = false, ui = SiacoesUI.class)
 	public static class Servlet extends VaadinServlet {
 	}
 

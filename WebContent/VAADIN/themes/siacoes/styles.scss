@@ -1,0 +1,9 @@
+@import "addons.scss";
+@import "siacoes.scss";
+
+/* This file prefixes all rules with the theme name to avoid causing conflicts with other themes. */
+/* The actual styles should be defined in siacoes.scss */
+.siacoes {
+  @include addons;
+  @include siacoes;
+}
