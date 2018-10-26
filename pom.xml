@@ -97,9 +97,9 @@
 		</dependency>
     	<!-- https://mvnrepository.com/artifact/org.vaadin.addon/confirmdialog -->
 		<dependency>
-		    <groupId>org.vaadin.addon</groupId>
-		    <artifactId>confirmdialog</artifactId>
-		    <version>3.2.0</version>
+      		<groupId>org.vaadin.addon</groupId>
+      		<artifactId>confirmdialog</artifactId>
+      		<version>2.1.3</version>
 		</dependency>
     	<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-digester3 -->
 		<dependency>
