@@ -492,7 +492,7 @@ public class ProposalDAO {
 					}
 				}
 			} else {
-				return 0;
+				return 1;
 			}
 		} finally {
 			if((rs != null) && !rs.isClosed())
