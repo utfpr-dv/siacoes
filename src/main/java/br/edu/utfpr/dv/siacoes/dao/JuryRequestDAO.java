@@ -242,6 +242,7 @@ public class JuryRequestDAO {
 					") AND (proposal.year=" + String.valueOf(year) + " OR project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + ") " +
 					" UNION " +
 					"SELECT juryrequest.* FROM juryrequest " +
+					"INNER JOIN juryappraiserrequest ON juryappraiserrequest.idJuryRequest=juryrequest.idJuryRequest " +
 					"INNER JOIN proposal ON proposal.idProposal=juryrequest.idProposal " +
 					"LEFT JOIN project ON project.idProposal=proposal.idProposal " + 
 					"LEFT JOIN thesis ON thesis.idProject=project.idProject " + 

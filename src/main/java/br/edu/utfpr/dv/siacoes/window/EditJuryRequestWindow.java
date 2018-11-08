@@ -13,7 +13,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
@@ -52,10 +51,12 @@ public class EditJuryRequestWindow extends EditWindow {
 	private Grid gridAppraisers;
 	private final Button buttonAddAppraiser;
 	private final Button buttonRemoveAppraiser;
+	private final Button buttonAppraiserSchedule;
 	private final HorizontalLayout layoutSubstitutes;
 	private Grid gridSubstitutes;
 	private final Button buttonAddSubstitute;
 	private final Button buttonRemoveSubstitute;
+	private final Button buttonSubstituteSchedule;
 	
 	public EditJuryRequestWindow(JuryRequest jury,  ListView parentView) {
 		this(jury, true, parentView);
@@ -136,6 +137,15 @@ public class EditJuryRequestWindow extends EditWindow {
 		this.buttonAddAppraiser.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 		this.buttonAddAppraiser.setWidth("100px");
 		
+		this.buttonAppraiserSchedule = new Button("Agenda", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	appraiserSchedule();
+            }
+        });
+		this.buttonAppraiserSchedule.setIcon(FontAwesome.CALENDAR_O);
+		this.buttonAppraiserSchedule.setWidth("100px");
+		
 		this.buttonRemoveAppraiser = new Button("Remover", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
@@ -146,7 +156,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		this.buttonRemoveAppraiser.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonRemoveAppraiser.setWidth("100px");
 		
-		VerticalLayout v1 = new VerticalLayout(this.buttonAddAppraiser, this.buttonRemoveAppraiser);
+		VerticalLayout v1 = new VerticalLayout(this.buttonAddAppraiser, this.buttonAppraiserSchedule, this.buttonRemoveAppraiser);
 		v1.setSpacing(true);
 		v1.setWidth("100px");
 		v1.setVisible(allowEdit);
@@ -172,6 +182,15 @@ public class EditJuryRequestWindow extends EditWindow {
 		this.buttonAddSubstitute.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 		this.buttonAddSubstitute.setWidth("100px");
 		
+		this.buttonSubstituteSchedule = new Button("Agenda", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	substituteSchedule();
+            }
+        });
+		this.buttonSubstituteSchedule.setIcon(FontAwesome.CALENDAR_O);
+		this.buttonSubstituteSchedule.setWidth("100px");
+		
 		this.buttonRemoveSubstitute = new Button("Remover", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
@@ -182,7 +201,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		this.buttonRemoveSubstitute.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonRemoveSubstitute.setWidth("100px");
 		
-		VerticalLayout v2 = new VerticalLayout(this.buttonAddSubstitute, this.buttonRemoveSubstitute);
+		VerticalLayout v2 = new VerticalLayout(this.buttonAddSubstitute, this.buttonSubstituteSchedule, this.buttonRemoveSubstitute);
 		v2.setSpacing(true);
 		v2.setWidth("100px");
 		v2.setVisible(allowEdit);
@@ -362,6 +381,16 @@ public class EditJuryRequestWindow extends EditWindow {
 		}
 	}
 	
+	private void appraiserSchedule() {
+		int index = this.getAppraiserSelectedIndex();
+		
+		if(index == -1){
+			this.showWarningNotification("Selecionar Membro", "Selecione o membro para visualizar a agenda.");
+		}else{
+			UI.getCurrent().addWindow(new ProfessorScheculeWindow(members.get(index).getAppraiser()));
+		}
+	}
+	
 	private int getAppraiserSelectedIndex() {
     	Object itemId = this.gridAppraisers.getSelectedRow();
 
@@ -397,6 +426,16 @@ public class EditJuryRequestWindow extends EditWindow {
                     }
                 }
             });
+		}
+	}
+	
+	private void substituteSchedule() {
+		int index = this.getAppraiserSelectedIndex();
+		
+		if(index == -1){
+			this.showWarningNotification("Selecionar Suplente", "Selecione o suplente para visualizar a agenda.");
+		}else{
+			UI.getCurrent().addWindow(new ProfessorScheculeWindow(substitutes.get(index).getAppraiser()));
 		}
 	}
 	
