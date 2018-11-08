@@ -47,7 +47,7 @@ public class StateView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Países", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Estados", e.getMessage());
 		}
 	}
 
@@ -66,7 +66,7 @@ public class StateView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Estado", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Estado", e.getMessage());
 		}
 	}
 

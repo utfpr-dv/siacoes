@@ -48,14 +48,14 @@ public class EditPasswordWindow extends EditWindow {
 			
 			Session.setUser(user);
 			
-			Notification.show("Alterar Senha", "Senha alterada com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Alterar Senha", "Senha alterada com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Alterar Senha", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Alterar Senha", e.getMessage());
 		}
 	}
 

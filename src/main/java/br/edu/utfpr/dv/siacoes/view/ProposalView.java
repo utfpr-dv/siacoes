@@ -149,7 +149,7 @@ public class ProposalView extends ListView {
 		} catch (Exception e) {
 			e.printStackTrace();
 			
-			Notification.show("Listar Propostas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Propostas", e.getMessage());
 		}
     }
 	
@@ -157,7 +157,7 @@ public class ProposalView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Download da Proposta", "Selecione um registro para baixar a proposta.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Download da Proposta", "Selecione um registro para baixar a proposta.");
 		}else{
 			try{
 				ProposalBO bo = new ProposalBO();
@@ -166,12 +166,12 @@ public class ProposalView extends ListView {
             	if(p.getFile() != null) {
             		this.showReport(p.getFile());
             	} else {
-            		Notification.show("Download da Proposta", "O acadêmico ainda não efetuou a submissão da proposta.", Notification.Type.WARNING_MESSAGE);
+            		this.showWarningNotification("Download da Proposta", "O acadêmico ainda não efetuou a submissão da proposta.");
             	}
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Download da Proposta", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Download da Proposta", e.getMessage());
 			}
 		}
 	}
@@ -180,7 +180,7 @@ public class ProposalView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Invalidar Proposta", "Selecione um registro para invalidar a proposta.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Invalidar Proposta", "Selecione um registro para invalidar a proposta.");
 		}else{
 			ConfirmDialog.show(UI.getCurrent(), "Confirma a invalidação da proposta?\n\nIsso fará com que o acadêmico tenha que enviar uma nova proposta.", new ConfirmDialog.Listener() {
                 public void onClose(ConfirmDialog dialog) {
@@ -191,9 +191,9 @@ public class ProposalView extends ListView {
 							
 							refreshGrid();
 							
-							Notification.show("Invalidar Proposta", "Proposta invalidada com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+							showSuccessNotification("Invalidar Proposta", "Proposta invalidada com sucesso.");
 						} catch (Exception e) {
-							Notification.show("Invalidar Proposta", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+							showErrorNotification("Invalidar Proposta", e.getMessage());
 						}
                     }
                 }
@@ -211,11 +211,11 @@ public class ProposalView extends ListView {
                 		
 						bo.closeFeedback(Session.getSelectedDepartment().getDepartment().getIdDepartment(), comboSemester.getSemester(), textYear.getYear());
 						
-						Notification.show("Encerrar Avaliações", "Avaliações encerradas com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+						showSuccessNotification("Encerrar Avaliações", "Avaliações encerradas com sucesso.");
 					} catch (Exception e) {
 						Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 						
-						Notification.show("Encerrar Avaliações", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+						showErrorNotification("Encerrar Avaliações", e.getMessage());
 					}
                 }
             }
@@ -237,7 +237,7 @@ public class ProposalView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Proposta", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Proposta", e.getMessage());
 		}
 	}
 

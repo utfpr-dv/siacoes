@@ -153,14 +153,14 @@ public class EditThemeSuggestionWindow extends EditWindow {
 			
 			bo.save(this.theme);
 			
-			Notification.show("Salvar Sugestão", "Sugestão salva com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Sugestão", "Sugestão salva com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Sugestão", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Sugestão", e.getMessage());
 		}
 	}
 

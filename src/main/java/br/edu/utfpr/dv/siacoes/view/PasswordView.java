@@ -11,7 +11,6 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
@@ -21,6 +20,7 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.bo.EmailMessageBO;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
+import br.edu.utfpr.dv.siacoes.components.Notification;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User;
 
@@ -184,7 +184,7 @@ public class PasswordView extends CustomComponent implements View {
 			User user = bo.findByLogin(this.textLogin.getValue().trim());
 			
 			if((user == null) || (user.getIdUser() == 0)) {
-				Notification.show("Redefinição de Senha", "Usuário não encontrado na base de dados.", Notification.Type.WARNING_MESSAGE);
+				Notification.showErrorNotification("Redefinição de Senha", "Usuário não encontrado na base de dados.");
 			} else if(user.isExternal()) {
 				new EmailMessageBO().sendForgotPasswordEmail(user);
 				this.buildWindow(user, true, false);
@@ -196,7 +196,7 @@ public class PasswordView extends CustomComponent implements View {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Redefinição de Senha", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			Notification.showErrorNotification("Redefinição de Senha", e.getMessage());
 		}
 	}
 	
@@ -213,7 +213,7 @@ public class PasswordView extends CustomComponent implements View {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Redefinição de Senha", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			Notification.showErrorNotification("Redefinição de Senha", e.getMessage());
 		}
 	}
 	

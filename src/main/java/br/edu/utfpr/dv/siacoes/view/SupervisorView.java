@@ -54,7 +54,7 @@ public class SupervisorView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Impressão", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Impressão", e.getMessage());
 		}
 	}
 
@@ -76,7 +76,7 @@ public class SupervisorView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Orientadores", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Orientadores", e.getMessage());
 		}
 	}
 	
@@ -89,17 +89,17 @@ public class SupervisorView extends ListView {
 				User user = bo.findById((int)id);
 				
 				if(user.getLattes().isEmpty()){
-					Notification.show("Abrir Currículo", "O professor selecionado não cadastrou o currículo.", Notification.Type.WARNING_MESSAGE);
+					this.showWarningNotification("Abrir Currículo", "O professor selecionado não cadastrou o currículo.");
 				}else{
 					getUI().getPage().open(user.getLattes(), "_blank");
 				}
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show("Abrir Currículo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Abrir Currículo", e.getMessage());
 			}
 		}else{
-			Notification.show("Abrir Currículo", "Selecione o professor para abrir o currículo.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Abrir Currículo", "Selecione o professor para abrir o currículo.");
 		}
 	}
 
@@ -119,7 +119,7 @@ public class SupervisorView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Áreas de Pesquisa", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Áreas de Pesquisa", e.getMessage());
 		}
 	}
 

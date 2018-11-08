@@ -46,7 +46,7 @@ public class ActivityUnitView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Unidades", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Unidades", e.getMessage());
 		}
 	}
 
@@ -65,7 +65,7 @@ public class ActivityUnitView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Unidade", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Unidade", e.getMessage());
 		}
 	}
 

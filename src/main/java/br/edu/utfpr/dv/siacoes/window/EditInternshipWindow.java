@@ -409,7 +409,7 @@ public class EditInternshipWindow extends EditWindow {
 				this.loadGrades();
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-				Notification.show("Carregar Notas", "Não foi possível carregar as notas atribuídas pela banca.", Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Carregar Notas", "Não foi possível carregar as notas atribuídas pela banca.");
 			}
 		}
 	}
@@ -442,7 +442,7 @@ public class EditInternshipWindow extends EditWindow {
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show("Carregar Relatórios", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Carregar Relatórios", e.getMessage());
 			}
 		}
 		
@@ -479,7 +479,7 @@ public class EditInternshipWindow extends EditWindow {
     	} catch (Exception e) {
         	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Download do Plano de Estágio", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        	this.showErrorNotification("Download do Plano de Estágio", e.getMessage());
 		}
 	}
 	
@@ -489,7 +489,7 @@ public class EditInternshipWindow extends EditWindow {
     	} catch (Exception e) {
         	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Download do Relatório Final", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        	this.showErrorNotification("Download do Relatório Final", e.getMessage());
 		}
 	}
 	
@@ -539,7 +539,7 @@ public class EditInternshipWindow extends EditWindow {
 	
 	private void deleteReport(int index){
 		if(index == -1){
-			Notification.show("Selecionar Relatório", "Selecione o relatório para excluir.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Selecionar Relatório", "Selecione o relatório para excluir.");
 		}else{
 			ConfirmDialog.show(UI.getCurrent(), "Confirma a exclusão do relatório?", new ConfirmDialog.Listener() {
                 public void onClose(ConfirmDialog dialog) {
@@ -566,14 +566,14 @@ public class EditInternshipWindow extends EditWindow {
 	
 	private void downloadReport(int index) {
 		if(index == -1) {
-			Notification.show("Selecionar Relatório", "Selecione o relatório para baixar.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Selecionar Relatório", "Selecione o relatório para baixar.");
 		} else {
 			try {
 	        	this.showReport(this.internship.getReports().get(index).getReport());
 	    	} catch (Exception e) {
 	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Download do Relatório de Estágio", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+	        	this.showErrorNotification("Download do Relatório de Estágio", e.getMessage());
 			}
 		}
 	}
@@ -605,14 +605,14 @@ public class EditInternshipWindow extends EditWindow {
 			
 			bo.save(this.internship);
 			
-			Notification.show("Salvar Estágio", "Estágio salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Estágio", "Estágio salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Estágio", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Estágio", e.getMessage());
 		}
 	}
 	
@@ -765,7 +765,7 @@ public class EditInternshipWindow extends EditWindow {
 	        } catch (Exception e) {
 	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+	        	showErrorNotification("Carregamento do Arquivo", e.getMessage());
 	        }
 
 	        return null;
@@ -793,11 +793,11 @@ public class EditInternshipWindow extends EditWindow {
 	            
 	            loadReports();
 	            
-	            Notification.show("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.", Notification.Type.HUMANIZED_MESSAGE);
+	            showSuccessNotification("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\\n\\nClique em SALVAR para concluir a submissão.");
 	        } catch (Exception e) {
 	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+	        	showErrorNotification("Carregamento do Arquivo", e.getMessage());
 	        }
 		}
 	}

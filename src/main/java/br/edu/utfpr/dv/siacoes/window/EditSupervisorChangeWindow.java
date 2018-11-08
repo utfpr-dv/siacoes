@@ -82,7 +82,7 @@ public class EditSupervisorChangeWindow extends EditWindow {
 		} catch(Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Alterar Orientador", "Não foi possível carregar os dados de orientação.", Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Alterar Orientador", "Não foi possível carregar os dados de orientação.");
 		}
 		
 		this.loadChange();
@@ -176,7 +176,7 @@ public class EditSupervisorChangeWindow extends EditWindow {
 				} catch (Exception e) {
 					e.printStackTrace();
 					
-					Notification.show("Imprimir Requisição", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+					showErrorNotification("Imprimir Requisição", e.getMessage());
 				}
             }
         });
@@ -243,7 +243,7 @@ public class EditSupervisorChangeWindow extends EditWindow {
 				this.printStatement();	
 			}
 			
-			Notification.show("Salvar Alteração", "Orientação alterada com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Alteração", "Orientação alterada com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			
@@ -253,7 +253,7 @@ public class EditSupervisorChangeWindow extends EditWindow {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Alteração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Alteração", e.getMessage());
 		}
 	}
 	

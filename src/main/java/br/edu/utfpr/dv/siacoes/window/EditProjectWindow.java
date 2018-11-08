@@ -186,7 +186,7 @@ public class EditProjectWindow extends EditWindow {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				this.uploadFile.setEnabled(false);
 				this.setSaveButtonEnabled(false);
-				Notification.show("Submeter Projeto", "Não foi possível determinar a data limite para entrega dos projetos.", Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Submeter Projeto", "Não foi possível determinar a data limite para entrega dos projetos.");
 			}
 		}
 		
@@ -250,12 +250,12 @@ public class EditProjectWindow extends EditWindow {
 				Deadline d = dbo.findBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 				
 				if(DateUtils.getToday().getTime().after(d.getProjectDeadline())){
-					Notification.show("Submeter Projeto", "O prazo para a submissão de projetos já foi encerrado.", Notification.Type.ERROR_MESSAGE);
+					this.showErrorNotification("Submeter Projeto", "O prazo para a submissão de projetos já foi encerrado.");
 					return;
 				}
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-				Notification.show("Submeter Projeto", "Não foi possível determinar a data limite para entrega dos projetos.", Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Submeter Projeto", "Não foi possível determinar a data limite para entrega dos projetos.");
 				return;
 			}
 		}
@@ -277,14 +277,14 @@ public class EditProjectWindow extends EditWindow {
 			
 			bo.save(this.project);
 			
-			Notification.show("Salvar Projeto", "Projeto salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Projeto", "Projeto salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Projeto", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Projeto", e.getMessage());
 		}
 	}
 	
@@ -294,7 +294,7 @@ public class EditProjectWindow extends EditWindow {
     	} catch (Exception e) {
         	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Download do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        	this.showErrorNotification("Download do Arquivo", e.getMessage());
 		}
 	}
 	

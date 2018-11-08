@@ -93,7 +93,7 @@ public class EmailMessageView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Mensagens", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Mensagens", e.getMessage());
 		}
 	}
 
@@ -113,7 +113,7 @@ public class EmailMessageView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Documento", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Mensagem", e.getMessage());
 		}
 	}
 

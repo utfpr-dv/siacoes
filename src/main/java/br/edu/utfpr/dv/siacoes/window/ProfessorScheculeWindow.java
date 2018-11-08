@@ -132,7 +132,7 @@ public class ProfessorScheculeWindow extends BasicWindow {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Compromissos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Compromissos", e.getMessage());
 		}
 	}
 	

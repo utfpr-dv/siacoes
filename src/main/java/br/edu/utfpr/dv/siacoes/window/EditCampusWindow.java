@@ -133,14 +133,14 @@ public class EditCampusWindow extends EditWindow {
 			
 			bo.save(this.campus);
 			
-			Notification.show("Salvar Câmpus", "Câmpus salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Câmpus", "Câmpus salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Câmpus", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Câmpus", e.getMessage());
 		}
 	}
 	

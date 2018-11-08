@@ -37,7 +37,7 @@ public class EditJuryParticipantWindow extends EditWindow {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Adicionar Acadêmico", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Adicionar Acadêmico", e.getMessage());
 		}
 	}
 

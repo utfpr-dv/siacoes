@@ -80,7 +80,7 @@ public class ProposalFeedbackStudentView extends ListView {
 		} catch (Exception e) {
 			e.printStackTrace();
 			
-			Notification.show("Listar Propostas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Propostas", e.getMessage());
 		}
 	}
 
@@ -100,7 +100,7 @@ public class ProposalFeedbackStudentView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Carregar Observações", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Carregar Observações", e.getMessage());
 		}
 	}
 

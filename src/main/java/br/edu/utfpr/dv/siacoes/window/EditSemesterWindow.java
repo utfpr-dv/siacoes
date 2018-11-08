@@ -82,14 +82,14 @@ public class EditSemesterWindow extends EditWindow {
 			
 			bo.save(semester);
 			
-			Notification.show("Salvar Semestre", "Semestre salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Semestre", "Semestre salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Semestre", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Semestre", e.getMessage());
 		}
 	}
 

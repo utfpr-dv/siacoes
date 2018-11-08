@@ -182,13 +182,13 @@ public class EditStudentProfileWindow extends EditWindow {
 			
 			new UserDepartmentBO().save(this.profile);
 			
-			Notification.show("Salvar Informações", "Informações salvas com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Informações", "Informações salvas com sucesso.");
 			
 			this.close();
 		} catch(Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Informações", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Informações", e.getMessage());
 		}
 	}
 	

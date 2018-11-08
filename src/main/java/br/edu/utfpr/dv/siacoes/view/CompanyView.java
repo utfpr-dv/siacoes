@@ -46,7 +46,7 @@ public class CompanyView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Empresas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Empresas", e.getMessage());
 		}
 	}
 
@@ -65,7 +65,7 @@ public class CompanyView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Empresa", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Empresa", e.getMessage());
 		}
 	}
 

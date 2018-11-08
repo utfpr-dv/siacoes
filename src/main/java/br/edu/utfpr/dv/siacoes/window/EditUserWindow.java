@@ -228,14 +228,14 @@ public class EditUserWindow extends EditWindow {
 			
 			bo.save(user);
 			
-			Notification.show("Salvar Usuário", "Usuário salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Usuário", "Usuário salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Usuário", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Usuário", e.getMessage());
 		}
 	}
 	
@@ -261,7 +261,7 @@ public class EditUserWindow extends EditWindow {
 		int index = this.getProfileSelectedIndex();
 		
 		if(index == -1) {
-			Notification.show("Editar Perfil", "Selecione o perfil para editar.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Editar Perfil", "Selecione o perfil para editar.");
 		} else {
 			UserProfile profile = this.user.getProfiles().get(index);
 			
@@ -273,7 +273,7 @@ public class EditUserWindow extends EditWindow {
 		int index = this.getProfileSelectedIndex();
 		
 		if(index == -1) {
-			Notification.show("Remover Perfil", "Selecione o perfil para remover.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Remover Perfil", "Selecione o perfil para remover.");
 		} else {
 			try {
 				ConfirmDialog.show(UI.getCurrent(), "Confirma a remoção do perfil do usuário?", new ConfirmDialog.Listener() {
@@ -287,7 +287,7 @@ public class EditUserWindow extends EditWindow {
 			} catch(Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show("Remover Perfil", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Remover Perfil", e.getMessage());
 			}
 		}
 	}
@@ -335,7 +335,7 @@ public class EditUserWindow extends EditWindow {
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show("Carregar Departamentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Carregar Departamentos", e.getMessage());
 			}
 		}
 		
@@ -359,7 +359,7 @@ public class EditUserWindow extends EditWindow {
 		int index = this.getDepartmentSelectedIndex();
 		
 		if(index == -1) {
-			Notification.show("Editar Departamento", "Selecione o departamento para editar.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Editar Departamento", "Selecione o departamento para editar.");
 		} else {
 			UserDepartment department = this.user.getDepartments().get(index);
 			
@@ -371,7 +371,7 @@ public class EditUserWindow extends EditWindow {
 		int index = this.getDepartmentSelectedIndex();
 		
 		if(index == -1) {
-			Notification.show("Remover Departamento", "Selecione o departamento para remover.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Remover Departamento", "Selecione o departamento para remover.");
 		} else {
 			try {
 				ConfirmDialog.show(UI.getCurrent(), "Confirma a remoção do departamento do perfil do usuário?", new ConfirmDialog.Listener() {
@@ -385,7 +385,7 @@ public class EditUserWindow extends EditWindow {
 			} catch(Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show("Remover Departamento", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Remover Departamentos", e.getMessage());
 			}
 		}
 	}

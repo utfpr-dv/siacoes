@@ -70,7 +70,7 @@ public class ActivityGroupView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Grupos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Grupos", e.getMessage());
 		}
 	}
 
@@ -89,7 +89,7 @@ public class ActivityGroupView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Grupo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Grupo", e.getMessage());
 		}
 	}
 
@@ -117,10 +117,10 @@ public class ActivityGroupView extends ListView {
     		}catch(Exception e){
     			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
     			
-    			Notification.show("Mover Grupo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+    			this.showErrorNotification("Mover Grupo", e.getMessage());
     		}
     	}else{
-    		Notification.show("Mover Grupo", "Selecione o registro.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Mover Grupo", "Selecione o registro.");
     	}
 	}
 	
@@ -136,10 +136,10 @@ public class ActivityGroupView extends ListView {
     		}catch(Exception e){
     			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
     			
-    			Notification.show("Mover Grupo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+    			this.showErrorNotification("Mover Grupo", e.getMessage());
     		}
     	}else{
-    		Notification.show("Mover Grupo", "Selecione o registro.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Mover Grupo", "Selecione o registro.");
     	}
 	}
 

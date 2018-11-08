@@ -64,7 +64,7 @@ public class CompanySupervisorView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Supervisores", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Supervisores", e.getMessage());
 		}
 	}
 
@@ -87,7 +87,7 @@ public class CompanySupervisorView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Supervisor", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Supervisor", e.getMessage());
 		}
 	}
 	

@@ -341,6 +341,36 @@ public class JuryRequestDAO {
 		}
 	}
 	
+	public boolean delete(int id) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		
+		try {
+			conn = ConnectionDAO.getInstance().getConnection();
+			conn.setAutoCommit(false);
+			
+			stmt = conn.createStatement();
+		
+			stmt.execute("DELETE FROM juryappraiserrequest WHERE idJuryRequest = " + String.valueOf(id));
+			boolean ret = stmt.execute("DELETE FROM juryrequest WHERE idJuryRequest = " + String.valueOf(id));
+			
+			conn.commit();
+			
+			return ret;
+		} catch (SQLException e) {
+			conn.rollback();
+			
+			throw e;
+		} finally {
+			conn.setAutoCommit(true);
+			
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	private JuryRequest loadObject(ResultSet rs) throws SQLException{
 		JuryRequest jury = new JuryRequest();
 		

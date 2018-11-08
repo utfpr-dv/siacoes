@@ -56,14 +56,14 @@ public class InternshipUploadFinalReportWindow extends EditWindow {
 			
 			bo.save(this.internship);
 			
-			Notification.show("Salvar Relatório de Estágio", "Relatório salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Relatório de Estágio", "Relatório salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Relatório de Estágio", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Relatório de Estágio", e.getMessage());
 		}
 	}
 	

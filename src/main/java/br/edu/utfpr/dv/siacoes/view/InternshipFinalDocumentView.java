@@ -85,7 +85,7 @@ public class InternshipFinalDocumentView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Relatórios de Estágio", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Relatórios de Estágio", e.getMessage());
 		}
 	}
 
@@ -105,7 +105,7 @@ public class InternshipFinalDocumentView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Validar Relatório de Estágio", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Validar Relatório de Estágio", e.getMessage());
 		}
 	}
 

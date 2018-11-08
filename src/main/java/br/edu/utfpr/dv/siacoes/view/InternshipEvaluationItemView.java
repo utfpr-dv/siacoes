@@ -80,7 +80,7 @@ public class InternshipEvaluationItemView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Quesitos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Quesitos", e.getMessage());
 		}
 	}
 	
@@ -103,7 +103,7 @@ public class InternshipEvaluationItemView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Quesito", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Quesito", e.getMessage());
 		}
 	}
 	
@@ -116,7 +116,7 @@ public class InternshipEvaluationItemView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Excluir Quesito", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Excluir Quesito", e.getMessage());
 		}
 	}
 	
@@ -132,10 +132,10 @@ public class InternshipEvaluationItemView extends ListView {
     		}catch(Exception e){
     			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
     			
-    			Notification.show("Mover Quesito", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+    			this.showErrorNotification("Mover Quesito", e.getMessage());
     		}
     	}else{
-    		Notification.show("Mover Quesito", "Selecione o registro.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Mover Quesito", "Selecione o registro.");
     	}
 	}
 	
@@ -151,10 +151,10 @@ public class InternshipEvaluationItemView extends ListView {
     		}catch(Exception e){
     			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
     			
-    			Notification.show("Mover Quesito", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+    			this.showErrorNotification("Mover Quesito", e.getMessage());
     		}
     	}else{
-    		Notification.show("Mover Quesito", "Selecione o registro.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Mover Quesito", "Selecione o registro.");
     	}
 	}
 

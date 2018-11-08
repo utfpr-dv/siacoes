@@ -141,7 +141,7 @@ public class FinalDocumentView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Projetos/Monografias", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Projetos/Monografias", e.getMessage());
 		}
 	}
 	
@@ -151,7 +151,7 @@ public class FinalDocumentView extends ListView {
 		} catch(Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Relatório de Notas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Relatório de Notas", e.getMessage());
 		}
 	}
 
@@ -171,7 +171,7 @@ public class FinalDocumentView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Validar Projeto/Monografia", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Validar Projeto/Monografia", e.getMessage());
 		}
 	}
 
@@ -202,7 +202,7 @@ public class FinalDocumentView extends ListView {
 	            public void buttonClick(ClickEvent event) {
 	            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	            	
-	            	Notification.show("Relatório para Biblioteca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+	            	showErrorNotification("Relatório para a Biblioteca", e.getMessage());
 	            }
 	        };
 	        

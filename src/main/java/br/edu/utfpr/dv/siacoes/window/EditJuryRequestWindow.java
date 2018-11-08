@@ -225,7 +225,7 @@ public class EditJuryRequestWindow extends EditWindow {
 				
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show("Carregar Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Carregar Banca", e.getMessage());
 			}
 		}
 		
@@ -262,14 +262,14 @@ public class EditJuryRequestWindow extends EditWindow {
 			
 			this.showReport(bo.getJuryRequestForm(this.jury.getIdJuryRequest()));
 			
-			Notification.show("Salvar Agendamento de Banca", "Agendamento de banca salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Agendamento de Banca", "Agendamento de banca salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Agendamento de Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Agendamento de Banca", e.getMessage());
 		}
 	}
 	
@@ -342,7 +342,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		int index = this.getAppraiserSelectedIndex();
 		
 		if(index == -1){
-			Notification.show("Selecionar Membro", "Selecione o membro para remover.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Selecionar Membro", "Selecione o membro para remover.");
 		}else{
 			ConfirmDialog.show(UI.getCurrent(), "Confirma a remoção do membro?", new ConfirmDialog.Listener() {
                 public void onClose(ConfirmDialog dialog) {
@@ -380,7 +380,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		int index = this.getSubstituteSelectedIndex();
 		
 		if(index == -1){
-			Notification.show("Selecionar Suplente", "Selecione o suplente para remover.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Selecionar Suplente", "Selecione o suplente para remover.");
 		}else{
 			ConfirmDialog.show(UI.getCurrent(), "Confirma a remoção do suplente?", new ConfirmDialog.Listener() {
                 public void onClose(ConfirmDialog dialog) {

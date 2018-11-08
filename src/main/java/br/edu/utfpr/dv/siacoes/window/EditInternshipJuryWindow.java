@@ -267,7 +267,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 					
 					Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 					
-					Notification.show("Carregar Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+					this.showErrorNotification("Carregar Banca", e.getMessage());
 				}
 			}
 			
@@ -281,7 +281,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 					
 					Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 					
-					Notification.show("Carregar Participantes", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+					this.showErrorNotification("Carregar Participantes", e.getMessage());
 				}
 			}
 		}
@@ -351,14 +351,14 @@ public class EditInternshipJuryWindow extends EditWindow {
 			
 			bo.save(this.jury);
 			
-			Notification.show("Salvar Banca", "Banca salva com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Banca", "Banca salva com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Banca", e.getMessage());
 		}
 	}
 	
@@ -394,7 +394,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 		int index = this.getAppraiserSelectedIndex();
 		
 		if(index == -1) {
-			Notification.show("Selecionar Membro", "Selecione o membro para editar.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Selecionar Membro", "Selecione o membro para editar.");
 		} else {
 			try {
 				if(new InternshipJuryBO().canRemoveAppraiser(this.jury, this.jury.getAppraisers().get(index).getAppraiser())) {
@@ -403,7 +403,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show("Editar Membro", e.getMessage().replace("removido", "editado"), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Editar Membro", e.getMessage().replace("removido", "editado"));
 			}
 		}
 	}
@@ -423,7 +423,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 		int index = this.getAppraiserSelectedIndex();
 		
 		if(index == -1){
-			Notification.show("Selecionar Membro", "Selecione o membro para remover.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Selecionar Membro", "Selecione o membro para remover.");
 		}else{
 			try {
 				InternshipJuryBO bo = new InternshipJuryBO();
@@ -442,7 +442,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show("Remover Membro", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Remover Membro", e.getMessage());
 			}
 		}
 	}
@@ -451,7 +451,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 		int index = this.getParticipantSelectedIndex();
 		
 		if(index == -1){
-			Notification.show("Selecionar Participante", "Selecione o participante para remover.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Selecionar Participante", "Selecione o participante para remover.");
 		}else{
 			try{
 				ConfirmDialog.show(UI.getCurrent(), "Confirma a remoção do participante?", new ConfirmDialog.Listener() {
@@ -465,7 +465,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show("Remover Participante", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Remover Participante", e.getMessage());
 			}
 		}
 	}
@@ -474,16 +474,16 @@ public class EditInternshipJuryWindow extends EditWindow {
 		int index = this.getAppraiserSelectedIndex();
 		
 		if(index == -1) {
-			Notification.show("Selecionar Membro", "Selecione o membro para lançar as notas.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Selecionar Membro", "Selecione o membro para lançar as notas.");
 		} else {
 			InternshipJuryAppraiser appraiser = this.jury.getAppraisers().get(index);
 			
 			if((appraiser == null) || (appraiser.getIdInternshipJuryAppraiser() == 0)) {
-				Notification.show("Lançar Notas", "É necessário salvar a banca antes de lançar as notas.", Notification.Type.WARNING_MESSAGE);
+				this.showWarningNotification("Lançar Notas", "É necessário salvar a banca antes de lançar as notas.");
 			} else if(appraiser.isChair() && !this.jury.isSupervisorFillJuryForm()) {
-				Notification.show("Lançar Notas", "A nota do orientador deve ser lançada no campo \"Nota do Orientador\".", Notification.Type.WARNING_MESSAGE);
+				this.showWarningNotification("Lançar Notas", "A nota do orientador deve ser lançada no campo \"Nota do Orientador\".");
 			} else if(appraiser.isSubstitute()) {
-				Notification.show("Lançar Notas", "A nota somente pode ser atribuída por membros titulares da banca.", Notification.Type.WARNING_MESSAGE);
+				this.showWarningNotification("Lançar Notas", "A nota somente pode ser atribuída por membros titulares da banca.");
 			} else {
 				UI.getCurrent().addWindow(new EditInternshipJuryAppraiserScoreWindow(appraiser));	
 			}
@@ -494,7 +494,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 		int index = this.getAppraiserSelectedIndex();
 		
 		if(index == -1){
-			Notification.show("Gerar Declaração", "Selecione o membro para gerar a declaração.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Gerar Declaração", "Selecione o membro para gerar a declaração.");
 		}else{
 			try{
 				CertificateBO bo = new CertificateBO();
@@ -504,7 +504,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Gerar Declaração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Gerar Declaração", e.getMessage());
 			}
 		}
 	}
@@ -513,7 +513,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 		int index = this.getParticipantSelectedIndex();
 		
 		if(index == -1){
-			Notification.show("Gerar Declaração", "Selecione o acadêmico para gerar a declaração.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Gerar Declaração", "Selecione o acadêmico para gerar a declaração.");
 		}else{
 			try{
 				CertificateBO bo = new CertificateBO();
@@ -523,7 +523,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Gerar Declaração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Gerar Declaração", e.getMessage());
 			}
 		}
 	}
@@ -536,7 +536,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Imprimir Lista de Presença", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Imprimir Lista de Presença", e.getMessage());
 		}
 	}
 	
@@ -548,7 +548,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Imprimir Lista de Acadêmicos Ouvintes", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Imprimir Lista de Acadêmicos Ouvintes", e.getMessage());
 		}
 	}
 	

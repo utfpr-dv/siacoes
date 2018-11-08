@@ -90,14 +90,12 @@ public class EditDocumentWindow extends EditWindow {
 			bo.save(this.document);
 			
 			this.showSuccessNotification("Salvar Documento", "Documento salvo com sucesso.");
-			//Notification.show("Salvar Documento", "Documento salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			//Notification.show("Salvar Documento", e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			this.showErrorNotification("Salvar Documento", e.getMessage());
 		}
 	}

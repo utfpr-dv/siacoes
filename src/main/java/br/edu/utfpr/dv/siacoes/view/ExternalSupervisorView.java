@@ -45,7 +45,7 @@ public class ExternalSupervisorView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Orientadores", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Orientadores", e.getMessage());
 		}
 	}
 
@@ -69,7 +69,7 @@ public class ExternalSupervisorView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Orientador", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Orientador", e.getMessage());
 		}
 	}
 

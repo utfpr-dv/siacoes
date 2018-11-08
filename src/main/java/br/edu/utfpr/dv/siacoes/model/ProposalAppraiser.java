@@ -47,6 +47,7 @@ public class ProposalAppraiser {
 	private String comments;
 	private boolean allowEditing;
 	private boolean supervisorIndication;
+	private byte[] file;
 	
 	public ProposalAppraiser(){
 		this.setIdProposalAppraiser(0);
@@ -56,6 +57,7 @@ public class ProposalAppraiser {
 		this.setComments("");
 		this.setAllowEditing(true);
 		this.setSupervisorIndication(false);
+		this.setFile(null);
 	}
 
 	public int getIdProposalAppraiser() {
@@ -100,5 +102,11 @@ public class ProposalAppraiser {
 	public void setSupervisorIndication(boolean supervisorIndication) {
 		this.supervisorIndication = supervisorIndication;
 	}
-		
+	public byte[] getFile() {
+		return file;
+	}
+	public void setFile(byte[] file) {
+		this.file = file;
+	}
+	
 }

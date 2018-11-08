@@ -45,7 +45,7 @@ public abstract class ChartView extends BasicView {
             	}catch(Exception e){
             		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
             		
-            		Notification.show("Gerar Gráfico", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+            		showErrorNotification("Gerar Gráfico", e.getMessage());
             	}
             }
         });

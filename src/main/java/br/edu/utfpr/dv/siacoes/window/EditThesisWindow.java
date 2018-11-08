@@ -188,7 +188,7 @@ public class EditThesisWindow extends EditWindow {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				this.uploadFile.setEnabled(false);
 				this.setSaveButtonEnabled(false);
-				Notification.show("Submeter Monografia", "Não foi possível determinar a data limite para entrega das monografias.", Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Submeter Monografia", "Não foi possível determinar a data limite para entrega das monografias.");
 			}
 		}
 		
@@ -255,12 +255,12 @@ public class EditThesisWindow extends EditWindow {
 				Deadline d = dbo.findBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 				
 				if(DateUtils.getToday().getTime().after(d.getProjectDeadline())){
-					Notification.show("Submeter Monografia", "O prazo para a submissão de monografias já foi encerrado.", Notification.Type.ERROR_MESSAGE);
+					this.showErrorNotification("Submeter Monografia", "O prazo para a submissão de monografias já foi encerrado.");
 					return;
 				}
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-				Notification.show("Submeter Monografia", "Não foi possível determinar a data limite para entrega das monografias.", Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Submeter Monografia", "Não foi possível determinar a data limite para entrega das monografias.");
 				return;
 			}
 		}
@@ -282,14 +282,14 @@ public class EditThesisWindow extends EditWindow {
 			
 			bo.save(this.thesis);
 			
-			Notification.show("Salvar Monografia", "Monografia salva com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Monografia", "Monografia salva com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Monografia", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Monografia", e.getMessage());
 		}
 	}
 	
@@ -299,7 +299,7 @@ public class EditThesisWindow extends EditWindow {
     	} catch (Exception e) {
         	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Download do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        	this.showErrorNotification("Download do Arquivo", e.getMessage());
 		}
 	}
 	

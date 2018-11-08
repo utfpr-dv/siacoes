@@ -139,7 +139,7 @@ public class AttendanceView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Acompanhamentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Acompanhamentos", e.getMessage());
 		}
 	}
 	
@@ -158,7 +158,7 @@ public class AttendanceView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Acompanhamentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Acompanhamentos", e.getMessage());
 		}
 	}
 	
@@ -185,7 +185,7 @@ public class AttendanceView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Acompanhamentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Acompanhamentos", e.getMessage());
 		}
 	}
 	
@@ -201,18 +201,18 @@ public class AttendanceView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Acompanhamentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Acompanhamentos", e.getMessage());
 		}
 	}
 
 	@Override
 	public void addClick() {
 		if(this.comboStudent.getStudent() == null){
-			Notification.show("Incluir Reunião", "Selecione o acadêmico.", Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Incluir Reunião", "Selecione o acadêmico.");
 		}else if(this.comboProposal.getValue() == null){
-			Notification.show("Incluir Reunião", "Selecione o projeto.", Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Incluir Reunião", "Selecione o projeto.");
 		}else if(this.comboSupervisor.getValue() == null){
-			Notification.show("Incluir Reunião", "Selecione o orientador.", Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Incluir Reunião", "Selecione o orientador.");
 		}else{
 			Attendance attendance = new Attendance();
 	    	
@@ -235,7 +235,7 @@ public class AttendanceView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Reunião", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Reunião", e.getMessage());
 		}
 	}
 
@@ -250,7 +250,7 @@ public class AttendanceView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Excluir Reunião", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Excluir Reunião", e.getMessage());
 		}
 	}
 
@@ -284,7 +284,7 @@ public class AttendanceView extends ListView {
 		            public void buttonClick(ClickEvent event) {
 		            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 		            	
-		            	Notification.show("Imprimir Acompanhamentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		            	showErrorNotification("Imprimir Acompanhamentos", e.getMessage());
 		            }
 		        });
 			}
@@ -293,9 +293,9 @@ public class AttendanceView extends ListView {
 	            @Override
 	            public void buttonClick(ClickEvent event) {
 	            	if(Session.isUserStudent()) {
-	            		Notification.show("Imprimir Acompanhamentos", "É necessário selecionar o orientador e a proposta para imprimir os acompanhamentos.", Notification.Type.WARNING_MESSAGE);
+	            		showWarningNotification("Imprimir Acompanhamentos", "É necessário selecionar o orientador e a proposta para imprimir os acompanhamentos.");
 	            	} else {
-	            		Notification.show("Imprimir Acompanhamentos", "É necessário selecionar o acadêmico e a proposta para imprimir os acompanhamentos.", Notification.Type.WARNING_MESSAGE);	
+	            		showWarningNotification("Imprimir Acompanhamentos", "É necessário selecionar o acadêmico e a proposta para imprimir os acompanhamentos.");
 	            	}
 	            }
 	        });

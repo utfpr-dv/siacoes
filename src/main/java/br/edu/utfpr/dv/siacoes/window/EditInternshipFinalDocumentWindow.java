@@ -192,7 +192,7 @@ public class EditInternshipFinalDocumentWindow extends EditWindow {
     	} catch (Exception e) {
         	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Download do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        	this.showErrorNotification("Download do Arquivo", e.getMessage());
 		}
 	}
 	
@@ -222,14 +222,14 @@ public class EditInternshipFinalDocumentWindow extends EditWindow {
 			
 			bo.save(this.doc);
 			
-			Notification.show("Salvar Relatório de Estágio", "Relatório de estágio salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Relatório de Estágio", "Relatório de Estágio salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Relatório de Estágio", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Relatório de Estágio", e.getMessage());
 		}
 	}
 	

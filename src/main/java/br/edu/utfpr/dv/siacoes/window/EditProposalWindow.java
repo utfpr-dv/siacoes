@@ -230,7 +230,7 @@ public class EditProposalWindow extends EditWindow {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				this.uploadFile.setEnabled(false);
 				this.setSaveButtonEnabled(false);
-				Notification.show("Submeter Proposta", "Não foi possível determinar a data limite para entrega das propostas.", Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Submeter Proposta", "Não foi possível determinar a data limite para entrega das propostas.");
 			}
 		}
 		
@@ -314,7 +314,7 @@ public class EditProposalWindow extends EditWindow {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Carregar Proposta", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Carregar Proposta", e.getMessage());
 		}
 		
 		this.layoutAppraisers.removeAllComponents();
@@ -330,7 +330,7 @@ public class EditProposalWindow extends EditWindow {
 			
 			if(this.submitProposal && (this.proposal.getFile() == null)){
 				if(this.proposal.getFile() == null){
-					Notification.show("Submeter Proposta", "É necessário enviar o arquivo da proposta.", Notification.Type.ERROR_MESSAGE);
+					this.showErrorNotification("Submeter Proposta", "É necessário enviar o arquivo da proposta.");
 					return;	
 				}
 			}
@@ -341,12 +341,12 @@ public class EditProposalWindow extends EditWindow {
 				Deadline d = dbo.findBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 				
 				if(DateUtils.getToday().getTime().after(d.getProposalDeadline())){
-					Notification.show("Submeter Proposta", "O prazo para a submissão de propostas já foi encerrado.", Notification.Type.ERROR_MESSAGE);
+					this.showErrorNotification("Submeter Proposta", "O prazo para a submissão de propostas já foi encerrado.");
 					return;
 				}
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-				Notification.show("Submeter Proposta", "Não foi possível determinar a data limite para entrega das propostas.", Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Submeter Proposta", "Não foi possível determinar a data limite para entrega das propostas.");
 				return;
 			}
 		}
@@ -373,14 +373,14 @@ public class EditProposalWindow extends EditWindow {
 			
 			bo.save(this.proposal);
 			
-			Notification.show("Salvar Proposta", "Proposta salva com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Proposta", "Proposta salva com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Proposta", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Proposta", e.getMessage());
 		}
 	}
 	
@@ -405,7 +405,7 @@ public class EditProposalWindow extends EditWindow {
 		int index = this.getAppraiserSelectedIndex();
 		
 		if(index == -1){
-			Notification.show("Selecionar Avaliador", "Selecione o avaliador para visualizar.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Selecionar Avaliador", "Selecione o avaliador para visualizar.");
 		}else{
 			UI.getCurrent().addWindow(new EditProposalAppraiserWindow(this.proposal.getAppraisers().get(index), this));	
 		}
@@ -415,9 +415,9 @@ public class EditProposalWindow extends EditWindow {
 		int index = this.getAppraiserSelectedIndex();
 		
 		if(index == -1){
-			Notification.show("Selecionar Avaliador", "Selecione o avaliador para remover.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Selecionar Avaliador", "Selecione o avaliador para remover.");
 		}else if(this.proposal.getAppraisers().get(index).getFeedback() != ProposalFeedback.NONE){
-			Notification.show("Selecionar Avaliador", "O avaliador selecionado não pode ser removido pois o mesmo já informou seu parecer.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Remover Avaliador", "O avaliador selecionado não pode ser removido pois o mesmo já informou seu parecer.");
 		}else{
 			ConfirmDialog.show(UI.getCurrent(), "Confirma a remoção do avaliador?", new ConfirmDialog.Listener() {
                 public void onClose(ConfirmDialog dialog) {
@@ -454,7 +454,7 @@ public class EditProposalWindow extends EditWindow {
     	} catch (Exception e) {
         	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Download do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        	this.showErrorNotification("Download do Arquivo", e.getMessage());
 		}
 	}
 	

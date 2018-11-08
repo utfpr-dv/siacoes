@@ -56,7 +56,7 @@ public class StudentView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Acadêmicos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Acadêmicos", e.getMessage());
 		}
 	}
 
@@ -88,7 +88,7 @@ public class StudentView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Acadêmico", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Acadêmico", e.getMessage());
 		}
 	}
 

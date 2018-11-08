@@ -85,7 +85,7 @@ public class EditEmailConfigWindow extends EditWindow {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Carregar Configurações", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Carregar Configurações", e.getMessage());
 			
 			return new EmailConfig();
 		}
@@ -108,13 +108,13 @@ public class EditEmailConfigWindow extends EditWindow {
 			
 			bo.save(this.config);
 			
-			Notification.show("Salvar Configurações", "Configurações salvas com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Configurações", "Configurações salvas com sucesso.");
 			this.close();
 			this.parentViewRefreshGrid();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Configurações", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Configurações", e.getMessage());
 		}
 	}
 	

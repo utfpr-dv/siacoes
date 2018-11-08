@@ -227,7 +227,7 @@ public class InternshipView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Estágios", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Estágios", e.getMessage());
 		}
 	}
 
@@ -249,7 +249,7 @@ public class InternshipView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Estágio", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Estágio", e.getMessage());
 		}
 	}
 	
@@ -257,7 +257,7 @@ public class InternshipView extends ListView {
 		Object id = getIdSelected();
     	
     	if(id == null){
-    		Notification.show("Selecionar Registro", "Selecione o registro para enviar o relatório final.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Selecionar Registro", "Selecione o registro para enviar o relatório final.");
     	}else{
     		try{
     			InternshipJuryBO jbo = new InternshipJuryBO();
@@ -280,7 +280,7 @@ public class InternshipView extends ListView {
     		}catch(Exception e){
     			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
     			
-    			Notification.show("Enviar Relatório", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+    			this.showErrorNotification("Enviar Relatório", e.getMessage());
     		}
     	}
 	}
@@ -289,7 +289,7 @@ public class InternshipView extends ListView {
 		Object id = getIdSelected();
     	
     	if(id == null){
-    		Notification.show("Selecionar Registro", "Selecione o registro para marcar a banca.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Selecionar Registro", "Selecione o registro para marcar a banca.");
     	}else{
     		try {
     			Internship internship = new InternshipBO().findById((int)id);
@@ -299,12 +299,12 @@ public class InternshipView extends ListView {
     				
     				UI.getCurrent().addWindow(new EditInternshipJuryWindow(jury, this));
     			}else{
-    				Notification.show("Marcar Banca", "A banca só pode ser marcada para o estágio obrigatório.", Notification.Type.WARNING_MESSAGE);    				
+    				this.showWarningNotification("Marcar Banca", "A banca só pode ser marcada para o estágio obrigatório.");
     			}
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show("Marcar Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Marcar Banca", e.getMessage());
 			}
     	}
 	}
@@ -313,7 +313,7 @@ public class InternshipView extends ListView {
 		Object id = getIdSelected();
     	
     	if(id == null){
-    		Notification.show("Selecionar Registro", "Selecione o registro para " + ((this.profile == UserProfile.PROFESSOR) ? "validar a versão final do relatório final" : "enviar a versão final do relatório") + ".", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Selecionar Registro", "Selecione o registro para " + ((this.profile == UserProfile.PROFESSOR) ? "validar a versão final do relatório final" : "enviar a versão final do relatório") + ".");
     	}else{
     		try{
     			InternshipFinalDocumentBO bo = new InternshipFinalDocumentBO();
@@ -348,7 +348,7 @@ public class InternshipView extends ListView {
     		} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show(((this.profile == UserProfile.PROFESSOR) ? "Validar" : "Enviar") + " Versão Final", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification(((this.profile == UserProfile.PROFESSOR) ? "Validar" : "Enviar") + " Versão Final", e.getMessage());
 			}
     	}
 	}
@@ -364,7 +364,7 @@ public class InternshipView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Excluir Estágio", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Excluir Estágio", e.getMessage());
 		}
 	}
 
@@ -378,7 +378,7 @@ public class InternshipView extends ListView {
 		Object id = getIdSelected();
     	
     	if(id == null){
-    		Notification.show("Selecionar Registro", "Selecione o registro para visualizar o feedback.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Selecionar Registro", "Selecione o registro para visualizar o feedback.");
     	}else{
     		try{
     			InternshipJuryBO bo = new InternshipJuryBO();
@@ -387,12 +387,12 @@ public class InternshipView extends ListView {
     			if((jury != null) && (jury.getIdInternshipJury() != 0)){
     				UI.getCurrent().addWindow(new DownloadInternshipFeedbackWindow(jury));
     			}else{
-    				Notification.show("Feedback da Banca", "Ainda não foi marcada a banca para este trabalho.", Notification.Type.WARNING_MESSAGE);
+    				this.showWarningNotification("Feedback da Banca", "Ainda não foi marcada a banca para este trabalho.");
     			}
     		} catch (Exception e) {
     			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
     			
-    			Notification.show("Feedback da Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+    			this.showErrorNotification("Feedback da Banca", e.getMessage());
     		}
     	}
 	}
@@ -401,7 +401,7 @@ public class InternshipView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Gerar Declaração", "Selecione um registro para gerar a declaração.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Gerar Declaração", "Selecione um registro para gerar a declaração.");
 		}else{
 			try{
 				CertificateBO bo = new CertificateBO();
@@ -412,7 +412,7 @@ public class InternshipView extends ListView {
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Gerar Declaração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Gerar Declaração", e.getMessage());
 			}
 		}
 	}
@@ -421,7 +421,7 @@ public class InternshipView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Gerar Declaração", "Selecione um registro para gerar a declaração.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Gerar Declaração", "Selecione um registro para gerar a declaração.");
 		}else{
 			try{
 				CertificateBO bo = new CertificateBO();
@@ -432,7 +432,7 @@ public class InternshipView extends ListView {
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Gerar Declaração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Gerar Declaração", e.getMessage());
 			}
 		}
 	}

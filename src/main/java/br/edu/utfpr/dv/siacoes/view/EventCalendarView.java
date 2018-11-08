@@ -184,7 +184,7 @@ public class EventCalendarView extends BasicView {
 			this.calendar.setEndDate(DateUtils.addDay(this.calendar.getStartDate(), 6));
 			
 			if((listThesis.size() == 0) && (listInternship.size() == 0)){
-				Notification.show("Listar Eventos", "Não há bancas agendadas para este semestre.", Notification.Type.WARNING_MESSAGE);
+				this.showWarningNotification("Listar Eventos", "Não há bancas agendadas para este semestre.");
 			}else{
 				for(Jury jury : listThesis){
 					String title = "Banca de TCC " + String.valueOf(jury.getStage());
@@ -236,7 +236,7 @@ public class EventCalendarView extends BasicView {
     	} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Eventos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Eventos", e.getMessage());
 		}
     }
 

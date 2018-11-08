@@ -10,8 +10,10 @@ import com.vaadin.ui.TextArea;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ProposalAppraiserBO;
+import br.edu.utfpr.dv.siacoes.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
+import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
@@ -26,6 +28,7 @@ public class EditProposalAppraiserWindow extends EditWindow {
 	private final NativeSelect comboFeedback;
 	private final TextArea textComments;
 	private final CheckBox checkAllowEditing;
+	private final FileUploader uploadFile;
 	
 	public EditProposalAppraiserWindow(ProposalAppraiser appraiser, EditProposalWindow editProposalWindow){
 		super("Editar Avaliador", null);
@@ -42,6 +45,7 @@ public class EditProposalAppraiserWindow extends EditWindow {
 		this.comboFeedback = new NativeSelect("Parecer");
 		this.textComments = new TextArea("Observações");
 		this.checkAllowEditing = new CheckBox("Permite edição");
+		this.uploadFile = new FileUploader("Enviar arquivo comentado (PDF, 2 MB)");
 		
 		this.buildWindow();
 	}
@@ -61,6 +65,7 @@ public class EditProposalAppraiserWindow extends EditWindow {
 		this.comboFeedback = new NativeSelect("Parecer");
 		this.textComments = new TextArea("Observações");
 		this.checkAllowEditing = new CheckBox("Permite edição");
+		this.uploadFile = new FileUploader("Enviar arquivo comentado (PDF, 2 MB)");
 		
 		this.buildWindow();
 	}
@@ -79,9 +84,13 @@ public class EditProposalAppraiserWindow extends EditWindow {
 		this.textComments.setHeight("200px");
 		this.textComments.addStyleName("textscroll");
 		
+		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);
+		this.uploadFile.setMaxBytesLength(2048 * 1024);
+		
 		this.addField(this.comboAppraiser);
 		this.addField(this.comboFeedback);
 		this.addField(this.textComments);
+		this.addField(this.uploadFile);
 		
 		if(Session.isUserManager(SystemModule.SIGET)){
 			this.addField(this.checkAllowEditing);
@@ -122,6 +131,9 @@ public class EditProposalAppraiserWindow extends EditWindow {
 			if(this.appraiser.isAllowEditing() && (this.appraiser.getAppraiser().getIdUser() == Session.getUser().getIdUser())){
 				this.appraiser.setFeedback((ProposalFeedback)this.comboFeedback.getValue());
 				this.appraiser.setComments(this.textComments.getValue());
+				if(this.uploadFile.getUploadedFile() != null) {
+					this.appraiser.setFile(this.uploadFile.getUploadedFile());
+				}
 			}
 			
 			if(this.editProposalWindow == null){
@@ -134,14 +146,14 @@ public class EditProposalAppraiserWindow extends EditWindow {
 				this.editProposalWindow.setAppraiser(this.appraiser);
 			}
 			
-			Notification.show("Salvar Avaliador", "Avaliador salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Avaliador", "Avaliador salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Avaliador", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Avaliador", e.getMessage());
 		}
 	}
 

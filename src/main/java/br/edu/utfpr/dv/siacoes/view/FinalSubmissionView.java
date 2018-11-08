@@ -67,7 +67,7 @@ public class FinalSubmissionView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Acadêmicos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Acadêmicos", e.getMessage());
 		}
 	}
 	
@@ -75,7 +75,7 @@ public class FinalSubmissionView extends ListView {
 		Object value = this.getIdSelected();
     	
     	if(value == null){
-    		Notification.show("Selecionar Registro", "Selecione o acadêmico para imprimir o relatório final.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Relatório Final", "Selecione o acadêmico para imprimir o relatório final.");
     	}else{
     		try {
     			FinalSubmissionBO bo = new FinalSubmissionBO();
@@ -85,7 +85,7 @@ public class FinalSubmissionView extends ListView {
 			} catch (Exception e) {
 				e.printStackTrace();
 				
-				Notification.show("Relatório Final", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Relatório Final", e.getMessage());
 			}
     	}
 	}

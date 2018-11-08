@@ -74,7 +74,7 @@ public class EditSupervisorIndicationWindow extends EditWindow {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Carregar Avaliadores", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Carregar Avaliadores", e.getMessage());
 		}
 	}
 	
@@ -107,7 +107,7 @@ public class EditSupervisorIndicationWindow extends EditWindow {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Avaliadores", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Avaliadores", e.getMessage());
 		}
 	}
 

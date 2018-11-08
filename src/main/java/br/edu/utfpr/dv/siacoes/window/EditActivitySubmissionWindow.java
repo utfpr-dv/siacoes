@@ -262,7 +262,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Carregar Grupos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Carregar Grupos", e.getMessage());
 		}
 	}
 	
@@ -280,7 +280,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Carregar Atividades", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Carregar Atividades", e.getMessage());
 		}
 	}
 	
@@ -308,7 +308,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		} catch(Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Selecionar Atividade", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Selecionar Atividade", e.getMessage());
 		}
 	}
 	
@@ -439,14 +439,14 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			
 			bo.save(this.submission);
 			
-			Notification.show("Salvar Submissão", "Submissão salva com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Submissão", "Submissão salva com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Submissão", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Submissão", e.getMessage());
 		}
 	}
 

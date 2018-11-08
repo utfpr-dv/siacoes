@@ -2,14 +2,12 @@ package br.edu.utfpr.dv.siacoes.window;
 
 import java.util.UUID;
 
-import com.vaadin.server.FontAwesome;
-import com.vaadin.shared.Position;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
+import br.edu.utfpr.dv.siacoes.components.Notification;
 import br.edu.utfpr.dv.siacoes.view.PDFView;
 
 public class BasicWindow extends Window {
@@ -23,7 +21,7 @@ public class BasicWindow extends Window {
 
 	protected void showReport(byte[] pdfReport) {
 		if(pdfReport == null) {
-    		Notification.show("Visualizar Arquivo", "O arquivo solicitado não foi encontrado.", Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Visualizar Arquivo", "O arquivo solicitado não foi encontrado.");
     	} else {
 	    	String id = UUID.randomUUID().toString();
 	    	
@@ -34,28 +32,15 @@ public class BasicWindow extends Window {
     }
 	
 	protected void showSuccessNotification(String title, String message) {
-		Notification notification = new Notification(title, message);
-		
-		notification.setStyleName(ValoTheme.NOTIFICATION_SUCCESS);
-		
-		notification.show(UI.getCurrent().getPage());
+		Notification.showSuccessNotification(title, message);
 	}
 	
 	protected void showWarningNotification(String title, String message) {
-		Notification notification = new Notification(title, message);
-		
-		notification.setStyleName(ValoTheme.NOTIFICATION_WARNING);
-		
-		notification.show(UI.getCurrent().getPage());
+		Notification.showWarningNotification(title, message);
 	}
 	
 	protected void showErrorNotification(String title, String message) {
-		Notification notification = new Notification(title, message);
-		
-		notification.setStyleName(ValoTheme.NOTIFICATION_ERROR);
-		notification.setDelayMsec(3000);
-		
-		notification.show(UI.getCurrent().getPage());
+		Notification.showErrorNotification(title, message);
 	}
 	
 }

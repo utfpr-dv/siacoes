@@ -139,14 +139,14 @@ public class EditDeadlineWindow extends EditWindow {
 			
 			bo.save(deadline);
 			
-			Notification.show("Salvar Datas", "Datas salvas com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Datas", "Datas salvas com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Datas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Datas", e.getMessage());
 		}
 	}
 

@@ -93,14 +93,14 @@ public class DownloadInternshipFeedbackWindow extends BasicWindow {
 	    	this.appraisers = bo.listAppraisers(this.jury.getIdInternshipJury());
 	    	
 	    	for(InternshipJuryAppraiser ja: this.appraisers){
-				this.grid.addRow(ja.getAppraiser().getName(), new ThemeResource("images/" + (ja.getFile() != null ? "PDF" : "UNDEFINED") + ".png"), new ThemeResource("images/" + (ja.getFile() != null ? "ZIP" : "UNDEFINED") + ".png"));
+				this.grid.addRow(ja.getAppraiser().getName(), new ThemeResource("images/" + (ja.getFile() != null ? "PDF" : "UNDEFINED") + ".png"), new ThemeResource("images/" + (ja.getAdditionalFile() != null ? "ZIP" : "UNDEFINED") + ".png"));
 			}
 	    	
 	    	this.prepareDownloadAdditionalFeedback();
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Feedback", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Feedback", e.getMessage());
 		}
 	}
 	
@@ -116,15 +116,15 @@ public class DownloadInternshipFeedbackWindow extends BasicWindow {
             	if(ja.getFile() != null) {
             		this.showReport(ja.getFile());
             	} else {
-            		Notification.show("Download de Arquivo", "O membro " + ja.getAppraiser().getName() + " não enviou nenhum arquivo de comentários.", Notification.Type.WARNING_MESSAGE);
+            		this.showWarningNotification("Download de Arquivo", "O membro " + ja.getAppraiser().getName() + " não enviou nenhum arquivo de comentários.");
             	}
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
             	
-            	Notification.show("Download de Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Download de Arquivo", e.getMessage());
 			}
 		} else {
-			Notification.show("Download de Arquivo", "Selecione o arquivo para baixar.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Download de Arquivo", "Selecione o arquivo para baixar.");
 		}
 	}
 	
@@ -144,7 +144,7 @@ public class DownloadInternshipFeedbackWindow extends BasicWindow {
             		this.listenerClickDownloadAdditional = new Button.ClickListener() {
         	            @Override
         	            public void buttonClick(ClickEvent event) {
-        	            	Notification.show("Download de Arquivo", "O membro " + ja.getAppraiser().getName() + " não enviou nenhum arquivo complementar.", Notification.Type.WARNING_MESSAGE);
+        	            	showWarningNotification("Download de Arquivo", "O membro " + ja.getAppraiser().getName() + " não enviou nenhum arquivo complementar.");
         	            }
         	        };
         	        
@@ -156,7 +156,7 @@ public class DownloadInternshipFeedbackWindow extends BasicWindow {
 				this.listenerClickDownloadAdditional = new Button.ClickListener() {
     	            @Override
     	            public void buttonClick(ClickEvent event) {
-    	            	Notification.show("Download de Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+    	            	showErrorNotification("Download de Arquivo", e.getMessage());
     	            }
     	        };
     	        
@@ -166,7 +166,7 @@ public class DownloadInternshipFeedbackWindow extends BasicWindow {
 			this.listenerClickDownloadAdditional = new Button.ClickListener() {
 	            @Override
 	            public void buttonClick(ClickEvent event) {
-	            	Notification.show("Download de Arquivo", "Selecione o arquivo para baixar.", Notification.Type.WARNING_MESSAGE);
+	            	showWarningNotification("Download de Arquivo", "Selecione o arquivo para baixar.");
 	            }
 	        };
 	        

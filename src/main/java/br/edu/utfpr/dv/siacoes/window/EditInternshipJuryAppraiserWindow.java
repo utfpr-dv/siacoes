@@ -90,7 +90,7 @@ public class EditInternshipJuryAppraiserWindow extends EditWindow {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Adicionar Membro", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Adicionar Membro", e.getMessage());
 		}
 	}
 

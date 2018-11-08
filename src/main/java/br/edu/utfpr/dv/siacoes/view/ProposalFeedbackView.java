@@ -105,7 +105,7 @@ public class ProposalFeedbackView extends ListView {
 		} catch (Exception e) {
 			e.printStackTrace();
 			
-			Notification.show("Listar Propostas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Propostas", e.getMessage());
 		}
     }
 	
@@ -118,19 +118,19 @@ public class ProposalFeedbackView extends ListView {
             	SigetConfig config = new SigetConfigBO().findByDepartment(proposal.getDepartment().getIdDepartment());
             	
             	if(config.isSupervisorAgreement() && (proposal.getSupervisorFeedback() != ProposalFeedback.APPROVED)) {
-            		Notification.show("Download da Proposta", "O Professor Orientador ainda não preencheu o Termo de Concordância de Orientação.", Notification.Type.WARNING_MESSAGE);
+            		this.showWarningNotification("Download da Proposta", "O Professor Orientador ainda não preencheu o Termo de Concordância de Orientação.");
             	} else if(proposal.getFile() != null) {
             		this.showReport(proposal.getFile());
             	} else {
-            		Notification.show("Download da Proposta", "O acadêmico ainda não efetuou a submissão da proposta.", Notification.Type.WARNING_MESSAGE);
+            		this.showWarningNotification("Download da Proposta", "O acadêmico ainda não efetuou a submissão da proposta.");
             	}
         	} catch (Exception e) {
             	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
             	
-            	Notification.show("Download da Proposta", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+            	this.showErrorNotification("Download da Proposta", e.getMessage());
 			}
 		} else {
-			Notification.show("Download da Proposta", "Selecione um registro para efetuar do download da proposta.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Download da Proposta", "Selecione um registro para efetuar do download da proposta.");
 		}
 	}
 	
@@ -143,17 +143,17 @@ public class ProposalFeedbackView extends ListView {
 				ProposalAppraiser appraiser = bo.findByAppraiser((int)value, Session.getUser().getIdUser());
 				
 				if(appraiser.getFeedback() == ProposalFeedback.NONE) {
-					Notification.show("Imprimir Parecer", "É necessário preencher o parecer antes de imprimir.", Notification.Type.WARNING_MESSAGE);
+					this.showWarningNotification("Imprimir Parecer", "É necessário preencher o parecer antes de imprimir.");
 				} else {
 					this.showReport(bo.getFeedbackReport(appraiser));	
 				}
 			} catch (Exception e) {
             	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
             	
-            	Notification.show("Imprimir Parecer", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+            	this.showErrorNotification("Imprimir Parecer", e.getMessage());
 			}
 		} else {
-			Notification.show("Imprimir Parecer", "Selecione um registro para imprimir o parecer.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Imprimir Parecer", "Selecione um registro para imprimir o parecer.");
 		}
 	}
 	
@@ -173,7 +173,7 @@ public class ProposalFeedbackView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Cadastrar Parecer", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Cadastrar Parecer", e.getMessage());
 		}
 	}
 

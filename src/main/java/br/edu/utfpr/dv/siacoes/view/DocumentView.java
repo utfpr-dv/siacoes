@@ -95,7 +95,7 @@ public class DocumentView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Documentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Documentos", e.getMessage());
 		}
     }
     
@@ -111,7 +111,7 @@ public class DocumentView extends ListView {
 	            public void buttonClick(ClickEvent event) {
 	            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	            	
-	            	Notification.show("Download dos Arquivos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+	            	showErrorNotification("Download dos Arquivos", e.getMessage());
 	            }
 	        };
 	        
@@ -137,7 +137,7 @@ public class DocumentView extends ListView {
 		            public void buttonClick(ClickEvent event) {
 		            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 		            	
-		            	Notification.show("Download de Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		            	showErrorNotification("Download de Arquivo", e.getMessage());
 		            }
 		        };
 		        
@@ -147,7 +147,7 @@ public class DocumentView extends ListView {
     		this.listenerClickDownload = new Button.ClickListener() {
 	            @Override
 	            public void buttonClick(ClickEvent event) {
-	            	Notification.show("Download de Arquivo", "Selecione o arquivo para baixar.", Notification.Type.WARNING_MESSAGE);
+	            	showWarningNotification("Download de Arquivo", "Selecione o arquivo para baixar.");
 	            }
 	        };
 	        
@@ -175,7 +175,7 @@ public class DocumentView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Documento", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Documento", e.getMessage());
 		}
 	}
 
@@ -189,7 +189,7 @@ public class DocumentView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Excluir Documento", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Excluir Documento", e.getMessage());
 		}
 	}
 	
@@ -205,10 +205,10 @@ public class DocumentView extends ListView {
     		}catch(Exception e){
     			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
     			
-    			Notification.show("Mover Documento", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+    			this.showErrorNotification("Mover Documento", e.getMessage());
     		}
     	}else{
-    		Notification.show("Mover Documento", "Selecione o registro.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Mover Documento", "Selecione o registro.");
     	}
 	}
 	
@@ -224,10 +224,10 @@ public class DocumentView extends ListView {
     		}catch(Exception e){
     			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
     			
-    			Notification.show("Mover Documento", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+    			this.showErrorNotification("Mover Documento", e.getMessage());
     		}
     	}else{
-    		Notification.show("Mover Documento", "Selecione o registro.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Mover Documento", "Selecione o registro.");
     	}
 	}
 	

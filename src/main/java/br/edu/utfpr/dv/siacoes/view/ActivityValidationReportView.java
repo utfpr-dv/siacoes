@@ -48,7 +48,7 @@ public class ActivityValidationReportView extends ReportView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Carregar Usuários", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Carregar Usuários", e.getMessage());
 		}
 	}
 

@@ -67,13 +67,13 @@ public class EditEmailMessageWindow extends EditWindow {
 			
 			bo.save(this.message);
 			
-			Notification.show("Salvar Mensagem", "Mensagem salva com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Mensagem", "Mensagem salva com sucesso.");
 			this.close();
 			this.parentViewRefreshGrid();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Mensagem", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Mensagem", e.getMessage());
 		}
 	}
 

@@ -172,7 +172,7 @@ public class EditFinalDocumentWindow extends EditWindow {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				this.uploadFile.setEnabled(false);
 				this.setSaveButtonEnabled(false);
-				Notification.show("Submeter Versão Final", "Não foi possível determinar a data limite para entrega da versão final do documento.", Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Submeter Versão Final", "Não foi possível determinar a data limite para entrega da versão final do documento.");
 			}
 		}
 		
@@ -221,7 +221,7 @@ public class EditFinalDocumentWindow extends EditWindow {
     	} catch (Exception e) {
         	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Download do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        	this.showErrorNotification("Download do Arquivo", e.getMessage());
 		}
 	}
 	
@@ -253,14 +253,14 @@ public class EditFinalDocumentWindow extends EditWindow {
 			
 			bo.save(this.thesis);
 			
-			Notification.show("Salvar Projeto/Monografia", "Projeto/Monografia salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Projeto/Monografia", "Projeto/Monografia salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Projeto/Monografia", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Projeto/Monografia", e.getMessage());
 		}
 	}
 	

@@ -15,11 +15,11 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
+import br.edu.utfpr.dv.siacoes.components.Notification;
 import br.edu.utfpr.dv.siacoes.components.SideMenu;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
@@ -143,7 +143,7 @@ public abstract class BasicView extends CustomComponent implements View {
     
     protected void showReport(byte[] pdfReport){
     	if(pdfReport == null) {
-    		Notification.show("Visualizar Arquivo", "O arquivo solicitado não foi encontrado.", Notification.Type.ERROR_MESSAGE);
+    		this.showErrorNotification("Visualizar Arquivo", "O arquivo solicitado não foi encontrado.");
     	} else {
         	String id = UUID.randomUUID().toString();
         	
@@ -152,5 +152,17 @@ public abstract class BasicView extends CustomComponent implements View {
     		getUI().getPage().open("#!" + PDFView.NAME + "/session/" + id, "_blank");    		
     	}
     }
+    
+    protected void showSuccessNotification(String title, String message) {
+		Notification.showSuccessNotification(title, message);
+	}
+	
+	protected void showWarningNotification(String title, String message) {
+		Notification.showWarningNotification(title, message);
+	}
+	
+	protected void showErrorNotification(String title, String message) {
+		Notification.showErrorNotification(title, message);
+	}
 
 }

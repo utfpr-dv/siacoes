@@ -76,7 +76,7 @@ public class ActivityView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Atividades", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Atividades", e.getMessage());
 		}
 	}
 
@@ -95,7 +95,7 @@ public class ActivityView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Atividade", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Atividade", e.getMessage());
 		}
 	}
 
@@ -123,10 +123,10 @@ public class ActivityView extends ListView {
     		}catch(Exception e){
     			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
     			
-    			Notification.show("Mover Atividade", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+    			this.showErrorNotification("Mover Atividade", e.getMessage());
     		}
     	}else{
-    		Notification.show("Mover Atividade", "Selecione o registro.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Mover Atividade", "Selecione o registro.");
     	}
 	}
 	
@@ -142,10 +142,10 @@ public class ActivityView extends ListView {
     		}catch(Exception e){
     			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
     			
-    			Notification.show("Mover Atividade", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+    			this.showErrorNotification("Mover Atividade", e.getMessage());
     		}
     	}else{
-    		Notification.show("Mover Atividade", "Selecione o registro.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Mover Atividade", "Selecione o registro.");
     	}
 	}
 

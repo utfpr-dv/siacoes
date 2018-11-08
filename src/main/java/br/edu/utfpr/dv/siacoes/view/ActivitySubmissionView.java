@@ -252,7 +252,7 @@ public class ActivitySubmissionView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Submissões", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Submissões", e.getMessage());
 		}
 	}
 	
@@ -286,11 +286,11 @@ public class ActivitySubmissionView extends ListView {
                 		
                 		FinalSubmission submission = bo.registerFinalSubmission(comboStudent.getStudent().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), Session.getUser().getIdUser());
                 		
-                		Notification.show("Finalizar Processo", "O processo de aprovação do acadêmico foi realizado com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+                		showSuccessNotification("Finalizar Processo", "O processo de aprovação do acadêmico foi realizado com sucesso.");
 					} catch (Exception e) {
 						e.printStackTrace();
 						
-						Notification.show("Finalizar Processo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+						showErrorNotification("Finalizar Processo", e.getMessage());
 					}
                 }
             }
@@ -312,7 +312,7 @@ public class ActivitySubmissionView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Submissão", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Submissão", e.getMessage());
 		}
 	}
 
@@ -327,7 +327,7 @@ public class ActivitySubmissionView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Excluir Submissão", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Excluir Submissão", e.getMessage());
 		}
 	}
 

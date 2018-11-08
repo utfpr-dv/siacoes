@@ -178,14 +178,14 @@ public class EditBugReportWindow extends EditWindow {
 			
 			bo.save(this.bug);
 			
-			Notification.show("Reportar Bug", "Bug reportado com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Reportar Bug", "Bug reportado com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Reportar Bug", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Reportar Bug", e.getMessage());
 		}
 	}
 

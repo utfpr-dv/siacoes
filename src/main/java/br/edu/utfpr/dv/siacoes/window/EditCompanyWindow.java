@@ -134,14 +134,14 @@ public class EditCompanyWindow extends EditWindow {
 			
 			bo.save(this.company);
 			
-			Notification.show("Salvar Empresa", "Empresa salva com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Empresa", "Empresa salva com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Empresa", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Empresa", e.getMessage());
 		}
 	}
 

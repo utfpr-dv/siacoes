@@ -111,12 +111,12 @@ public abstract class ListView extends BasicView {
             		refreshGrid();
             		
             		if(gridRowCount <= 0) {
-                		Notification.show("Listar Registros", "Não há registros para serem exibidos.", Notification.Type.WARNING_MESSAGE);
+            			showWarningNotification("Listar Registros", "Não há registros para serem exibidos.");
                 	}
             	}catch(Exception e){
             		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
             		
-            		Notification.show("Filtrar", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+            		showErrorNotification("Filtrar", e.getMessage());
             	}
             }
         });
@@ -310,7 +310,7 @@ public abstract class ListView extends BasicView {
     	Object value = this.getIdSelected();
     	
     	if(value == null){
-    		Notification.show("Selecionar Registro", "Selecione o registro para edição.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Selecionar Registro", "Selecione o registro para edição.");
     	}else{
     		this.editClick(value);	
     	}
@@ -320,7 +320,7 @@ public abstract class ListView extends BasicView {
 		Object value = this.getIdSelected();
     	
     	if(value == null){
-    		Notification.show("Selecionar Registro", "Selecione o registro para exclusão.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Selecionar Registro", "Selecione o registro para exclusão.");
     	}else{
     		ConfirmDialog.show(UI.getCurrent(), "Confirma a exclusão do registro?", new ConfirmDialog.Listener() {
                 public void onClose(ConfirmDialog dialog) {

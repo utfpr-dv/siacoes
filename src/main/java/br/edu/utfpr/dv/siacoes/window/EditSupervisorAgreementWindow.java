@@ -109,14 +109,14 @@ public class EditSupervisorAgreementWindow extends EditWindow {
 			
 			this.showReport(bo.getSupervisorFeedbackReport(this.proposal.getIdProposal()));
 			
-			Notification.show("Salvar Parecer", "Parecer salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Parecer", "Parecer salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Parecer", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Parecer", e.getMessage());
 		}
 	}
 

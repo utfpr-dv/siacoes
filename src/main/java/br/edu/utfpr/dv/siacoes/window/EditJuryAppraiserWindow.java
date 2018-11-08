@@ -145,7 +145,7 @@ public class EditJuryAppraiserWindow extends EditWindow {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Adicionar Membro", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Adicionar Membro", e.getMessage());
 		}
 	}
 	
@@ -153,7 +153,7 @@ public class EditJuryAppraiserWindow extends EditWindow {
 		User professor = this.comboProfessor.getProfessor();
 		
 		if((professor == null) || (professor.getIdUser() == 0)) {
-			Notification.show("Agenda do Professor", "Selecione o professor para visualizar a agenda.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Agenda do Professor", "Selecione o professor para visualizar a agenda.");
 		} else {
 			UI.getCurrent().addWindow(new ProfessorScheculeWindow(professor));
 		}

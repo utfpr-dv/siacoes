@@ -271,7 +271,7 @@ public class JuryView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Bancas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Bancas", e.getMessage());
 		}
 	}
 	
@@ -279,7 +279,7 @@ public class JuryView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Download do Trabalho", "Selecione uma banca para fazer o download do trabalho.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Download do Trabalho", "Selecione uma banca para fazer o download do trabalho.");
 		}else{
 			try{
 				JuryBO bo = new JuryBO();
@@ -303,7 +303,7 @@ public class JuryView extends ListView {
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Download do Trabalho", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Download do Trabalho", e.getMessage());
 			}
 		}
 	}
@@ -312,7 +312,7 @@ public class JuryView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Imprimir Termo de Aprovação", "Selecione uma banca para gerar o termo de aprovação.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Imprimir Termo de Aprovação", "Selecione uma banca para gerar o termo de aprovação.");
 		}else{
 			ConfirmDialog.show(UI.getCurrent(), "Imprimir Termo de Aprovação", "Selecione o modo de geração para o Termo de Aprovação.\n\n" +
 					"Versão Impressa: documento que deverá ser assinado e armazenado na coordenação.\n" + 
@@ -323,7 +323,7 @@ public class JuryView extends ListView {
                 	}catch(Exception e){
         				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	        	
-        	        	Notification.show("Imprimir Termo de Aprovação", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        				showErrorNotification("Imprimir Termo de Aprovação", e.getMessage());
         			}
                 }
             });
@@ -334,14 +334,14 @@ public class JuryView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Imprimir Ficha de Avaliação", "Selecione uma banca para gerar a ficha de avaliação.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Imprimir Ficha de Avaliação", "Selecione uma banca para gerar a ficha de avaliação.");
 		}else{
 			try{
 				this.showReport(new JuryBO().getJuryForm((int)value));
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Imprimir Ficha de Avaliação", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Imprimir Ficha de Avaliação", e.getMessage());
 			}
 		}
 	}
@@ -350,7 +350,7 @@ public class JuryView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Imprimir Lista de Presença", "Selecione uma banca para gerar a lista de presença.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Imprimir Lista de Presença", "Selecione uma banca para gerar a lista de presença.");
 		}else{
 			try{
 				JuryBO bo = new JuryBO();
@@ -359,7 +359,7 @@ public class JuryView extends ListView {
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Imprimir Lista de Presença", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Imprimir Lista de Presença", e.getMessage());
 			}
 		}
 	}
@@ -368,7 +368,7 @@ public class JuryView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Imprimir Lista de Acadêmicos Ouvintes", "Selecione uma banca para gerar a lista de acadêmicos ouvintes.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Imprimir Lista de Acadêmicos Ouvintes", "Selecione uma banca para gerar a lista de acadêmicos ouvintes.");
 		}else{
 			try{
 				JuryBO bo = new JuryBO();
@@ -377,7 +377,7 @@ public class JuryView extends ListView {
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Imprimir Lista de Acadêmicos Ouvintes", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Imprimir Lista de Acadêmicos Ouvintes", e.getMessage());
 			}
 		}
 	}
@@ -386,7 +386,7 @@ public class JuryView extends ListView {
 		Object id = getIdSelected();
     	
     	if(id == null){
-    		Notification.show("Selecionar Registro", "Selecione o registro para enviar o feedback.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Enviar Feedback", "Selecione o registro para enviar o feedback.");
     	}else{
     		try {
     			JuryAppraiserBO bo = new JuryAppraiserBO();
@@ -396,12 +396,12 @@ public class JuryView extends ListView {
     			if(appraiser != null){
     				UI.getCurrent().addWindow(new EditJuryAppraiserFeedbackWindow(appraiser));
     			}else{
-    				Notification.show("Enviar Feedback", "É necessário ser membro da banca para enviar o feedback.", Notification.Type.WARNING_MESSAGE);
+    				this.showWarningNotification("Enviar Feedback", "É necessário ser membro da banca para enviar o feedback.");
     			}
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show("Enviar Feedback", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Enviar Feedback", e.getMessage());
 			}
     	}
 	}
@@ -410,7 +410,7 @@ public class JuryView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Gerar Declaração", "Selecione uma banca para gerar a declaração.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Gerar Declaração", "Selecione uma banca para gerar a declaração.");
 		}else{
 			try{
 				CertificateBO bo = new CertificateBO();
@@ -431,12 +431,12 @@ public class JuryView extends ListView {
 				if(report != null){
 					this.showReport(report);
 				}else{
-					Notification.show("Gerar Declaração", "Não foi encontrada a declaração para imprimir.", Notification.Type.WARNING_MESSAGE);
+					this.showWarningNotification("Gerar Declaração", "Não foi encontrada a declaração para imprimir.");
 				}
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Gerar Declaração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Gerar Declaração", e.getMessage());
 			}
 		}
 	}
@@ -445,7 +445,7 @@ public class JuryView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Gerar Declarações", "Selecione uma banca para gerar as declarações.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Gerar Declarações", "Selecione uma banca para gerar as declarações.");
 		}else{
 			try{
 				ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -473,12 +473,12 @@ public class JuryView extends ListView {
 					
 					this.showReport(report);
 				}else{
-					Notification.show("Gerar Declarações", "Não há declarações para serem geradas.", Notification.Type.WARNING_MESSAGE);
+					this.showWarningNotification("Gerar Declarações", "Não há declarações para serem geradas.");
 				}
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Gerar Declarações", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Gerar Declarações", e.getMessage());
 			}
 		}
 	}
@@ -498,7 +498,7 @@ public class JuryView extends ListView {
 		} catch(Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Imprimir Agenda de Bancas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Imprimir Agenda de Bancas", e.getMessage());
 		}
 	}
 	
@@ -508,7 +508,7 @@ public class JuryView extends ListView {
 		} catch(Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Relatório de Notas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Relatório de Notas", e.getMessage());
 		}
 	}
 	
@@ -528,7 +528,7 @@ public class JuryView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Marcar Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Marcar Banca", e.getMessage());
 		}
 	}
 

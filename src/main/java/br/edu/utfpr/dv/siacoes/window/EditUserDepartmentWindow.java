@@ -143,13 +143,13 @@ public class EditUserDepartmentWindow extends EditWindow {
 			
 			this.parentWindow.saveDepartment(this.department);
 			
-			Notification.show("Salvar Perfil", "Perfil salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Perfil", "Perfil salvo com sucesso.");
 			
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Perfil", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Perfil", e.getMessage());
 		}
 	}
 

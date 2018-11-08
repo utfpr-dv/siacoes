@@ -120,14 +120,14 @@ public class EditInternshipEvaluationItemWindow extends EditWindow {
 			
 			bo.save(this.item);
 			
-			Notification.show("Salvar Quesito", "Quesito salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Quesito", "Quesito salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Quesito", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Quesito", e.getMessage());
 		}
 	}
 

@@ -76,14 +76,14 @@ public class EditCityWindow extends EditWindow {
 			
 			bo.save(this.city);
 			
-			Notification.show("Salvar Cidade", "Cidade salva com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Cidade", "Cidade salva com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Cidade", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Cidade", e.getMessage());
 		}
 	}
 

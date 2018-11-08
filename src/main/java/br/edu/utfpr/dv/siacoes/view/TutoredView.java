@@ -202,7 +202,7 @@ public class TutoredView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Orientados", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Orientandos", e.getMessage());
 		}
 	}
 	
@@ -210,7 +210,7 @@ public class TutoredView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Gerar Declaração", "Selecione um registro para gerar a declaração.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Gerar Declaração", "Selecione um registro para gerar a declaração.");
 		}else{
 			try{
 				CertificateBO bo = new CertificateBO();
@@ -221,7 +221,7 @@ public class TutoredView extends ListView {
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Gerar Declaração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Gerar Declaração", e.getMessage());
 			}
 		}
 	}
@@ -230,22 +230,22 @@ public class TutoredView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null) {
-			Notification.show("Indicação de Avaliadores", "Selecione um registro para indicar os avaliadores.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Indicação de Avaliadores", "Selecione um registro para indicar os avaliadores.");
 		} else {
 			try {
 				Proposal proposal = new ProposalBO().findById((int)value);
 
 				if(proposal.getSupervisor().getIdUser() != Session.getUser().getIdUser()) {
-					Notification.show("Indicação de Avaliadores", "Apenas o Professor Orientador pode fazer a indicação de avaliadores.", Notification.Type.WARNING_MESSAGE);
+					this.showWarningNotification("Indicação de Avaliadores", "Apenas o Professor Orientador pode fazer a indicação de avaliadores.");
 				} else if (this.config.isSupervisorAgreement() && (proposal.getSupervisorFeedback() != ProposalFeedback.APPROVED)) {
-					Notification.show("Indicação de Avaliadores", "É necessário preencher o Termo de Concordância de Orientação antes de indicar os avaliadores.", Notification.Type.WARNING_MESSAGE);
+					this.showWarningNotification("Indicação de Avaliadores", "É necessário preencher o Termo de Concordância de Orientação antes de indicar os avaliadores.");
 				} else {
 					UI.getCurrent().addWindow(new EditSupervisorIndicationWindow(proposal, this));	
 				}
 			} catch(Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Indicação de Avaliadores", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Indicação de Avaliadores", e.getMessage());
 			}
 		}
 	}
@@ -254,13 +254,13 @@ public class TutoredView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null) {
-			Notification.show("Agendamento de Banca", "Selecione um registro para solicitar o agendamento de banca.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Agendamento de Banca", "Selecione um registro para solicitar o agendamento de banca.");
 		} else {
 			try {
 				User supervisor = new SupervisorChangeBO().findCurrentSupervisor((int)value);
 				
 				if(supervisor.getIdUser() != Session.getUser().getIdUser()) {
-					Notification.show("Agendamento de Banca", "Apenas o Professor Orientador pode solicitar o agendamento de banca.", Notification.Type.WARNING_MESSAGE);
+					this.showWarningNotification("Agendamento de Banca", "Apenas o Professor Orientador pode solicitar o agendamento de banca.");
 				} else {
 					JuryRequest jury = new JuryRequestBO().prepareJuryRequest((int)value, this.comboSemester.getSemester(), this.textYear.getYear());
 					
@@ -269,7 +269,7 @@ public class TutoredView extends ListView {
 			} catch(Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Agendamento de Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Agendamento de Banca", e.getMessage());
 			}
 		}
 	}
@@ -285,10 +285,10 @@ public class TutoredView extends ListView {
 			} catch (Exception e) {
             	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
             	
-            	Notification.show("Imprimir Agendamento de Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+            	this.showErrorNotification("Imprimir Agendamento de Banca", e.getMessage());
 			}
 		} else {
-			Notification.show("Imprimir Agendamento de Banca", "Selecione um registro para imprimir a Solicitação de Agendamento de Banca.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Imprimir Agendamento de Banca", "Selecione um registro para imprimir a Solicitação de Agendamento de Banca.");
 		}
 	}
 	
@@ -296,7 +296,7 @@ public class TutoredView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null) {
-			Notification.show("Termo de Concordância", "Selecione um registro para preencher o termo de concordância de orientação.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Termo de Concordância", "Selecione um registro para preencher o termo de concordância de orientação.");
 		} else {
 			try {
 				Proposal proposal = new ProposalBO().findById((int)value);
@@ -305,7 +305,7 @@ public class TutoredView extends ListView {
 			} catch(Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Termo de Concordância", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Termo de Concordância", e.getMessage());
 			}
 		}
 	}
@@ -321,10 +321,10 @@ public class TutoredView extends ListView {
 			} catch (Exception e) {
             	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
             	
-            	Notification.show("Imprimir Termo de Concordância", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+            	this.showErrorNotification("Imprimir Termo de Concordância", e.getMessage());
 			}
 		} else {
-			Notification.show("Imprimir Termo de Concordância", "Selecione um registro para imprimir o Termo de Concordância de Orientação.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Imprimir Termo de Concordância", "Selecione um registro para imprimir o Termo de Concordância de Orientação.");
 		}
 	}
 	
@@ -338,15 +338,15 @@ public class TutoredView extends ListView {
 					
 					UI.getCurrent().addWindow(new EditSupervisorChangeWindow(proposal, this, true));
 				} else {
-					Notification.show("Alteração de Orientador", "Apenas o Professor Orientador pode solicitar a alteração de orientador.", Notification.Type.WARNING_MESSAGE);
+					this.showWarningNotification("Alteração de Orientador", "Apenas o Professor Orientador pode solicitar a alteração de orientador.");
 				}
 			} catch (Exception e) {
             	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
             	
-            	Notification.show("Alteração de Orientador", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+            	this.showErrorNotification("Alteração de Orientador", e.getMessage());
 			}
 		} else {
-			Notification.show("Alteração de Orientador", "Selecione um acadêmico para solicitar a alteração de Professor Orientador.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Alteração de Orientador", "Selecione um acadêmico para solicitar a alteração de Professor Orientador.");
 		}
 	}
 

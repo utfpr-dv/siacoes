@@ -174,7 +174,7 @@ public class ThesisView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Monografias", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Monografias", e.getMessage());
 		}
 	}
 	
@@ -182,7 +182,7 @@ public class ThesisView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Gerar Declaração", "Selecione um registro para gerar a declaração.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Gerar Declaração", "Selecione um registro para gerar a declaração.");
 		}else{
 			try{
 				ThesisBO tbo = new ThesisBO();
@@ -196,7 +196,7 @@ public class ThesisView extends ListView {
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Gerar Declaração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Gerar Declaração", e.getMessage());
 			}
 		}
 	}
@@ -205,7 +205,7 @@ public class ThesisView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Gerar Declaração", "Selecione um registro para gerar a declaração.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Gerar Declaração", "Selecione um registro para gerar a declaração.");
 		}else{
 			try{
 				ThesisBO tbo = new ThesisBO();
@@ -214,7 +214,7 @@ public class ThesisView extends ListView {
 				Thesis thesis = tbo.findById((int)value);
 
 				if(thesis.getCosupervisor() == null){
-					Notification.show("Gerar Declaração", "Não foi indicado um coorientador para a monografia.", Notification.Type.WARNING_MESSAGE);
+					this.showWarningNotification("Gerar Declaração", "Não foi indicado um coorientador para a monografia.");
 				}else{
 					byte[] report = bo.getThesisProfessorStatement(thesis.getCosupervisor(), thesis);
 					
@@ -223,7 +223,7 @@ public class ThesisView extends ListView {
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Gerar Declaração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Gerar Declaração", e.getMessage());
 			}
 		}
 	}
@@ -232,7 +232,7 @@ public class ThesisView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Gerar Declarações", "Selecione uma banca para gerar as declarações.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Gerar Declarações", "Selecione uma banca para gerar as declarações.");
 		}else{
 			try{
 				ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -260,12 +260,12 @@ public class ThesisView extends ListView {
 					
 					this.showReport(report);
 				}else{
-					Notification.show("Gerar Declarações", "Não há declarações para serem geradas.", Notification.Type.WARNING_MESSAGE);
+					this.showWarningNotification("Gerar Declarações", "Não há declarações para serem geradas.");
 				}
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Gerar Declarações", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Gerar Declarações", e.getMessage());
 			}
 		}
 	}
@@ -274,7 +274,7 @@ public class ThesisView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Download da Monografia", "Selecione um registro para baixar a monografia.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Download da Monografia", "Selecione um registro para baixar a monografia.");
 		}else{
 			try{
 				ThesisBO bo = new ThesisBO();
@@ -284,7 +284,7 @@ public class ThesisView extends ListView {
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Download da Monografia", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Download da Monografia", e.getMessage());
 			}
 		}
 	}
@@ -293,7 +293,7 @@ public class ThesisView extends ListView {
 		Object id = getIdSelected();
     	
     	if(id == null){
-    		Notification.show("Selecionar Registro", "Selecione o registro para marcar a banca.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Selecionar Registro", "Selecione o registro para marcar a banca.");
     	}else{
     		try {
     			JuryBO bo = new JuryBO();
@@ -303,7 +303,7 @@ public class ThesisView extends ListView {
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show("Marcar Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Marcar Banca", e.getMessage());
 			}
     	}
 	}
@@ -312,7 +312,7 @@ public class ThesisView extends ListView {
 		Object id = getIdSelected();
     	
     	if(id == null){
-    		Notification.show("Selecionar Registro", "Selecione o registro para marcar a banca.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Enviar Feedback", "Selecione o registro para enviar o feedback.");
     	}else{
     		try {
     			JuryBO bo = new JuryBO();
@@ -325,12 +325,12 @@ public class ThesisView extends ListView {
     			if(appraiser != null){
     				UI.getCurrent().addWindow(new EditJuryAppraiserFeedbackWindow(appraiser));
     			}else{
-    				Notification.show("Enviar Feedback", "É necessário ser membro da banca para enviar o feedback.", Notification.Type.WARNING_MESSAGE);
+    				this.showWarningNotification("Enviar Feedback", "É necessário ser membro da banca para enviar o feedback.");
     			}
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show("Enviar Feedback", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Enviar Feedback", e.getMessage());
 			}
     	}
 	}
@@ -341,7 +341,7 @@ public class ThesisView extends ListView {
 		} catch(Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Relatório de Notas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Relatório de Notas", e.getMessage());
 		}
 	}
 	
@@ -361,7 +361,7 @@ public class ThesisView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Monografia", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Monografia", e.getMessage());
 		}
 	}
 

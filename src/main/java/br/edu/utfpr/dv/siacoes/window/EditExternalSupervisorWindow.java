@@ -99,14 +99,14 @@ public class EditExternalSupervisorWindow extends EditWindow {
 			
 			new UserBO().save(this.user);
 			
-			Notification.show("Salvar Informações", "Informações salvas com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Informações", "Informações salvas com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		} catch(Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Informações", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Informações", e.getMessage());
 		}
 	}
 

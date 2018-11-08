@@ -78,14 +78,14 @@ public class EditStudentWindow extends EditWindow {
 			
 			new UserDepartmentBO().save(this.department);
 			
-			Notification.show("Salvar Acadêmico", "Acadêmico salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Acadêmico", "Acadêmico salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Acadêmico", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Acadêmico", e.getMessage());
 		}
 	}
 

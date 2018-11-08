@@ -63,7 +63,7 @@ public class InternshipLibraryView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Monografias", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Monografias", e.getMessage());
 		}
 	}
 	
@@ -71,7 +71,7 @@ public class InternshipLibraryView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null) {
-			Notification.show("Download do Relatório de Estágio", "Selecione um registro para baixar o relatório de estágio.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Download do Relatório de Estágio", "Selecione um registro para baixar o relatório de estágio.");
 		} else {
 			try {
 				InternshipFinalDocumentBO bo = new InternshipFinalDocumentBO();
@@ -81,7 +81,7 @@ public class InternshipLibraryView extends ListView {
         	} catch (Exception e) {
             	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
             	
-            	Notification.show("Download do Relatório de Estágio", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+            	this.showErrorNotification("Download do Relatório de Estágio", e.getMessage());
 			}
 		}
 	}

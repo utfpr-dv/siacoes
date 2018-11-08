@@ -4,19 +4,18 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 
 import br.edu.utfpr.dv.siacoes.bo.EmailMessageBO;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage;
 
-public class TestEmailSendWindow extends Window {
+public class TestEmailSendWindow extends BasicWindow {
 	
 	private final TextField textTo;
 	private final Button buttonSend;
 	
 	public TestEmailSendWindow(){
-		this.setCaption("Testar Envio de E-mails");
+		super("Testar Envio de E-mails");
 		
 		this.textTo = new TextField("Destinatário");
 		this.textTo.setWidth("400px");
@@ -50,11 +49,11 @@ public class TestEmailSendWindow extends Window {
 		try {
 			bo.sendEmailNoThread(new String[] { this.textTo.getValue() }, message, null);
 			
-			Notification.show("Enviar E-mail", "Envio realizado com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Enviar E-mail", "Envio realizado com sucesso.");
 		} catch (Exception e) {
 			e.printStackTrace();
 			
-			Notification.show("Enviar E-mail", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Enviar E-mail", e.getMessage());
 		}
 	}
 

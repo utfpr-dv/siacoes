@@ -102,7 +102,7 @@ public class UserView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Usuários", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Usuários", e.getMessage());
 		}
     }
 	
@@ -120,10 +120,10 @@ public class UserView extends ListView {
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show("Logar como", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Logar como", e.getMessage());
 			}
 		}else{
-			Notification.show("Logar como", "Selecione um usuário.", Notification.Type.ERROR_MESSAGE);
+			this.showWarningNotification("Logar como", "Selecione um usuário.");
 		}
 	}
 
@@ -142,7 +142,7 @@ public class UserView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Usuário", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Usuário", e.getMessage());
 		}
 	}
 

@@ -43,7 +43,7 @@ public class CountryView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Países", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Países", e.getMessage());
 		}
 	}
 
@@ -62,7 +62,7 @@ public class CountryView extends ListView {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar País", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar País", e.getMessage());
 		}
 	}
 

@@ -20,7 +20,6 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
@@ -37,6 +36,7 @@ import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
+import br.edu.utfpr.dv.siacoes.components.Notification;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Credential;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
@@ -285,7 +285,7 @@ public class LoginView extends CustomComponent implements View {
             this.textLogin.setValue("");
             this.textLogin.focus();
             
-            Notification.show("Login", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+            Notification.showErrorNotification("Login", e.getMessage());
         }
     }
     

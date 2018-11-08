@@ -71,7 +71,6 @@ public class JuryRequestView extends ListView {
 		this.addFilterField(new HorizontalLayout(this.comboSemester, this.textYear, this.comboStage));
 		
 		this.setAddVisible(false);
-		this.setDeleteVisible(false);
 		
 		this.setEditCaption("Visualizar");
 		this.setEditIcon(FontAwesome.SEARCH);
@@ -120,7 +119,7 @@ public class JuryRequestView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Agendamento de Bancas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Agendamento de Bancas", e.getMessage());
 		}
 	}
 
@@ -139,14 +138,21 @@ public class JuryRequestView extends ListView {
 		} catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Visualizar Agendamento de Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Visualizar Agendamento de Banca", e.getMessage());
 		}
 	}
 
 	@Override
 	public void deleteClick(Object id) {
-		// TODO Auto-generated method stub
-		
+		try {
+			new JuryRequestBO().delete((int) id);
+			
+			this.refreshGrid();
+		} catch(Exception e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			this.showErrorNotification("Excluir Agendamento de Banca", e.getMessage());
+		}
 	}
 
 	@Override
@@ -159,7 +165,7 @@ public class JuryRequestView extends ListView {
 		Object id = getIdSelected();
     	
     	if(id == null) {
-    		Notification.show("Selecionar Registro", "Selecione o registro para confirmar o agendamento da banca.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Selecionar Registro", "Selecione o registro para confirmar o agendamento da banca.");
     	} else {
 			try {
 				JuryRequest jury = new JuryRequestBO().findById((int)id);
@@ -168,7 +174,7 @@ public class JuryRequestView extends ListView {
 					Project project = new ProjectBO().findByProposal(jury.getProposal().getIdProposal());
 					
 					if((project == null) || (project.getIdProject() == 0)) {
-						Notification.show("Confirmar Agendamento de Banca", "O agendamento só pode ser confirmado após o acadêmico submeter o projeto.", Notification.Type.WARNING_MESSAGE);
+						this.showWarningNotification("Confirmar Agendamento de Banca", "O agendamento só pode ser confirmado após o acadêmico submeter o projeto.");
 					} else {
 						Jury j = new JuryBO().findByProject(project.getIdProject());
 						
@@ -178,7 +184,7 @@ public class JuryRequestView extends ListView {
 					Thesis thesis = new ThesisBO().findByProposal(jury.getProposal().getIdProposal());
 					
 					if((thesis == null) || (thesis.getIdThesis() == 0)) {
-						Notification.show("Confirmar Agendamento de Banca", "O agendamento só pode ser confirmado após o acadêmico submeter a monografia.", Notification.Type.WARNING_MESSAGE);
+						this.showWarningNotification("Confirmar Agendamento de Banca", "O agendamento só pode ser confirmado após o acadêmico submeter o monografia.");
 					} else {
 						Jury j = new JuryBO().findByThesis(thesis.getIdThesis());
 						
@@ -188,7 +194,7 @@ public class JuryRequestView extends ListView {
 			} catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show("Confirmar Agendamento de Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Confirmar Agendamento de Banca", e.getMessage());
 			}
     	}
 	}

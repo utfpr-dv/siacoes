@@ -100,7 +100,7 @@ public class EditActivityWindow extends EditWindow {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Atividade", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Atividade", e.getMessage());
 		}
 	}
 	
@@ -114,7 +114,7 @@ public class EditActivityWindow extends EditWindow {
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Editar Atividade", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Atividade", e.getMessage());
 		}
 	}
 	
@@ -154,14 +154,14 @@ public class EditActivityWindow extends EditWindow {
 			
 			bo.save(this.activity);
 			
-			Notification.show("Salvar Atividade", "Atividade salva com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Atividade", "Atividade salva com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Atividade", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Atividade", e.getMessage());
 		}
 	}
 	

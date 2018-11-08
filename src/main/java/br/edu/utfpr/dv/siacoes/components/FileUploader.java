@@ -21,7 +21,6 @@ import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.ProgressListener;
@@ -253,7 +252,7 @@ public class FileUploader extends HorizontalLayout {
 	        	
 	        	setError(e.getMessage());
 	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+	        	Notification.showErrorNotification("Carregamento do Arquivo", e.getMessage());
 	        }
 
 	        return null;
@@ -284,13 +283,13 @@ public class FileUploader extends HorizontalLayout {
 	            	fileUploadListener.uploadSucceeded();
 	            }
 	            
-	            Notification.show("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.", Notification.Type.HUMANIZED_MESSAGE);
+	            Notification.showSuccessNotification("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.");
 	        } catch (Exception e) {
 	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
 	        	setError(e.getMessage());
 	            
-	            Notification.show("Carregamento do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+	        	Notification.showErrorNotification("Carregamento do Arquivo", e.getMessage());
 	        }
 		}
 

@@ -99,7 +99,7 @@ public class EditInternshipJuryAppraiserScoreWindow extends EditWindow {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Carregar Notas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Carregar Notas", e.getMessage());
 		}
 	}
 	
@@ -142,7 +142,7 @@ public class EditInternshipJuryAppraiserScoreWindow extends EditWindow {
 			
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Notas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Notas", e.getMessage());
 		}finally{
 			try {
 				conn.setAutoCommit(true);

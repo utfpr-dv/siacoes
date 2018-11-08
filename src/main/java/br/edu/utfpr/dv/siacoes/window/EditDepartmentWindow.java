@@ -140,14 +140,14 @@ public class EditDepartmentWindow extends EditWindow {
 			
 			bo.save(this.department);
 			
-			Notification.show("Salvar Departamento", "Departamento salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Departamento", "Departamento salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Departamento", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Departamento", e.getMessage());
 		}
 	}
 	

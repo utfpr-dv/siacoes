@@ -48,21 +48,21 @@ public class EditJuryAppraiserFeedbackWindow extends EditWindow {
 		}
 		
 		if((this.appraiser.getFile() == null) && (this.appraiser.getAdditionalFile() == null)){
-			Notification.show("Enviar Feedback", "É necessário submeter ao menos um arquivo.", Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Enviar Feedback", "É necessário submeter ao menos um arquivo.");
 		}else{
 			try{
 				JuryAppraiserBO bo = new JuryAppraiserBO();
 				
 				bo.save(this.appraiser);
 				
-				Notification.show("Enviar Feedback", "Feedback enviado com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+				this.showSuccessNotification("Enviar Feedback", "Feedback enviado com sucesso.");
 				
 				this.parentViewRefreshGrid();
 				this.close();
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show("Enviar Feedback", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Enviar Feedback", e.getMessage());
 			}
 		}
 	}

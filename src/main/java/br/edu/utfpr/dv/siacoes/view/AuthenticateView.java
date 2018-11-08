@@ -9,12 +9,12 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
+import br.edu.utfpr.dv.siacoes.components.Notification;
 import br.edu.utfpr.dv.siacoes.model.Certificate;
 
 import com.vaadin.ui.Button.ClickEvent;
@@ -72,14 +72,14 @@ public class AuthenticateView extends CustomComponent implements View {
 			Certificate certificate = bo.findByGuid(this.textGuid.getValue().trim());
 			
 			if(certificate == null){
-				Notification.show("Autenticar Documento", "Documento não encontrado. Verifique se o código de autenticação está correto.", Notification.Type.ERROR_MESSAGE);
+				Notification.showErrorNotification("Autenticar Documento", "Documento não encontrado. Verifique se o código de autenticação está correto.");
 			}else{
 				getUI().getPage().open("#!" + CertificateView.NAME + "/" + certificate.getGuid(), "");
 			}
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Autenticar Documento", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			Notification.showErrorNotification("Autenticar Documento", e.getMessage());
 		}
 	}
 	

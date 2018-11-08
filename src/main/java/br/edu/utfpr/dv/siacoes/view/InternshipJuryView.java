@@ -234,7 +234,7 @@ public class InternshipJuryView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Bancas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Bancas", e.getMessage());
 		}
 	}
 	
@@ -242,7 +242,7 @@ public class InternshipJuryView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Download do Trabalho", "Selecione uma banca para fazer o download do trabalho.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Download do Trabalho", "Selecione uma banca para fazer o download do trabalho.");
 		}else{
 			try {
 				InternshipJuryBO bo = new InternshipJuryBO();
@@ -252,12 +252,12 @@ public class InternshipJuryView extends ListView {
 				Internship internship = ibo.findById(jury.getInternship().getIdInternship());
 				
 				if(internship.getFinalReport() == null){
-					Notification.show("Download do Trabalho", "O relatório final do estágio não foi anexado ao cadastro.", Notification.Type.WARNING_MESSAGE);
+					this.showWarningNotification("Download do Trabalho", "O relatório final do estágio não foi anexado ao cadastro.");
 				}else{
 					this.showReport(internship.getFinalReport());
 				}
         	} catch (Exception e) {
-        		Notification.show("Download do Trabalho", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        		this.showErrorNotification("Download do Trabalho", e.getMessage());
 			}
 		}
 	}
@@ -266,14 +266,14 @@ public class InternshipJuryView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Imprimir Ficha de Avaliação", "Selecione uma banca para gerar a ficha de avaliação.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Imprimir Ficha de Avaliação", "Selecione uma banca para gerar a ficha de avaliação.");
 		}else{
 			try{
 				this.showReport(new InternshipJuryBO().getJuryForm((int)value));
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Imprimir Ficha de Avaliação", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Imprimir Ficha de Avaliação", e.getMessage());
 			}
 		}
 	}
@@ -282,7 +282,7 @@ public class InternshipJuryView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Imprimir Lista de Presença", "Selecione uma banca para gerar a lista de presença.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Imprimir Lista de Presença", "Selecione uma banca para gerar a lista de presença.");
 		}else{
 			try{
 				InternshipJuryBO bo = new InternshipJuryBO();
@@ -291,7 +291,7 @@ public class InternshipJuryView extends ListView {
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Imprimir Lista de Presença", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Imprimir Lista de Presença", e.getMessage());
 			}
 		}
 	}
@@ -300,7 +300,7 @@ public class InternshipJuryView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Imprimir Lista de Acadêmicos Ouvintes", "Selecione uma banca para gerar a lista de acadêmicos ouvintes.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Imprimir Lista de Acadêmicos Ouvintes", "Selecione uma banca para gerar a lista de acadêmicos ouvintes.");
 		}else{
 			try{
 				InternshipJuryBO bo = new InternshipJuryBO();
@@ -309,7 +309,7 @@ public class InternshipJuryView extends ListView {
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Imprimir Lista de Acadêmicos Ouvintes", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Imprimir Lista de Acadêmicos Ouvintes", e.getMessage());
 			}
 		}
 	}
@@ -318,7 +318,7 @@ public class InternshipJuryView extends ListView {
 		Object id = getIdSelected();
     	
     	if(id == null){
-    		Notification.show("Selecionar Registro", "Selecione o registro para enviar o feedback.", Notification.Type.WARNING_MESSAGE);
+    		this.showWarningNotification("Enviar Feedback", "Selecione o registro para enviar o feedback.");
     	}else{
     		try {
     			InternshipJuryAppraiserBO bo = new InternshipJuryAppraiserBO();
@@ -328,12 +328,12 @@ public class InternshipJuryView extends ListView {
     			if(appraiser != null){
     				UI.getCurrent().addWindow(new EditInternshipJuryAppraiserFeedbackWindow(appraiser));
     			}else{
-    				Notification.show("Enviar Feedback", "É necessário ser membro da banca para enviar o feedback.", Notification.Type.WARNING_MESSAGE);
+    				this.showWarningNotification("Enviar Feedback", "É necessário ser membro da banca para enviar o feedback.");
     			}
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				
-				Notification.show("Enviar Feedback", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Enviar Feedback", e.getMessage());
 			}
     	}
 	}
@@ -342,7 +342,7 @@ public class InternshipJuryView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Gerar Declaração", "Selecione uma banca para gerar a declaração.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Gerar Declaração", "Selecione uma banca para gerar a declaração.");
 		}else{
 			try{
 				CertificateBO bo = new CertificateBO();
@@ -363,12 +363,12 @@ public class InternshipJuryView extends ListView {
 				if(report != null){
 					this.showReport(report);
 				}else{
-					Notification.show("Gerar Declaração", "Não foi encontrada a declaração para imprimir.", Notification.Type.WARNING_MESSAGE);
+					this.showWarningNotification("Gerar Declaração", "Não foi encontrada a declaração para imprimir.");
 				}
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Gerar Declaração", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Gerar Declaração", e.getMessage());
 			}
 		}
 	}
@@ -377,7 +377,7 @@ public class InternshipJuryView extends ListView {
 		Object value = getIdSelected();
 		
 		if(value == null){
-			Notification.show("Gerar Declarações", "Selecione uma banca para gerar as declarações.", Notification.Type.WARNING_MESSAGE);
+			this.showWarningNotification("Gerar Declarações", "Selecione uma banca para gerar as declarações.");
 		}else{
 			try{
 				ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -405,12 +405,12 @@ public class InternshipJuryView extends ListView {
 					
 					this.showReport(report);
 				}else{
-					Notification.show("Gerar Declarações", "Não há declarações para serem geradas.", Notification.Type.WARNING_MESSAGE);
+					this.showWarningNotification("Gerar Declarações", "Não há declarações para serem geradas.");
 				}
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
-	        	Notification.show("Gerar Declarações", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Gerar Declarações", e.getMessage());
 			}
 		}
 	}
@@ -430,7 +430,7 @@ public class InternshipJuryView extends ListView {
 		} catch(Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Imprimir Agenda de Bancas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Imprimir Agenda de Bancas", e.getMessage());
 		}
 	}
 	
@@ -440,7 +440,7 @@ public class InternshipJuryView extends ListView {
 		} catch(Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Relatório de Notas", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Relatório de Notas", e.getMessage());
 		}
 	}
 	
@@ -460,7 +460,7 @@ public class InternshipJuryView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Marcar Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Marcar Banca", e.getMessage());
 		}
 	}
 

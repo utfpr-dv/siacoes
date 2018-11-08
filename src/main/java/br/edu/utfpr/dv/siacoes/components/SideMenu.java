@@ -25,7 +25,6 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.MenuBar;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -186,7 +185,7 @@ public class SideMenu extends CustomComponent {
         	try {
     			this.semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
     		} catch (Exception e1) {
-    			Notification.show("Semestre", e1.getMessage(), Notification.Type.ERROR_MESSAGE);
+    			Notification.showErrorNotification("Semestre", e1.getMessage());
     			Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
     		}
         }
@@ -821,7 +820,7 @@ public class SideMenu extends CustomComponent {
 						} catch (Exception e) {
 							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 							
-							Notification.show("Submeter Proposta", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+							Notification.showErrorNotification("Submeter Proposta", e.getMessage());
 						}
 					}
 				}));
@@ -841,7 +840,7 @@ public class SideMenu extends CustomComponent {
 						} catch (Exception e) {
 							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 							
-							Notification.show("Feedback dos Avaliadores", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+							Notification.showErrorNotification("Feedback dos Avaliadores", e.getMessage());
 						}
 					}
 				}));
@@ -866,7 +865,7 @@ public class SideMenu extends CustomComponent {
 						} catch (Exception e) {
 							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 							
-							Notification.show("Submeter Projeto", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+							Notification.showErrorNotification("Submeter Projeto", e.getMessage());
 						}
 					}
 				}));
@@ -881,7 +880,7 @@ public class SideMenu extends CustomComponent {
 	        	    	} catch (Exception e) {
 	        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	    		
-							Notification.show("Imprimir Documentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+	        	    		Notification.showErrorNotification("Imprimir Documentos", e.getMessage());
 						}
 					}
 				}));
@@ -896,7 +895,7 @@ public class SideMenu extends CustomComponent {
 	        	    	} catch (Exception e) {
 	        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	    		
-							Notification.show("Feedback da Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+	        	    		Notification.showErrorNotification("Feedback da Banca", e.getMessage());
 						}
 					}
 				}));
@@ -912,12 +911,12 @@ public class SideMenu extends CustomComponent {
 								if(bo.hasScores(jury.getIdJury())) {
 									UI.getCurrent().addWindow(new JuryGradesWindow(jury));	
 								} else {
-									Notification.show("Notas da Banca", "As notas ainda não foram lançacas.", Notification.Type.ERROR_MESSAGE);
+									Notification.showErrorNotification("Notas da Banca", "As notas ainda não foram lançacas.");
 								}
 		        	    	} catch (Exception e) {
 		        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 		        	    		
-								Notification.show("Notas da Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		        	    		Notification.showErrorNotification("Notas da Banca", e.getMessage());
 							}
 						}
 					}));
@@ -934,7 +933,7 @@ public class SideMenu extends CustomComponent {
 							} catch (Exception e) {
 								Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 								
-								Notification.show("Submeter Versão Final", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+								Notification.showErrorNotification("Submeter Versão Final", e.getMessage());
 							}
 						}
 					}));
@@ -963,7 +962,7 @@ public class SideMenu extends CustomComponent {
 						} catch (Exception e) {
 							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 							
-							Notification.show("Submeter Monografia", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+							Notification.showErrorNotification("Submeter Monografia", e.getMessage());
 						}
 					}
 				}));
@@ -978,7 +977,7 @@ public class SideMenu extends CustomComponent {
 						} catch (Exception e) {
 							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 							
-							Notification.show("Imprimir Documentos", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+							Notification.showErrorNotification("Imprimir Documentos", e.getMessage());
 						}
 					}
 				}));
@@ -993,7 +992,7 @@ public class SideMenu extends CustomComponent {
 	        	    	} catch (Exception e) {
 	        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	    		
-							Notification.show("Feedback da Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+	        	    		Notification.showErrorNotification("Feedback da Banca", e.getMessage());
 						}
 					}
 				}));
@@ -1009,12 +1008,12 @@ public class SideMenu extends CustomComponent {
 								if(bo.hasScores(jury.getIdJury())) {
 									UI.getCurrent().addWindow(new JuryGradesWindow(jury));	
 								} else {
-									Notification.show("Notas da Banca", "As notas ainda não foram lançacas.", Notification.Type.ERROR_MESSAGE);
+									Notification.showErrorNotification("Notas da Banca", "As notas ainda não foram lançacas.");
 								}
 		        	    	} catch (Exception e) {
 		        	    		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 		        	    		
-								Notification.show("Notas da Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		        	    		Notification.showErrorNotification("Notas da Banca", e.getMessage());
 							}
 						}
 					}));
@@ -1034,7 +1033,7 @@ public class SideMenu extends CustomComponent {
 						} catch (Exception e) {
 							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 							
-							Notification.show("Termo de Aprovação", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+							Notification.showErrorNotification("Termo de Aprovação", e.getMessage());
 						}
 					}
 				}));
@@ -1049,7 +1048,7 @@ public class SideMenu extends CustomComponent {
 						} catch (Exception e) {
 							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 							
-							Notification.show("Submeter Versão Final", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+							Notification.showErrorNotification("Submeter Versão Final", e.getMessage());
 						}
 					}
 				}));
@@ -1079,7 +1078,7 @@ public class SideMenu extends CustomComponent {
 						} catch (Exception e) {
 							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 							
-							Notification.show("Registrar Orientação", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+							Notification.showErrorNotification("Registrar Orientação", e.getMessage());
 						}
 					}
 				}));
@@ -1090,14 +1089,14 @@ public class SideMenu extends CustomComponent {
 	        	        	Proposal proposal = new ProposalBO().findLastProposal(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 							
 							if(proposal == null){
-								Notification.show("Alterar Orientador", "É necessário efetuar a submissão da proposta.", Notification.Type.ERROR_MESSAGE);
+								Notification.showErrorNotification("Alterar Orientador", "É necessário efetuar a submissão da proposta.");
 							}else{
 								UI.getCurrent().addWindow(new EditSupervisorChangeWindow(proposal, null, false));
 							}
 						} catch (Exception e) {
 							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 							
-							Notification.show("Alterar Orientador", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+							Notification.showErrorNotification("Alterar Orientador", e.getMessage());
 						}
 					}
 				}));
@@ -1141,7 +1140,7 @@ public class SideMenu extends CustomComponent {
 			@Override
 			public void menuClick() {
 				if(sigetConfig.getRepositoryLink().trim().isEmpty()) {
-					Notification.show("Biblioteca", "O link do repositório de TCCs não foi configurado.", Notification.Type.ERROR_MESSAGE);
+					Notification.showErrorNotification("Biblioteca", "O link do repositório de TCCs não foi configurado.");
 				} else {
 					UI.getCurrent().getPage().open(sigetConfig.getRepositoryLink(), "_blank");
 				}
@@ -1191,7 +1190,7 @@ public class SideMenu extends CustomComponent {
 	
 	private void showReport(byte[] pdfReport) {
 		if(pdfReport == null) {
-    		Notification.show("Visualizar Arquivo", "O arquivo solicitado não foi encontrado.", Notification.Type.ERROR_MESSAGE);
+			Notification.showErrorNotification("Visualizar Arquivo", "O arquivo solicitado não foi encontrado.");
     	} else {
 			String id = UUID.randomUUID().toString();
 	    	

@@ -49,14 +49,14 @@ public class EditCountryWindow extends EditWindow {
 			
 			bo.save(this.country);
 			
-			Notification.show("Salvar País", "País salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar País", "País salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar País", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar País", e.getMessage());
 		}
 	}
 

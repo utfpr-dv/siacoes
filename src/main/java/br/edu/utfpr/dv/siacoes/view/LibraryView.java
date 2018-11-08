@@ -67,7 +67,7 @@ public class LibraryView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Monografias", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Monografias", e.getMessage());
 		}
 	}
 	
@@ -86,7 +86,7 @@ public class LibraryView extends ListView {
             		this.listenerClickDownload = new Button.ClickListener() {
         	            @Override
         	            public void buttonClick(ClickEvent event) {
-        	            	Notification.show("Download da Monografia", "Este documento foi marcado como sigiloso no ato de sua submissão.\n\nVocê pode efetuar a consulta do documento na biblioteca do câmpus.", Notification.Type.WARNING_MESSAGE);
+        	            	showWarningNotification("Download da Monografia", "Este documento foi marcado como sigiloso no ato de sua submissão.\\n\\nVocê pode efetuar a consulta do documento na biblioteca do câmpus.");
         	            }
         	        };
             		
@@ -100,7 +100,7 @@ public class LibraryView extends ListView {
 		            public void buttonClick(ClickEvent event) {
 		            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 		            	
-		            	Notification.show("Download da Monografia", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+		            	showErrorNotification("Download da Monografia", e.getMessage());
 		            }
 		        };
 		        
@@ -110,7 +110,7 @@ public class LibraryView extends ListView {
     		this.listenerClickDownload = new Button.ClickListener() {
 	            @Override
 	            public void buttonClick(ClickEvent event) {
-	            	Notification.show("Download da Monografia", "Selecione um registro para baixar a monografia.", Notification.Type.WARNING_MESSAGE);
+	            	showWarningNotification("Download da Monografia", "Selecione um registro para baixar a monografia.");
 	            }
 	        };
     		

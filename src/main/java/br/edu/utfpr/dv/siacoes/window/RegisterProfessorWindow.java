@@ -53,14 +53,14 @@ public class RegisterProfessorWindow extends EditWindow {
 			
 			bo.save(user);
 			
-			Notification.show("Registrar Professor", "Professor registrado com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Registrar Professor", "Professor registrado com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Registrar Professor", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Registrar Professor", e.getMessage());
 		}
 	}
 

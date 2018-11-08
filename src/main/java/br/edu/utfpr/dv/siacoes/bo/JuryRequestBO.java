@@ -161,6 +161,26 @@ public class JuryRequestBO {
 		}
 	}
 	
+	public boolean delete(int id) throws Exception {
+		JuryRequest request = this.findById(id);
+		
+		return this.delete(request);
+	}
+	
+	public boolean delete(JuryRequest request) throws Exception {
+		if((request.getJury() != null) && (request.getJury().getIdJury() != 0)) {
+			throw new Exception("A solicitação não pode ser excluída pois a banca já foi confirmada.");
+		}
+		
+		try {
+			return new JuryRequestDAO().delete(request.getIdJuryRequest());
+		} catch(SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
+	}
+	
 	public boolean canAddAppraiser(JuryRequest jury, User appraiser) throws Exception{
 		if(jury.getAppraisers() != null){
 			for(JuryAppraiserRequest ja : jury.getAppraisers()){

@@ -76,7 +76,7 @@ public class SupervisorChangeView extends ListView {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Listar Alterações", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Listar Alterações", e.getMessage());
 		}
 	}
 
@@ -97,7 +97,7 @@ public class SupervisorChangeView extends ListView {
 		}catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Alteração de Orientador", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Alteração de Orientador", e.getMessage());
 		}
 	}
 

@@ -66,14 +66,14 @@ public class EditStateWindow extends EditWindow {
 			
 			bo.save(this.state);
 			
-			Notification.show("Salvar Estado", "Estado salvo com sucesso.", Notification.Type.HUMANIZED_MESSAGE);
+			this.showSuccessNotification("Salvar Estado", "Estado salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
 			this.close();
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Salvar Estado", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Salvar Estado", e.getMessage());
 		}
 	}
 	

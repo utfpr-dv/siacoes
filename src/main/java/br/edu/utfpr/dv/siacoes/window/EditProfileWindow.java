@@ -141,7 +141,7 @@ public class EditProfileWindow extends EditWindow {
 			
 			this.close();
 		} catch(Exception e) {
-			Notification.show("Editar Perfil", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Editar Perfil", e.getMessage());
 		}
 	}
 

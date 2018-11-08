@@ -93,21 +93,21 @@ public class EditTutoredWindow extends EditWindow {
 			ProposalBO bo = new ProposalBO();
 			proposal = bo.findById(idProposal);
 		} catch (Exception e) {
-			Notification.show("Carregar Orientado", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Carregar Orientado", e.getMessage());
 		}
 		
 		try {
 			ProjectBO bo = new ProjectBO();
 			project = bo.findByProposal(idProposal);
 		} catch (Exception e) {
-			Notification.show("Carregar Orientado", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Carregar Orientado", e.getMessage());
 		}
 		
 		try {
 			ThesisBO bo = new ThesisBO();
 			thesis = bo.findByProposal(idProposal);
 		} catch (Exception e) {
-			Notification.show("Carregar Orientado", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Carregar Orientado", e.getMessage());
 		}
 		
 		if((project != null) && (project.getIdProject() != 0)){
@@ -115,7 +115,7 @@ public class EditTutoredWindow extends EditWindow {
 				FinalDocumentBO bo = new FinalDocumentBO();
 				projectFinalDocument = bo.findByProject(project.getIdProject());
 			} catch (Exception e) {
-				Notification.show("Carregar Orientado", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Carregar Orientado", e.getMessage());
 			}
 		}
 		
@@ -124,14 +124,14 @@ public class EditTutoredWindow extends EditWindow {
 				FinalDocumentBO bo = new FinalDocumentBO();
 				thesisFinalDocument = bo.findByThesis(thesis.getIdThesis());
 			} catch (Exception e) {
-				Notification.show("Carregar Orientado", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Carregar Orientado", e.getMessage());
 			}
 		}
 		
 		try {
 			semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
 		} catch (Exception e) {
-			Notification.show("Carregar Orientado", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Carregar Orientado", e.getMessage());
 		}
 		
 		this.proposal = proposal;
@@ -403,7 +403,7 @@ public class EditTutoredWindow extends EditWindow {
     	} catch (Exception e) {
         	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Download do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        	this.showErrorNotification("Download do Arquivo", e.getMessage());
 		}
 	}
 	
@@ -413,7 +413,7 @@ public class EditTutoredWindow extends EditWindow {
     	} catch (Exception e) {
         	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Download do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        	this.showErrorNotification("Download do Arquivo", e.getMessage());
 		}
 	}
 	
@@ -423,7 +423,7 @@ public class EditTutoredWindow extends EditWindow {
     	} catch (Exception e) {
         	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
-        	Notification.show("Download do Arquivo", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        	this.showErrorNotification("Download do Arquivo", e.getMessage());
 		}
 	}
 	
@@ -437,14 +437,14 @@ public class EditTutoredWindow extends EditWindow {
 			Jury jury = jbo.findByProject(this.project.getIdProject());
 			
 			if(jury == null){
-				Notification.show("Feedback da Banca", "A banca examinadora do projeto ainda não foi agendada.", Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Feedback da Banca", "A banca examinadora da monografia ainda não foi agendada.");
 			}else{
 				UI.getCurrent().addWindow(new DownloadFeedbackWindow(jury));
 			}
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Feedback da Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Feedback da Banca", e.getMessage());
 		}
 	}
 	
@@ -454,14 +454,14 @@ public class EditTutoredWindow extends EditWindow {
 			Jury jury = jbo.findByThesis(this.thesis.getIdThesis());
 			
 			if(jury == null){
-				Notification.show("Feedback da Banca", "A banca examinadora da monografia ainda não foi agendada.", Notification.Type.ERROR_MESSAGE);
+				this.showErrorNotification("Feedback da Banca", "A banca examinadora da monografia ainda não foi agendada.");
 			}else{
 				UI.getCurrent().addWindow(new DownloadFeedbackWindow(jury));
 			}
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
-			Notification.show("Feedback da Banca", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			this.showErrorNotification("Feedback da Banca", e.getMessage());
 		}
 	}
 	

@@ -32,7 +32,7 @@ public abstract class ReportView extends BasicView {
             	}catch(Exception e){
             		Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
             		
-            		Notification.show("Gerar Relatório", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+            		showErrorNotification("Gerar Relatório", e.getMessage());
             	}
             }
         });
