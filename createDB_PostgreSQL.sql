@@ -508,6 +508,7 @@ CREATE TABLE proposalappraiser (
   comments text NOT NULL,
   allowEditing SMALLINT NOT NULL,
   supervisorindication SMALLINT NOT NULL ,
+  file BYTEA DEFAULT NULL,
   PRIMARY KEY (idproposalAppraiser),
   CONSTRAINT fk_proposalappraiser_appraiser FOREIGN KEY (idAppraiser) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_proposalappraiser_proposal FOREIGN KEY (idProposal) REFERENCES proposal (idproposal) ON DELETE NO ACTION ON UPDATE NO ACTION

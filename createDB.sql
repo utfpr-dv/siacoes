@@ -508,6 +508,7 @@ CREATE TABLE `proposalappraiser` (
   `comments` text NOT NULL,
   `allowEditing` tinyint(4) NOT NULL,
   `supervisorindication` tinyint(4) NOT NULL ,
+  `file` mediumblob DEFAULT NULL,
   PRIMARY KEY (`idproposalAppraiser`),
   KEY `fk_proposalappraiser_proposal_idx` (`idProposal`),
   KEY `fk_proposalappraiser_appraiser_idx` (`idAppraiser`),
