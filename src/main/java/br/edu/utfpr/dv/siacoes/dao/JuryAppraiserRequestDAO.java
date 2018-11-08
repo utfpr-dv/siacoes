@@ -199,8 +199,10 @@ public class JuryAppraiserRequestDAO {
 			stmt.setTimestamp(4, new java.sql.Timestamp(endDate.getTime()));
 			stmt.setInt(5, idJuryRequest);
 			stmt.setInt(6, idUser);
-			stmt.setTimestamp(7, new java.sql.Timestamp(DateUtils.addMinute(startDate, -30).getTime()));
-			stmt.setTimestamp(8, new java.sql.Timestamp(DateUtils.addMinute(endDate, 30).getTime()));
+			//stmt.setTimestamp(7, new java.sql.Timestamp(DateUtils.addMinute(startDate, -30).getTime()));
+			//stmt.setTimestamp(8, new java.sql.Timestamp(DateUtils.addMinute(endDate, 30).getTime()));
+			stmt.setTimestamp(7, new java.sql.Timestamp(startDate.getTime()));
+			stmt.setTimestamp(8, new java.sql.Timestamp(endDate.getTime()));
 			
 			rs = stmt.executeQuery();
 			rs.next();
