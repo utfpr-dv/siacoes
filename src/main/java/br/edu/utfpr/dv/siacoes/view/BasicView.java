@@ -66,8 +66,10 @@ public abstract class BasicView extends CustomComponent implements View {
 		
 		Link logoUTFPR = new Link(null, new ExternalResource("http://www.utfpr.edu.br"));
 		logoUTFPR.setIcon(new ThemeResource("images/logo_UTFPR_24.png"));
+		logoUTFPR.setTargetName("_blank");
 		Link logoES = new Link(null, new ExternalResource("http://coens.dv.utfpr.edu.br"));
 		logoES.setIcon(new ThemeResource("images/logo_ES_24.png"));
+		logoES.setTargetName("_blank");
 		
 		layoutCaption.addComponent(layoutHamburguer);
 		layoutCaption.addComponent(this.labelCaption);
