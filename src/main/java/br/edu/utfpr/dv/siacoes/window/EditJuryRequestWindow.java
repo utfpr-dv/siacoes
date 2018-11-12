@@ -430,7 +430,7 @@ public class EditJuryRequestWindow extends EditWindow {
 	}
 	
 	private void substituteSchedule() {
-		int index = this.getAppraiserSelectedIndex();
+		int index = this.getSubstituteSelectedIndex();
 		
 		if(index == -1){
 			this.showWarningNotification("Selecionar Suplente", "Selecione o suplente para visualizar a agenda.");

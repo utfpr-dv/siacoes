@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
 
@@ -279,9 +278,15 @@ public class TutoredView extends ListView {
 		
 		if(value != null){
 			try {
-				JuryRequestBO bo = new JuryRequestBO();
+				User supervisor = new SupervisorChangeBO().findCurrentSupervisor((int)value);
 				
-				this.showReport(bo.getJuryRequestForm((int)value, this.comboSemester.getSemester(), this.textYear.getYear()));
+				if(supervisor.getIdUser() != Session.getUser().getIdUser()) {
+					this.showWarningNotification("Imprimir Agendamento de Banca", "Apenas o Professor Orientador pode imprimir o agendamento de banca.");
+				} else {
+					JuryRequestBO bo = new JuryRequestBO();
+					
+					this.showReport(bo.getJuryRequestForm((int)value, this.comboSemester.getSemester(), this.textYear.getYear()));
+				}
 			} catch (Exception e) {
             	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
             	
@@ -299,9 +304,15 @@ public class TutoredView extends ListView {
 			this.showWarningNotification("Termo de Concordância", "Selecione um registro para preencher o termo de concordância de orientação.");
 		} else {
 			try {
-				Proposal proposal = new ProposalBO().findById((int)value);
+				User supervisor = new SupervisorChangeBO().findCurrentSupervisor((int)value);
 				
-				UI.getCurrent().addWindow(new EditSupervisorAgreementWindow(proposal, this));
+				if(supervisor.getIdUser() != Session.getUser().getIdUser()) {
+					this.showWarningNotification("Termo de Concordância", "Apenas o Professor Orientador pode preencher o Termo de Concordância de Orientação.");
+				} else {
+					Proposal proposal = new ProposalBO().findById((int)value);
+					
+					UI.getCurrent().addWindow(new EditSupervisorAgreementWindow(proposal, this));
+				}
 			} catch(Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
@@ -315,9 +326,15 @@ public class TutoredView extends ListView {
 		
 		if(value != null){
 			try {
-				ProposalBO bo = new ProposalBO();
+				User supervisor = new SupervisorChangeBO().findCurrentSupervisor((int)value);
 				
-				this.showReport(bo.getSupervisorFeedbackReport((int)value));
+				if(supervisor.getIdUser() != Session.getUser().getIdUser()) {
+					this.showWarningNotification("Imprimir Termo de Concordância", "Apenas o Professor Orientador pode imprimir o Termo de Concordância de Orientação.");
+				} else {
+					ProposalBO bo = new ProposalBO();
+					
+					this.showReport(bo.getSupervisorFeedbackReport((int)value));
+				}
 			} catch (Exception e) {
             	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
             	
