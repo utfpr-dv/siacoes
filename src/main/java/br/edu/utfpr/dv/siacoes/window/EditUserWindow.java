@@ -12,7 +12,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -325,6 +324,7 @@ public class EditUserWindow extends EditWindow {
 	private void loadGridDepartments() {
 		this.gridDepartments = new Grid();
 		this.gridDepartments.addColumn("Departamento", String.class);
+		this.gridDepartments.addColumn("Câmpus", String.class);
 		this.gridDepartments.addColumn("Perfil", String.class);
 		this.gridDepartments.setWidth("810px");
 		this.gridDepartments.setHeight("270px");
@@ -340,7 +340,7 @@ public class EditUserWindow extends EditWindow {
 		}
 		
 		for(UserDepartment department : this.user.getDepartments()) {
-			this.gridDepartments.addRow(department.getDepartment().getName(), department.getProfile().toString());
+			this.gridDepartments.addRow(department.getDepartment().getName(), department.getDepartment().getCampus().getName(), department.getProfile().toString());
 		}
 		
 		this.layoutDepartments.removeAllComponents();

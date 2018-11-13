@@ -6,10 +6,10 @@ import java.util.logging.Logger;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
@@ -26,6 +26,7 @@ public class EditJuryAppraiserWindow extends EditWindow {
 	private final OptionGroup optionAppraiserType;
 	private final CheckBox checkChair;
 	private final Button buttonSchedule;
+	private final Button buttonAddExternalSupervisor;
 	private final boolean edit;
 	
 	public EditJuryAppraiserWindow(EditJuryWindow parentWindow) {
@@ -35,9 +36,11 @@ public class EditJuryAppraiserWindow extends EditWindow {
 		this.edit = false;
 		
 		this.buttonSchedule = new Button();
+		this.buttonAddExternalSupervisor = new Button();
 		
 		this.comboProfessor = new SupervisorComboBox("Membro", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		this.comboProfessor.setRequired(true);
+		this.comboProfessor.setWidth("570px");
 		
 		this.optionAppraiserType = new OptionGroup();
 		this.optionAppraiserType.addItem("Titular");
@@ -65,9 +68,22 @@ public class EditJuryAppraiserWindow extends EditWindow {
         });
 		this.buttonSchedule.setIcon(FontAwesome.CALENDAR_O);
 		this.addButton(this.buttonSchedule);
-		this.buttonSchedule.setWidth("250px");
+		this.buttonSchedule.setWidth("200px");
+		
+		this.buttonAddExternalSupervisor = new Button("Adicionar Membro Externo", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	addExternalSupervisor();
+            }
+        });
+		this.buttonAddExternalSupervisor.setIcon(FontAwesome.PLUS);
+		this.buttonAddExternalSupervisor.setStyleName(ValoTheme.BUTTON_FRIENDLY);
+		this.addButton(this.buttonAddExternalSupervisor);
+		this.buttonAddExternalSupervisor.setWidth("200px");
 		
 		this.comboProfessor = new SupervisorComboBox((substitute ? "Suplente" : "Membro"), Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
+		this.comboProfessor.setRequired(true);
+		this.comboProfessor.setWidth("570px");
 		
 		this.optionAppraiserType = new OptionGroup();
 		this.optionAppraiserType.addItem("Titular");
@@ -92,10 +108,13 @@ public class EditJuryAppraiserWindow extends EditWindow {
 		this.edit = true;
 		
 		this.buttonSchedule = new Button();
+		this.buttonAddExternalSupervisor = new Button();
 		
 		this.comboProfessor = new SupervisorComboBox("Membro", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
 		this.comboProfessor.setProfessor(appraiser.getAppraiser());
 		this.comboProfessor.setEnabled(false);
+		this.comboProfessor.setRequired(true);
+		this.comboProfessor.setWidth("570px");
 		
 		this.optionAppraiserType = new OptionGroup();
 		this.optionAppraiserType.addItem("Titular");
@@ -157,6 +176,14 @@ public class EditJuryAppraiserWindow extends EditWindow {
 		} else {
 			UI.getCurrent().addWindow(new ProfessorScheculeWindow(professor));
 		}
+	}
+	
+	private void addExternalSupervisor() {
+		UI.getCurrent().addWindow(new EditExternalSupervisorWindow(this));
+	}
+	
+	public void refreshComboProfessor() {
+		this.comboProfessor.setFilter(SupervisorFilter.EVERYONE);
 	}
 
 }

@@ -4,7 +4,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
@@ -17,6 +16,7 @@ import br.edu.utfpr.dv.siacoes.view.ListView;
 public class EditExternalSupervisorWindow extends EditWindow {
 	
 	private final User user;
+	private final EditJuryAppraiserWindow juryAppraiserWindow;
 	
 	private final TextField textName;
 	private final TextField textEmail;
@@ -25,8 +25,10 @@ public class EditExternalSupervisorWindow extends EditWindow {
 	private final TextArea textResearch;
 	private final TextField textLattes;
 	
-	public EditExternalSupervisorWindow(User user, ListView parentView) {
+	public EditExternalSupervisorWindow(User user, ListView parentView, EditJuryAppraiserWindow juryAppraiserWindow) {
 		super("Editar Orientador", parentView);
+		
+		this.juryAppraiserWindow = juryAppraiserWindow;
 		
 		if(user == null) {
 			this.user = new User();
@@ -67,6 +69,14 @@ public class EditExternalSupervisorWindow extends EditWindow {
 		this.loadSupervisor();
 		this.textName.focus();
 	}
+	
+	public EditExternalSupervisorWindow(User user, ListView parentView) {
+		this(user, parentView, null);
+	}
+	
+	public EditExternalSupervisorWindow(EditJuryAppraiserWindow juryAppraiserWindow) {
+		this(null, null, juryAppraiserWindow);
+	}
 
 	private void loadSupervisor() {
 		this.textName.setValue(this.user.getName());
@@ -100,6 +110,10 @@ public class EditExternalSupervisorWindow extends EditWindow {
 			new UserBO().save(this.user);
 			
 			this.showSuccessNotification("Salvar Informações", "Informações salvas com sucesso.");
+			
+			if(this.juryAppraiserWindow != null) {
+				this.juryAppraiserWindow.refreshComboProfessor();
+			}
 			
 			this.parentViewRefreshGrid();
 			this.close();

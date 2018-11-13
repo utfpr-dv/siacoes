@@ -208,6 +208,9 @@ public class UserBO {
 		int ret = 0;
 		boolean isInsert = (user.getIdUser() == 0);
 		
+		user.setLogin(user.getLogin().trim());
+		user.setEmail(user.getEmail().trim());
+		
 		try {
 			if(isInsert && user.getPassword().isEmpty()) {
 				user.setSalt(StringUtils.generateSalt());
@@ -233,6 +236,9 @@ public class UserBO {
 			
 			if(dao.loginExists(user.getLogin(), user.getIdUser())) {
 				throw new Exception("O login informado já está em uso.");
+			}
+			if(dao.emailExists(user.getEmail(), user.getIdUser())) {
+				throw new Exception("O e-mail informado já está sendo utilizado.");
 			}
 			
 			ret = dao.save(user);

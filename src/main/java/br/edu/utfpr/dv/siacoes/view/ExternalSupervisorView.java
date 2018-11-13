@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 
 import br.edu.utfpr.dv.siacoes.bo.UserBO;

@@ -25,9 +25,36 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
 					"SELECT \"user\".idUser FROM \"user\" " +
-					"WHERE \"user\".login = ? AND \"user\".idUser <> ?");
+					"WHERE LOWER(\"user\".login) = LOWER(?) AND \"user\".idUser <> ?");
 		
 			stmt.setString(1, login);
+			stmt.setInt(2, idUser);
+			
+			rs = stmt.executeQuery();
+			
+			return rs.next();
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public boolean emailExists(String email, int idUser) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement(
+					"SELECT \"user\".idUser FROM \"user\" " +
+					"WHERE LOWER(\"user\".email) = LOWER(?) AND \"user\".idUser <> ?");
+		
+			stmt.setString(1, email);
 			stmt.setInt(2, idUser);
 			
 			rs = stmt.executeQuery();
