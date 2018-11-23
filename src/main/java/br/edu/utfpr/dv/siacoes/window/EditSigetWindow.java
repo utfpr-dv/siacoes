@@ -7,8 +7,7 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -39,10 +38,16 @@ public class EditSigetWindow extends EditWindow {
 	private final CheckBox checkValidateAttendances;
 	private final NativeSelect comboAttendanceFrequency;
 	
+	private final TabSheet tab;
+	
 	public EditSigetWindow(SigetConfig config, ListView parentView){
 		super("Editar Configurações", parentView);
 		
 		this.config = config;
+		
+		this.tab = new TabSheet();
+		this.tab.setHeight("250px");
+		this.tab.setWidth("900px");
 		
 		this.textMinimumScore = new TextField("Nota mínima para aprovação");
 		this.textMinimumScore.setWidth("100px");
@@ -107,41 +112,38 @@ public class EditSigetWindow extends EditWindow {
 		g1.addComponent(this.textMaxTutoredStage2, 1, 1);
 		VerticalLayout v4 = new VerticalLayout(g1);
 		v4.setMargin(true);
-		Panel panel1 = new Panel("Orientação");
-		panel1.setContent(v4);
-		this.addField(panel1);
+		
+		this.tab.addTab(v4, "Orientação");
 		
 		VerticalLayout v2 = new VerticalLayout(this.checkSupervisorAgreement, this.checkRegisterProposal, this.checkRequestFinalDocumentStage1);
 		v2.setSpacing(true);
 		HorizontalLayout h2 = new HorizontalLayout(v2, this.textSupervisorIndication);
 		h2.setSpacing(true);
 		h2.setMargin(true);
-		Panel panel3 = new Panel("TCC 1");
-		panel3.setContent(h2);
-		this.addField(panel3);
+		
+		this.tab.addTab(h2, "TCC 1");
 		
 		HorizontalLayout h3 = new HorizontalLayout(this.comboAttendanceFrequency, this.checkValidateAttendances);
 		h3.setSpacing(true);
 		h3.setMargin(true);
-		Panel panel5 = new Panel("Submissão de TCC 1 e TCC 2");
-		panel5.setContent(h3);
-		this.addField(panel5);
+		
+		this.tab.addTab(h3, "Submissão de TCC 1 e TCC 2");
 		
 		VerticalLayout v1 = new VerticalLayout(this.checkShowGradesToStudent, this.checkSupervisorJuryRequest, this.checkSupervisorJuryAgreement);
 		v1.setSpacing(true);
 		HorizontalLayout h1 = new HorizontalLayout(this.textMinimumScore, v1);
 		h1.setSpacing(true);
 		h1.setMargin(true);
-		Panel panel2 = new Panel("Banca");
-		panel2.setContent(h1);
-		this.addField(panel2);
+		
+		this.tab.addTab(h1, "Banca");
 		
 		VerticalLayout v3 = new VerticalLayout(this.textRepositoryLink);
 		v3.setSpacing(true);
 		v3.setMargin(true);
-		Panel panel4 = new Panel("Biblioteca");
-		panel4.setContent(v3);
-		this.addField(panel4);
+		
+		this.tab.addTab(v3, "Biblioteca");
+		
+		this.addField(this.tab);
 		
 		this.loadConfigurations();
 	}

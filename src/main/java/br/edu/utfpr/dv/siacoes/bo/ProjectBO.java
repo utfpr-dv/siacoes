@@ -319,22 +319,18 @@ public class ProjectBO {
 			idSupervisor = p.getSupervisor().getIdUser();
 		}
 		
-		AttendanceBO abo = new AttendanceBO();
-		AttendanceReport attendance = abo.getReport(idUser, idProposal, idSupervisor, 1);
-		
-		List<AttendanceReport> list = new ArrayList<AttendanceReport>();
-		list.add(attendance);
+		List<AttendanceReport> list = new AttendanceBO().getReportList(idUser, idProposal, idSupervisor, 1);
 		
 		ret.add(new ReportUtils().createPdfStream(list, "Attendances", idDepartment).toByteArray());
 		
 		if(new SigetConfigBO().findByDepartment(idDepartment).isSupervisorJuryAgreement()) {
 			if(p == null) {
 				p = new Project();
-				p.setTitle(attendance.getTitle());
+				p.setTitle(list.get(0).getTitle());
 				p.getStudent().setIdUser(idUser);
-				p.getStudent().setName(attendance.getStudent());
+				p.getStudent().setName(list.get(0).getStudent());
 				p.getSupervisor().setIdUser(idSupervisor);
-				p.getSupervisor().setName(attendance.getSupervisor());
+				p.getSupervisor().setName(list.get(0).getSupervisor());
 			}
 			
 			List<SupervisorFeedbackReport> list2 = new ArrayList<SupervisorFeedbackReport>();

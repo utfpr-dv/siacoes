@@ -769,24 +769,51 @@ public class ProposalDAO {
 		}
 	}
 	
-	public int findIdCampus(int idProject) throws SQLException{
+	public int findIdCampus(int idProposal) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT campus.idCampus FROM campus " +
-					"INNER JOIN department ON department.idCampus=campus.idCampus " +
+			stmt = conn.prepareStatement("SELECT department.idCampus FROM department " +
 					"INNER JOIN proposal ON proposal.idDepartment=department.idDepartment " +
 					"WHERE proposal.idProposal=?");
 		
-			stmt.setInt(1, idProject);
+			stmt.setInt(1, idProposal);
 			
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return rs.getInt("idCampus");
+			}else{
+				return 0;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public int findIdDepartment(int idProposal) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT idDepartment FROM proposal WHERE proposal.idProposal=?");
+		
+			stmt.setInt(1, idProposal);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getInt("idDepartment");
 			}else{
 				return 0;
 			}

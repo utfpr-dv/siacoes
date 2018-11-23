@@ -428,6 +428,18 @@ public class ProposalBO {
 		}
 	}
 	
+	public int findIdDepartment(int idProposal) throws Exception {
+		try {
+			ProposalDAO dao = new ProposalDAO();
+			
+			return dao.findIdDepartment(idProposal);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public List<ProposalAppraiser> listProposalFeedback(int idDepartment, int semester, int year) throws Exception {
 		List<Proposal> proposals = this.listBySemester(idDepartment, semester, year);
 		List<ProposalAppraiser> list = new ArrayList<ProposalAppraiser>();

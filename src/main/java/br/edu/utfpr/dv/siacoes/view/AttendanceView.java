@@ -9,11 +9,9 @@ import java.util.logging.Logger;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.event.EventRouter;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.renderers.DateRenderer;
@@ -25,11 +23,9 @@ import br.edu.utfpr.dv.siacoes.bo.SupervisorChangeBO;
 import br.edu.utfpr.dv.siacoes.components.StageComboBox;
 import br.edu.utfpr.dv.siacoes.components.StudentComboBox;
 import br.edu.utfpr.dv.siacoes.model.Attendance;
-import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
-import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.window.EditAttendanceWindow;
 
 public class AttendanceView extends ListView {
@@ -104,7 +100,12 @@ public class AttendanceView extends ListView {
 			}
 		});
 		
-		this.buttonPrint = new Button("Imprimir");
+		this.buttonPrint = new Button("Imprimir", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	printReport();
+            }
+        });
 		this.buttonPrint.setWidth("150px");
 		this.buttonPrint.setIcon(FontAwesome.PRINT);
 		
@@ -121,8 +122,6 @@ public class AttendanceView extends ListView {
 		this.getGrid().getColumns().get(0).setWidth(125);
 		this.getGrid().getColumns().get(1).setWidth(125);
 		this.getGrid().getColumns().get(2).setWidth(125);
-		
-		this.prepareDownload();
 		
 		try {			
 			AttendanceBO bo = new AttendanceBO();
@@ -264,41 +263,20 @@ public class AttendanceView extends ListView {
 			throw new Exception("Selecione a proposta.");
 		}
 	}
-
-	private void prepareDownload(){
-		new EventRouter().removeListener(Button.ClickListener.class, this.buttonPrint);
-		
+	
+	private void printReport() {
 		if((this.comboStudent.getStudent() != null) && (this.comboProposal.getValue() != null)){
 			try {
-				AttendanceReport attendance = new AttendanceBO().getReport(this.comboStudent.getStudent().getIdUser(), ((Proposal)this.comboProposal.getValue()).getIdProposal(), ((User)this.comboSupervisor.getValue()).getIdUser(), this.comboStage.getStage());
-				
-				Proposal proposal = new ProposalBO().findById(((Proposal)this.comboProposal.getValue()).getIdProposal());
-				
-				List<AttendanceReport> list = new ArrayList<AttendanceReport>();
-				list.add(attendance);
-				
-				new ReportUtils().prepareForPdfReport("Attendances", "Acompanhamento", list, proposal.getDepartment().getIdDepartment(), this.buttonPrint);
+				this.showReport(new AttendanceBO().getReport(this.comboStudent.getStudent().getIdUser(), ((Proposal)this.comboProposal.getValue()).getIdProposal(), ((User)this.comboSupervisor.getValue()).getIdUser(), this.comboStage.getStage()));
 			} catch (Exception e) {
-				this.buttonPrint.addClickListener(new Button.ClickListener() {
-		            @Override
-		            public void buttonClick(ClickEvent event) {
-		            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-		            	
-		            	showErrorNotification("Imprimir Acompanhamentos", e.getMessage());
-		            }
-		        });
+				showErrorNotification("Imprimir Acompanhamentos", e.getMessage());
 			}
 		}else{
-			this.buttonPrint.addClickListener(new Button.ClickListener() {
-	            @Override
-	            public void buttonClick(ClickEvent event) {
-	            	if(Session.isUserStudent()) {
-	            		showWarningNotification("Imprimir Acompanhamentos", "É necessário selecionar o orientador e a proposta para imprimir os acompanhamentos.");
-	            	} else {
-	            		showWarningNotification("Imprimir Acompanhamentos", "É necessário selecionar o acadêmico e a proposta para imprimir os acompanhamentos.");
-	            	}
-	            }
-	        });
+        	if(Session.isUserStudent()) {
+        		showWarningNotification("Imprimir Acompanhamentos", "É necessário selecionar o orientador e a proposta para imprimir os acompanhamentos.");
+        	} else {
+        		showWarningNotification("Imprimir Acompanhamentos", "É necessário selecionar o acadêmico e a proposta para imprimir os acompanhamentos.");
+        	}
 		}
 	}
 

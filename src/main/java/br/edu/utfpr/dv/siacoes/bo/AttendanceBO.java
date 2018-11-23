@@ -14,6 +14,7 @@ import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.AttendanceFrequency;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
+import javatests.Issue1833;
 
 public class AttendanceBO {
 
@@ -84,11 +85,26 @@ public class AttendanceBO {
 		}
 	}
 	
-	public AttendanceReport getReport(int idStudent, int idProposal, int idSupervisor, int stage) throws Exception{
+	public List<AttendanceReport> getReportList(int idStudent, int idProposal, int idSupervisor, int stage) throws Exception{
 		try {
 			AttendanceDAO dao = new AttendanceDAO();
+			List<AttendanceReport> list = new ArrayList<AttendanceReport>();
 			
-			return dao.getReport(idStudent, idProposal, idSupervisor, stage);
+			list.add(dao.getReport(idStudent, idProposal, idSupervisor, stage));
+			
+			return list;
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public byte[] getReport(int idStudent, int idProposal, int idSupervisor, int stage) throws Exception{
+		try {
+			ByteArrayOutputStream report = new ReportUtils().createPdfStream(getReportList(idStudent, idProposal, idSupervisor, stage), "Attendances", new ProposalBO().findIdDepartment(idProposal));
+			
+			return report.toByteArray();
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
