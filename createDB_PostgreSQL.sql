@@ -628,6 +628,8 @@ CREATE TABLE finaldocument (
   supervisorFeedbackDate DATE NULL,
   supervisorFeedback SMALLINT NOT NULL,
   comments TEXT NOT NULL,
+  abstract TEXT NOT NULL,
+  abstract2 TEXT NOT NULL,
   PRIMARY KEY (idfinaldocument),
   CONSTRAINT fk_finaldocument_idproject FOREIGN KEY (idProject) REFERENCES project (idproject) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_finaldocument_idthesis FOREIGN KEY (idThesis) REFERENCES thesis (idthesis) ON DELETE NO ACTION ON UPDATE NO ACTION

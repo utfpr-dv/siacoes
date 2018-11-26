@@ -9,8 +9,10 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 
 import br.edu.utfpr.dv.siacoes.Session;
@@ -56,7 +58,10 @@ public class EditFinalDocumentWindow extends EditWindow {
 	private final NativeSelect comboFeedback;
 	private final TextArea textComments;
 	private final DateField textFeedbackDate;
+	private final TextArea textNativeAbstract;
+	private final TextArea textEnglishAbstract;
 	private final Button buttonDownloadFile;
+	private final TabSheet tab;
 	
 	private SigetConfig config;
 	
@@ -78,6 +83,10 @@ public class EditFinalDocumentWindow extends EditWindow {
 		} catch (Exception e1) {
 			this.config = new SigetConfig();
 		}
+		
+		this.tab = new TabSheet();
+		this.tab.setWidth("820px");
+		this.tab.setHeight("385px");
 		
 		this.comboCampus = new CampusComboBox();
 		this.comboCampus.setEnabled(false);
@@ -125,9 +134,9 @@ public class EditFinalDocumentWindow extends EditWindow {
 		
 		this.checkPatent = new CheckBox("Este trabalho é base para geração de patente");
 		
-		this.textComments = new TextArea("Comentários");
+		this.textComments = new TextArea();
 		this.textComments.setWidth("800px");
-		this.textComments.setHeight("100px");
+		this.textComments.setHeight("350px");
 		
 		this.textFeedbackDate = new DateField("Data do Feedback");
 		this.textFeedbackDate.setEnabled(false);
@@ -141,6 +150,14 @@ public class EditFinalDocumentWindow extends EditWindow {
 		this.comboFeedback.select(DocumentFeedback.NONE);
 		this.comboFeedback.setNullSelectionAllowed(false);
 		
+		this.textNativeAbstract = new TextArea();
+		this.textNativeAbstract.setWidth("800px");
+		this.textNativeAbstract.setHeight("350px");
+		
+		this.textEnglishAbstract = new TextArea();
+		this.textEnglishAbstract.setWidth("800px");
+		this.textEnglishAbstract.setHeight("350px");
+		
 		this.buttonDownloadFile = new Button("Baixar Arquivo", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
@@ -149,14 +166,23 @@ public class EditFinalDocumentWindow extends EditWindow {
         });
 		this.buttonDownloadFile.setIcon(FontAwesome.DOWNLOAD);
 		
-		this.addField(new HorizontalLayout(this.comboCampus, this.comboDepartment));
-		this.addField(this.textTitle);
-		this.addField(new HorizontalLayout(this.uploadFile, this.comboSemester, this.textYear, this.textSubmissionDate));
-		this.addField(this.checkPrivate);
-		this.addField(this.checkCompanyInfo);
-		this.addField(this.checkPatent);
-		this.addField(new HorizontalLayout(this.comboFeedback, this.textFeedbackDate));
-		this.addField(this.textComments);
+		HorizontalLayout h1 = new HorizontalLayout(this.comboCampus, this.comboDepartment);
+		h1.setSpacing(true);
+		HorizontalLayout h2 = new HorizontalLayout(this.uploadFile, this.comboSemester, this.textYear, this.textSubmissionDate);
+		h2.setSpacing(true);
+		HorizontalLayout h3 = new HorizontalLayout(this.comboFeedback, this.textFeedbackDate);
+		h3.setSpacing(true);
+		VerticalLayout vl = new VerticalLayout(h1, this.textTitle, h2, this.checkPrivate, this.checkCompanyInfo, this.checkPatent, h3);
+		vl.setSpacing(true);
+		this.tab.addTab(vl, "Dados do Trabalho");
+		
+		this.tab.addTab(this.textNativeAbstract, "Resumo");
+		
+		this.tab.addTab(this.textEnglishAbstract, "Abstract");
+		
+		this.tab.addTab(this.textComments, "Comentários Adicionais");
+		
+		this.addField(this.tab);
 		
 		if(Session.isUserProfessor()){
 			this.uploadFile.setVisible(false);
@@ -228,6 +254,8 @@ public class EditFinalDocumentWindow extends EditWindow {
 		this.comboFeedback.setValue(this.thesis.getSupervisorFeedback());
 		this.textFeedbackDate.setValue(this.thesis.getSupervisorFeedbackDate());
 		this.textComments.setValue(this.thesis.getComments());
+		this.textNativeAbstract.setValue(this.thesis.getNativeAbstract());
+		this.textEnglishAbstract.setValue(this.thesis.getEnglishAbstract());
 	}
 	
 	private void downloadFile() {
@@ -257,6 +285,8 @@ public class EditFinalDocumentWindow extends EditWindow {
 			this.thesis.setPrivate(this.checkPrivate.getValue());
 			this.thesis.setCompanyInfo(this.checkCompanyInfo.getValue());
 			this.thesis.setPatent(this.checkPatent.getValue());
+			this.thesis.setNativeAbstract(this.textNativeAbstract.getValue());
+			this.thesis.setEnglishAbstract(this.textEnglishAbstract.getValue());
 			
 			if(Session.isUserProfessor()){
 				if((this.thesis.getSupervisorFeedback() == DocumentFeedback.NONE) && (this.comboFeedback.getValue() != DocumentFeedback.NONE)){

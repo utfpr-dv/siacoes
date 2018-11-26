@@ -151,6 +151,14 @@ public class FinalDocumentBO {
 		if(thesis.getFile() == null){
 			throw new Exception("É necessário enviar o arquivo.");
 		}
+		if((thesis.getThesis() != null) && (thesis.getThesis().getIdThesis() != 0)) {
+			if(thesis.getNativeAbstract().trim().isEmpty()) {
+				throw new Exception("É necessário preencher o resumo na língua vernácula.");
+			}
+			if(thesis.getEnglishAbstract().trim().isEmpty()) {
+				throw new Exception("É necessário preencher o resumo na língua inglesa.");
+			}
+		}
 		
 		try{
 			boolean isInsert = (thesis.getIdFinalDocument() == 0);

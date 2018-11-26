@@ -52,6 +52,8 @@ public class FinalDocument {
 	private Date supervisorFeedbackDate;
 	private DocumentFeedback supervisorFeedback;
 	private String comments;
+	private String nativeAbstract;
+	private String englishAbstract;
 	
 	public FinalDocument(){
 		this.setIdFinalDocument(0);
@@ -66,6 +68,8 @@ public class FinalDocument {
 		this.setSupervisorFeedbackDate(null);
 		this.setSupervisorFeedback(DocumentFeedback.NONE);
 		this.setComments("");
+		this.setEnglishAbstract("");
+		this.setNativeAbstract("");
 	}
 	
 	public int getIdFinalDocument() {
@@ -157,6 +161,18 @@ public class FinalDocument {
 			return this.getThesis().getYear();
 		else
 			return this.getProject().getYear();
+	}
+	public String getNativeAbstract() {
+		return nativeAbstract;
+	}
+	public void setNativeAbstract(String nativeAbstract) {
+		this.nativeAbstract = nativeAbstract;
+	}
+	public String getEnglishAbstract() {
+		return englishAbstract;
+	}
+	public void setEnglishAbstract(String englishAbstract) {
+		this.englishAbstract = englishAbstract;
 	}
 
 }

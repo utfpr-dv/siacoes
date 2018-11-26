@@ -628,6 +628,8 @@ CREATE TABLE `finaldocument` (
   `supervisorFeedbackDate` DATE NULL,
   `supervisorFeedback` SMALLINT NOT NULL,
   `comments` TEXT NOT NULL,
+  `abstract` TEXT NOT NULL,
+  `abstract2` TEXT NOT NULL,
   PRIMARY KEY (`idfinaldocument`),
   KEY `fk_finaldocument_idproject_idx` (`idProject`),
   KEY `fk_finaldocument_idthesis_idx` (`idThesis`),
