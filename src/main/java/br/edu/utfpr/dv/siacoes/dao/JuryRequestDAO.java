@@ -9,6 +9,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.JuryRequest;
 
@@ -347,6 +348,10 @@ public class JuryRequestDAO {
 		jury.setSupervisorAbsenceReason(rs.getString("supervisorAbsenceReason"));
 		jury.setStage(rs.getInt("stage"));
 		jury.getProposal().setIdProposal(rs.getInt("idProposal"));
+		if(rs.getInt("idJury") > 0) {
+			jury.setJury(new Jury());
+			jury.getJury().setIdJury(rs.getInt("idJury"));
+		}
 		
 		return jury;
 	}

@@ -9,6 +9,7 @@ import com.vaadin.ui.Window;
 import br.edu.utfpr.dv.siacoes.components.CalendarEvent;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
+import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class CalendarEventWindow extends Window {
@@ -53,7 +54,7 @@ public class CalendarEventWindow extends Window {
 		layout.setSpacing(true);
 		layout.setMargin(true);
 		
-		if((event.getJury() != null) && (event.getJury().getIdJury() != 0)){
+		if((event.getJury() != null) && (event.getJury().getIdJury() != 0)) {
 			this.setCaption("Banca de TCC " + String.valueOf(event.getJury().getStage()));
 			
 			this.textCompany.setVisible(false);
@@ -66,7 +67,20 @@ public class CalendarEventWindow extends Window {
 			for(JuryAppraiser appraiser : event.getJury().getAppraisers()){
 				this.textAppraisers.setValue(this.textAppraisers.getValue() + appraiser.getAppraiser().getName() + (appraiser.isSubstitute() ? " (suplente)" : (appraiser.isChair() ? " (presidente)" : "")) + "\n");
 			}
-		}else{
+		} else if((event.getJuryRequest() != null) && (event.getJuryRequest().getIdJuryRequest() != 0)) {
+			this.setCaption("Banca de TCC " + String.valueOf(event.getJuryRequest().getStage()));
+			
+			this.textCompany.setVisible(false);
+			
+			this.textStudent.setValue(event.getJuryRequest().getStudent());
+			this.textTitle.setValue(event.getJuryRequest().getTitle());
+			this.textDate.setValue(DateUtils.format(event.getJuryRequest().getDate(), "dd/MM/yyyy HH:mm"));
+			this.textLocal.setValue(event.getJuryRequest().getLocal());
+			
+			for(JuryAppraiserRequest appraiser : event.getJuryRequest().getAppraisers()){
+				this.textAppraisers.setValue(this.textAppraisers.getValue() + appraiser.getAppraiser().getName() + (appraiser.isSubstitute() ? " (suplente)" : (appraiser.isChair() ? " (presidente)" : "")) + "\n");
+			}
+		} else {
 			this.setCaption("Banca de Estágio");
 			
 			this.textStudent.setValue(event.getInternshipJury().getStudent().getName());

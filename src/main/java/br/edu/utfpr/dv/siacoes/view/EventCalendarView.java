@@ -10,7 +10,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Calendar;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
@@ -24,7 +23,9 @@ import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserBO;
+import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
+import br.edu.utfpr.dv.siacoes.bo.JuryRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.components.CalendarEvent;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
@@ -34,6 +35,8 @@ import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
+import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
+import br.edu.utfpr.dv.siacoes.model.JuryRequest;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
@@ -50,6 +53,7 @@ public class EventCalendarView extends BasicView {
 	private final SemesterComboBox comboSemester;
 	private final YearField textYear;
 	private final CheckBox checkListOnlyMy;
+	private final CheckBox checkListPreScheculing;
 	private final OptionGroup optionFilterType;
 	private final Button buttonFilter;
 	private final Panel panelFilter;
@@ -94,6 +98,8 @@ public class EventCalendarView extends BasicView {
 		
 		this.checkListOnlyMy = new CheckBox("Listar apenas minhas bancas");
 		
+		this.checkListPreScheculing = new CheckBox("Incluir minhas bancas de TCC pré-agendadas");
+		
 		this.buttonFilter = new Button("Filtrar", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
@@ -102,7 +108,10 @@ public class EventCalendarView extends BasicView {
         });
 		this.buttonFilter.setWidth("150px");
 		
-		HorizontalLayout layoutFields = new HorizontalLayout(this.optionFilterType, this.comboSemester, this.textYear, this.checkListOnlyMy);
+		VerticalLayout vl2 = new VerticalLayout(this.checkListOnlyMy, this.checkListPreScheculing);
+		vl2.setSpacing(true);
+		
+		HorizontalLayout layoutFields = new HorizontalLayout(this.optionFilterType, this.comboSemester, this.textYear, vl2);
 		layoutFields.setSpacing(true);
 		
 		VerticalLayout layoutFilter = new VerticalLayout(layoutFields, this.buttonFilter);
@@ -151,6 +160,7 @@ public class EventCalendarView extends BasicView {
     private void loadEvents(){
     	try {
 			List<Jury> listThesis = new ArrayList<Jury>();
+			List<JuryRequest> listRequest = new ArrayList<JuryRequest>();
 			List<InternshipJury> listInternship = new ArrayList<InternshipJury>();
 			BasicEventProvider provider = new BasicEventProvider();
 			
@@ -165,6 +175,16 @@ public class EventCalendarView extends BasicView {
 				
 				if(this.checkListOnlyMy.getValue()){
 					listThesis = bo.listByAppraiser(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
+					
+					if(this.checkListPreScheculing.getValue()) {
+						List<JuryRequest> list = new JuryRequestBO().listByAppraiser(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
+						
+						for(JuryRequest request : list) {
+							if((request.getJury() == null) || (request.getJury().getIdJury() == 0)) {
+								listRequest.add(request);
+							}
+						}
+					}
 				}else{
 					listThesis = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), 0);
 				}
@@ -205,6 +225,29 @@ public class EventCalendarView extends BasicView {
 					}
 					
 					event.setJury(jury);
+					
+					provider.addEvent(event);
+				}
+				
+				for(JuryRequest request : listRequest) {
+					String title = "Banca de TCC " + String.valueOf(request.getStage());
+					String student = "Acadêmico(a): " + request.getStudent();
+					String local = "Local: " + request.getLocal();
+					String appraisers = "Membros da banca: ";
+					
+					request.setAppraisers(new JuryAppraiserRequestBO().listAppraisers(request.getIdJuryRequest()));
+					
+					for(JuryAppraiserRequest appraiser : request.getAppraisers()){
+						appraisers += appraiser.getAppraiser().getName() + (appraiser.isSubstitute() ? " (suplente)" : (appraiser.isChair() ? " (presidente)" : "")) + "; ";
+					}
+					
+					CalendarEvent event = new CalendarEvent(title + " - " + student + " - " + local, title + " - " + student + " - " + local + " - " + appraisers, request.getDate(), DateUtils.addHour(request.getDate(), 1));
+					
+					if(request.getStage() == 2) {
+						event.setEnd(DateUtils.addMinute(event.getEnd(), 30));
+					}
+					
+					event.setJuryRequest(request);
 					
 					provider.addEvent(event);
 				}

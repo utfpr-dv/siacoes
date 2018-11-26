@@ -9,11 +9,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.beanutils.BeanComparator;
-
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.DateRenderer;
 
@@ -85,19 +82,21 @@ public class ProfessorScheculeWindow extends BasicWindow {
 			List<JuryRequest> list3 = new JuryRequestBO().listByAppraiser(professor.getIdUser(), semester.getSemester(), semester.getYear());
 			
 			for(JuryRequest jury : list3) {
-				Event event = new Event();
-				
-				event.setDate(jury.getDate());
-				event.setStartTime(jury.getDate());
-				event.setEndTime(DateUtils.addHour(jury.getDate(), 1));
-				if(jury.getStage() == 2) {
-					event.setEndTime(DateUtils.addMinute(event.getEndTime(), 30));
-					event.setDescription("* Banca de TCC 2 - " + jury.getStudent());
-				} else {
-					event.setDescription("* Banca de TCC 1 - " + jury.getStudent());
+				if((jury.getJury() == null) || (jury.getJury().getIdJury() == 0)) {
+					Event event = new Event();
+					
+					event.setDate(jury.getDate());
+					event.setStartTime(jury.getDate());
+					event.setEndTime(DateUtils.addHour(jury.getDate(), 1));
+					if(jury.getStage() == 2) {
+						event.setEndTime(DateUtils.addMinute(event.getEndTime(), 30));
+						event.setDescription("* Banca de TCC 2 - " + jury.getStudent());
+					} else {
+						event.setDescription("* Banca de TCC 1 - " + jury.getStudent());
+					}
+							
+					events.add(event);
 				}
-						
-				events.add(event);
 			}
 			
 			List<InternshipJury> list2 = new InternshipJuryBO().listByAppraiser(professor.getIdUser(), semester.getSemester(), semester.getYear());
