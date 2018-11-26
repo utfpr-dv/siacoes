@@ -125,6 +125,36 @@ public class InternshipJuryAppraiserDAO {
 		}
 	}
 	
+	public int findIdDepartment(int idJuryAppraiser) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT internship.idDepartment FROM internshipjuryappraiser INNER JOIN internshipjury ON internshipjury.idInternshipJury=internshipjuryappraiser.idInternshipJury " + 
+					"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " + 
+					"WHERE internshipjuryappraiser.idInternshipJuryAppraiser=?");
+		
+			stmt.setInt(1, idJuryAppraiser);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getInt("idDepartment");
+			}else{
+				return 0;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public int save(InternshipJuryAppraiser appraiser) throws SQLException{
 		boolean insert = (appraiser.getIdInternshipJuryAppraiser() == 0);
 		PreparedStatement stmt = null;

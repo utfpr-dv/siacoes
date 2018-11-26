@@ -21,7 +21,6 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -101,6 +100,8 @@ public class EditInternshipWindow extends EditWindow {
 	private final Button buttonDeleteSupervisorReport;
 	private final Button buttonDeleteCompanySupervisorReport;
 	
+	private SigesConfig config;
+	
 	public EditInternshipWindow(Internship i, ListView parentView){
 		super("Editar Estágio", parentView);
 		
@@ -108,6 +109,12 @@ public class EditInternshipWindow extends EditWindow {
 			this.internship = new Internship();
 		}else{
 			this.internship = i;
+		}
+		
+		try {
+			this.config = new SigesConfigBO().findByDepartment(this.internship.getDepartment().getIdDepartment());
+		} catch (Exception e) {
+			this.config = new SigesConfig();
 		}
 		
 		this.comboCampus = new CampusComboBox();
@@ -161,10 +168,10 @@ public class EditInternshipWindow extends EditWindow {
 		this.textReportTitle = new TextField("Título do Relatório Final");
 		this.textReportTitle.setWidth("810px");
 		
-		this.uploadInternshipPlan = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
+		this.uploadInternshipPlan = new FileUploader("(Formato PDF, " + this.config.getMaxFileSizeAsString() + ")");
 		this.uploadInternshipPlan.setButtonCaption("Enviar Plano de Estágio");
 		this.uploadInternshipPlan.getAcceptedDocumentTypes().add(DocumentType.PDF);
-		this.uploadInternshipPlan.setMaxBytesLength(6 * 1024 * 1024);
+		this.uploadInternshipPlan.setMaxBytesLength(this.config.getMaxFileSize());
 		this.uploadInternshipPlan.setFileUploadListener(new FileUploaderListener() {
 			@Override
 			public void uploadSucceeded() {
@@ -183,10 +190,10 @@ public class EditInternshipWindow extends EditWindow {
             }
         });
 		
-		this.uploadFinalReport = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
+		this.uploadFinalReport = new FileUploader("(Formato PDF, " + this.config.getMaxFileSizeAsString() + ")");
 		this.uploadFinalReport.setButtonCaption("Enviar Relatório Final");
 		this.uploadFinalReport.getAcceptedDocumentTypes().add(DocumentType.PDF);
-		this.uploadFinalReport.setMaxBytesLength(6 * 1024 * 1024);
+		this.uploadFinalReport.setMaxBytesLength(this.config.getMaxFileSize());
 		this.uploadFinalReport.setFileUploadListener(new FileUploaderListener() {
 			@Override
 			public void uploadSucceeded() {

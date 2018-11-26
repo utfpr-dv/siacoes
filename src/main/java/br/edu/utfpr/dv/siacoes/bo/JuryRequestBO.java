@@ -118,6 +118,9 @@ public class JuryRequestBO {
 			if((jury.getDate() == null) || jury.getDate().before(DateUtils.getNow().getTime())) {
 				throw new Exception("A data e horário da banca não pode ser inferior à data e horário atual.");
 			}
+			if((jury.getJury() != null) && (jury.getJury().getIdJury() != 0)) {
+				throw new Exception("A banca já foi confirmada e a solicitação não pode ser alterada.");
+			}
 			if(jury.getAppraisers() != null){
 				User supervisor = jury.getSupervisor();
 				User cosupervisor = jury.getCosupervisor();

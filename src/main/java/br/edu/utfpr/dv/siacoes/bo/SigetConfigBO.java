@@ -44,6 +44,9 @@ public class SigetConfigBO {
 		if((config.getMaxTutoredStage1() < 1) || (config.getMaxTutoredStage2() < 1)) {
 			throw new Exception("O número máximo de orientados não deve ser inferior a 1.");
 		}
+		if(config.getMaxFileSize() < 0) {
+			throw new Exception("O tamanho máximo para submissão de arquivos não pode ser inferior a zero.");
+		}
 		
 		try{
 			SigetConfigDAO dao = new SigetConfigDAO();

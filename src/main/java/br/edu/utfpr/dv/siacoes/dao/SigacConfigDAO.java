@@ -46,13 +46,14 @@ public class SigacConfigDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO sigacconfig(minimumScore, idDepartment) VALUES(?, ?)");
+				stmt = conn.prepareStatement("INSERT INTO sigacconfig(minimumScore, maxfilesize, idDepartment) VALUES(?, ?, ?)");
 			}else{
-				stmt = conn.prepareStatement("UPDATE sigacconfig SET minimumScore=? WHERE idDepartment=?");
+				stmt = conn.prepareStatement("UPDATE sigacconfig SET minimumScore=?, maxfilesize=? WHERE idDepartment=?");
 			}
 			
 			stmt.setDouble(1, config.getMinimumScore());
-			stmt.setInt(2, config.getDepartment().getIdDepartment());
+			stmt.setInt(2, config.getMaxFileSize());
+			stmt.setInt(3, config.getDepartment().getIdDepartment());
 			
 			stmt.execute();
 			
@@ -70,6 +71,7 @@ public class SigacConfigDAO {
 		
 		config.getDepartment().setIdDepartment(rs.getInt("idDepartment"));
 		config.setMinimumScore(rs.getDouble("minimumScore"));
+		config.setMaxFileSize(rs.getInt("maxfilesize"));
 		
 		return config;
 	}

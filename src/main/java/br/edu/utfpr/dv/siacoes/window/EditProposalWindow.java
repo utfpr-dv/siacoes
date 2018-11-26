@@ -10,7 +10,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -40,6 +39,7 @@ import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.Semester;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
@@ -67,6 +67,8 @@ public class EditProposalWindow extends EditWindow {
 	private final Button buttonDownloadProposal;
 	private final TabSheet tab;
 	
+	private SigetConfig config;
+	
 	public EditProposalWindow(Proposal p, ListView parentView, boolean submitProposal){
 		super("Editar Proposta", parentView);
 		
@@ -81,6 +83,12 @@ public class EditProposalWindow extends EditWindow {
 			this.proposal.setDepartment(Session.getSelectedDepartment().getDepartment());
 		}else{
 			this.proposal = p;
+		}
+		
+		try {
+			this.config = new SigetConfigBO().findByDepartment(this.proposal.getDepartment().getIdDepartment());
+		} catch (Exception e1) {
+			this.config = new SigetConfig();
 		}
 		
 		this.comboCampus = new CampusComboBox();
@@ -125,9 +133,9 @@ public class EditProposalWindow extends EditWindow {
 		this.textSubmissionDate.setDateFormat("dd/MM/yyyy");
 		this.textSubmissionDate.setRequired(true);
 		
-		this.uploadFile = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
+		this.uploadFile = new FileUploader("(Formato PDF, " + this.config.getMaxFileSizeAsString() + ")");
 		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);
-		this.uploadFile.setMaxBytesLength(6 * 1024 * 1024);
+		this.uploadFile.setMaxBytesLength(this.config.getMaxFileSize());
 		this.uploadFile.setFileUploadListener(new FileUploaderListener() {
 			@Override
 			public void uploadSucceeded() {

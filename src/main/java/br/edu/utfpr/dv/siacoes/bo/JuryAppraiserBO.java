@@ -77,4 +77,16 @@ public class JuryAppraiserBO {
 		}
 	}
 	
+	public int findIdDepartment(int idJuryAppraiser) throws Exception {
+		try {
+			JuryAppraiserDAO dao = new JuryAppraiserDAO();
+			
+			return dao.findIdDepartment(idJuryAppraiser);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 }

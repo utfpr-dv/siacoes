@@ -3,12 +3,13 @@
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
 import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
+import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.model.Internship;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
@@ -19,17 +20,25 @@ public class InternshipUploadFinalReportWindow extends EditWindow {
 	private final TextField textReportTitle;
 	private final FileUploader uploadFinalReport;
 	
+	private SigesConfig config;
+	
 	public InternshipUploadFinalReportWindow(Internship internship, ListView parentView){
 		super("Enviar Relatório Final", parentView);
 		
 		this.internship = internship;
 		
+		try {
+			this.config = new SigesConfigBO().findByDepartment(this.internship.getDepartment().getIdDepartment());
+		} catch (Exception e) {
+			this.config = new SigesConfig();
+		}
+		
 		this.textReportTitle = new TextField("Título do Relatório Final");
 		this.textReportTitle.setWidth("400px");
 		
-		this.uploadFinalReport = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
+		this.uploadFinalReport = new FileUploader("(Formato PDF, " + this.config.getMaxFileSizeAsString() + ")");
 		this.uploadFinalReport.getAcceptedDocumentTypes().add(DocumentType.PDF);
-		this.uploadFinalReport.setMaxBytesLength(6 * 1024 * 1024);
+		this.uploadFinalReport.setMaxBytesLength(this.config.getMaxFileSize());
 		
 		this.addField(this.textReportTitle);
 		this.addField(this.uploadFinalReport);

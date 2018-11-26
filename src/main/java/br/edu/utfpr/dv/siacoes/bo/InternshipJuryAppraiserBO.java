@@ -82,5 +82,17 @@ public class InternshipJuryAppraiserBO {
 			throw new Exception(e.getMessage());
 		}
 	}
+	
+	public int findIdDepartment(int idInternshipJury) throws Exception{
+		try {
+			InternshipJuryAppraiserDAO dao = new InternshipJuryAppraiserDAO();
+			
+			return dao.findIdDepartment(idInternshipJury);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
 
 }

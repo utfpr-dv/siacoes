@@ -3,10 +3,10 @@
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
 import br.edu.utfpr.dv.siacoes.bo.SigacConfigBO;
+import br.edu.utfpr.dv.siacoes.components.ByteSizeField;
 import br.edu.utfpr.dv.siacoes.model.SigacConfig;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
@@ -15,6 +15,7 @@ public class EditSigacWindow extends EditWindow {
 	private final SigacConfig config;
 	
 	private final TextField textMinimumScore;
+	private final ByteSizeField textMaxFileSize;
 	
 	public EditSigacWindow(SigacConfig config, ListView parentView){
 		super("Configurações SIGAC", parentView);
@@ -24,13 +25,17 @@ public class EditSigacWindow extends EditWindow {
 		this.textMinimumScore = new TextField("Pontuação Mínima");
 		this.textMinimumScore.setWidth("100px");
 		
+		this.textMaxFileSize = new ByteSizeField("Tamanho máximo para submissão de arquivos");
+		
 		this.addField(this.textMinimumScore);
+		this.addField(this.textMaxFileSize);
 		
 		this.loadConfigurations();
 	}
 	
 	private void loadConfigurations(){
 		this.textMinimumScore.setValue(String.valueOf(this.config.getMinimumScore()));
+		this.textMaxFileSize.setValue(this.config.getMaxFileSize());
 	}
 
 	@Override
@@ -39,6 +44,7 @@ public class EditSigacWindow extends EditWindow {
 			SigacConfigBO bo = new SigacConfigBO();
 			
 			this.config.setMinimumScore(Double.parseDouble(this.textMinimumScore.getValue().replace(",", ".")));
+			this.config.setMaxFileSize((int)this.textMaxFileSize.getValue());
 			
 			bo.save(this.config);
 			

@@ -81,6 +81,7 @@ CREATE TABLE `semester` (
 CREATE  TABLE `sigacconfig` (
   `iddepartment` INT NOT NULL ,
   `minimumScore` DOUBLE NOT NULL ,
+  `maxfilesize` INT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigacconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -93,6 +94,7 @@ CREATE  TABLE `sigesconfig` (
   `showgradestostudent` TINYINT NOT NULL ,
   `supervisorfilter` SMALLINT NOT NULL ,
   `supervisorFillJuryForm` TINYINT NOT NULL ,
+  `maxfilesize` INT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigesconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -114,6 +116,7 @@ CREATE  TABLE `sigetconfig` (
   `supervisorjuryagreement` TINYINT NOT NULL ,
   `validateattendances` TINYINT NOT NULL ,
   `attendancefrequency` SMALLINT NOT NULL ,
+  `maxfilesize` INT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigetconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );

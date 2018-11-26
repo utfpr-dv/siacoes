@@ -15,7 +15,6 @@ import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -29,6 +28,7 @@ import br.edu.utfpr.dv.siacoes.bo.ActivitySubmissionBO;
 import br.edu.utfpr.dv.siacoes.bo.ActivityUnitBO;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.bo.FinalSubmissionBO;
+import br.edu.utfpr.dv.siacoes.bo.SigacConfigBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
 import br.edu.utfpr.dv.siacoes.components.FileUploader;
@@ -43,6 +43,7 @@ import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.model.SigacConfig;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditActivitySubmissionWindow extends EditWindow {
@@ -69,6 +70,8 @@ public class EditActivitySubmissionWindow extends EditWindow {
 	private final TabSheet tabContainer;
 	private final VerticalLayout tab3;
 	
+	private SigacConfig config;
+	
 	public EditActivitySubmissionWindow(ActivitySubmission s, ListView parentView){
 		super("Editar Submissão", parentView);
 		
@@ -78,6 +81,12 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			this.submission.setDepartment(Session.getSelectedDepartment().getDepartment());
 		}else{
 			this.submission = s;
+		}
+		
+		try {
+			this.config = new SigacConfigBO().findByDepartment(this.submission.getDepartment().getIdDepartment());
+		} catch (Exception e) {
+			this.config = new SigacConfig();
 		}
 		
 		this.comboCampus = new CampusComboBox();
@@ -137,9 +146,9 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			}
 		});
 		
-		this.uploadFile = new FileUploader("(Formato PDF, Tam. Máx. 500 KB)");
+		this.uploadFile = new FileUploader("(Formato PDF, " + this.config.getMaxFileSizeAsString() + ")");
 		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);
-		this.uploadFile.setMaxBytesLength(500 * 1024);
+		this.uploadFile.setMaxBytesLength(this.config.getMaxFileSize());
 		this.uploadFile.setFileUploadListener(new FileUploaderListener() {
 			@Override
 			public void uploadSucceeded() {

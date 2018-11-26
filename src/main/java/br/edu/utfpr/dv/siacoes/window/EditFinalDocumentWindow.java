@@ -9,7 +9,6 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Button.ClickEvent;
@@ -18,8 +17,11 @@ import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.bo.DeadlineBO;
 import br.edu.utfpr.dv.siacoes.bo.FinalDocumentBO;
+import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
+import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
+import br.edu.utfpr.dv.siacoes.bo.ThesisBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.DepartmentComboBox;
 import br.edu.utfpr.dv.siacoes.components.FileUploader;
@@ -32,6 +34,7 @@ import br.edu.utfpr.dv.siacoes.model.FinalDocument;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.Semester;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
@@ -55,6 +58,8 @@ public class EditFinalDocumentWindow extends EditWindow {
 	private final DateField textFeedbackDate;
 	private final Button buttonDownloadFile;
 	
+	private SigetConfig config;
+	
 	public EditFinalDocumentWindow(FinalDocument doc, ListView parentView){
 		super("Versão Final do Projeto/Monografia", parentView);
 		
@@ -62,6 +67,16 @@ public class EditFinalDocumentWindow extends EditWindow {
 			this.thesis = new FinalDocument();
 		}else{
 			this.thesis = doc;
+		}
+		
+		try {
+			if((this.thesis.getThesis() != null) && (this.thesis.getThesis().getIdThesis() != 0)) {
+				this.config = new SigetConfigBO().findByDepartment(new ThesisBO().findIdDepartment(this.thesis.getThesis().getIdThesis()));
+			} else {
+				this.config = new SigetConfigBO().findByDepartment(new ProjectBO().findIdDepartment(this.thesis.getProject().getIdProject()));
+			}
+		} catch (Exception e1) {
+			this.config = new SigetConfig();
 		}
 		
 		this.comboCampus = new CampusComboBox();
@@ -90,9 +105,9 @@ public class EditFinalDocumentWindow extends EditWindow {
 		this.textSubmissionDate.setDateFormat("dd/MM/yyyy");
 		this.textSubmissionDate.setRequired(true);
 		
-		this.uploadFile = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
+		this.uploadFile = new FileUploader("(Formato PDF/A, " + this.config.getMaxFileSizeAsString() + ")");
 		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDFA);
-		this.uploadFile.setMaxBytesLength(6 * 1024 * 1024);
+		this.uploadFile.setMaxBytesLength(this.config.getMaxFileSize());
 		this.uploadFile.setFileUploadListener(new FileUploaderListener() {
 			@Override
 			public void uploadSucceeded() {

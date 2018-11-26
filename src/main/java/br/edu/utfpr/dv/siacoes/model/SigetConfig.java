@@ -1,5 +1,7 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import br.edu.utfpr.dv.siacoes.components.ByteSizeField;
+
 public class SigetConfig {
 	
 	public enum SupervisorFilter {
@@ -96,6 +98,7 @@ public class SigetConfig {
 	private boolean supervisorJuryAgreement;
 	private boolean validateAttendances;
 	private AttendanceFrequency attendanceFrequency;
+	private int maxFileSize;
 	
 	public SigetConfig(){
 		this.setDepartment(new Department());
@@ -114,6 +117,7 @@ public class SigetConfig {
 		this.setSupervisorJuryAgreement(false);
 		this.setValidateAttendances(false);
 		this.setAttendanceFrequency(AttendanceFrequency.MONTHLY);
+		this.setMaxFileSize(0);
 	}
 	
 	public Department getDepartment() {
@@ -211,6 +215,19 @@ public class SigetConfig {
 	}
 	public void setAttendanceFrequency(AttendanceFrequency attendanceFrequency) {
 		this.attendanceFrequency = attendanceFrequency;
+	}
+	public int getMaxFileSize() {
+		return maxFileSize;
+	}
+	public void setMaxFileSize(int maxFileSize) {
+		this.maxFileSize = maxFileSize;
+	}
+	public String getMaxFileSizeAsString() {
+		if(this.getMaxFileSize() <= 0) {
+			return "Tamanho Ilimitado";
+		} else {
+			return "Tam. Máx. " + ByteSizeField.getSizeAsString(this.getMaxFileSize());
+		}
 	}
 
 }

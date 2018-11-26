@@ -7,7 +7,6 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -35,6 +34,7 @@ import br.edu.utfpr.dv.siacoes.model.Deadline;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.Semester;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
@@ -58,6 +58,8 @@ public class EditProjectWindow extends EditWindow {
 	private final TextArea textAbstract;
 	private final TabSheet tabData;
 	
+	private SigetConfig config;
+	
 	public EditProjectWindow(Project p, ListView parentView){
 		super("Editar Projeto", parentView);
 		
@@ -65,6 +67,12 @@ public class EditProjectWindow extends EditWindow {
 			this.project = new Project();
 		}else{
 			this.project = p;
+		}
+		
+		try {
+			this.config = new SigetConfigBO().findByDepartment(new ProjectBO().findIdDepartment(this.project.getIdProject()));
+		} catch (Exception e1) {
+			this.config = new SigetConfig();
 		}
 		
 		this.tabData = new TabSheet();
@@ -117,9 +125,9 @@ public class EditProjectWindow extends EditWindow {
 		this.textSubmissionDate.setDateFormat("dd/MM/yyyy");
 		this.textSubmissionDate.setRequired(true);
 		
-		this.uploadFile = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
+		this.uploadFile = new FileUploader("(Formato PDF, " + this.config.getMaxFileSizeAsString() + ")");
 		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);
-		this.uploadFile.setMaxBytesLength(6 * 1024 * 1024);
+		this.uploadFile.setMaxBytesLength(this.config.getMaxFileSize());
 		this.uploadFile.setFileUploadListener(new FileUploaderListener() {
 			@Override
 			public void uploadSucceeded() {

@@ -42,6 +42,9 @@ public class SigesConfigBO {
 		if(config.getSupervisorPonderosity() <= 0){
 			throw new Exception("O peso da nota do orientador deve ser superior a zero.");
 		}
+		if(config.getMaxFileSize() < 0) {
+			throw new Exception("O tamanho máximo para submissão de arquivos não pode ser inferior a zero.");
+		}
 		
 		try{
 			SigesConfigDAO dao = new SigesConfigDAO();

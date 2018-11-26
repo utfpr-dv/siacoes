@@ -1,5 +1,6 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import br.edu.utfpr.dv.siacoes.components.ByteSizeField;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 
 public class SigesConfig {
@@ -11,6 +12,7 @@ public class SigesConfig {
 	private boolean showGradesToStudent;
 	private SupervisorFilter supervisorFilter;
 	private boolean supervisorFillJuryForm;
+	private int maxFileSize;
 	
 	public SigesConfig(){
 		this.setDepartment(new Department());
@@ -20,6 +22,7 @@ public class SigesConfig {
 		this.setShowGradesToStudent(false);
 		this.setSupervisorFilter(SupervisorFilter.DEPARTMENT);
 		this.setSupervisorFillJuryForm(false);
+		this.setMaxFileSize(0);
 	}
 	
 	public Department getDepartment() {
@@ -63,6 +66,19 @@ public class SigesConfig {
 	}
 	public void setSupervisorFillJuryForm(boolean supervisorFillJuryForm) {
 		this.supervisorFillJuryForm = supervisorFillJuryForm;
+	}
+	public int getMaxFileSize() {
+		return maxFileSize;
+	}
+	public void setMaxFileSize(int maxFileSize) {
+		this.maxFileSize = maxFileSize;
+	}
+	public String getMaxFileSizeAsString() {
+		if(this.getMaxFileSize() <= 0) {
+			return "Tamanho Ilimitado";
+		} else {
+			return "Tam. Máx. " + ByteSizeField.getSizeAsString(this.getMaxFileSize());
+		}
 	}
 	
 }

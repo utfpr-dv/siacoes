@@ -12,6 +12,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
+import br.edu.utfpr.dv.siacoes.components.ByteSizeField;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.AttendanceFrequency;
@@ -37,6 +38,7 @@ public class EditSigetWindow extends EditWindow {
 	private final CheckBox checkSupervisorJuryAgreement;
 	private final CheckBox checkValidateAttendances;
 	private final NativeSelect comboAttendanceFrequency;
+	private final ByteSizeField textMaxFileSize;
 	
 	private final TabSheet tab;
 	
@@ -104,6 +106,8 @@ public class EditSigetWindow extends EditWindow {
 		this.comboAttendanceFrequency.addItem(AttendanceFrequency.BIMONTHLY);
 		this.comboAttendanceFrequency.addItem(AttendanceFrequency.QUARTERLY);
 		
+		this.textMaxFileSize = new ByteSizeField("Tamanho máximo para submissão de arquivos");
+		
 		GridLayout g1 = new GridLayout(2, 2);
 		g1.setSpacing(true);
 		g1.addComponent(this.comboSupervisorFilter, 0, 0);
@@ -125,9 +129,11 @@ public class EditSigetWindow extends EditWindow {
 		
 		HorizontalLayout h3 = new HorizontalLayout(this.comboAttendanceFrequency, this.checkValidateAttendances);
 		h3.setSpacing(true);
-		h3.setMargin(true);
+		VerticalLayout v5 = new VerticalLayout(h3, this.textMaxFileSize);
+		v5.setSpacing(true);
+		v5.setMargin(true);
 		
-		this.tab.addTab(h3, "Submissão de TCC 1 e TCC 2");
+		this.tab.addTab(v5, "Submissão de TCC 1 e TCC 2");
 		
 		VerticalLayout v1 = new VerticalLayout(this.checkShowGradesToStudent, this.checkSupervisorJuryRequest, this.checkSupervisorJuryAgreement);
 		v1.setSpacing(true);
@@ -164,6 +170,7 @@ public class EditSigetWindow extends EditWindow {
 		this.checkSupervisorJuryAgreement.setValue(this.config.isSupervisorJuryAgreement());
 		this.checkValidateAttendances.setValue(this.config.isValidateAttendances());
 		this.comboAttendanceFrequency.setValue(this.config.getAttendanceFrequency());
+		this.textMaxFileSize.setValue(this.config.getMaxFileSize());
 	}
 
 	@Override
@@ -186,6 +193,7 @@ public class EditSigetWindow extends EditWindow {
 			this.config.setSupervisorJuryAgreement(this.checkSupervisorJuryAgreement.getValue());
 			this.config.setValidateAttendances(this.checkValidateAttendances.getValue());
 			this.config.setAttendanceFrequency((AttendanceFrequency)this.comboAttendanceFrequency.getValue());
+			this.config.setMaxFileSize((int)this.textMaxFileSize.getValue());
 			
 			bo.save(this.config);
 			

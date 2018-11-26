@@ -3,11 +3,11 @@
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vaadin.ui.Notification;
-
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserBO;
+import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 
 public class EditInternshipJuryAppraiserFeedbackWindow extends EditWindow {
@@ -16,6 +16,8 @@ public class EditInternshipJuryAppraiserFeedbackWindow extends EditWindow {
 	
 	private final FileUploader uploadFile;
 	private final FileUploader uploadAdditionalFile;
+	
+	private SigesConfig config;
 	
 	public EditInternshipJuryAppraiserFeedbackWindow(InternshipJuryAppraiser appraiser){
 		super("Enviar Feedback", null);
@@ -26,13 +28,19 @@ public class EditInternshipJuryAppraiserFeedbackWindow extends EditWindow {
 			this.appraiser = appraiser;
 		}
 		
-		this.uploadFile = new FileUploader("Arquivo Comentado (Formato PDF, Tam. Máx. 5 MB)");
-		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);
-		this.uploadFile.setMaxBytesLength(6 * 1024 * 1024);
+		try {
+			this.config = new SigesConfigBO().findByDepartment(new InternshipJuryAppraiserBO().findIdDepartment(this.appraiser.getIdInternshipJuryAppraiser()));
+		} catch (Exception e) {
+			this.config = new SigesConfig();
+		}
 		
-		this.uploadAdditionalFile = new FileUploader("Arquivos Complementares (Formato ZIP, Tam. Máx. 5 MB)");
+		this.uploadFile = new FileUploader("Arquivo Comentado (Formato PDF, " + this.config.getMaxFileSizeAsString() + ")");
+		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);
+		this.uploadFile.setMaxBytesLength(this.config.getMaxFileSize());
+		
+		this.uploadAdditionalFile = new FileUploader("Arquivos Complementares (Formato ZIP, " + this.config.getMaxFileSizeAsString() + ")");
 		this.uploadAdditionalFile.getAcceptedDocumentTypes().add(DocumentType.ZIP);
-		this.uploadFile.setMaxBytesLength(6 * 1024 * 1024);
+		this.uploadFile.setMaxBytesLength(this.config.getMaxFileSize());
 		
 		this.addField(this.uploadFile);
 		this.addField(this.uploadAdditionalFile);

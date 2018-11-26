@@ -6,12 +6,12 @@ import java.util.logging.Logger;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
+import br.edu.utfpr.dv.siacoes.components.ByteSizeField;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 import br.edu.utfpr.dv.siacoes.view.ListView;
@@ -26,11 +26,18 @@ public class EditSigesWindow extends EditWindow {
 	private final CheckBox checkShowGradesToStudent;
 	private final NativeSelect comboSupervisorFilter;
 	private final CheckBox checkSupervisorFillJuryForm;
+	private final ByteSizeField textMaxFileSize;
+	
+	private final TabSheet tab;
 	
 	public EditSigesWindow(SigesConfig config, ListView parentView){
 		super("Editar Configurações", parentView);
 		
 		this.config = config;
+		
+		this.tab = new TabSheet();
+		this.tab.setHeight("250px");
+		this.tab.setWidth("900px");
 		
 		this.textMinimumScore = new TextField("Pontuação Mínima");
 		this.textMinimumScore.setWidth("100px");
@@ -53,21 +60,29 @@ public class EditSigesWindow extends EditWindow {
 		this.comboSupervisorFilter.addItem(SupervisorFilter.INSTITUTION);
 		this.comboSupervisorFilter.addItem(SupervisorFilter.EVERYONE);
 		
+		this.textMaxFileSize = new ByteSizeField("Tamanho máximo para submissão de arquivos");
+		
 		VerticalLayout v1 = new VerticalLayout(this.comboSupervisorFilter);
 		v1.setSpacing(true);
 		v1.setMargin(true);
-		Panel panel1 = new Panel("Orientação");
-		panel1.setContent(v1);
-		this.addField(panel1);
+		
+		this.tab.addTab(v1, "Orientação");
 		
 		HorizontalLayout h1 = new HorizontalLayout(this.textMinimumScore, this.textSupervisorPonderosity, this.textCompanySupervisorPonderosity);
 		h1.setSpacing(true);
 		VerticalLayout v2 = new VerticalLayout(h1, this.checkSupervisorFillJuryForm, this.checkShowGradesToStudent);
 		v2.setSpacing(true);
 		v2.setMargin(true);
-		Panel panel2 = new Panel("Banca");
-		panel2.setContent(v2);
-		this.addField(panel2);
+		
+		this.tab.addTab(v2, "Banca");
+		
+		VerticalLayout v3 = new VerticalLayout(this.textMaxFileSize);
+		v3.setSpacing(true);
+		v3.setMargin(true);
+		
+		this.tab.addTab(v3, "Submissão de Arquivos");
+		
+		this.addField(this.tab);
 		
 		this.loadConfigurations();
 	}
@@ -79,6 +94,7 @@ public class EditSigesWindow extends EditWindow {
 		this.checkShowGradesToStudent.setValue(this.config.isShowGradesToStudent());
 		this.comboSupervisorFilter.setValue(this.config.getSupervisorFilter());
 		this.checkSupervisorFillJuryForm.setValue(this.config.isSupervisorFillJuryForm());
+		this.textMaxFileSize.setValue(this.config.getMaxFileSize());
 	}
 
 	@Override
@@ -92,6 +108,7 @@ public class EditSigesWindow extends EditWindow {
 			this.config.setShowGradesToStudent(this.checkShowGradesToStudent.getValue());
 			this.config.setSupervisorFilter((SupervisorFilter)this.comboSupervisorFilter.getValue());
 			this.config.setSupervisorFillJuryForm(this.checkSupervisorFillJuryForm.getValue());
+			this.config.setMaxFileSize((int)this.textMaxFileSize.getValue());
 			
 			bo.save(this.config);
 			

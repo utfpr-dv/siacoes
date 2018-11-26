@@ -32,6 +32,9 @@ public class SigacConfigBO {
 		if((config.getDepartment() == null) || (config.getDepartment().getIdDepartment() == 0)){
 			throw new Exception("Informe o departamento.");
 		}
+		if(config.getMaxFileSize() < 0) {
+			throw new Exception("O tamanho máximo para submissão de arquivos não pode ser inferior a zero.");
+		}
 		if(config.getMinimumScore() <= 0){
 			throw new Exception("A nota mínima para aprovação deve ser superior a zero.");
 		}
