@@ -47,6 +47,12 @@ public class SigetConfigBO {
 		if(config.getMaxFileSize() < 0) {
 			throw new Exception("O tamanho máximo para submissão de arquivos não pode ser inferior a zero.");
 		}
+		if(config.getMinimumJuryMembers() < 0) {
+			config.setMinimumJuryMembers(0);
+		}
+		if(config.getMinimumJurySubstitutes() < 0) {
+			config.setMinimumJurySubstitutes(0);
+		}
 		
 		try{
 			SigetConfigDAO dao = new SigetConfigDAO();

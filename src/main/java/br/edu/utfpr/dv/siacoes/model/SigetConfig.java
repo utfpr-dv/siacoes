@@ -99,6 +99,8 @@ public class SigetConfig {
 	private boolean validateAttendances;
 	private AttendanceFrequency attendanceFrequency;
 	private int maxFileSize;
+	private int minimumJuryMembers;
+	private int minimumJurySubstitutes;
 	
 	public SigetConfig(){
 		this.setDepartment(new Department());
@@ -118,6 +120,8 @@ public class SigetConfig {
 		this.setValidateAttendances(false);
 		this.setAttendanceFrequency(AttendanceFrequency.MONTHLY);
 		this.setMaxFileSize(0);
+		this.setMinimumJuryMembers(0);
+		this.setMinimumJurySubstitutes(0);
 	}
 	
 	public Department getDepartment() {
@@ -228,6 +232,18 @@ public class SigetConfig {
 		} else {
 			return "Tam. Máx. " + ByteSizeField.getSizeAsString(this.getMaxFileSize());
 		}
+	}
+	public int getMinimumJuryMembers() {
+		return minimumJuryMembers;
+	}
+	public void setMinimumJuryMembers(int minimumJuryMembers) {
+		this.minimumJuryMembers = minimumJuryMembers;
+	}
+	public int getMinimumJurySubstitutes() {
+		return minimumJurySubstitutes;
+	}
+	public void setMinimumJurySubstitutes(int minimumJurySubstitutes) {
+		this.minimumJurySubstitutes = minimumJurySubstitutes;
 	}
 
 }

@@ -117,6 +117,8 @@ CREATE  TABLE `sigetconfig` (
   `validateattendances` TINYINT NOT NULL ,
   `attendancefrequency` SMALLINT NOT NULL ,
   `maxfilesize` INT NOT NULL ,
+  `minimumjurymembers` SMALLINT NOT NULL ,
+  `minimumjurysubstitutes` SMALLINT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigetconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );

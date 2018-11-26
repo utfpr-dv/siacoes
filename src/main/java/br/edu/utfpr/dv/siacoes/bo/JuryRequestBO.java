@@ -16,6 +16,7 @@ import br.edu.utfpr.dv.siacoes.model.JuryRequest;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
@@ -125,6 +126,7 @@ public class JuryRequestBO {
 				User supervisor = jury.getSupervisor();
 				User cosupervisor = jury.getCosupervisor();
 				boolean find = false, findSupervisor = false, findCosupervisor = false;
+				int countChair = 0, countMembers = 0, countSubstitutes = 0;
 				
 				for(JuryAppraiserRequest appraiser : jury.getAppraisers()){
 					if(new JuryAppraiserRequestBO().appraiserHasJuryRequest(jury.getIdJuryRequest(), appraiser.getAppraiser().getIdUser(), jury.getDate()) || new JuryAppraiserBO().appraiserHasJury(0, appraiser.getAppraiser().getIdUser(), jury.getDate())){
@@ -142,6 +144,14 @@ public class JuryRequestBO {
 					if(appraiser.isChair() && ((appraiser.getAppraiser().getIdUser() == supervisor.getIdUser()) || ((cosupervisor != null) && (appraiser.getAppraiser().getIdUser() == cosupervisor.getIdUser())))){
 						find = true;
 					}
+					
+					if(appraiser.isSubstitute()) {
+						countSubstitutes++;
+					} else if(!appraiser.isChair()) {
+						countMembers++;
+					} else {
+						countChair++;
+					}
 				}
 				
 				if(find) {
@@ -151,6 +161,19 @@ public class JuryRequestBO {
 				}
 				if(findSupervisor && findCosupervisor) {
 					throw new Exception("O Coorientador não pode fazer parte da banca quando o orientador já compõe a mesma");
+				}
+				if(countChair == 0) {
+					throw new Exception("É preciso indicar o presidente da banca.");
+				} else if(countChair > 1) {
+					throw new Exception("Apenas um membro pode ser presidente da banca.");
+				}
+				
+				SigetConfig config = new SigetConfigBO().findByDepartment(new ProposalBO().findIdDepartment(jury.getProposal().getIdProposal()));
+				if(countMembers < config.getMinimumJuryMembers()) {
+					throw new Exception("A banca deverá ser composta por, no mínimo, " + String.valueOf(config.getMinimumJuryMembers()) + " membros titulares (sem contar o presidente).");
+				}
+				if(countSubstitutes < config.getMinimumJurySubstitutes()) {
+					throw new Exception("A banca deverá ser conter, no mínimo, " + String.valueOf(config.getMinimumJurySubstitutes()) + " suplente(s).");
 				}
 			}
 			

@@ -39,6 +39,8 @@ public class EditSigetWindow extends EditWindow {
 	private final CheckBox checkValidateAttendances;
 	private final NativeSelect comboAttendanceFrequency;
 	private final ByteSizeField textMaxFileSize;
+	private final TextField textMinimumJuryMembers;
+	private final TextField textMinimumJurySubstitutes;
 	
 	private final TabSheet tab;
 	
@@ -48,7 +50,7 @@ public class EditSigetWindow extends EditWindow {
 		this.config = config;
 		
 		this.tab = new TabSheet();
-		this.tab.setHeight("250px");
+		this.tab.setHeight("280px");
 		this.tab.setWidth("900px");
 		
 		this.textMinimumScore = new TextField("Nota mínima para aprovação");
@@ -108,6 +110,12 @@ public class EditSigetWindow extends EditWindow {
 		
 		this.textMaxFileSize = new ByteSizeField("Tamanho máximo para submissão de arquivos");
 		
+		this.textMinimumJuryMembers = new TextField("Número mínimo de membros titulares na banca (exceto o presidente)");
+		this.textMinimumJuryMembers.setWidth("100px");
+		
+		this.textMinimumJurySubstitutes = new TextField("Número mínimo de suplentes na banca");
+		this.textMinimumJurySubstitutes.setWidth("100px");
+		
 		GridLayout g1 = new GridLayout(2, 2);
 		g1.setSpacing(true);
 		g1.addComponent(this.comboSupervisorFilter, 0, 0);
@@ -135,7 +143,7 @@ public class EditSigetWindow extends EditWindow {
 		
 		this.tab.addTab(v5, "Submissão de TCC 1 e TCC 2");
 		
-		VerticalLayout v1 = new VerticalLayout(this.checkShowGradesToStudent, this.checkSupervisorJuryRequest, this.checkSupervisorJuryAgreement);
+		VerticalLayout v1 = new VerticalLayout(this.checkShowGradesToStudent, this.checkSupervisorJuryAgreement, this.checkSupervisorJuryRequest, this.textMinimumJuryMembers, this.textMinimumJurySubstitutes);
 		v1.setSpacing(true);
 		HorizontalLayout h1 = new HorizontalLayout(this.textMinimumScore, v1);
 		h1.setSpacing(true);
@@ -171,6 +179,8 @@ public class EditSigetWindow extends EditWindow {
 		this.checkValidateAttendances.setValue(this.config.isValidateAttendances());
 		this.comboAttendanceFrequency.setValue(this.config.getAttendanceFrequency());
 		this.textMaxFileSize.setValue(this.config.getMaxFileSize());
+		this.textMinimumJuryMembers.setValue(String.valueOf(this.config.getMinimumJuryMembers()));
+		this.textMinimumJurySubstitutes.setValue(String.valueOf(this.config.getMinimumJurySubstitutes()));
 	}
 
 	@Override
@@ -194,6 +204,8 @@ public class EditSigetWindow extends EditWindow {
 			this.config.setValidateAttendances(this.checkValidateAttendances.getValue());
 			this.config.setAttendanceFrequency((AttendanceFrequency)this.comboAttendanceFrequency.getValue());
 			this.config.setMaxFileSize((int)this.textMaxFileSize.getValue());
+			this.config.setMinimumJuryMembers(Integer.parseInt(this.textMinimumJuryMembers.getValue()));
+			this.config.setMinimumJurySubstitutes(Integer.parseInt(this.textMinimumJurySubstitutes.getValue()));
 			
 			bo.save(this.config);
 			

@@ -317,15 +317,13 @@ public class JuryBO {
 				}
 			}
 			if(jury.getAppraisers() != null){
-				JuryAppraiserBO bo = new JuryAppraiserBO();
-				
 				User supervisor = jury.getSupervisor();
 				User cosupervisor = jury.getCosupervisor();
 				boolean find = false, findSupervisor = false, findCosupervisor = false;
-				int countChair = 0;
+				int countChair = 0, countMembers = 0, countSubstitutes = 0;
 				
 				for(JuryAppraiser appraiser : jury.getAppraisers()){
-					if(bo.appraiserHasJury(jury.getIdJury(), appraiser.getAppraiser().getIdUser(), jury.getDate())){
+					if(new JuryAppraiserBO().appraiserHasJury(jury.getIdJury(), appraiser.getAppraiser().getIdUser(), jury.getDate())){
 						throw new Exception("O membro " + appraiser.getAppraiser().getName() + " já tem uma banca marcada que conflita com este horário.");
 					}
 					
@@ -345,7 +343,11 @@ public class JuryBO {
 						appraiser.setChair(false);
 					}
 					
-					if(appraiser.isChair()) {
+					if(appraiser.isSubstitute()) {
+						countSubstitutes++;
+					} else if(!appraiser.isChair()) {
+						countMembers++;
+					} else {
 						countChair++;
 					}
 				}
@@ -362,6 +364,14 @@ public class JuryBO {
 					throw new Exception("É preciso indicar o presidente da banca.");
 				} else if(countChair > 1) {
 					throw new Exception("Apenas um membro pode ser presidente da banca.");
+				}
+				
+				SigetConfig config = new SigetConfigBO().findByDepartment(((jury.getThesis() != null) && (jury.getThesis().getIdThesis() != 0)) ? new ThesisBO().findIdDepartment(jury.getThesis().getIdThesis()) : new ProjectBO().findIdDepartment(jury.getProject().getIdProject()));
+				if(countMembers < config.getMinimumJuryMembers()) {
+					throw new Exception("A banca deverá ser composta por, no mínimo, " + String.valueOf(config.getMinimumJuryMembers()) + " membros titulares (sem contar o presidente).");
+				}
+				if(countSubstitutes < config.getMinimumJurySubstitutes()) {
+					throw new Exception("A banca deverá ser conter, no mínimo, " + String.valueOf(config.getMinimumJurySubstitutes()) + " suplente(s).");
 				}
 			}
 			
