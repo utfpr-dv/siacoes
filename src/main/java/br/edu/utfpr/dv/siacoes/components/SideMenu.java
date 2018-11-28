@@ -559,6 +559,11 @@ public class SideMenu extends CustomComponent {
 			@Override
         	public void layoutClick(LayoutClickEvent event) {
 				setOpenMenu(SystemModule.SIGAC);
+				
+				if(getMenuState() == SideMenuState.COLLAPSED) {
+					setMenuState(SideMenuState.EXPANDED);
+					setMenuStateToCookie(SideMenuState.COLLAPSED);
+				}
             }
 		});
 		
@@ -578,6 +583,11 @@ public class SideMenu extends CustomComponent {
 			@Override
         	public void layoutClick(LayoutClickEvent event) {
 				setOpenMenu(SystemModule.SIGES);
+				
+				if(getMenuState() == SideMenuState.COLLAPSED) {
+					setMenuState(SideMenuState.EXPANDED);
+					setMenuStateToCookie(SideMenuState.COLLAPSED);
+				}
             }
 		});
 		
@@ -597,6 +607,11 @@ public class SideMenu extends CustomComponent {
 			@Override
         	public void layoutClick(LayoutClickEvent event) {
 				setOpenMenu(SystemModule.SIGET);
+				
+				if(getMenuState() == SideMenuState.COLLAPSED) {
+					setMenuState(SideMenuState.EXPANDED);
+					setMenuStateToCookie(SideMenuState.COLLAPSED);
+				}
             }
 		});
 		
