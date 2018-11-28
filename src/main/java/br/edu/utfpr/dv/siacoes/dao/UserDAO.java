@@ -52,7 +52,7 @@ public class UserDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
 					"SELECT \"user\".idUser FROM \"user\" " +
-					"WHERE LOWER(\"user\".email) = LOWER(?) AND \"user\".idUser <> ?");
+					"WHERE TRIM(email) <> '' AND LOWER(\"user\".email) = LOWER(?) AND \"user\".idUser <> ?");
 		
 			stmt.setString(1, email);
 			stmt.setInt(2, idUser);
