@@ -80,34 +80,46 @@ public class EmailMessageBO {
 				"Para redefinir a sua senha, acesse o link:<br/>" +
 				"<a href=\"" + link + "\">" + link + "</a>";
 		
-		this.sendEmail(new String[] {user.getEmail()}, "Recuperação de Senha", message, true, true);
+		this.sendEmail(null, new String[] {user.getEmail()}, "Recuperação de Senha", message, SystemModule.GENERAL, true, true, false);
 	}
 	
 	public void sendEmail(int idUser, EmailMessage.MessageType type, List<EmailMessageEntry<String, String>> keys) throws Exception {
 		UserBO bo = new UserBO();
 		
-		this.sendEmail(new String[] { bo.findEmail(idUser) }, type, keys);
+		this.sendEmail(new int[] { idUser }, new String[] { bo.findEmail(idUser) }, type, keys);
 	}
 	
 	public void sendEmail(int[] users, EmailMessage.MessageType type, List<EmailMessageEntry<String, String>> keys) throws Exception {
 		UserBO bo = new UserBO();
 		
-		this.sendEmail(bo.findEmails(users), type, keys);
+		this.sendEmail(users, bo.findEmails(users), type, keys);
 	}
 	
-	public void sendEmail(String[] to, EmailMessage.MessageType type, List<EmailMessageEntry<String, String>> keys) throws Exception {
+	public void sendEmail(int users[], String[] to, EmailMessage.MessageType type, List<EmailMessageEntry<String, String>> keys) throws Exception {
 		EmailMessage message = this.findByMessageType(type);
 		
-		this.sendEmail(to, message, keys);
+		this.sendEmail(users, to, message, keys, true);
 	}
 	
 	public void sendEmail(int[] users, EmailMessage message, List<EmailMessageEntry<String, String>> keys) throws Exception {
 		UserBO bo = new UserBO();
 		
-		this.sendEmail(bo.findEmails(users), message, keys);
+		this.sendEmail(users, bo.findEmails(users), message, keys, true);
 	}
 	
-	public void sendEmail(String[] to, EmailMessage message, List<EmailMessageEntry<String, String>> keys) throws Exception {
+	public void sendEmail(int[] users, String[] to, EmailMessage message, List<EmailMessageEntry<String, String>> keys, boolean writeMessage) throws Exception {
+		String msg = this.getMessage(message, keys);
+		
+		this.sendEmail(users, to, message.getSubject(), msg, message.getModule(), true, false, writeMessage);
+	}
+	
+	public void sendEmailNoThread(int[] users, String[] to, EmailMessage message, List<EmailMessageEntry<String, String>> keys, boolean writeMessage) throws Exception {
+		String msg = this.getMessage(message, keys);
+		
+		this.sendEmail(users, to, message.getSubject(), msg, message.getModule(), false, false, writeMessage);
+	}
+	
+	public String getMessage(EmailMessage message, List<EmailMessageEntry<String, String>> keys) {
 		String msg = message.getMessage();
 		
 		if(keys != null){
@@ -116,24 +128,18 @@ public class EmailMessageBO {
 			}
 		}
 		
-		this.sendEmail(to, message.getSubject(), msg, true, false);
+		return msg;
 	}
 	
-	public void sendEmailNoThread(String[] to, EmailMessage message, List<EmailMessageEntry<String, String>> keys) throws Exception {
-		String msg = message.getMessage();
-		
-		if(keys != null){
-			for(EmailMessageEntry<String, String> k : keys){
-				msg = msg.replaceAll("\\{" + k.getKey() + "\\}", k.getValue());
-			}
-		}
-		
-		this.sendEmail(to, message.getSubject(), msg, false, false);
-	}
-	
-	private void sendEmail(String[] to, String subject, String message, boolean useThread, boolean html) throws Exception{
+	private void sendEmail(int users[], String[] to, String subject, String message, SystemModule module, boolean useThread, boolean html, boolean writeMessage) throws Exception{
 		EmailConfigBO bo = new EmailConfigBO();
 		EmailConfig config = bo.loadConfiguration();
+		
+		if(writeMessage) {
+			for(int idUser : users) {
+				new MessageBO().sendMessage(idUser, subject, message, module);
+			}
+		}
 		
 		if(config == null){
 			throw new Exception("É preciso configurar os dados para envio de e-mails.");

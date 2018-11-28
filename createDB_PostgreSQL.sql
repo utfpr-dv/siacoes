@@ -753,6 +753,19 @@ CREATE  TABLE bugreport (
 );
 CREATE INDEX fk_bugreport_user_idx ON bugreport (iduser);
 
+CREATE TABLE message (
+    idmessage serial NOT NULL,
+    iduser integer NOT NULL,
+    title character varying(255) NOT NULL,
+    message text NOT NULL,
+    read smallint NOT NULL,
+    date timestamp NOT NULL,
+    module smallint NOT NULL,
+    PRIMARY KEY (idmessage),
+    CONSTRAINT fk_message_user FOREIGN KEY (iduser) REFERENCES "user" (iduser) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+CREATE INDEX fk_message_user_idx ON message (iduser);
+
 CREATE OR REPLACE FUNCTION year(timestamp) RETURNS integer AS $$
 DECLARE
    d ALIAS FOR $1;

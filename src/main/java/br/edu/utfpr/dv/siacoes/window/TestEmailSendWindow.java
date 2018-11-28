@@ -1,7 +1,6 @@
 ﻿package br.edu.utfpr.dv.siacoes.window;
 
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
@@ -47,7 +46,7 @@ public class TestEmailSendWindow extends BasicWindow {
 		message.setMessage("Teste de envio de e-mail.");
 		
 		try {
-			bo.sendEmailNoThread(new String[] { this.textTo.getValue() }, message, null);
+			bo.sendEmailNoThread(null, new String[] { this.textTo.getValue() }, message, null, false);
 			
 			this.showSuccessNotification("Enviar E-mail", "Envio realizado com sucesso.");
 		} catch (Exception e) {

@@ -753,6 +753,19 @@ CREATE  TABLE `bugreport` (
   CONSTRAINT `fk_bugreport_user` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
+CREATE TABLE `message` (
+    `idmessage` INT NOT NULL AUTO_INCREMENT,
+    `iduser` INT NOT NULL,
+    `title` VARCHAR(255) NOT NULL,
+    `message` TEXT NOT NULL,
+    `read` SMALLINT NOT NULL,
+    `date` DATETIME NOT NULL,
+    `module` SMALLINT NOT NULL,
+    PRIMARY KEY (`idmessage`),
+    INDEX `fk_message_user_idx` (`iduser` ASC),
+    CONSTRAINT `fk_message_user` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(1, 2, '', '', '{student};{group};{activity};{semester};{year};{comments}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(2, 2, '', '', '{student};{group};{activity};{semester};{year};{comments};{feedbackUser};{feedback}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(3, 3, '', '', '{student};{company};{companySupervisor};{supervisor};{type};{startDate};{comments}');

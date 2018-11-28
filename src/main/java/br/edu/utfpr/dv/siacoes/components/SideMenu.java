@@ -15,6 +15,7 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinService;
+import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
@@ -34,6 +35,7 @@ import com.vaadin.ui.MenuBar.MenuItem;
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.FinalDocumentBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
+import br.edu.utfpr.dv.siacoes.bo.MessageBO;
 import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
@@ -96,6 +98,7 @@ import br.edu.utfpr.dv.siacoes.view.JuryRequestView;
 import br.edu.utfpr.dv.siacoes.view.JurySemesterChartView;
 import br.edu.utfpr.dv.siacoes.view.LoginView;
 import br.edu.utfpr.dv.siacoes.view.MainView;
+import br.edu.utfpr.dv.siacoes.view.MessageView;
 import br.edu.utfpr.dv.siacoes.view.PDFView;
 import br.edu.utfpr.dv.siacoes.view.ProjectView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackReportView;
@@ -482,194 +485,125 @@ public class SideMenu extends CustomComponent {
         return settings;
     }
 	
-	private Component buildLinkMenu(){
-		HorizontalLayout layout = new HorizontalLayout();
-		layout.setWidth("100%");
-		
-		if(AppConfig.getInstance().isSigesEnabled() || AppConfig.getInstance().isSigetEnabled()){
-			Link linkCalendar = new Link(null, null);
-			linkCalendar.setIcon(new ThemeResource("images/calendar.png"));
-			linkCalendar.setDescription("Calendário de eventos");
-			
-			VerticalLayout layoutCalendar = new VerticalLayout(linkCalendar);
-			layoutCalendar.setHeight("50px");
-			layoutCalendar.setWidth("50px");
-			layoutCalendar.setComponentAlignment(linkCalendar, Alignment.MIDDLE_CENTER);
-			layoutCalendar.addLayoutClickListener(new LayoutClickListener() {
-				@Override
-	        	public void layoutClick(LayoutClickEvent event) {
-					UI.getCurrent().getNavigator().navigateTo(EventCalendarView.NAME + "/" + getOpenMenu().getValue());
-	            }
-			});
-			
-			layout.addComponent(layoutCalendar);
-			layout.setComponentAlignment(layoutCalendar, Alignment.MIDDLE_CENTER);
+	private int getUnreadMessages() {
+		try {
+			return new MessageBO().getUnreadMessages(Session.getUser().getIdUser());
+		} catch (Exception e) {
+			return 0;
 		}
-		
-		if(AppConfig.getInstance().isSigacEnabled()){
-			Link linkActivities = new Link(null, null);
-			linkActivities.setIcon(new ThemeResource("images/activities.png"));
-			linkActivities.setDescription("Atividades Complementares");
-			
-			VerticalLayout layoutActivities = new VerticalLayout(linkActivities);
-			layoutActivities.setHeight("50px");
-			layoutActivities.setWidth("50px");
-			layoutActivities.setComponentAlignment(linkActivities, Alignment.MIDDLE_CENTER);
-			layoutActivities.addLayoutClickListener(new LayoutClickListener() {
-				@Override
-	        	public void layoutClick(LayoutClickEvent event) {
-					setOpenMenu(SystemModule.SIGAC);
-	            }
-			});
-			
-			layout.addComponent(layoutActivities);
-			layout.setComponentAlignment(layoutActivities, Alignment.MIDDLE_CENTER);
-		}
-		
-		if(AppConfig.getInstance().isSigesEnabled()){
-			Link linkInternsip = new Link(null, null);
-			linkInternsip.setIcon(new ThemeResource("images/internship.png"));
-			linkInternsip.setDescription("Estágios");
-			
-			VerticalLayout layoutInternship = new VerticalLayout(linkInternsip);
-			layoutInternship.setHeight("50px");
-			layoutInternship.setWidth("50px");
-			layoutInternship.setComponentAlignment(linkInternsip, Alignment.MIDDLE_CENTER);
-			layoutInternship.addLayoutClickListener(new LayoutClickListener() {   
-				@Override
-	        	public void layoutClick(LayoutClickEvent event) {
-					setOpenMenu(SystemModule.SIGES);
-	            }
-			});
-			
-			layout.addComponent(layoutInternship);
-			layout.setComponentAlignment(layoutInternship, Alignment.MIDDLE_CENTER);
-		}
-		
-		if(AppConfig.getInstance().isSigetEnabled()){
-			Link linkThesis = new Link(null, null);
-			linkThesis.setIcon(new ThemeResource("images/thesis.png"));
-			linkThesis.setDescription("TCC");
-			
-			VerticalLayout layoutThesis = new VerticalLayout(linkThesis);
-			layoutThesis.setHeight("50px");
-			layoutThesis.setWidth("50px");
-			layoutThesis.setComponentAlignment(linkThesis, Alignment.MIDDLE_CENTER);
-			layoutThesis.addLayoutClickListener(new LayoutClickListener() {
-				@Override
-	        	public void layoutClick(LayoutClickEvent event) {
-					setOpenMenu(SystemModule.SIGET);
-	            }
-			});
-			
-			layout.addComponent(layoutThesis);
-			layout.setComponentAlignment(layoutThesis, Alignment.MIDDLE_CENTER);
-		}
-		
-		return layout;
 	}
 	
-	private Component buildLinkMenuCollapsed(){
-		VerticalLayout layout = new VerticalLayout();
+	private Component getMessageIcon() {
+		int unreadMessages = this.getUnreadMessages();
 		
-		MenuBar settings = this.buildUserMenu();
-		settings.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
-		settings.addStyleName(ValoTheme.MENUBAR_SMALL);
-		settings.addStyleName("beverages");
-		settings.setHeight("50px");
-		settings.setWidth("50px");
-		settings.getItems().get(0).setIcon(new ThemeResource("images/user.png"));
-		settings.getItems().get(0).setText("");
+		Link linkMessages = new Link(null, null);
+		linkMessages.setIcon(new ThemeResource("images/mail.png"));
+		linkMessages.setDescription("Mensagens");
 		
-		layout.addComponent(settings);
-		layout.setComponentAlignment(settings, Alignment.MIDDLE_CENTER);
-		
-		if(AppConfig.getInstance().isSigesEnabled() || AppConfig.getInstance().isSigetEnabled()){
-			Link linkCalendar = new Link(null, null);
-			linkCalendar.setIcon(new ThemeResource("images/calendar.png"));
-			linkCalendar.setDescription("Calendário de eventos");
+		AbsoluteLayout layoutMessages = new AbsoluteLayout();
+		layoutMessages.setHeight("50px");
+		layoutMessages.setWidth("50px");
+		layoutMessages.addComponent(linkMessages, "left: 7px; top: 7px;");
+		if(unreadMessages > 0) {
+			Image imageMessages = new Image();
+			imageMessages.setSource(new ThemeResource("images/circle.png"));
+			imageMessages.setHeight("20px");
+			imageMessages.setWidth("20px");
+			layoutMessages.addComponent(imageMessages, "right: 0px; top: 3px;");
 			
-			VerticalLayout layoutCalendar = new VerticalLayout(linkCalendar);
-			layoutCalendar.setHeight("50px");
-			layoutCalendar.setWidth("50px");
-			layoutCalendar.setComponentAlignment(linkCalendar, Alignment.MIDDLE_CENTER);
-			layoutCalendar.addLayoutClickListener(new LayoutClickListener() {
-				@Override
-	        	public void layoutClick(LayoutClickEvent event) {
-					UI.getCurrent().getNavigator().navigateTo(EventCalendarView.NAME + "/" + getOpenMenu().getValue());
-	            }
-			});
-			
-			layout.addComponent(layoutCalendar);
-			layout.setComponentAlignment(layoutCalendar, Alignment.MIDDLE_CENTER);
+			Label labelMessages = new Label((unreadMessages > 9 ? "9+" : String.valueOf(unreadMessages)));
+			labelMessages.setHeight("15px");
+			labelMessages.setWidth("15px");
+			labelMessages.addStyleName(ValoTheme.LABEL_BOLD);
+			layoutMessages.addComponent(labelMessages, "right: 0px; top: 0px;");
 		}
+		layoutMessages.addLayoutClickListener(new LayoutClickListener() {
+			@Override
+        	public void layoutClick(LayoutClickEvent event) {
+				UI.getCurrent().getNavigator().navigateTo(MessageView.NAME);
+            }
+		});
 		
-		if(AppConfig.getInstance().isSigacEnabled()){
-			Link linkActivities = new Link(null, null);
-			linkActivities.setIcon(new ThemeResource("images/activities.png"));
-			linkActivities.setDescription("Atividades Complementares");
-			
-			VerticalLayout layoutActivities = new VerticalLayout(linkActivities);
-			layoutActivities.setHeight("50px");
-			layoutActivities.setWidth("50px");
-			layoutActivities.setComponentAlignment(linkActivities, Alignment.MIDDLE_CENTER);
-			layoutActivities.addLayoutClickListener(new LayoutClickListener() {
-				@Override
-	        	public void layoutClick(LayoutClickEvent event) {
-					setOpenMenu(SystemModule.SIGAC);
-					setMenuState(SideMenuState.EXPANDED);
-					setMenuStateToCookie(SideMenuState.COLLAPSED);
-	            }
-			});
-			
-			layout.addComponent(layoutActivities);
-			layout.setComponentAlignment(layoutActivities, Alignment.MIDDLE_CENTER);
-		}
+		return layoutMessages;
+	}
+	
+	private Component getCalendarIcon() {
+		Link linkCalendar = new Link(null, null);
+		linkCalendar.setIcon(new ThemeResource("images/calendar.png"));
+		linkCalendar.setDescription("Calendário de eventos");
 		
-		if(AppConfig.getInstance().isSigesEnabled()){
-			Link linkInternsip = new Link(null, null);
-			linkInternsip.setIcon(new ThemeResource("images/internship.png"));
-			linkInternsip.setDescription("Estágios");
-			
-			VerticalLayout layoutInternship = new VerticalLayout(linkInternsip);
-			layoutInternship.setHeight("50px");
-			layoutInternship.setWidth("50px");
-			layoutInternship.setComponentAlignment(linkInternsip, Alignment.MIDDLE_CENTER);
-			layoutInternship.addLayoutClickListener(new LayoutClickListener() {   
-				@Override
-	        	public void layoutClick(LayoutClickEvent event) {
-					setOpenMenu(SystemModule.SIGES);
-					setMenuState(SideMenuState.EXPANDED);
-					setMenuStateToCookie(SideMenuState.COLLAPSED);
-	            }
-			});
-			
-			layout.addComponent(layoutInternship);
-			layout.setComponentAlignment(layoutInternship, Alignment.MIDDLE_CENTER);
-		}
+		VerticalLayout layoutCalendar = new VerticalLayout(linkCalendar);
+		layoutCalendar.setHeight("50px");
+		layoutCalendar.setWidth("50px");
+		layoutCalendar.setComponentAlignment(linkCalendar, Alignment.MIDDLE_CENTER);
+		layoutCalendar.addLayoutClickListener(new LayoutClickListener() {
+			@Override
+        	public void layoutClick(LayoutClickEvent event) {
+				UI.getCurrent().getNavigator().navigateTo(EventCalendarView.NAME + "/" + getOpenMenu().getValue());
+            }
+		});
 		
-		if(AppConfig.getInstance().isSigetEnabled()){
-			Link linkThesis = new Link(null, null);
-			linkThesis.setIcon(new ThemeResource("images/thesis.png"));
-			linkThesis.setDescription("TCC");
-			
-			VerticalLayout layoutThesis = new VerticalLayout(linkThesis);
-			layoutThesis.setHeight("50px");
-			layoutThesis.setWidth("50px");
-			layoutThesis.setComponentAlignment(linkThesis, Alignment.MIDDLE_CENTER);
-			layoutThesis.addLayoutClickListener(new LayoutClickListener() {
-				@Override
-	        	public void layoutClick(LayoutClickEvent event) {
-					setOpenMenu(SystemModule.SIGET);
-					setMenuState(SideMenuState.EXPANDED);
-					setMenuStateToCookie(SideMenuState.COLLAPSED);
-	            }
-			});
-			
-			layout.addComponent(layoutThesis);
-			layout.setComponentAlignment(layoutThesis, Alignment.MIDDLE_CENTER);
-		}
+		return layoutCalendar;
+	}
+	
+	private Component getSigacIcon() {
+		Link linkActivities = new Link(null, null);
+		linkActivities.setIcon(new ThemeResource("images/activities.png"));
+		linkActivities.setDescription("Atividades Complementares");
 		
+		VerticalLayout layoutActivities = new VerticalLayout(linkActivities);
+		layoutActivities.setHeight("50px");
+		layoutActivities.setWidth("50px");
+		layoutActivities.setComponentAlignment(linkActivities, Alignment.MIDDLE_CENTER);
+		layoutActivities.addLayoutClickListener(new LayoutClickListener() {
+			@Override
+        	public void layoutClick(LayoutClickEvent event) {
+				setOpenMenu(SystemModule.SIGAC);
+            }
+		});
+		
+		return layoutActivities;
+	}
+	
+	private Component getSigesIcon() {
+		Link linkInternsip = new Link(null, null);
+		linkInternsip.setIcon(new ThemeResource("images/internship.png"));
+		linkInternsip.setDescription("Estágios");
+		
+		VerticalLayout layoutInternship = new VerticalLayout(linkInternsip);
+		layoutInternship.setHeight("50px");
+		layoutInternship.setWidth("50px");
+		layoutInternship.setComponentAlignment(linkInternsip, Alignment.MIDDLE_CENTER);
+		layoutInternship.addLayoutClickListener(new LayoutClickListener() {   
+			@Override
+        	public void layoutClick(LayoutClickEvent event) {
+				setOpenMenu(SystemModule.SIGES);
+            }
+		});
+		
+		return layoutInternship;
+	}
+	
+	private Component getSigetIcon() {
+		Link linkThesis = new Link(null, null);
+		linkThesis.setIcon(new ThemeResource("images/thesis.png"));
+		linkThesis.setDescription("TCC");
+		
+		VerticalLayout layoutThesis = new VerticalLayout(linkThesis);
+		layoutThesis.setHeight("50px");
+		layoutThesis.setWidth("50px");
+		layoutThesis.setComponentAlignment(linkThesis, Alignment.MIDDLE_CENTER);
+		layoutThesis.addLayoutClickListener(new LayoutClickListener() {
+			@Override
+        	public void layoutClick(LayoutClickEvent event) {
+				setOpenMenu(SystemModule.SIGET);
+            }
+		});
+		
+		return layoutThesis;
+	}
+	
+	private Component getConfigIcon() {
 		Link linkConfig = new Link(null, null);
 		linkConfig.setIcon(new ThemeResource("images/config.png"));
 		linkConfig.setDescription("Recursos Gerais");
@@ -687,8 +621,96 @@ public class SideMenu extends CustomComponent {
             }
 		});
 		
-		layout.addComponent(layoutConfig);
-		layout.setComponentAlignment(layoutConfig, Alignment.MIDDLE_CENTER);
+		return layoutConfig;
+	}
+	
+	private Component buildLinkMenu(){
+		VerticalLayout vl = new VerticalLayout();
+		HorizontalLayout layout1 = new HorizontalLayout();
+		HorizontalLayout layout2 = new HorizontalLayout();
+		
+		layout1.setWidth("100%");
+		layout2.setWidth("100%");
+		
+		Component iconMessages = this.getMessageIcon();
+		layout1.addComponent(iconMessages);
+		layout1.setComponentAlignment(iconMessages, Alignment.MIDDLE_CENTER);
+		
+		if(AppConfig.getInstance().isSigesEnabled() || AppConfig.getInstance().isSigetEnabled()){
+			Component iconCalendar = this.getCalendarIcon();
+			layout1.addComponent(iconCalendar);
+			layout1.setComponentAlignment(iconCalendar, Alignment.MIDDLE_CENTER);
+		}
+		
+		if(AppConfig.getInstance().isSigacEnabled()){
+			Component iconSigac = this.getSigacIcon();
+			layout2.addComponent(iconSigac);
+			layout2.setComponentAlignment(iconSigac, Alignment.MIDDLE_CENTER);
+		}
+		
+		if(AppConfig.getInstance().isSigesEnabled()){
+			Component iconSiges = this.getSigesIcon();
+			layout2.addComponent(iconSiges);
+			layout2.setComponentAlignment(iconSiges, Alignment.MIDDLE_CENTER);
+		}
+		
+		if(AppConfig.getInstance().isSigetEnabled()){
+			Component iconSiget = this.getSigetIcon();
+			layout2.addComponent(iconSiget);
+			layout2.setComponentAlignment(iconSiget, Alignment.MIDDLE_CENTER);
+		}
+		
+		vl.addComponents(layout1, layout2);
+		
+		return vl;
+	}
+	
+	private Component buildLinkMenuCollapsed(){
+		VerticalLayout layout = new VerticalLayout();
+		
+		MenuBar settings = this.buildUserMenu();
+		settings.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
+		settings.addStyleName(ValoTheme.MENUBAR_SMALL);
+		settings.addStyleName("beverages");
+		settings.setHeight("50px");
+		settings.setWidth("50px");
+		settings.getItems().get(0).setIcon(new ThemeResource("images/user.png"));
+		settings.getItems().get(0).setText("");
+		
+		layout.addComponent(settings);
+		layout.setComponentAlignment(settings, Alignment.MIDDLE_CENTER);
+		
+		Component iconMessages = this.getMessageIcon();
+		layout.addComponent(iconMessages);
+		layout.setComponentAlignment(iconMessages, Alignment.MIDDLE_CENTER);
+		
+		if(AppConfig.getInstance().isSigesEnabled() || AppConfig.getInstance().isSigetEnabled()){
+			Component iconCalendar = this.getCalendarIcon();
+			layout.addComponent(iconCalendar);
+			layout.setComponentAlignment(iconCalendar, Alignment.MIDDLE_CENTER);
+		}
+		
+		if(AppConfig.getInstance().isSigacEnabled()){
+			Component iconSigac = this.getSigacIcon();
+			layout.addComponent(iconSigac);
+			layout.setComponentAlignment(iconSigac, Alignment.MIDDLE_CENTER);
+		}
+		
+		if(AppConfig.getInstance().isSigesEnabled()){
+			Component iconSiges = this.getSigesIcon();
+			layout.addComponent(iconSiges);
+			layout.setComponentAlignment(iconSiges, Alignment.MIDDLE_CENTER);
+		}
+		
+		if(AppConfig.getInstance().isSigetEnabled()){
+			Component iconSiget = this.getSigetIcon();
+			layout.addComponent(iconSiget);
+			layout.setComponentAlignment(iconSiget, Alignment.MIDDLE_CENTER);
+		}
+		
+		Component iconConfig = this.getConfigIcon();
+		layout.addComponent(iconConfig);
+		layout.setComponentAlignment(iconConfig, Alignment.MIDDLE_CENTER);
 		
 		return layout;
 	}
