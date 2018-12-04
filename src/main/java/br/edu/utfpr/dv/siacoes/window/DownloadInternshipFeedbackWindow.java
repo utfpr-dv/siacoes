@@ -131,6 +131,7 @@ public class DownloadInternshipFeedbackWindow extends BasicWindow {
 	private void prepareDownloadAdditionalFeedback() {
 		Object value = this.grid.getSelectedRow();
 		this.buttonDownloadAdditional.removeClickListener(this.listenerClickDownloadAdditional);
+		new ExtensionUtils().removeAllExtensions(this.buttonDownloadAdditional);
 		
 		if(value != null) {
 			int id = this.appraisers.get((int)value - 1).getIdInternshipJuryAppraiser();

@@ -12,7 +12,6 @@ import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.renderers.ImageRenderer;
@@ -131,6 +130,7 @@ public class DownloadFeedbackWindow extends BasicWindow {
 	private void prepareDownloadAdditionalFeedback() {
 		Object value = this.grid.getSelectedRow();
 		this.buttonDownloadAdditional.removeClickListener(this.listenerClickDownloadAdditional);
+		new ExtensionUtils().removeAllExtensions(this.buttonDownloadAdditional);
 		
 		if(value != null) {
 			int id = this.appraisers.get((int)value - 1).getIdJuryAppraiser();

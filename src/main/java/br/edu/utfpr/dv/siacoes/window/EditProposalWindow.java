@@ -141,9 +141,9 @@ public class EditProposalWindow extends EditWindow {
 			public void uploadSucceeded() {
 				if(uploadFile.getUploadedFile() != null) {
 					proposal.setFile(uploadFile.getUploadedFile());
+					
+					buttonDownloadProposal.setVisible(true);
 				}
-				
-				buttonDownloadProposal.setVisible(true);
 			}
 		});
 		

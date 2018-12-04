@@ -9,6 +9,7 @@ public class Notification {
 		com.vaadin.ui.Notification notification = new com.vaadin.ui.Notification(title, message);
 		
 		notification.setStyleName(ValoTheme.NOTIFICATION_SUCCESS);
+		notification.setDelayMsec(2000);
 		
 		notification.show(UI.getCurrent().getPage());
 	}
@@ -17,6 +18,7 @@ public class Notification {
 		com.vaadin.ui.Notification notification = new com.vaadin.ui.Notification(title, message);
 		
 		notification.setStyleName(ValoTheme.NOTIFICATION_WARNING);
+		notification.setDelayMsec(2000);
 		
 		notification.show(UI.getCurrent().getPage());
 	}

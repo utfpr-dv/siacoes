@@ -135,9 +135,9 @@ public class EditThesisWindow extends EditWindow {
 			public void uploadSucceeded() {
 				if(uploadFile.getUploadedFile() != null) {
 					thesis.setFile(uploadFile.getUploadedFile());
+					
+					buttonDownloadFile.setVisible(true);
 				}
-				
-				buttonDownloadFile.setVisible(true);
 			}
 		});
 		

@@ -133,9 +133,9 @@ public class EditProjectWindow extends EditWindow {
 			public void uploadSucceeded() {
 				if(uploadFile.getUploadedFile() != null) {
 					project.setFile(uploadFile.getUploadedFile());
+					
+					buttonDownloadFile.setVisible(true);
 				}
-				
-				buttonDownloadFile.setVisible(true);
 			}
 		});
 		

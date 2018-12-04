@@ -154,9 +154,9 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			public void uploadSucceeded() {
 				if(uploadFile.getUploadedFile() != null) {
 					submission.setFile(uploadFile.getUploadedFile());
+					
+					loadCertificate();
 				}
-				
-				loadCertificate();
 			}
 		});
 		
