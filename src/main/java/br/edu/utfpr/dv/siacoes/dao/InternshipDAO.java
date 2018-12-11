@@ -48,7 +48,7 @@ public class InternshipDAO {
 			List<Internship> list = new ArrayList<Internship>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
@@ -77,7 +77,7 @@ public class InternshipDAO {
 			List<Internship> list = new ArrayList<Internship>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
@@ -112,7 +112,7 @@ public class InternshipDAO {
 			List<Internship> list = new ArrayList<Internship>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
@@ -140,7 +140,7 @@ public class InternshipDAO {
 			List<Internship> list = new ArrayList<Internship>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
@@ -168,7 +168,7 @@ public class InternshipDAO {
 			List<Internship> list = new ArrayList<Internship>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
@@ -196,7 +196,7 @@ public class InternshipDAO {
 			List<Internship> list = new ArrayList<Internship>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
@@ -224,7 +224,7 @@ public class InternshipDAO {
 			List<Internship> list = new ArrayList<Internship>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
@@ -281,7 +281,7 @@ public class InternshipDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -350,7 +350,7 @@ public class InternshipDAO {
 		}
 	}
 	
-	private Internship loadObject(ResultSet rs) throws SQLException{
+	private Internship loadObject(ResultSet rs, boolean loadFiles) throws SQLException{
 		Internship internship = new Internship();
 		
 		internship.setIdInternship(rs.getInt("idinternship"));
@@ -367,9 +367,12 @@ public class InternshipDAO {
 		internship.setStartDate(rs.getDate("startDate"));
 		internship.setEndDate(rs.getDate("endDate"));
 		internship.setTotalHours(rs.getInt("totalHours"));
-		internship.setInternshipPlan(rs.getBytes("internshipPlan"));
-		internship.setFinalReport(rs.getBytes("finalReport"));
 		internship.setReportTitle(rs.getString("reportTitle"));
+		
+		if(loadFiles) {
+			internship.setInternshipPlan(rs.getBytes("internshipPlan"));
+			internship.setFinalReport(rs.getBytes("finalReport"));
+		}
 		
 		return internship;
 	}

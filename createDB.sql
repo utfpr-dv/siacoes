@@ -95,6 +95,7 @@ CREATE  TABLE `sigesconfig` (
   `supervisorfilter` SMALLINT NOT NULL ,
   `supervisorFillJuryForm` TINYINT NOT NULL ,
   `maxfilesize` INT NOT NULL ,
+  `jurytime` INT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigesconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -119,6 +120,8 @@ CREATE  TABLE `sigetconfig` (
   `maxfilesize` INT NOT NULL ,
   `minimumjurymembers` SMALLINT NOT NULL ,
   `minimumjurysubstitutes` SMALLINT NOT NULL ,
+  `jurytimestage1` INT NOT NULL ,
+  `jurytimestage2` INT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigetconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );

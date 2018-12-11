@@ -13,7 +13,6 @@ import com.vaadin.ui.VerticalLayout;
 
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.components.ByteSizeField;
-import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.AttendanceFrequency;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
@@ -28,9 +27,9 @@ public class EditSigetWindow extends EditWindow {
 	private final CheckBox checkShowGradesToStudent;
 	private final NativeSelect comboSupervisorFilter;
 	private final NativeSelect comboCosupervisorFilter;
-	private final YearField textSupervisorIndication;
-	private final YearField textMaxTutoredStage1;
-	private final YearField textMaxTutoredStage2;
+	private final TextField textSupervisorIndication;
+	private final TextField textMaxTutoredStage1;
+	private final TextField textMaxTutoredStage2;
 	private final CheckBox checkRequestFinalDocumentStage1;
 	private final TextField textRepositoryLink;
 	private final CheckBox checkSupervisorJuryRequest;
@@ -41,6 +40,8 @@ public class EditSigetWindow extends EditWindow {
 	private final ByteSizeField textMaxFileSize;
 	private final TextField textMinimumJuryMembers;
 	private final TextField textMinimumJurySubstitutes;
+	private final TextField textJuryTimeStage1;
+	private final TextField textJuryTimeStage2;
 	
 	private final TabSheet tab;
 	
@@ -76,14 +77,14 @@ public class EditSigetWindow extends EditWindow {
 		this.comboCosupervisorFilter.addItem(SupervisorFilter.INSTITUTION);
 		this.comboCosupervisorFilter.addItem(SupervisorFilter.EVERYONE);
 		
-		this.textSupervisorIndication = new YearField();
-		this.textSupervisorIndication.setCaption("Número de indicações do orientador para Proposta de TCC 1");
+		this.textSupervisorIndication = new TextField("Número de indicações do orientador para Proposta de TCC 1");
+		this.textSupervisorIndication.setWidth("100px");
 		
-		this.textMaxTutoredStage1 = new YearField();
-		this.textMaxTutoredStage1.setCaption("Número máximo de orientados para TCC 1");
+		this.textMaxTutoredStage1 = new TextField("Número máximo de orientados para TCC 1");
+		this.textMaxTutoredStage1.setWidth("100px");
 		
-		this.textMaxTutoredStage2 = new YearField();
-		this.textMaxTutoredStage2.setCaption("Número máximo de orientados para TCC 2");
+		this.textMaxTutoredStage2 = new TextField("Número máximo de orientados para TCC 2");
+		this.textMaxTutoredStage2.setWidth("100px");
 		
 		this.checkRequestFinalDocumentStage1 = new CheckBox("Exigir envio da versão final para TCC 1");
 		
@@ -116,6 +117,12 @@ public class EditSigetWindow extends EditWindow {
 		this.textMinimumJurySubstitutes = new TextField("Número mínimo de suplentes na banca");
 		this.textMinimumJurySubstitutes.setWidth("100px");
 		
+		this.textJuryTimeStage1 = new TextField("Duração da banca de TCC 1 (minutos)");
+		this.textJuryTimeStage1.setWidth("100px");
+		
+		this.textJuryTimeStage2 = new TextField("Duração da banca de TCC 2 (minutos)");
+		this.textJuryTimeStage2.setWidth("100px");
+		
 		GridLayout g1 = new GridLayout(2, 2);
 		g1.setSpacing(true);
 		g1.addComponent(this.comboSupervisorFilter, 0, 0);
@@ -143,13 +150,15 @@ public class EditSigetWindow extends EditWindow {
 		
 		this.tab.addTab(v5, "Submissão de TCC 1 e TCC 2");
 		
-		VerticalLayout v1 = new VerticalLayout(this.checkShowGradesToStudent, this.checkSupervisorJuryAgreement, this.checkSupervisorJuryRequest, this.textMinimumJuryMembers, this.textMinimumJurySubstitutes);
-		v1.setSpacing(true);
-		HorizontalLayout h1 = new HorizontalLayout(this.textMinimumScore, v1);
+		HorizontalLayout h1 = new HorizontalLayout(this.textMinimumScore, this.textJuryTimeStage1, this.textJuryTimeStage2);
 		h1.setSpacing(true);
-		h1.setMargin(true);
+		HorizontalLayout h4 = new HorizontalLayout(this.textMinimumJuryMembers, this.textMinimumJurySubstitutes);
+		h4.setSpacing(true);
+		VerticalLayout v1 = new VerticalLayout(h1, h4, this.checkShowGradesToStudent, this.checkSupervisorJuryAgreement, this.checkSupervisorJuryRequest);
+		v1.setSpacing(true);
+		v1.setMargin(true);
 		
-		this.tab.addTab(h1, "Banca");
+		this.tab.addTab(v1, "Banca");
 		
 		VerticalLayout v3 = new VerticalLayout(this.textRepositoryLink);
 		v3.setSpacing(true);
@@ -168,9 +177,9 @@ public class EditSigetWindow extends EditWindow {
 		this.checkShowGradesToStudent.setValue(this.config.isShowGradesToStudent());
 		this.comboSupervisorFilter.setValue(this.config.getSupervisorFilter());
 		this.comboCosupervisorFilter.setValue(this.config.getCosupervisorFilter());
-		this.textSupervisorIndication.setYear(this.config.getSupervisorIndication());
-		this.textMaxTutoredStage1.setYear(this.config.getMaxTutoredStage1());
-		this.textMaxTutoredStage2.setYear(this.config.getMaxTutoredStage2());
+		this.textSupervisorIndication.setValue(String.valueOf(this.config.getSupervisorIndication()));
+		this.textMaxTutoredStage1.setValue(String.valueOf(this.config.getMaxTutoredStage1()));
+		this.textMaxTutoredStage2.setValue(String.valueOf(this.config.getMaxTutoredStage2()));
 		this.checkRequestFinalDocumentStage1.setValue(this.config.isRequestFinalDocumentStage1());
 		this.textRepositoryLink.setValue(this.config.getRepositoryLink());
 		this.checkSupervisorJuryRequest.setValue(this.config.isSupervisorJuryRequest());
@@ -181,6 +190,8 @@ public class EditSigetWindow extends EditWindow {
 		this.textMaxFileSize.setValue(this.config.getMaxFileSize());
 		this.textMinimumJuryMembers.setValue(String.valueOf(this.config.getMinimumJuryMembers()));
 		this.textMinimumJurySubstitutes.setValue(String.valueOf(this.config.getMinimumJurySubstitutes()));
+		this.textJuryTimeStage1.setValue(String.valueOf(this.config.getJuryTimeStage1()));
+		this.textJuryTimeStage2.setValue(String.valueOf(this.config.getJuryTimeStage2()));
 	}
 
 	@Override
@@ -193,9 +204,9 @@ public class EditSigetWindow extends EditWindow {
 			this.config.setShowGradesToStudent(this.checkShowGradesToStudent.getValue());
 			this.config.setSupervisorFilter((SupervisorFilter)this.comboSupervisorFilter.getValue());
 			this.config.setCosupervisorFilter((SupervisorFilter)this.comboCosupervisorFilter.getValue());
-			this.config.setSupervisorIndication(this.textSupervisorIndication.getYear());
-			this.config.setMaxTutoredStage1(this.textMaxTutoredStage1.getYear());
-			this.config.setMaxTutoredStage2(this.textMaxTutoredStage2.getYear());
+			this.config.setSupervisorIndication(Integer.parseInt(this.textSupervisorIndication.getValue()));
+			this.config.setMaxTutoredStage1(Integer.parseInt(this.textMaxTutoredStage1.getValue()));
+			this.config.setMaxTutoredStage2(Integer.parseInt(this.textMaxTutoredStage2.getValue()));
 			this.config.setRequestFinalDocumentStage1(this.checkRequestFinalDocumentStage1.getValue());
 			this.config.setRepositoryLink(this.textRepositoryLink.getValue());
 			this.config.setSupervisorJuryRequest(this.checkSupervisorJuryRequest.getValue());
@@ -206,6 +217,8 @@ public class EditSigetWindow extends EditWindow {
 			this.config.setMaxFileSize((int)this.textMaxFileSize.getValue());
 			this.config.setMinimumJuryMembers(Integer.parseInt(this.textMinimumJuryMembers.getValue()));
 			this.config.setMinimumJurySubstitutes(Integer.parseInt(this.textMinimumJurySubstitutes.getValue()));
+			this.config.setJuryTimeStage1(Integer.parseInt(this.textJuryTimeStage1.getValue()));
+			this.config.setJuryTimeStage2(Integer.parseInt(this.textJuryTimeStage2.getValue()));
 			
 			bo.save(this.config);
 			

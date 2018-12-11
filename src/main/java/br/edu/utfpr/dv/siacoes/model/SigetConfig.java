@@ -101,6 +101,8 @@ public class SigetConfig {
 	private int maxFileSize;
 	private int minimumJuryMembers;
 	private int minimumJurySubstitutes;
+	private int juryTimeStage1;
+	private int juryTimeStage2;
 	
 	public SigetConfig(){
 		this.setDepartment(new Department());
@@ -122,6 +124,8 @@ public class SigetConfig {
 		this.setMaxFileSize(0);
 		this.setMinimumJuryMembers(0);
 		this.setMinimumJurySubstitutes(0);
+		this.setJuryTimeStage1(0);
+		this.setJuryTimeStage2(0);
 	}
 	
 	public Department getDepartment() {
@@ -244,6 +248,18 @@ public class SigetConfig {
 	}
 	public void setMinimumJurySubstitutes(int minimumJurySubstitutes) {
 		this.minimumJurySubstitutes = minimumJurySubstitutes;
+	}
+	public int getJuryTimeStage1() {
+		return juryTimeStage1;
+	}
+	public void setJuryTimeStage1(int juryTimeStage1) {
+		this.juryTimeStage1 = juryTimeStage1;
+	}
+	public int getJuryTimeStage2() {
+		return juryTimeStage2;
+	}
+	public void setJuryTimeStage2(int juryTimeStage2) {
+		this.juryTimeStage2 = juryTimeStage2;
 	}
 
 }

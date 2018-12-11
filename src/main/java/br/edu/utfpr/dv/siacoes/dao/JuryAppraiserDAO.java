@@ -12,7 +12,6 @@ import java.util.List;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
-import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class JuryAppraiserDAO {
 	
@@ -235,7 +234,7 @@ public class JuryAppraiserDAO {
 		return p;
 	}
 	
-	public boolean appraiserHasJury(int idJury, int idUser, Date startDate, Date endDate) throws SQLException{
+	public boolean appraiserHasJury(int idJury, int idUser, Date juryDate) throws SQLException{
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
 		
@@ -244,28 +243,42 @@ public class JuryAppraiserDAO {
 					"SELECT SUM(total) AS total FROM (" +
 					"SELECT COUNT(*) AS total FROM jury INNER JOIN juryappraiser ON juryappraiser.idJury=jury.idJury " +
 					"INNER JOIN project ON project.idproject=jury.idproject " +
-					"WHERE jury.idJury <> ? AND juryappraiser.idAppraiser = ? AND jury.date BETWEEN ? AND ? " +
+					"WHERE jury.idjury <> ? AND juryappraiser.idAppraiser = ? AND jury.date BETWEEN ?::TIMESTAMP - INTERVAL '1 minute' * (" +
+					"SELECT sigetconfig.jurytimestage1 - 1 FROM sigetconfig INNER JOIN proposal ON proposal.iddepartment=sigetconfig.iddepartment " + 
+					"WHERE proposal.idproposal=project.idproposal) AND ?::TIMESTAMP + INTERVAL '1 minute' * (" +
+					"SELECT sigetconfig.jurytimestage1 - 1 FROM sigetconfig INNER JOIN proposal ON proposal.iddepartment=sigetconfig.iddepartment " + 
+					"WHERE proposal.idproposal=project.idproposal) " +
 					" UNION ALL " +
 					"SELECT COUNT(*) AS total FROM jury INNER JOIN juryappraiser ON juryappraiser.idJury=jury.idJury " +
 					"INNER JOIN thesis ON thesis.idthesis=jury.idthesis " +
-					"WHERE jury.idJury <> ? AND juryappraiser.idAppraiser = ? AND jury.date BETWEEN ? AND ? " +
+					"WHERE jury.idjury <> ? AND juryappraiser.idAppraiser = ? AND jury.date BETWEEN ?::TIMESTAMP - INTERVAL '1 minute' * (" +
+					"SELECT sigetconfig.jurytimestage2 - 1 FROM sigetconfig INNER JOIN proposal ON proposal.iddepartment=sigetconfig.iddepartment " + 
+					"INNER JOIN project ON project.idproposal=proposal.idproposal " +
+					"WHERE project.idproject=thesis.idproject) AND ?::TIMESTAMP + INTERVAL '1 minute' * (" +
+					"SELECT sigetconfig.jurytimestage2 - 1 FROM sigetconfig INNER JOIN proposal ON proposal.iddepartment=sigetconfig.iddepartment " + 
+					"INNER JOIN project ON project.idproposal=proposal.idproposal " +
+					"WHERE project.idproject=thesis.idproject) " +
 					" UNION ALL " +
 					"SELECT COUNT(*) AS total FROM internshipjury INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJury=internshipjury.idInternshipJury " +
-					"WHERE internshipjuryappraiser.idAppraiser = ? AND internshipjury.date BETWEEN ? AND ? ) AS teste");
+					"WHERE internshipjuryappraiser.idAppraiser = ? AND internshipjury.date BETWEEN ?::TIMESTAMP - INTERVAL '1 minute' * (" +
+					"SELECT sigesconfig.jurytime - 1 FROM sigesconfig INNER JOIN internship ON internship.iddepartment=sigesconfig.iddepartment " +
+					"WHERE internship.idinternship=internshipjury.idinternship) AND ?::TIMESTAMP + INTERVAL '1 minute' * (" +
+					"SELECT sigesconfig.jurytime - 1 FROM sigesconfig INNER JOIN internship ON internship.iddepartment=sigesconfig.iddepartment " + 
+					"WHERE internship.idinternship=internshipjury.idinternship)) AS teste");
 			
 			stmt.setInt(1, idJury);
 			stmt.setInt(2, idUser);
-			stmt.setTimestamp(3, new java.sql.Timestamp(startDate.getTime()));
-			stmt.setTimestamp(4, new java.sql.Timestamp(endDate.getTime()));
+			stmt.setTimestamp(3, new java.sql.Timestamp(juryDate.getTime()));
+			stmt.setTimestamp(4, new java.sql.Timestamp(juryDate.getTime()));
 			stmt.setInt(5, idJury);
 			stmt.setInt(6, idUser);
-			//stmt.setTimestamp(7, new java.sql.Timestamp(DateUtils.addMinute(startDate, -30).getTime()));
-			//stmt.setTimestamp(8, new java.sql.Timestamp(DateUtils.addMinute(endDate, 30).getTime()));
-			stmt.setTimestamp(7, new java.sql.Timestamp(startDate.getTime()));
-			stmt.setTimestamp(8, new java.sql.Timestamp(endDate.getTime()));
+			stmt.setTimestamp(7, new java.sql.Timestamp(juryDate.getTime()));
+			stmt.setTimestamp(8, new java.sql.Timestamp(juryDate.getTime()));
 			stmt.setInt(9, idUser);
-			stmt.setTimestamp(10, new java.sql.Timestamp(startDate.getTime()));
-			stmt.setTimestamp(11, new java.sql.Timestamp(endDate.getTime()));
+			stmt.setTimestamp(10, new java.sql.Timestamp(juryDate.getTime()));
+			stmt.setTimestamp(11, new java.sql.Timestamp(juryDate.getTime()));
+			
+			System.out.println(stmt);
 			
 			rs = stmt.executeQuery();
 			rs.next();

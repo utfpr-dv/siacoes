@@ -310,10 +310,17 @@ public class JuryBO {
 			}
 			if(jury.getIdJury() == 0) {
 				jury.setStartTime(jury.getDate());
-				jury.setEndTime(DateUtils.addHour(jury.getStartTime(), 1));
 				
-				if((jury.getThesis() != null) && (jury.getThesis().getIdThesis() != 0)) {
-					jury.setEndTime(DateUtils.addMinute(jury.getEndTime(), 30));
+				try {
+					SigetConfig config = new SigetConfigBO().findByDepartment(((jury.getThesis() != null) && (jury.getThesis().getIdThesis() != 0)) ? new ThesisBO().findIdDepartment(jury.getThesis().getIdThesis()) : new ProjectBO().findIdDepartment(jury.getProject().getIdProject()));
+					
+					if((jury.getThesis() != null) && (jury.getThesis().getIdThesis() != 0)) {
+						jury.setEndTime(DateUtils.addHour(jury.getStartTime(), config.getJuryTimeStage2()));
+					} else {
+						jury.setEndTime(DateUtils.addHour(jury.getStartTime(), config.getJuryTimeStage1()));
+					}
+				} catch (Exception e) {
+					jury.setEndTime(DateUtils.addMinute(jury.getStartTime(), 60));	
 				}
 			}
 			if(jury.getAppraisers() != null){

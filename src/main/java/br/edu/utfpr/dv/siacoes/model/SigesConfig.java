@@ -13,6 +13,7 @@ public class SigesConfig {
 	private SupervisorFilter supervisorFilter;
 	private boolean supervisorFillJuryForm;
 	private int maxFileSize;
+	private int juryTime;
 	
 	public SigesConfig(){
 		this.setDepartment(new Department());
@@ -23,6 +24,7 @@ public class SigesConfig {
 		this.setSupervisorFilter(SupervisorFilter.DEPARTMENT);
 		this.setSupervisorFillJuryForm(false);
 		this.setMaxFileSize(0);
+		this.setJuryTime(0);
 	}
 	
 	public Department getDepartment() {
@@ -79,6 +81,12 @@ public class SigesConfig {
 		} else {
 			return "Tam. Máx. " + ByteSizeField.getSizeAsString(this.getMaxFileSize());
 		}
+	}
+	public int getJuryTime() {
+		return juryTime;
+	}
+	public void setJuryTime(int juryTime) {
+		this.juryTime = juryTime;
 	}
 	
 }

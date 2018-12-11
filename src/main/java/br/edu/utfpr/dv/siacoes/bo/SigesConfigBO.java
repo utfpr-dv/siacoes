@@ -45,6 +45,9 @@ public class SigesConfigBO {
 		if(config.getMaxFileSize() < 0) {
 			throw new Exception("O tamanho máximo para submissão de arquivos não pode ser inferior a zero.");
 		}
+		if(config.getJuryTime() < 0) {
+			throw new Exception("O tempo previsto de duração da banca de estágio não pode ser inferior à zero.");
+		}
 		
 		try{
 			SigesConfigDAO dao = new SigesConfigDAO();

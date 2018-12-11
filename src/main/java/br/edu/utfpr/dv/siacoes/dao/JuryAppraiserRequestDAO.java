@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
-import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class JuryAppraiserRequestDAO {
 	
@@ -179,30 +178,26 @@ public class JuryAppraiserRequestDAO {
 		return p;
 	}
 	
-	public boolean appraiserHasJuryRequest(int idJuryRequest, int idUser, Date startDate, Date endDate) throws SQLException{
+	public boolean appraiserHasJuryRequest(int idJuryRequest, int idUser, Date juryDate) throws SQLException{
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
 		
 		try{
 			stmt = this.conn.prepareStatement(
-					"SELECT SUM(total) AS total FROM (" +
 					"SELECT COUNT(*) AS total FROM juryrequest INNER JOIN juryappraiserrequest ON juryappraiserrequest.idJuryRequest=juryrequest.idJuryRequest " +
-					"WHERE juryrequest.stage = 1 AND juryrequest.idJuryRequest <> ? AND juryappraiserrequest.idAppraiser = ? AND juryrequest.date BETWEEN ? AND ? " +
-					" UNION ALL " +
-					"SELECT COUNT(*) AS total FROM juryrequest INNER JOIN juryappraiserrequest ON juryappraiserrequest.idJuryRequest=juryrequest.idJuryRequest " +
-					"WHERE juryrequest.stage = 2 AND juryrequest.idJuryRequest <> ? AND juryappraiserrequest.idAppraiser = ? AND juryrequest.date BETWEEN ? AND ? " +
-					") AS teste");
+					"WHERE juryrequest.idJuryRequest <> ? AND juryappraiserrequest.idAppraiser = ? " +
+					"AND juryrequest.date BETWEEN ?::TIMESTAMP - INTERVAL '1 minute' * ( " +
+					"SELECT CASE WHEN juryrequest.stage = 2 THEN sigetconfig.jurytimestage2 ELSE sigetconfig.jurytimestage1 END - 1 " +
+					"FROM sigetconfig INNER JOIN proposal ON proposal.iddepartment=sigetconfig.iddepartment " +
+					"WHERE proposal.idproposal=juryrequest.idproposal) AND ?::TIMESTAMP + INTERVAL '1 minute' * ( " +
+					"SELECT CASE WHEN juryrequest.stage = 2 THEN sigetconfig.jurytimestage2 ELSE sigetconfig.jurytimestage1 END - 1 " +
+					"FROM sigetconfig INNER JOIN proposal ON proposal.iddepartment=sigetconfig.iddepartment " +
+					"WHERE proposal.idproposal=juryrequest.idproposal)");
 			
 			stmt.setInt(1, idJuryRequest);
 			stmt.setInt(2, idUser);
-			stmt.setTimestamp(3, new java.sql.Timestamp(startDate.getTime()));
-			stmt.setTimestamp(4, new java.sql.Timestamp(endDate.getTime()));
-			stmt.setInt(5, idJuryRequest);
-			stmt.setInt(6, idUser);
-			//stmt.setTimestamp(7, new java.sql.Timestamp(DateUtils.addMinute(startDate, -30).getTime()));
-			//stmt.setTimestamp(8, new java.sql.Timestamp(DateUtils.addMinute(endDate, 30).getTime()));
-			stmt.setTimestamp(7, new java.sql.Timestamp(startDate.getTime()));
-			stmt.setTimestamp(8, new java.sql.Timestamp(endDate.getTime()));
+			stmt.setTimestamp(3, new java.sql.Timestamp(juryDate.getTime()));
+			stmt.setTimestamp(4, new java.sql.Timestamp(juryDate.getTime()));
 			
 			rs = stmt.executeQuery();
 			rs.next();

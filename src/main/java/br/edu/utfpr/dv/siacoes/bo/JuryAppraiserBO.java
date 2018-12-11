@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.JuryAppraiserDAO;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
-import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class JuryAppraiserBO {
 	
@@ -61,15 +60,10 @@ public class JuryAppraiserBO {
 	}
 	
 	public boolean appraiserHasJury(int idJury, int idUser, Date date) throws Exception{
-		Date startDate, endDate;
-		
-		startDate = DateUtils.addMinute(date, -59);
-		endDate = DateUtils.addMinute(date, 59);
-		
 		try{
 			JuryAppraiserDAO dao = new JuryAppraiserDAO();
 			
-			return dao.appraiserHasJury(idJury, idUser, startDate, endDate);
+			return dao.appraiserHasJury(idJury, idUser, date);
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

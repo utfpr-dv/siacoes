@@ -47,9 +47,9 @@ public class SigesConfigDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO sigesconfig(minimumScore, supervisorPonderosity, companySupervisorPonderosity, showgradestostudent, supervisorfilter, supervisorFillJuryForm, maxfilesize, idDepartment) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+				stmt = conn.prepareStatement("INSERT INTO sigesconfig(minimumScore, supervisorPonderosity, companySupervisorPonderosity, showgradestostudent, supervisorfilter, supervisorFillJuryForm, maxfilesize, jurytime, idDepartment) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}else{
-				stmt = conn.prepareStatement("UPDATE sigesconfig SET minimumScore=?, supervisorPonderosity=?, companySupervisorPonderosity=?, showgradestostudent=?, supervisorfilter=?, supervisorFillJuryForm=?, maxfilesize=? WHERE idDepartment=?");
+				stmt = conn.prepareStatement("UPDATE sigesconfig SET minimumScore=?, supervisorPonderosity=?, companySupervisorPonderosity=?, showgradestostudent=?, supervisorfilter=?, supervisorFillJuryForm=?, maxfilesize=?, jurytime=? WHERE idDepartment=?");
 			}
 			
 			stmt.setDouble(1, config.getMinimumScore());
@@ -59,7 +59,8 @@ public class SigesConfigDAO {
 			stmt.setInt(5, config.getSupervisorFilter().getValue());
 			stmt.setInt(6, config.isSupervisorFillJuryForm() ? 1 : 0);
 			stmt.setInt(7, config.getMaxFileSize());
-			stmt.setInt(8, config.getDepartment().getIdDepartment());
+			stmt.setInt(8, config.getJuryTime());
+			stmt.setInt(9, config.getDepartment().getIdDepartment());
 			
 			stmt.execute();
 			
@@ -83,6 +84,7 @@ public class SigesConfigDAO {
 		config.setSupervisorFilter(SupervisorFilter.valueOf(rs.getInt("supervisorfilter")));
 		config.setSupervisorFillJuryForm(rs.getInt("supervisorFillJuryForm") == 1);
 		config.setMaxFileSize(rs.getInt("maxfilesize"));
+		config.setJuryTime(rs.getInt("jurytime"));
 		
 		return config;
 	}

@@ -1,7 +1,6 @@
 package br.edu.utfpr.dv.siacoes.bo;
 
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -61,21 +60,10 @@ public class InternshipJuryAppraiserBO {
 	}
 	
 	public boolean appraiserHasJury(int idInternshipJury, int idUser, Date date) throws Exception{
-		Date startDate, endDate;
-		Calendar cal = Calendar.getInstance();
-		
-		cal.setTime(date);
-		cal.add(Calendar.MINUTE, -59);
-		startDate = cal.getTime();
-		
-		cal.setTime(date);
-		cal.add(Calendar.MINUTE, 59);
-		endDate = cal.getTime();
-		
 		try{
 			InternshipJuryAppraiserDAO dao = new InternshipJuryAppraiserDAO();
 			
-			return dao.appraiserHasJury(idInternshipJury, idUser, startDate, endDate);
+			return dao.appraiserHasJury(idInternshipJury, idUser, date);
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

@@ -1,6 +1,7 @@
 ﻿package br.edu.utfpr.dv.siacoes.view;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +27,9 @@ import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryRequestBO;
+import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
+import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.components.CalendarEvent;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
@@ -38,6 +41,7 @@ import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.JuryRequest;
 import br.edu.utfpr.dv.siacoes.model.Semester;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.window.CalendarEventWindow;
@@ -166,14 +170,14 @@ public class EventCalendarView extends BasicView {
 			
 			List<com.vaadin.ui.components.calendar.event.CalendarEvent> listEvents = this.calendar.getEvents(this.calendar.getStartDate(), this.calendar.getEndDate());
 			
-			for(int i = listEvents.size() - 1; i >= 0; i--){
+			for(int i = listEvents.size() - 1; i >= 0; i--) {
 				this.calendar.removeEvent(listEvents.get(i));
 			}
 			
-			if(this.optionFilterType.isSelected(EventCalendarView.ONLYTHESIS) || this.optionFilterType.isSelected(EventCalendarView.LISTALL)){
+			if(this.optionFilterType.isSelected(EventCalendarView.ONLYTHESIS) || this.optionFilterType.isSelected(EventCalendarView.LISTALL)) {
 				JuryBO bo = new JuryBO();
 				
-				if(this.checkListOnlyMy.getValue()){
+				if(this.checkListOnlyMy.getValue()) {
 					listThesis = bo.listByAppraiser(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
 					
 					if(this.checkListPreScheculing.getValue()) {
@@ -185,17 +189,17 @@ public class EventCalendarView extends BasicView {
 							}
 						}
 					}
-				}else{
+				} else {
 					listThesis = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), 0);
 				}
 			}
 			
-			if(this.optionFilterType.isSelected(EventCalendarView.ONLYINTERNSHIP) || this.optionFilterType.isSelected(EventCalendarView.LISTALL)){
+			if(this.optionFilterType.isSelected(EventCalendarView.ONLYINTERNSHIP) || this.optionFilterType.isSelected(EventCalendarView.LISTALL)) {
 				InternshipJuryBO bo = new InternshipJuryBO();
 				
-				if(this.checkListOnlyMy.getValue()){
+				if(this.checkListOnlyMy.getValue()) {
 					listInternship = bo.listByAppraiser(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
-				}else{
+				} else {
 					listInternship = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 				}
 			}
@@ -203,9 +207,9 @@ public class EventCalendarView extends BasicView {
 			this.calendar.setStartDate(DateUtils.getSunday(DateUtils.getToday().getTime()));
 			this.calendar.setEndDate(DateUtils.addDay(this.calendar.getStartDate(), 6));
 			
-			if((listThesis.size() == 0) && (listInternship.size() == 0)){
+			if((listThesis.size() == 0) && (listInternship.size() == 0)) {
 				this.showWarningNotification("Listar Eventos", "Não há bancas agendadas para este semestre.");
-			}else{
+			} else {
 				for(Jury jury : listThesis){
 					String title = "Banca de TCC " + String.valueOf(jury.getStage());
 					String student = "Acadêmico(a): " + jury.getStudent().getName();
@@ -214,15 +218,11 @@ public class EventCalendarView extends BasicView {
 					
 					jury.setAppraisers(new JuryAppraiserBO().listAppraisers(jury.getIdJury()));
 					
-					for(JuryAppraiser appraiser : jury.getAppraisers()){
+					for(JuryAppraiser appraiser : jury.getAppraisers()) {
 						appraisers += appraiser.getAppraiser().getName() + (appraiser.isSubstitute() ? " (suplente)" : (appraiser.isChair() ? " (presidente)" : "")) + "; ";
 					}
 					
-					CalendarEvent event = new CalendarEvent(title + " - " + student + " - " + local, title + " - " + student + " - " + local + " - " + appraisers, jury.getDate(), DateUtils.addHour(jury.getDate(), 1));
-					
-					if(jury.getStage() == 2) {
-						event.setEnd(DateUtils.addMinute(event.getEnd(), 30));
-					}
+					CalendarEvent event = new CalendarEvent(title + " - " + student + " - " + local, title + " - " + student + " - " + local + " - " + appraisers, jury.getDate(), DateUtils.concat(jury.getDate(), jury.getEndTime()));
 					
 					event.setJury(jury);
 					
@@ -234,25 +234,34 @@ public class EventCalendarView extends BasicView {
 					String student = "Acadêmico(a): " + request.getStudent();
 					String local = "Local: " + request.getLocal();
 					String appraisers = "Membros da banca: ";
+					Date endTime;
 					
 					request.setAppraisers(new JuryAppraiserRequestBO().listAppraisers(request.getIdJuryRequest()));
 					
-					for(JuryAppraiserRequest appraiser : request.getAppraisers()){
+					for(JuryAppraiserRequest appraiser : request.getAppraisers()) {
 						appraisers += appraiser.getAppraiser().getName() + (appraiser.isSubstitute() ? " (suplente)" : (appraiser.isChair() ? " (presidente)" : "")) + "; ";
 					}
 					
-					CalendarEvent event = new CalendarEvent(title + " - " + student + " - " + local, title + " - " + student + " - " + local + " - " + appraisers, request.getDate(), DateUtils.addHour(request.getDate(), 1));
-					
-					if(request.getStage() == 2) {
-						event.setEnd(DateUtils.addMinute(event.getEnd(), 30));
+					try {
+						SigetConfig config = new SigetConfigBO().findByDepartment(new ProposalBO().findIdDepartment(request.getProposal().getIdProposal()));
+						
+						if(request.getStage() == 2) {
+							endTime = DateUtils.addMinute(request.getDate(), config.getJuryTimeStage2());
+						} else {
+							endTime = DateUtils.addMinute(request.getDate(), config.getJuryTimeStage1());
+						}
+					} catch (Exception e) {
+						endTime = DateUtils.addMinute(request.getDate(), 60);
 					}
+					
+					CalendarEvent event = new CalendarEvent(title + " - " + student + " - " + local, title + " - " + student + " - " + local + " - " + appraisers, request.getDate(), endTime);
 					
 					event.setJuryRequest(request);
 					
 					provider.addEvent(event);
 				}
 				
-				for(InternshipJury jury : listInternship){
+				for(InternshipJury jury : listInternship) {
 					String title = "Banca de Estágio";
 					String student = "Acadêmico(a): " + jury.getStudent();
 					String local = "Local: " + jury.getLocal();
@@ -260,11 +269,11 @@ public class EventCalendarView extends BasicView {
 					
 					jury.setAppraisers(new InternshipJuryAppraiserBO().listAppraisers(jury.getIdInternshipJury()));
 					
-					for(InternshipJuryAppraiser appraiser : jury.getAppraisers()){
+					for(InternshipJuryAppraiser appraiser : jury.getAppraisers()) {
 						appraisers += appraiser.getAppraiser().getName() + (appraiser.isSubstitute() ? " (suplente)" : (appraiser.isChair() ? " (presidente)" : "")) + "; ";
 					}
 					
-					CalendarEvent event = new CalendarEvent(title + " - " + student + " - " + local, title + " - " + student + " - " + local + " - " + appraisers, jury.getDate(), DateUtils.addHour(jury.getDate(), 1));
+					CalendarEvent event = new CalendarEvent(title + " - " + student + " - " + local, title + " - " + student + " - " + local + " - " + appraisers, jury.getDate(), DateUtils.concat(jury.getDate(), jury.getEndTime()));
 					
 					event.setInternshipJury(jury);
 					

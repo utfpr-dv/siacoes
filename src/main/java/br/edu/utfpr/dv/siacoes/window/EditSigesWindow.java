@@ -27,6 +27,7 @@ public class EditSigesWindow extends EditWindow {
 	private final NativeSelect comboSupervisorFilter;
 	private final CheckBox checkSupervisorFillJuryForm;
 	private final ByteSizeField textMaxFileSize;
+	private final TextField textJuryTime;
 	
 	private final TabSheet tab;
 	
@@ -62,6 +63,9 @@ public class EditSigesWindow extends EditWindow {
 		
 		this.textMaxFileSize = new ByteSizeField("Tamanho máximo para submissão de arquivos");
 		
+		this.textJuryTime = new TextField("Duração da banca (minutos)");
+		this.textJuryTime.setWidth("100px");
+		
 		VerticalLayout v1 = new VerticalLayout(this.comboSupervisorFilter);
 		v1.setSpacing(true);
 		v1.setMargin(true);
@@ -70,7 +74,7 @@ public class EditSigesWindow extends EditWindow {
 		
 		HorizontalLayout h1 = new HorizontalLayout(this.textMinimumScore, this.textSupervisorPonderosity, this.textCompanySupervisorPonderosity);
 		h1.setSpacing(true);
-		VerticalLayout v2 = new VerticalLayout(h1, this.checkSupervisorFillJuryForm, this.checkShowGradesToStudent);
+		VerticalLayout v2 = new VerticalLayout(h1, this.textJuryTime, this.checkSupervisorFillJuryForm, this.checkShowGradesToStudent);
 		v2.setSpacing(true);
 		v2.setMargin(true);
 		
@@ -95,6 +99,7 @@ public class EditSigesWindow extends EditWindow {
 		this.comboSupervisorFilter.setValue(this.config.getSupervisorFilter());
 		this.checkSupervisorFillJuryForm.setValue(this.config.isSupervisorFillJuryForm());
 		this.textMaxFileSize.setValue(this.config.getMaxFileSize());
+		this.textJuryTime.setValue(String.valueOf(this.config.getJuryTime()));
 	}
 
 	@Override
@@ -109,6 +114,7 @@ public class EditSigesWindow extends EditWindow {
 			this.config.setSupervisorFilter((SupervisorFilter)this.comboSupervisorFilter.getValue());
 			this.config.setSupervisorFillJuryForm(this.checkSupervisorFillJuryForm.getValue());
 			this.config.setMaxFileSize((int)this.textMaxFileSize.getValue());
+			this.config.setJuryTime(Integer.parseInt(this.textJuryTime.getValue()));
 			
 			bo.save(this.config);
 			

@@ -151,7 +151,13 @@ public class InternshipJuryBO {
 			}
 			if(jury.getIdInternshipJury() == 0) {
 				jury.setStartTime(jury.getDate());
-				jury.setEndTime(DateUtils.addMinute(jury.getStartTime(), 30));
+				
+				try {
+					SigesConfig config = new SigesConfigBO().findByDepartment(new InternshipBO().findIdDepartment(jury.getInternship().getIdInternship()));
+					jury.setEndTime(DateUtils.addMinute(jury.getStartTime(), config.getJuryTime()));
+				} catch (Exception e) {
+					jury.setEndTime(DateUtils.addMinute(jury.getStartTime(), 30));	
+				}
 			}
 			if(jury.getAppraisers() != null){
 				InternshipJuryAppraiserBO bo = new InternshipJuryAppraiserBO();

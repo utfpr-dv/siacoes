@@ -36,16 +36,22 @@ public class SigetConfigBO {
 		if(config.getMinimumScore() <= 0) {
 			throw new Exception("A nota mínima para aprovação deve ser superior a zero.");
 		}
-		if(config.getSupervisorIndication() < 0) {
-			config.setSupervisorIndication(0);
-		} else if(config.getSupervisorIndication() > 10) {
-			config.setSupervisorIndication(10);
-		}
 		if((config.getMaxTutoredStage1() < 1) || (config.getMaxTutoredStage2() < 1)) {
 			throw new Exception("O número máximo de orientados não deve ser inferior a 1.");
 		}
 		if(config.getMaxFileSize() < 0) {
 			throw new Exception("O tamanho máximo para submissão de arquivos não pode ser inferior a zero.");
+		}
+		if(config.getJuryTimeStage1() < 0) {
+			throw new Exception("O tempo previsto de duração da banca de TCC 1 não pode ser inferior à zero.");
+		}
+		if(config.getJuryTimeStage2() < 0) {
+			throw new Exception("O tempo previsto de duração da banca de TCC 2 não pode ser inferior à zero.");
+		}
+		if(config.getSupervisorIndication() < 0) {
+			config.setSupervisorIndication(0);
+		} else if(config.getSupervisorIndication() > 10) {
+			config.setSupervisorIndication(10);
 		}
 		if(config.getMinimumJuryMembers() < 0) {
 			config.setMinimumJuryMembers(0);
