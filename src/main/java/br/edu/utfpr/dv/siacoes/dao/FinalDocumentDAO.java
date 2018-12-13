@@ -260,7 +260,7 @@ public class FinalDocumentDAO {
 					"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
 					"INNER JOIN \"user\" ON \"user\".idUser=project.idStudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=project.idSupervisor " +
-					"ORDER BY year DESC, semester DESC, title");
+					"ORDER BY year DESC, semester DESC, student");
 			
 			List<FinalDocument> list = new ArrayList<FinalDocument>();
 			
@@ -305,7 +305,7 @@ public class FinalDocumentDAO {
 				"INNER JOIN \"user\" ON \"user\".idUser=project.idStudent " +
 				"INNER JOIN \"user\" supervisor ON supervisor.idUser=project.idSupervisor " +
 				"WHERE finaldocument.supervisorFeedback=1 AND proposal.idDepartment=? " : "") +
-				"ORDER BY year DESC, semester DESC, title");
+				"ORDER BY year DESC, semester DESC, student");
 		
 			if(showThesis) {
 				stmt.setInt(1, idDepartment);	
@@ -359,7 +359,7 @@ public class FinalDocumentDAO {
 				"INNER JOIN \"user\" ON \"user\".idUser=project.idStudent " +
 				"INNER JOIN \"user\" supervisor ON supervisor.idUser=project.idSupervisor " +
 				"WHERE project.semester=? AND project.year=? AND proposal.idDepartment=? " + (includePrivate ? "" : " AND finaldocument.private=0 ") +
-				"ORDER BY title");
+				"ORDER BY student");
 		
 			stmt.setInt(1, semester);
 			stmt.setInt(2, year);
@@ -414,7 +414,7 @@ public class FinalDocumentDAO {
 				"INNER JOIN \"user\" ON \"user\".idUser=project.idStudent " +
 				"INNER JOIN \"user\" supervisor ON supervisor.idUser=project.idSupervisor " +
 				"WHERE project.semester=? AND project.year=? AND project.idsupervisor=? " +
-				"ORDER BY title");
+				"ORDER BY student");
 		
 			stmt.setInt(1, semester);
 			stmt.setInt(2, year);
@@ -570,7 +570,7 @@ public class FinalDocumentDAO {
 				"INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
 				"INNER JOIN \"user\" ON \"user\".idUser=thesis.idStudent " +
 				"WHERE finaldocument.supervisorFeedback=1 AND thesis.semester=? AND thesis.year=? AND proposal.idDepartment=? " +
-				"ORDER BY finaldocument.title");
+				"ORDER BY \"user\".name");
 		
 			stmt.setInt(1, semester);
 			stmt.setInt(2, year);
