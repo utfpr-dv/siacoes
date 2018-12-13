@@ -72,7 +72,7 @@ public class FinalDocumentDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -107,7 +107,7 @@ public class FinalDocumentDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -142,7 +142,7 @@ public class FinalDocumentDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -182,7 +182,7 @@ public class FinalDocumentDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -221,7 +221,7 @@ public class FinalDocumentDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -244,7 +244,7 @@ public class FinalDocumentDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			rs = stmt.executeQuery("SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, finaldocument.abstract, finaldocument.abstract2, " +
+			rs = stmt.executeQuery("SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.abstract, finaldocument.abstract2, " +
 					"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, finaldocument.companyInfo, finaldocument.patent, " +
 					"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, project.idProposal, \"user\".name AS student, supervisor.name AS supervisorName " +
 					"FROM finaldocument INNER JOIN thesis ON thesis.idThesis=finaldocument.idThesis " +
@@ -253,7 +253,7 @@ public class FinalDocumentDAO {
 					"INNER JOIN \"user\" ON \"user\".idUser=thesis.idStudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=thesis.idSupervisor " +
 					" UNION ALL " + 
-					"SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, finaldocument.abstract, finaldocument.abstract2, " +
+					"SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.abstract, finaldocument.abstract2, " +
 					"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, finaldocument.companyInfo, finaldocument.patent, " +
 					"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, \"user\".name AS student, supervisor.name AS supervisorName " +
 					"FROM finaldocument INNER JOIN project ON project.idProject=finaldocument.idProject " +
@@ -265,7 +265,7 @@ public class FinalDocumentDAO {
 			List<FinalDocument> list = new ArrayList<FinalDocument>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
@@ -287,7 +287,7 @@ public class FinalDocumentDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-				(showThesis ? "SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, finaldocument.abstract, finaldocument.abstract2, " +
+				(showThesis ? "SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.abstract, finaldocument.abstract2, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, finaldocument.companyInfo, finaldocument.patent, " +
 				"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, project.idProposal, \"user\".name AS student, supervisor.name AS supervisorName " +
 				"FROM finaldocument INNER JOIN thesis ON thesis.idThesis=finaldocument.idThesis " +
@@ -297,7 +297,7 @@ public class FinalDocumentDAO {
 				"INNER JOIN \"user\" supervisor ON supervisor.idUser=thesis.idSupervisor " +
 				"WHERE finaldocument.supervisorFeedback=1 AND proposal.idDepartment=? " : "") +
 				(showThesis && showProjects ? " UNION ALL " : "") +
-				(showProjects ? "SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, finaldocument.abstract, finaldocument.abstract2, " +
+				(showProjects ? "SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.abstract, finaldocument.abstract2, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, finaldocument.companyInfo, finaldocument.patent, " +
 				"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, \"user\".name AS student, supervisor.name AS supervisorName " +
 				"FROM finaldocument INNER JOIN project ON project.idProject=finaldocument.idProject " +
@@ -319,7 +319,7 @@ public class FinalDocumentDAO {
 			List<FinalDocument> list = new ArrayList<FinalDocument>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
@@ -341,7 +341,7 @@ public class FinalDocumentDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-				"SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, finaldocument.abstract, finaldocument.abstract2, " +
+				"SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.abstract, finaldocument.abstract2, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, finaldocument.companyInfo, finaldocument.patent, " +
 				"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, project.idProposal, \"user\".name AS student, supervisor.name AS supervisorName " +
 				"FROM finaldocument INNER JOIN thesis ON thesis.idThesis=finaldocument.idThesis " +
@@ -351,7 +351,7 @@ public class FinalDocumentDAO {
 				"INNER JOIN \"user\" supervisor ON supervisor.idUser=thesis.idSupervisor " +
 				"WHERE thesis.semester=? AND thesis.year=? AND proposal.idDepartment=? " + (includePrivate ? "" : " AND finaldocument.private=0 ") +
 				" UNION ALL " +
-				"SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, finaldocument.abstract, finaldocument.abstract2, " +
+				"SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.abstract, finaldocument.abstract2, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, finaldocument.companyInfo, finaldocument.patent, " +
 				"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, \"user\".name AS student, supervisor.name AS supervisorName " +
 				"FROM finaldocument INNER JOIN project ON project.idProject=finaldocument.idProject " +
@@ -374,7 +374,7 @@ public class FinalDocumentDAO {
 			List<FinalDocument> list = new ArrayList<FinalDocument>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
@@ -396,7 +396,7 @@ public class FinalDocumentDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-				"SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, finaldocument.abstract, finaldocument.abstract2, " +
+				"SELECT thesis.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.abstract, finaldocument.abstract2, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, finaldocument.companyInfo, finaldocument.patent, " +
 				"thesis.semester, thesis.year, thesis.idStudent, thesis.idSupervisor, thesis.idCosupervisor, thesis.subarea, project.idProposal, \"user\".name AS student, supervisor.name AS supervisorName " +
 				"FROM finaldocument INNER JOIN thesis ON thesis.idThesis=finaldocument.idThesis " +
@@ -406,7 +406,7 @@ public class FinalDocumentDAO {
 				"INNER JOIN \"user\" supervisor ON supervisor.idUser=thesis.idSupervisor " +
 				"WHERE thesis.semester=? AND thesis.year=? AND thesis.idsupervisor=? " +
 				" UNION ALL " +
-				"SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.file, finaldocument.abstract, finaldocument.abstract2, " +
+				"SELECT project.idProject, finaldocument.idfinaldocument, finaldocument.idThesis, finaldocument.title, finaldocument.submissionDate, finaldocument.abstract, finaldocument.abstract2, " +
 				"finaldocument.private, finaldocument.supervisorFeedbackDate, finaldocument.supervisorFeedback, finaldocument.comments, finaldocument.companyInfo, finaldocument.patent, " +
 				"project.semester, project.year, project.idStudent, project.idSupervisor, project.idCosupervisor, project.subarea, project.idProposal, \"user\".name AS student, supervisor.name AS supervisorName " +
 				"FROM finaldocument INNER JOIN project ON project.idProject=finaldocument.idProject " +
@@ -429,7 +429,7 @@ public class FinalDocumentDAO {
 			List<FinalDocument> list = new ArrayList<FinalDocument>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
@@ -509,7 +509,7 @@ public class FinalDocumentDAO {
 		}
 	}
 	
-	private FinalDocument loadObject(ResultSet rs) throws SQLException{
+	private FinalDocument loadObject(ResultSet rs, boolean loadFiles) throws SQLException{
 		FinalDocument ft = new FinalDocument();
 		
 		ft.setIdFinalDocument(rs.getInt("idfinaldocument"));
@@ -540,7 +540,6 @@ public class FinalDocumentDAO {
 		}
 		ft.setTitle(rs.getString("title"));
 		ft.setSubmissionDate(rs.getDate("submissionDate"));
-		ft.setFile(rs.getBytes("file"));
 		ft.setComments(rs.getString("comments"));
 		ft.setSupervisorFeedbackDate(rs.getDate("supervisorFeedbackDate"));
 		ft.setPrivate(rs.getInt("private") == 1);
@@ -549,6 +548,10 @@ public class FinalDocumentDAO {
 		ft.setSupervisorFeedback(DocumentFeedback.valueOf(rs.getInt("supervisorFeedback")));
 		ft.setNativeAbstract(rs.getString("abstract"));
 		ft.setEnglishAbstract(rs.getString("abstract2"));
+		
+		if(loadFiles) {
+			ft.setFile(rs.getBytes("file"));
+		}
 		
 		return ft;
 	}

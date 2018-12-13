@@ -60,7 +60,7 @@ public class ThesisDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -92,7 +92,7 @@ public class ThesisDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -125,7 +125,7 @@ public class ThesisDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -280,7 +280,7 @@ public class ThesisDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -322,7 +322,7 @@ public class ThesisDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -358,7 +358,7 @@ public class ThesisDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -389,7 +389,7 @@ public class ThesisDAO {
 			List<Thesis> list = new ArrayList<Thesis>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, false));			
 			}
 			
 			return list;
@@ -428,7 +428,7 @@ public class ThesisDAO {
 			List<Thesis> list = new ArrayList<Thesis>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, false));			
 			}
 			
 			return list;
@@ -465,7 +465,7 @@ public class ThesisDAO {
 			List<Thesis> list = new ArrayList<Thesis>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, false));			
 			}
 			
 			return list;
@@ -535,7 +535,7 @@ public class ThesisDAO {
 		}
 	}
 	
-	private Thesis loadObject(ResultSet rs) throws SQLException{
+	private Thesis loadObject(ResultSet rs, boolean loadFiles) throws SQLException{
 		Thesis p = new Thesis();
 		
 		p.setIdThesis(rs.getInt("idThesis"));
@@ -551,11 +551,14 @@ public class ThesisDAO {
 		if(p.getCosupervisor().getIdUser() != 0){
 			p.getCosupervisor().setName(rs.getString("cosupervisorname"));
 		}
-		p.setFile(rs.getBytes("file"));
 		p.setSemester(rs.getInt("semester"));
 		p.setYear(rs.getInt("year"));
 		p.setSubmissionDate(rs.getDate("submissionDate"));
 		p.setAbstract(rs.getString("abstract"));
+		
+		if(loadFiles) {
+			p.setFile(rs.getBytes("file"));
+		}
 		
 		return p;
 	}

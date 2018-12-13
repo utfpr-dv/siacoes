@@ -236,7 +236,7 @@ public class MessageDAO {
 		message.setTitle(rs.getString("title"));
 		message.setMessage(rs.getString("message"));
 		message.setRead(rs.getInt("read") == 1);
-		message.setDate(rs.getDate("date"));
+		message.setDate(rs.getTimestamp("date"));
 		message.setModule(SystemModule.valueOf(rs.getInt("module")));
 		
 		return message;

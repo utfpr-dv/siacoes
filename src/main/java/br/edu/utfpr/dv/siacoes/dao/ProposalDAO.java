@@ -116,7 +116,7 @@ public class ProposalDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -256,7 +256,7 @@ public class ProposalDAO {
 				rs = stmt.executeQuery();
 				
 				if(rs.next()){
-					return this.loadObject(rs);
+					return this.loadObject(rs, true);
 				}else{
 					return null;
 				}	
@@ -294,7 +294,7 @@ public class ProposalDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -332,7 +332,7 @@ public class ProposalDAO {
 			List<Proposal> list = new ArrayList<Proposal>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, false));			
 			}
 			
 			return list;
@@ -370,7 +370,7 @@ public class ProposalDAO {
 			List<Proposal> list = new ArrayList<Proposal>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, false));			
 			}
 			
 			return list;
@@ -405,7 +405,7 @@ public class ProposalDAO {
 			List<Proposal> list = new ArrayList<Proposal>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, false));			
 			}
 			
 			return list;
@@ -441,7 +441,7 @@ public class ProposalDAO {
 			List<Proposal> list = new ArrayList<Proposal>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, false));			
 			}
 			
 			return list;
@@ -523,7 +523,7 @@ public class ProposalDAO {
 			List<Proposal> list = new ArrayList<Proposal>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, false));			
 			}
 			
 			return list;
@@ -678,13 +678,12 @@ public class ProposalDAO {
 		}
 	}
 	
-	private Proposal loadObject(ResultSet rs) throws SQLException{
+	private Proposal loadObject(ResultSet rs, boolean loadFiles) throws SQLException{
 		Proposal p = new Proposal();
 		
 		p.setIdProposal(rs.getInt("idProposal"));
 		p.setTitle(rs.getString("title"));
 		p.setSubarea(rs.getString("subarea"));
-		p.setFile(rs.getBytes("file"));
 		p.getStudent().setIdUser(rs.getInt("idStudent"));
 		p.getStudent().setName(rs.getString("studentName"));
 		p.setSubmissionDate(rs.getDate("submissionDate"));
@@ -704,6 +703,10 @@ public class ProposalDAO {
 		p.setSupervisorFeedback(ProposalFeedback.valueOf(rs.getInt("supervisorFeedback")));
 		p.setSupervisorFeedbackDate(rs.getDate("supervisorFeedbackDate"));
 		p.setSupervisorComments(rs.getString("supervisorComments"));
+		
+		if(loadFiles) {
+			p.setFile(rs.getBytes("file"));
+		}
 		
 		return p;
 	}

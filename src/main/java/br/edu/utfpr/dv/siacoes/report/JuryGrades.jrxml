@@ -11,6 +11,12 @@
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="AltBackground" pattern="">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}.intValue() % 2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#EAEAEA"/>
+		</conditionalStyle>
+	</style>
 	<parameter name="brasao_republica" class="java.io.InputStream"/>
 	<parameter name="logo_utfpr" class="java.io.InputStream"/>
 	<parameter name="campus" class="java.lang.String"/>
@@ -82,21 +88,21 @@
 				<text><![CDATA[Notas de Bancas de TCC]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="40" width="239" height="14" uuid="30f82b10-1544-40b2-8724-f7840e37f607"/>
+				<reportElement x="0" y="40" width="249" height="14" uuid="30f82b10-1544-40b2-8724-f7840e37f607"/>
 				<textElement>
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Acadêmico]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="270" y="40" width="31" height="14" uuid="281f09a7-d9f3-4483-9f19-d8ed79a0af86"/>
-				<textElement textAlignment="Right">
+				<reportElement x="280" y="40" width="31" height="14" uuid="281f09a7-d9f3-4483-9f19-d8ed79a0af86"/>
+				<textElement textAlignment="Center">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Nota]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="239" y="40" width="31" height="14" uuid="620cf112-7770-41a9-96ec-a9f2831c2a44"/>
+				<reportElement x="249" y="40" width="31" height="14" uuid="620cf112-7770-41a9-96ec-a9f2831c2a44"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
@@ -119,38 +125,38 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="22" splitType="Stretch">
+		<band height="17" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="0" y="3" width="239" height="17" uuid="584378a4-700b-415b-82e9-009e961295a1"/>
+				<reportElement style="AltBackground" x="0" y="0" width="249" height="17" uuid="584378a4-700b-415b-82e9-009e961295a1"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{student}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="270" y="3" width="30" height="17" uuid="48d6fe35-f2e1-4df9-af9c-23e2ed1b715b"/>
-				<textElement textAlignment="Right">
+				<reportElement style="AltBackground" x="280" y="0" width="30" height="17" uuid="48d6fe35-f2e1-4df9-af9c-23e2ed1b715b"/>
+				<textElement textAlignment="Center">
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[IF($F{juryDate} == null, "-", new java.text.DecimalFormat("#0.00").format($F{score}))]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="239" y="0" width="31" height="17" uuid="a0add7ba-49e9-4ffc-9e6a-741b6b59b75b"/>
+				<reportElement style="AltBackground" x="249" y="0" width="31" height="17" uuid="a0add7ba-49e9-4ffc-9e6a-741b6b59b75b"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{stage}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="420" y="3" width="60" height="17" uuid="4a5841d7-937c-406d-91db-6a5a814dfe18"/>
+				<reportElement style="AltBackground" x="420" y="0" width="60" height="17" uuid="4a5841d7-937c-406d-91db-6a5a814dfe18"/>
 				<textElement textAlignment="Left">
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[IF($F{juryDate} == null, "-", $F{result})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="310" y="4" width="110" height="17" uuid="3be0ed76-c62b-4fa3-86aa-56e3e0f34687"/>
+				<reportElement style="AltBackground" x="310" y="0" width="110" height="17" uuid="3be0ed76-c62b-4fa3-86aa-56e3e0f34687"/>
 				<textElement textAlignment="Left">
 					<font fontName="Arial" size="10"/>
 				</textElement>

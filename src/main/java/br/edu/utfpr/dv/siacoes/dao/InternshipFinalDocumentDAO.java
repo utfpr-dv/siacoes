@@ -61,7 +61,7 @@ public class InternshipFinalDocumentDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, false);
 			}else{
 				return null;
 			}
@@ -96,7 +96,7 @@ public class InternshipFinalDocumentDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, false);
 			}else{
 				return null;
 			}
@@ -130,7 +130,7 @@ public class InternshipFinalDocumentDAO {
 			List<InternshipFinalDocument> list = new ArrayList<InternshipFinalDocument>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, true));
 			}
 			
 			return list;
@@ -168,7 +168,7 @@ public class InternshipFinalDocumentDAO {
 			List<InternshipFinalDocument> list = new ArrayList<InternshipFinalDocument>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, true));
 			}
 			
 			return list;
@@ -208,7 +208,7 @@ public class InternshipFinalDocumentDAO {
 			List<InternshipFinalDocument> list = new ArrayList<InternshipFinalDocument>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, true));
 			}
 			
 			return list;
@@ -275,7 +275,7 @@ public class InternshipFinalDocumentDAO {
 		}
 	}
 	
-	private InternshipFinalDocument loadObject(ResultSet rs) throws SQLException{
+	private InternshipFinalDocument loadObject(ResultSet rs, boolean loadFiles) throws SQLException{
 		InternshipFinalDocument ft = new InternshipFinalDocument();
 		
 		ft.setIdInternshipFinalDocument(rs.getInt("idinternshipfinaldocument"));
@@ -288,11 +288,14 @@ public class InternshipFinalDocumentDAO {
 		ft.getInternship().getCompany().setName(rs.getString("company"));
 		ft.setTitle(rs.getString("title"));
 		ft.setSubmissionDate(rs.getDate("submissionDate"));
-		ft.setFile(rs.getBytes("file"));
 		ft.setComments(rs.getString("comments"));
 		ft.setSupervisorFeedbackDate(rs.getDate("supervisorFeedbackDate"));
 		ft.setPrivate(rs.getInt("private") == 1);
 		ft.setSupervisorFeedback(DocumentFeedback.valueOf(rs.getInt("supervisorFeedback")));
+		
+		if(loadFiles) {
+			ft.setFile(rs.getBytes("file"));
+		}
 		
 		return ft;
 	}

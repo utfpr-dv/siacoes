@@ -60,7 +60,7 @@ public class ProjectDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -92,7 +92,7 @@ public class ProjectDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -247,7 +247,7 @@ public class ProjectDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -291,7 +291,7 @@ public class ProjectDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -326,7 +326,7 @@ public class ProjectDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -357,7 +357,7 @@ public class ProjectDAO {
 			List<Project> list = new ArrayList<Project>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, false));			
 			}
 			
 			return list;
@@ -394,7 +394,7 @@ public class ProjectDAO {
 			List<Project> list = new ArrayList<Project>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, false));			
 			}
 			
 			return list;
@@ -430,7 +430,7 @@ public class ProjectDAO {
 			List<Project> list = new ArrayList<Project>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));			
+				list.add(this.loadObject(rs, false));			
 			}
 			
 			return list;
@@ -500,7 +500,7 @@ public class ProjectDAO {
 		}
 	}
 	
-	private Project loadObject(ResultSet rs) throws SQLException{
+	private Project loadObject(ResultSet rs, boolean loadFiles) throws SQLException{
 		Project p = new Project();
 		
 		p.setIdProject(rs.getInt("idProject"));
@@ -516,11 +516,14 @@ public class ProjectDAO {
 		if(p.getCosupervisor().getIdUser() != 0){
 			p.getCosupervisor().setName(rs.getString("cosupervisorname"));
 		}
-		p.setFile(rs.getBytes("file"));
 		p.setSemester(rs.getInt("semester"));
 		p.setYear(rs.getInt("year"));
 		p.setSubmissionDate(rs.getDate("submissionDate"));
 		p.setAbstract(rs.getString("abstract"));
+		
+		if(loadFiles) {
+			p.setFile(rs.getBytes("file"));	
+		}
 		
 		return p;
 	}

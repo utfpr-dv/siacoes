@@ -10,7 +10,6 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.renderers.DateRenderer;
@@ -117,14 +116,11 @@ public class FinalDocumentView extends ListView {
 			FinalDocumentBO bo = new FinalDocumentBO();
 			List<FinalDocument> list;
 			
-			if(this.checkListAll.getValue() == true){
+			if(this.checkListAll.getValue()) {
 				list = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), true);
-			}else{
-				list = bo.listBySupervisor(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
-			}
-			
-			if(Session.isUserManager(this.getModule())){
 				this.prepareLibraryReport();
+			} else {
+				list = bo.listBySupervisor(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
 			}
 			
 			for(FinalDocument doc : list){
