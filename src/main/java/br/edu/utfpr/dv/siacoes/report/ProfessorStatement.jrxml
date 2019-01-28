@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-12-04T22:05:33 -->
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ProfessorStatement" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="913fa94e-8ee3-4f00-b27a-dcb65cd3decc">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -115,7 +114,7 @@
 					<font size="12"/>
 					<paragraph lineSpacing="1_1_2"/>
 				</textElement>
-				<textFieldExpression><![CDATA["                                              Declaro para os devidos fins de direito que o(a) professor(a) " + $F{name} + " participou da Banca Examinadora de " + $F{event} + " do(a) acadêmico(a) " + $F{student} + IF(FIND($F{event}, "TCC") >= 0, " com tema \"" + $F{title} + "\"", " realizado na empresa " + $F{company}) + ", a qual ocorreu no dia " + DATEFORMAT($F{date}, "dd/MM/yyyy") + ", com início às " + DATEFORMAT($F{startTime}, "HH:mm") + " e término às " + DATEFORMAT($F{endTime}, "HH:mm") + "."]]></textFieldExpression>
+				<textFieldExpression><![CDATA["                                              Declaro para os devidos fins de direito que o(a) professor(a) " + $F{name} + " participou da Banca Examinadora de " + $F{event} + " do(a) acadêmico(a) " + $F{student} + IF(FIND($F{event}, "Trabalho") >= 0, " com tema \"" + $F{title} + "\"", " realizado na empresa " + $F{company}) + ", a qual ocorreu no dia " + DATEFORMAT($F{date}, "dd/MM/yyyy") + ", com início às " + DATEFORMAT($F{startTime}, "HH:mm") + " e término às " + DATEFORMAT($F{endTime}, "HH:mm") + "."]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="419" width="480" height="21" uuid="2f10a7ec-230f-42e0-bab7-1da6e69dd442"/>
