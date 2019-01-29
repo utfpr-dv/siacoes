@@ -103,6 +103,7 @@ public class SigetConfig {
 	private int minimumJurySubstitutes;
 	private int juryTimeStage1;
 	private int juryTimeStage2;
+	private boolean supervisorAssignsGrades;
 	
 	public SigetConfig(){
 		this.setDepartment(new Department());
@@ -126,6 +127,7 @@ public class SigetConfig {
 		this.setMinimumJurySubstitutes(0);
 		this.setJuryTimeStage1(0);
 		this.setJuryTimeStage2(0);
+		this.setSupervisorAssignsGrades(false);
 	}
 	
 	public Department getDepartment() {
@@ -260,6 +262,12 @@ public class SigetConfig {
 	}
 	public void setJuryTimeStage2(int juryTimeStage2) {
 		this.juryTimeStage2 = juryTimeStage2;
+	}
+	public boolean isSupervisorAssignsGrades() {
+		return supervisorAssignsGrades;
+	}
+	public void setSupervisorAssignsGrades(boolean supervisorAssignsGrades) {
+		this.supervisorAssignsGrades = supervisorAssignsGrades;
 	}
 
 }

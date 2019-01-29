@@ -31,7 +31,7 @@ public class JuryGradesWindow extends BasicWindow {
 		}
 		
 		this.setWidth("800px");
-		this.setHeight("500px");
+		this.setHeight("530px");
 		
 		this.loadGrades();
 	}

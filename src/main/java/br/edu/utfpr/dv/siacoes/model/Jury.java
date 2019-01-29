@@ -64,6 +64,7 @@ public class Jury {
 	private double minimumScore;
 	private JuryRequest juryRequest;
 	private String supervisorAbsenceReason;
+	private boolean supervisorAssignsGrades;
 	
 	public Jury(){
 		this.setIdJury(0);
@@ -78,6 +79,7 @@ public class Jury {
 		this.setMinimumScore(0);
 		this.setJuryRequest(null);
 		this.setSupervisorAbsenceReason("");
+		this.setSupervisorAssignsGrades(false);
 	}
 	
 	public int getIdJury() {
@@ -157,6 +159,12 @@ public class Jury {
 	}
 	public void setSupervisorAbsenceReason(String supervisorAbsenceReason) {
 		this.supervisorAbsenceReason = supervisorAbsenceReason;
+	}
+	public boolean isSupervisorAssignsGrades() {
+		return supervisorAssignsGrades;
+	}
+	public void setSupervisorAssignsGrades(boolean supervisorAssignsGrades) {
+		this.supervisorAssignsGrades = supervisorAssignsGrades;
 	}
 	public int getStage(){
 		if((this.getThesis() != null) && (this.getThesis().getIdThesis() != 0)){

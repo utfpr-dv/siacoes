@@ -172,6 +172,10 @@ public class JuryBO {
 						} catch (Exception ex) { }
 					}
 				}
+				
+				if(jury.getIdJury() == 0) {
+					jury.setSupervisorAssignsGrades(config.isSupervisorAssignsGrades());
+				}
 			}
 			
 			return jury;
@@ -265,6 +269,10 @@ public class JuryBO {
 							} catch (Exception ex) { }
 						}
 					}
+				}
+				
+				if(jury.getIdJury() == 0) {
+					jury.setSupervisorAssignsGrades(config.isSupervisorAssignsGrades());
 				}
 			}
 			
@@ -629,10 +637,19 @@ public class JuryBO {
 					scoreReport.setName(appraiserReport.getName());
 					scoreReport.setDescription(appraiserReport.getDescription());
 					
+					JuryFormAppraiserReport appraiserName = new JuryFormAppraiserReport();
+					appraiserName.setDescription(appraiserReport.getDescription());
+					appraiserName.setName(appraiserReport.getName());
+					
 					if(appraiser.isChair()){
-						report.getAppraisers().add(0, appraiserReport);
-						report.getScores().add(0, scoreReport);
+						report.getAppraisersName().add(0, appraiserName);
+						
+						if(jury.isSupervisorAssignsGrades()) {
+							report.getAppraisers().add(0, appraiserReport);
+							report.getScores().add(0, scoreReport);
+						}
 					}else{
+						report.getAppraisersName().add(appraiserName);
 						report.getAppraisers().add(appraiserReport);
 						report.getScores().add(scoreReport);
 					}

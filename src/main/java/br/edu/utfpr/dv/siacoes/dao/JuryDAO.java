@@ -240,7 +240,7 @@ public class JuryDAO {
 			boolean insert = (jury.getIdJury() == 0);
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO jury(date, local, idProject, idThesis, comments, startTime, endTime, minimumScore, supervisorAbsenceReason) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO jury(date, local, idProject, idThesis, comments, startTime, endTime, minimumScore, supervisorAbsenceReason, supervisorAssignsGrades) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 				
 				jury.setMinimumScore(10);
 				
@@ -268,7 +268,7 @@ public class JuryDAO {
 				
 				rs.close();
 			}else{
-				stmt = conn.prepareStatement("UPDATE jury SET date=?, local=?, idProject=?, idThesis=?, comments=?, startTime=?, endTime=?, minimumScore=?, supervisorAbsenceReason=? WHERE idJury=?");
+				stmt = conn.prepareStatement("UPDATE jury SET date=?, local=?, idProject=?, idThesis=?, comments=?, startTime=?, endTime=?, minimumScore=?, supervisorAbsenceReason=?, supervisorAssignsGrades=? WHERE idJury=?");
 			}
 			
 			stmt.setTimestamp(1, new java.sql.Timestamp(jury.getDate().getTime()));
@@ -288,9 +288,10 @@ public class JuryDAO {
 			stmt.setTime(7, new java.sql.Time(jury.getEndTime().getTime()));
 			stmt.setDouble(8, jury.getMinimumScore());
 			stmt.setString(9, jury.getSupervisorAbsenceReason());
+			stmt.setInt(10, (jury.isSupervisorAssignsGrades() ? 1 : 0));
 			
 			if(!insert){
-				stmt.setInt(10, jury.getIdJury());
+				stmt.setInt(11, jury.getIdJury());
 			}
 			
 			stmt.execute();
@@ -383,6 +384,7 @@ public class JuryDAO {
 		}
 		jury.setMinimumScore(rs.getDouble("minimumScore"));
 		jury.setSupervisorAbsenceReason(rs.getString("supervisorAbsenceReason"));
+		jury.setSupervisorAssignsGrades(rs.getInt("supervisorAssignsGrades") == 1);
 		
 		return jury;
 	}
@@ -419,15 +421,17 @@ public class JuryDAO {
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT COUNT(*) AS total FROM juryappraiser WHERE substitute=0 AND idJury=?");
+			stmt = conn.prepareStatement("SELECT COUNT(juryappraiser.idJuryAppraiser) AS total FROM juryappraiser " +
+					"INNER JOIN jury ON jury.idJury=juryappraiser.idJury " +
+					"WHERE juryappraiser.substitute=0 AND (jury.supervisorAssignsGrades=1 OR juryappraiser.chair=0) AND jury.idJury=?");
 			stmt.setInt(1, idJury);
 			
 			rs = stmt.executeQuery();
 			rs.next();
 			int numAppraisers = rs.getInt("total");
 			rs.close();
-			
 			stmt.close();
+			
 			stmt = conn.prepareStatement("SELECT COUNT(DISTINCT juryappraiser.idJuryAppraiser) AS total FROM juryappraiserscore INNER JOIN juryappraiser ON juryappraiser.idJuryAppraiser=juryappraiserscore.idJuryAppraiser WHERE juryappraiser.substitute=0 AND juryappraiser.idJury=?");
 			stmt.setInt(1, idJury);
 			
@@ -461,7 +465,8 @@ public class JuryDAO {
 			stmt = conn.prepareStatement(
 					"SELECT SUM(juryappraiserscore.score) AS score " +
 					"FROM juryappraiserscore INNER JOIN juryappraiser ON juryappraiser.idJuryAppraiser=juryappraiserscore.idJuryAppraiser " +
-					"WHERE juryappraiser.substitute=0 AND juryappraiser.idJury=? GROUP BY juryappraiser.idJuryAppraiser");
+					"INNER JOIN jury ON jury.idJury=juryappraiser.idJury " + 
+					"WHERE juryappraiser.substitute=0 AND (jury.supervisorAssignsGrades=1 OR juryappraiser.chair=0) AND jury.idJury=? GROUP BY juryappraiser.idJuryAppraiser");
 			stmt.setInt(1, idJury);
 			
 			rs = stmt.executeQuery();

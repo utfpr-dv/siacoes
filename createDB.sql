@@ -122,6 +122,7 @@ CREATE  TABLE `sigetconfig` (
   `minimumjurysubstitutes` SMALLINT NOT NULL ,
   `jurytimestage1` INT NOT NULL ,
   `jurytimestage2` INT NOT NULL ,
+  `supervisorAssignsGrades` TINYINT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigetconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -665,6 +666,7 @@ CREATE TABLE `jury` (
   `endTime` time NOT NULL,
   `minimumScore` double NOT NULL,
   `supervisorabsencereason` TEXT NOT NULL,
+  `supervisorAssignsGrades` TINYINT NOT NULL ,
   PRIMARY KEY (`idjury`),
   KEY `fk_jury_project_idx` (`idproject`),
   KEY `fk_jury_thesis_idx` (`idthesis`),

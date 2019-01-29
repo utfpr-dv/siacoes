@@ -12,7 +12,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -471,19 +470,21 @@ public class EditJuryWindow extends EditWindow {
 		}
 	}
 	
-	private void addScore(){
+	private void addScore() {
 		int index = this.getAppraiserSelectedIndex();
 		
-		if(index == -1){
+		if(index == -1) {
 			this.showWarningNotification("Selecionar Membro", "Selecione o membro para lançar as notas.");
-		}else{
+		} else {
 			JuryAppraiser appraiser = this.jury.getAppraisers().get(index);
 			
-			if((appraiser == null) || (appraiser.getIdJuryAppraiser() == 0)){
+			if((appraiser == null) || (appraiser.getIdJuryAppraiser() == 0)) {
 				this.showWarningNotification("Lançar Notas", "É necessário salvar a banca antes de lançar as notas.");
 			} else if(appraiser.isSubstitute()) {
 				this.showWarningNotification("Lançar Notas", "A nota somente pode ser atribuída por membros titulares da banca.");
-			}else{
+			} else if(appraiser.isChair() && !this.jury.isSupervisorAssignsGrades()) {
+				this.showWarningNotification("Lançar Notas", "O presidente da banca não atribui nota ao acadêmico.");
+			} else {
 				UI.getCurrent().addWindow(new EditJuryAppraiserScoreWindow(appraiser));
 			}
 		}

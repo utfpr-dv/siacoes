@@ -14,6 +14,7 @@ public class JuryFormReport {
 	private double score;
 	private String evaluationText;
 	private List<JuryFormAppraiserReport> appraisers;
+	private List<JuryFormAppraiserReport> appraisersName;
 	private List<JuryFormAppraiserScoreReport> scores;
 	private String local;
 	private String supervisor;
@@ -28,6 +29,7 @@ public class JuryFormReport {
 		this.setScore(0);
 		this.setEvaluationText("");
 		this.setAppraisers(new ArrayList<JuryFormAppraiserReport>());
+		this.setAppraisersName(new ArrayList<JuryFormAppraiserReport>());
 		this.setScores(new ArrayList<JuryFormAppraiserScoreReport>());
 		this.setLocal("");
 		this.setSupervisor("");
@@ -81,6 +83,12 @@ public class JuryFormReport {
 	}
 	public void setAppraisers(List<JuryFormAppraiserReport> appraisers) {
 		this.appraisers = appraisers;
+	}
+	public List<JuryFormAppraiserReport> getAppraisersName() {
+		return appraisersName;
+	}
+	public void setAppraisersName(List<JuryFormAppraiserReport> appraisersName) {
+		this.appraisersName = appraisersName;
 	}
 	public List<JuryFormAppraiserScoreReport> getScores() {
 		return scores;

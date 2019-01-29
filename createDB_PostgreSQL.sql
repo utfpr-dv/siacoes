@@ -122,6 +122,7 @@ CREATE  TABLE sigetconfig (
   minimumjurysubstitutes SMALLINT NOT NULL ,
   jurytimestage1 INT NOT NULL ,
   jurytimestage2 INT NOT NULL ,
+  supervisorassignsgrades SMALLINT NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigetconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -665,6 +666,7 @@ CREATE TABLE jury (
   endTime time NOT NULL,
   minimumScore REAL NOT NULL,
   supervisorabsencereason TEXT NOT NULL,
+  supervisorassignsgrades SMALLINT NOT NULL ,
   PRIMARY KEY (idjury),
   CONSTRAINT fk_jury_project FOREIGN KEY (idproject) REFERENCES project (idproject) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_jury_thesis FOREIGN KEY (idthesis) REFERENCES thesis (idthesis) ON DELETE NO ACTION ON UPDATE NO ACTION

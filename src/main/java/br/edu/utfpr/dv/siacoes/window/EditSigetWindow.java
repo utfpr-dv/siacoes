@@ -42,6 +42,7 @@ public class EditSigetWindow extends EditWindow {
 	private final TextField textMinimumJurySubstitutes;
 	private final TextField textJuryTimeStage1;
 	private final TextField textJuryTimeStage2;
+	private final CheckBox checkSupervisorAssignsGrades;
 	
 	private final TabSheet tab;
 	
@@ -51,7 +52,7 @@ public class EditSigetWindow extends EditWindow {
 		this.config = config;
 		
 		this.tab = new TabSheet();
-		this.tab.setHeight("280px");
+		this.tab.setHeight("300px");
 		this.tab.setWidth("900px");
 		
 		this.textMinimumScore = new TextField("Nota mínima para aprovação");
@@ -123,6 +124,8 @@ public class EditSigetWindow extends EditWindow {
 		this.textJuryTimeStage2 = new TextField("Duração da banca de TCC 2 (minutos)");
 		this.textJuryTimeStage2.setWidth("100px");
 		
+		this.checkSupervisorAssignsGrades = new CheckBox("Presidente da banca atribui nota");
+		
 		GridLayout g1 = new GridLayout(2, 2);
 		g1.setSpacing(true);
 		g1.addComponent(this.comboSupervisorFilter, 0, 0);
@@ -154,7 +157,7 @@ public class EditSigetWindow extends EditWindow {
 		h1.setSpacing(true);
 		HorizontalLayout h4 = new HorizontalLayout(this.textMinimumJuryMembers, this.textMinimumJurySubstitutes);
 		h4.setSpacing(true);
-		VerticalLayout v1 = new VerticalLayout(h1, h4, this.checkShowGradesToStudent, this.checkSupervisorJuryAgreement, this.checkSupervisorJuryRequest);
+		VerticalLayout v1 = new VerticalLayout(h1, h4, this.checkShowGradesToStudent, this.checkSupervisorJuryAgreement, this.checkSupervisorJuryRequest, this.checkSupervisorAssignsGrades);
 		v1.setSpacing(true);
 		v1.setMargin(true);
 		
@@ -192,6 +195,7 @@ public class EditSigetWindow extends EditWindow {
 		this.textMinimumJurySubstitutes.setValue(String.valueOf(this.config.getMinimumJurySubstitutes()));
 		this.textJuryTimeStage1.setValue(String.valueOf(this.config.getJuryTimeStage1()));
 		this.textJuryTimeStage2.setValue(String.valueOf(this.config.getJuryTimeStage2()));
+		this.checkSupervisorAssignsGrades.setValue(this.config.isSupervisorAssignsGrades());
 	}
 
 	@Override
@@ -219,6 +223,7 @@ public class EditSigetWindow extends EditWindow {
 			this.config.setMinimumJurySubstitutes(Integer.parseInt(this.textMinimumJurySubstitutes.getValue()));
 			this.config.setJuryTimeStage1(Integer.parseInt(this.textJuryTimeStage1.getValue()));
 			this.config.setJuryTimeStage2(Integer.parseInt(this.textJuryTimeStage2.getValue()));
+			this.config.setSupervisorAssignsGrades(this.checkSupervisorAssignsGrades.getValue());
 			
 			bo.save(this.config);
 			
