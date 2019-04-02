@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -151,7 +150,7 @@ public class EditThemeSuggestionWindow extends EditWindow {
 			this.theme.setSubmissionDate(this.textSubmissionDate.getValue());
 			this.theme.setActive(this.checkActive.getValue());
 			
-			bo.save(this.theme);
+			bo.save(Session.getIdUserLog(), this.theme);
 			
 			this.showSuccessNotification("Salvar Sugestão", "Sugestão salva com sucesso.");
 			

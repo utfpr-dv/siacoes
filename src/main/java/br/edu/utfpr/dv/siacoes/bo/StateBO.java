@@ -46,7 +46,7 @@ public class StateBO {
 		}
 	}
 	
-	public int save(State state) throws Exception{
+	public int save(int idUser, State state) throws Exception{
 		if((state.getCountry() == null) || (state.getCountry().getIdCountry() == 0)){
 			throw new Exception("Informe o país do estado.");
 		}
@@ -60,7 +60,7 @@ public class StateBO {
 		try{
 			StateDAO dao = new StateDAO();
 			
-			return dao.save(state);
+			return dao.save(idUser, state);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

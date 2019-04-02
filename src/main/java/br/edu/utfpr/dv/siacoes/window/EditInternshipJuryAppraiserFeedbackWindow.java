@@ -8,6 +8,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.components.FileUploader;
@@ -102,7 +103,7 @@ public class EditInternshipJuryAppraiserFeedbackWindow extends EditWindow {
 			try{
 				InternshipJuryAppraiserBO bo = new InternshipJuryAppraiserBO();
 				
-				bo.save(this.appraiser);
+				bo.save(Session.getIdUserLog(), this.appraiser);
 				
 				this.showSuccessNotification("Enviar Feedback", "Feedback enviado com sucesso.");
 				

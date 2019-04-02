@@ -3,8 +3,7 @@ package br.edu.utfpr.dv.siacoes.window;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vaadin.ui.Notification;
-
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.components.CompanyComboBox;
 import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
@@ -51,7 +50,7 @@ public class RegisterProfessorWindow extends EditWindow {
 			user.getProfiles().add(UserProfile.COMPANYSUPERVISOR);
 			user.setCompany(this.comboCompany.getCompany());
 			
-			bo.save(user);
+			bo.save(Session.getIdUserLog(), user);
 			
 			this.showSuccessNotification("Registrar Professor", "Professor registrado com sucesso.");
 			

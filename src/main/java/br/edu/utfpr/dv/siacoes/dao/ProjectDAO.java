@@ -9,6 +9,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.User;
 
@@ -444,7 +445,7 @@ public class ProjectDAO {
 		}
 	}
 	
-	public int save(Project project) throws SQLException{
+	public int save(int idUser, Project project) throws SQLException{
 		boolean insert = (project.getIdProject() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -487,6 +488,10 @@ public class ProjectDAO {
 				if(rs.next()){
 					project.setIdProject(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, project);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, project);
 			}
 			
 			return project.getIdProject();

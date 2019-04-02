@@ -1,6 +1,5 @@
 ﻿package br.edu.utfpr.dv.siacoes.bo;
 
-import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -108,7 +107,7 @@ public class ProposalBO {
 		}
 	}
 	
-	public boolean invalidated(int idProposal) throws Exception{
+	public boolean invalidated(int idUser, int idProposal) throws Exception{
 		ProjectBO bo = new ProjectBO();
 		Project project = bo.findByProposal(idProposal);
 		
@@ -126,7 +125,7 @@ public class ProposalBO {
 			proposal.setTitle("A Definir");
 			proposal.setSubarea("A Definir");
 			
-			int newId = dao.save(proposal);
+			int newId = dao.save(idUser, proposal);
 			
 			return dao.invalidated(idProposal, newId);
 		} catch (SQLException e) {
@@ -172,7 +171,7 @@ public class ProposalBO {
 		}
 	}
 	
-	public int save(Proposal proposal) throws Exception{
+	public int save(int idUser, Proposal proposal) throws Exception{
 		int ret = 0;
 		boolean isInsert = (proposal.getIdProposal() == 0);
 		byte[] oldFile = null;
@@ -199,7 +198,7 @@ public class ProposalBO {
 			
 			ProposalDAO dao = new ProposalDAO();
 			
-			ret = dao.save(proposal);
+			ret = dao.save(idUser, proposal);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

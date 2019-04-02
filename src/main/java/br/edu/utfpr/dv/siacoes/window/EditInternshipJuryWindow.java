@@ -348,7 +348,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 			this.jury.setResult((JuryResult)this.comboResult.getValue());
 			this.jury.setSupervisorAbsenceReason(this.textSupervisorAbsenceReason.getValue());
 			
-			bo.save(this.jury);
+			bo.save(Session.getIdUserLog(), this.jury);
 			
 			this.showSuccessNotification("Salvar Banca", "Banca salva com sucesso.");
 			

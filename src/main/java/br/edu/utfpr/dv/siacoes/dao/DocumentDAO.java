@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.Document;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
@@ -98,7 +99,7 @@ public class DocumentDAO {
 		}
 	}
 	
-	public int save(Document document) throws SQLException{
+	public int save(int idUser, Document document) throws SQLException{
 		boolean insert = (document.getIdDocument() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -139,6 +140,10 @@ public class DocumentDAO {
 				if(rs.next()){
 					document.setIdDocument(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, document);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, document);
 			}
 			
 			return document.getIdDocument();
@@ -152,15 +157,20 @@ public class DocumentDAO {
 		}
 	}
 	
-	public boolean delete(int id) throws SQLException{
+	public boolean delete(int idUser, int id) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		Document document = this.findById(id);
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			return stmt.execute("DELETE FROM document WHERE idDocument = " + String.valueOf(id));
+			boolean ret = stmt.execute("DELETE FROM document WHERE idDocument = " + String.valueOf(id));
+			
+			new UpdateEvent(conn).registerDelete(idUser, document);
+			
+			return ret;
 		}finally{
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();

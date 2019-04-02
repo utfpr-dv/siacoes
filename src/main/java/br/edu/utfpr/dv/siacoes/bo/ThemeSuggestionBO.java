@@ -46,7 +46,7 @@ public class ThemeSuggestionBO {
 		}
 	}
 	
-	public int save(ThemeSuggestion theme) throws Exception{
+	public int save(int idUser, ThemeSuggestion theme) throws Exception{
 		if((theme.getDepartment() == null) || (theme.getDepartment().getIdDepartment() == 0)){
 			throw new Exception("Informe o departamento.");
 		}
@@ -66,7 +66,7 @@ public class ThemeSuggestionBO {
 		try{
 			ThemeSuggestionDAO dao = new ThemeSuggestionDAO();
 			
-			return dao.save(theme);
+			return dao.save(idUser, theme);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -74,11 +74,11 @@ public class ThemeSuggestionBO {
 		}
 	}
 	
-	public boolean delete(int id) throws Exception{
+	public boolean delete(int idUser, int id) throws Exception{
 		try{
 			ThemeSuggestionDAO dao = new ThemeSuggestionDAO();
 			
-			return dao.delete(id);
+			return dao.delete(idUser, id);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -86,8 +86,8 @@ public class ThemeSuggestionBO {
 		}
 	}
 	
-	public boolean delete(ThemeSuggestion theme) throws Exception{
-		return this.delete(theme.getIdThemeSuggestion());
+	public boolean delete(int idUser, ThemeSuggestion theme) throws Exception{
+		return this.delete(idUser, theme.getIdThemeSuggestion());
 	}
 
 }

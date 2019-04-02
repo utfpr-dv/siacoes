@@ -10,6 +10,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.components.ByteSizeField;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
@@ -116,7 +117,7 @@ public class EditSigesWindow extends EditWindow {
 			this.config.setMaxFileSize((int)this.textMaxFileSize.getValue());
 			this.config.setJuryTime(Integer.parseInt(this.textJuryTime.getValue()));
 			
-			bo.save(this.config);
+			bo.save(Session.getIdUserLog(), this.config);
 			
 			this.showSuccessNotification("Salvar Configurações", "Configurações salvas com sucesso.");
 			

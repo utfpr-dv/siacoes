@@ -1,5 +1,6 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -7,7 +8,9 @@ import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
 import br.edu.utfpr.dv.siacoes.bo.ThesisBO;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
-public class Jury {
+public class Jury implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	public enum JuryResult{
 		NONE(0), APPROVED(1), APPROVEDWITHRESERVATIONS(2), DISAPPROVED(3);

@@ -65,11 +65,11 @@ public class SemesterBO {
 		}
 	}
 	
-	public int save(Semester semester) throws Exception{
+	public int save(int idUser, Semester semester) throws Exception{
 		try{
 			SemesterDAO dao = new SemesterDAO();
 			
-			return dao.save(semester);
+			return dao.save(idUser, semester);
 		} catch(SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

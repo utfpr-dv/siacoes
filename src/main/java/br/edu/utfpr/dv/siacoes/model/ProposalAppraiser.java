@@ -1,6 +1,10 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
-public class ProposalAppraiser {
+import java.io.Serializable;
+
+public class ProposalAppraiser implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
 	public enum ProposalFeedback{
 		NONE(0), APPROVED(1), APPROVEDWITHRESERVATIONS(2), DISAPPROVED(3);
@@ -47,7 +51,7 @@ public class ProposalAppraiser {
 	private String comments;
 	private boolean allowEditing;
 	private boolean supervisorIndication;
-	private byte[] file;
+	private transient byte[] file;
 	
 	public ProposalAppraiser(){
 		this.setIdProposalAppraiser(0);

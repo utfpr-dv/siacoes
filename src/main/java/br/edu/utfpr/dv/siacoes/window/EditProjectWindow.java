@@ -283,7 +283,7 @@ public class EditProjectWindow extends EditWindow {
 			this.project.setSubarea(this.textSubarea.getValue());
 			this.project.setAbstract(this.textAbstract.getValue());
 			
-			bo.save(this.project);
+			bo.save(Session.getIdUserLog(), this.project);
 			
 			this.showSuccessNotification("Salvar Projeto", "Projeto salvo com sucesso.");
 			

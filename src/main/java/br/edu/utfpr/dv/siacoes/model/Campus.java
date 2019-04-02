@@ -1,11 +1,15 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
-public class Campus {
+import java.io.Serializable;
+
+public class Campus implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int idCampus;
 	private String name;
 	private String address;
-	private byte[] logo;
+	private transient byte[] logo;
 	private boolean active;
 	private String site;
 	private String initials;

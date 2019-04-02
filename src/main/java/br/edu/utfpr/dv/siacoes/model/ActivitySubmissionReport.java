@@ -1,11 +1,14 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
-public class ActivitySubmissionReport {
+public class ActivitySubmissionReport implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private String student;
 	private String studentCode;

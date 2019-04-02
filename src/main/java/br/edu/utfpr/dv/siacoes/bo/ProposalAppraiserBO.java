@@ -55,7 +55,7 @@ public class ProposalAppraiserBO {
 		}
 	}
 	
-	public int save(ProposalAppraiser appraiser) throws Exception{
+	public int save(int idUser, ProposalAppraiser appraiser) throws Exception{
 		int ret = 0;
 		boolean isInsert = (appraiser.getIdProposalAppraiser() == 0);
 		ProposalFeedback oldFeedback = ProposalFeedback.NONE;
@@ -88,7 +88,7 @@ public class ProposalAppraiserBO {
 				throw new Exception("O avaliador " + appraiser.getAppraiser().getName() + " já foi indicado para avaliação deste trabalho.");
 			}
 			
-			ret = dao.save(appraiser);
+			ret = dao.save(idUser, appraiser);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

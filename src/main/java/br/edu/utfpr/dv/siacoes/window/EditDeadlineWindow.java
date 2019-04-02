@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
@@ -137,7 +136,7 @@ public class EditDeadlineWindow extends EditWindow {
 			this.deadline.setProjectFinalDocumentDeadline(this.projectFinalDocumentDeadline.getValue());
 			this.deadline.setThesisFinalDocumentDeadline(this.thesisFinalDocumentDeadline.getValue());
 			
-			bo.save(deadline);
+			bo.save(Session.getIdUserLog(), this.deadline);
 			
 			this.showSuccessNotification("Salvar Datas", "Datas salvas com sucesso.");
 			

@@ -4,9 +4,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ActivityGroupBO;
 import br.edu.utfpr.dv.siacoes.model.ActivityGroup;
 import br.edu.utfpr.dv.siacoes.view.ListView;
@@ -63,7 +63,7 @@ public class EditActivityGroupWindow extends EditWindow {
 			this.group.setMinimumScore(Integer.parseInt(this.textMinimumScore.getValue()));
 			this.group.setMaximumScore(Integer.parseInt(this.textMaximumScore.getValue()));
 			
-			bo.save(this.group);
+			bo.save(Session.getIdUserLog(), this.group);
 			
 			this.showSuccessNotification("Salvar Grupo", "Grupo salvo com sucesso.");
 			

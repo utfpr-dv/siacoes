@@ -7,20 +7,13 @@ import org.vaadin.thomas.timefield.TimeField;
 
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.AttendanceBO;
-import br.edu.utfpr.dv.siacoes.bo.CampusBO;
-import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
-import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
-import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.components.StageComboBox;
 import br.edu.utfpr.dv.siacoes.model.Attendance;
-import br.edu.utfpr.dv.siacoes.model.Semester;
-import br.edu.utfpr.dv.siacoes.model.User;
-import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditAttendanceWindow extends EditWindow {
@@ -123,7 +116,7 @@ public class EditAttendanceWindow extends EditWindow {
 			this.attendance.setComments(this.textComments.getValue());
 			this.attendance.setNextMeeting(this.textNextMeeting.getValue());
 			
-			bo.save(this.attendance);
+			bo.save(Session.getIdUserLog(), this.attendance);
 			
 			this.showSuccessNotification("Salvar Acompanhamento", "Acompanhamento salvo com sucesso.");
 			

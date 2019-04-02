@@ -4,10 +4,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.EmailMessageBO;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage;
 import br.edu.utfpr.dv.siacoes.view.ListView;
@@ -65,7 +65,7 @@ public class EditEmailMessageWindow extends EditWindow {
 			this.message.setSubject(this.textSubject.getValue());
 			this.message.setMessage(this.textMessage.getValue());
 			
-			bo.save(this.message);
+			bo.save(Session.getIdUserLog(), this.message);
 			
 			this.showSuccessNotification("Salvar Mensagem", "Mensagem salva com sucesso.");
 			this.close();

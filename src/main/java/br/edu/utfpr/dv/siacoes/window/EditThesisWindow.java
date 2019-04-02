@@ -288,7 +288,7 @@ public class EditThesisWindow extends EditWindow {
 			this.thesis.setSubarea(this.textSubarea.getValue());
 			this.thesis.setAbstract(this.textAbstract.getValue());
 			
-			bo.save(this.thesis);
+			bo.save(Session.getIdUserLog(), this.thesis);
 			
 			this.showSuccessNotification("Salvar Monografia", "Monografia salva com sucesso.");
 			

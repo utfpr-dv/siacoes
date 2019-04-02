@@ -771,6 +771,31 @@ CREATE TABLE message (
 );
 CREATE INDEX fk_message_user_idx ON message (iduser);
 
+CREATE TABLE loginlog (
+    idlog bigserial NOT NULL,
+    iduser integer NOT NULL,
+    event smallint NOT NULL,
+    date timestamp NOT NULL,
+    source character varying(255) NOT NULL,
+    device character varying(255) NOT NULL,
+    PRIMARY KEY (idlog),
+    CONSTRAINT fk_loginlog_user FOREIGN KEY (iduser) REFERENCES "user" (iduser) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+CREATE INDEX fk_loginlog_user_idx ON loginlog (iduser);
+
+CREATE TABLE eventlog (
+    idlog bigserial NOT NULL,
+    iduser integer NOT NULL,
+    event smallint NOT NULL,
+    classname character varying(255) NOT NULL,
+    idobject integer NOT NULL,
+    date timestamp NOT NULL,
+    data bytea NOT NULL,
+    PRIMARY KEY (ideventlog),
+    CONSTRAINT fk_eventlog_user FOREIGN KEY (iduser) REFERENCES "user" (iduser) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+CREATE INDEX fk_eventlog_user_idx ON eventlog (iduser);
+
 CREATE OR REPLACE FUNCTION year(timestamp) RETURNS integer AS $$
 DECLARE
    d ALIAS FOR $1;

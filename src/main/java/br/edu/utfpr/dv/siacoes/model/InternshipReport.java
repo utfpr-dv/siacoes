@@ -1,10 +1,13 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
-public class InternshipReport {
+public class InternshipReport implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	public enum ReportType{
 		STUDENT(0), SUPERVISOR(1), COMPANY(2);
@@ -50,7 +53,7 @@ public class InternshipReport {
 	private int idInternshipReport;
 	private Internship internship;
 	private ReportType type;
-	private byte[] report;
+	private transient byte[] report;
 	private Date date;
 	
 	public InternshipReport(){

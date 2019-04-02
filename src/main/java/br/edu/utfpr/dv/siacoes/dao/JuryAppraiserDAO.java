@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
@@ -160,7 +161,7 @@ public class JuryAppraiserDAO {
 		}
 	}
 	
-	public int save(JuryAppraiser appraiser) throws SQLException{
+	public int save(int idUser, JuryAppraiser appraiser) throws SQLException{
 		boolean insert = (appraiser.getIdJuryAppraiser() == 0);
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -192,6 +193,10 @@ public class JuryAppraiserDAO {
 				if(rs.next()){
 					appraiser.setIdJuryAppraiser(rs.getInt(1));
 				}
+
+				new UpdateEvent(this.conn).registerInsert(idUser, appraiser);
+			} else {
+				new UpdateEvent(this.conn).registerUpdate(idUser, appraiser);
 			}
 			
 			return appraiser.getIdJuryAppraiser();

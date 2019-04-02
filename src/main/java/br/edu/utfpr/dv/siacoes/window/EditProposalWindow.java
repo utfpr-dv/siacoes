@@ -379,7 +379,7 @@ public class EditProposalWindow extends EditWindow {
 				this.proposal.setCosupervisor(this.comboCosupervisor.getProfessor());
 			}
 			
-			bo.save(this.proposal);
+			bo.save(Session.getIdUserLog(), this.proposal);
 			
 			this.showSuccessNotification("Salvar Proposta", "Proposta salva com sucesso.");
 			

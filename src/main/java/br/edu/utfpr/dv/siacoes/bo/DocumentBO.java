@@ -50,7 +50,7 @@ public class DocumentBO {
 		}
 	}
 	
-	public int save(Document document) throws Exception{
+	public int save(int idUser, Document document) throws Exception{
 		try {
 			if(document.getName().isEmpty()){
 				throw new Exception("Informe o nome do documento.");
@@ -61,7 +61,7 @@ public class DocumentBO {
 			
 			DocumentDAO dao = new DocumentDAO();
 			
-			return dao.save(document);
+			return dao.save(idUser, document);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -69,11 +69,11 @@ public class DocumentBO {
 		}
 	}
 	
-	public boolean delete(int id) throws Exception{
+	public boolean delete(int idUser, int id) throws Exception{
 		try {
 			DocumentDAO dao = new DocumentDAO();
 			
-			return dao.delete(id);
+			return dao.delete(idUser, id);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -81,8 +81,8 @@ public class DocumentBO {
 		}
 	}
 	
-	public boolean delete(Document document) throws Exception{
-		return this.delete(document.getIdDocument());
+	public boolean delete(int idUser, Document document) throws Exception{
+		return this.delete(idUser, document.getIdDocument());
 	}
 	
 	public void moveUp(int idDocument) throws Exception{

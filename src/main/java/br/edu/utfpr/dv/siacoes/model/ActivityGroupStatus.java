@@ -1,6 +1,10 @@
 package br.edu.utfpr.dv.siacoes.model;
 
-public class ActivityGroupStatus {
+import java.io.Serializable;
+
+public class ActivityGroupStatus implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private ActivityGroup group;
 	private double averageScore;

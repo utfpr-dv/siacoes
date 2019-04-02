@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserScore;
 import br.edu.utfpr.dv.siacoes.model.EvaluationItem.EvaluationItemType;
 
@@ -117,7 +118,7 @@ public class JuryAppraiserScoreDAO {
 		}
 	}
 	
-	public int save(JuryAppraiserScore score) throws SQLException{
+	public int save(int idUser, JuryAppraiserScore score) throws SQLException{
 		boolean insert = (score.getIdJuryAppraiserScore() == 0);
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -145,6 +146,10 @@ public class JuryAppraiserScoreDAO {
 				if(rs.next()){
 					score.setIdJuryAppraiserScore(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, score);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, score);
 			}
 			
 			return score.getIdJuryAppraiserScore();

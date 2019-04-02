@@ -7,7 +7,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.renderers.DateRenderer;
 
@@ -96,7 +95,7 @@ public class ThemeSuggestionView extends ListView {
 				}
 			}
 
-			bo.delete((int)id);
+			bo.delete(Session.getIdUserLog(), (int)id);
 			
 			this.refreshGrid();
 		} catch (Exception e) {

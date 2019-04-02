@@ -9,7 +9,6 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
 
@@ -130,7 +129,7 @@ public class EvaluationItemView extends ListView {
 		try {
 			EvaluationItemBO bo = new EvaluationItemBO();
 			
-			bo.delete((int)id);
+			bo.delete(Session.getIdUserLog(), (int)id);
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

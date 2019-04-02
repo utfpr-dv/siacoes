@@ -7,13 +7,13 @@ import java.util.logging.Logger;
 
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserScoreBO;
 import br.edu.utfpr.dv.siacoes.dao.ConnectionDAO;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
@@ -127,7 +127,7 @@ public class EditInternshipJuryAppraiserScoreWindow extends EditWindow {
 				InternshipJuryAppraiserScore jas = this.appraiser.getScores().get(i);
 				jas.setScore(score);
 				
-				bo.save(jas);
+				bo.save(Session.getIdUserLog(), jas);
 			}
 			
 			conn.commit();

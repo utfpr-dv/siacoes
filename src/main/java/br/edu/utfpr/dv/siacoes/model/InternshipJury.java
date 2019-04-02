@@ -1,5 +1,6 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -7,7 +8,9 @@ import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
-public class InternshipJury {
+public class InternshipJury implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int idInternshipJury;
 	private Date date;

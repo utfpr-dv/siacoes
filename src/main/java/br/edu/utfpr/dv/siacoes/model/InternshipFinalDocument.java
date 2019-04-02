@@ -1,16 +1,19 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
 
-public class InternshipFinalDocument {
+public class InternshipFinalDocument implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int idInternshipFinalDocument;
 	private Internship internship;
 	private String title;
 	private Date submissionDate;
-	private byte[] file;
+	private transient byte[] file;
 	private boolean _private;
 	private Date supervisorFeedbackDate;
 	private DocumentFeedback supervisorFeedback;

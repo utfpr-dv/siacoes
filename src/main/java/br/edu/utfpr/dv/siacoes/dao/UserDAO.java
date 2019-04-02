@@ -9,6 +9,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.model.UserDepartment;
@@ -760,7 +761,7 @@ public class UserDAO {
 		}
 	}
 	
-	public int save(User user) throws SQLException{
+	public int save(int idUser, User user) throws SQLException{
 		boolean insert = (user.getIdUser() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -812,6 +813,14 @@ public class UserDAO {
 				if(rs.next()){
 					user.setIdUser(rs.getInt(1));
 				}
+				
+				if(idUser == 0) {
+					idUser = user.getIdUser();
+				}
+
+				new UpdateEvent(conn).registerInsert(idUser, user);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, user);
 			}
 			
 			stmt.close();
@@ -835,7 +844,7 @@ public class UserDAO {
 				for(UserDepartment department : user.getDepartments()) {
 					if((department.getDepartment() != null) && (department.getDepartment().getIdDepartment() != 0)) {
 						department.setUser(user);
-						int did = udao.save(department);
+						int did = udao.save(idUser, department);
 						ids = ids + String.valueOf(did) + ",";
 					}
 				}

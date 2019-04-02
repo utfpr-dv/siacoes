@@ -1,10 +1,13 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
-public class BugReport {
+public class BugReport implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	public enum BugStatus{
 		REPORTED(0), DEVELOPMENT(1), SOLVED(2), REFUSED(3);

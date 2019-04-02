@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.City;
 
 public class CityDAO {
@@ -103,7 +104,7 @@ public class CityDAO {
 		}
 	}
 	
-	public int save(City city) throws SQLException{
+	public int save(int idUser, City city) throws SQLException{
 		boolean insert = (city.getIdCity() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -133,6 +134,10 @@ public class CityDAO {
 				if(rs.next()){
 					city.setIdCity(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, city);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, city);
 			}
 			
 			return city.getIdCity();

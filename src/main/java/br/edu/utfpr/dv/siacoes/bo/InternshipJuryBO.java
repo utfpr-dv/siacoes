@@ -138,7 +138,7 @@ public class InternshipJuryBO {
 		}
 	}
 	
-	public int save(InternshipJury jury) throws Exception{
+	public int save(int idUser, InternshipJury jury) throws Exception{
 		try {
 			boolean insert = (jury.getIdInternshipJury() == 0);
 			InternshipJury oldJury = null;
@@ -203,7 +203,7 @@ public class InternshipJuryBO {
 				oldJury.setAppraisers(new InternshipJuryAppraiserBO().listAppraisers(jury.getIdInternshipJury()));
 			}
 			
-			int id = dao.save(jury);
+			int id = dao.save(idUser, jury);
 			
 			try{
 				jury.setInternship(new InternshipBO().findById(jury.getInternship().getIdInternship()));

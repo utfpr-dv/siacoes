@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.AttendanceFrequency;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
@@ -39,7 +40,7 @@ public class SigetConfigDAO {
 		}
 	}
 	
-	public int save(SigetConfig config) throws SQLException{
+	public int save(int idUser, SigetConfig config) throws SQLException{
 		boolean insert = (this.findByDepartment(config.getDepartment().getIdDepartment()) == null);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -77,6 +78,8 @@ public class SigetConfigDAO {
 			stmt.setInt(22, config.getDepartment().getIdDepartment());
 			
 			stmt.execute();
+			
+			new UpdateEvent(conn).registerUpdate(idUser, config);
 			
 			return config.getDepartment().getIdDepartment();
 		}finally{

@@ -771,6 +771,31 @@ CREATE TABLE `message` (
     CONSTRAINT `fk_message_user` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
+CREATE TABLE `loginlog` (
+    `idlog` LONG NOT NULL AUTO_INCREMENT,
+    `iduser` INT NOT NULL,
+    `event` TINYINT NOT NULL,
+    `date` DATETIME NOT NULL,
+    `source` VARCHAR(255) NOT NULL,
+    `device` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`idlog`),
+    INDEX `fk_loginlog_user_idx` (`iduser` ASC),
+    CONSTRAINT `fk_loginlog_user` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE `eventlog` (
+    `idlog` LONG NOT NULL AUTO_INCREMENT,
+    `iduser` integer NOT NULL,
+    `event` TINYINT NOT NULL,
+    `classname` VARCHAR(255) NOT NULL,
+    `idobject` integer NOT NULL,
+    `date` DATETIME NOT NULL,
+    `data` mediumblob NOT NULL,
+    PRIMARY KEY (`ideventlog`),
+    INDEX `fk_eventlog_user_idx` (`iduser` ASC),
+    CONSTRAINT `fk_eventlog_user` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(1, 2, '', '', '{student};{group};{activity};{semester};{year};{comments}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(2, 2, '', '', '{student};{group};{activity};{semester};{year};{comments};{feedbackUser};{feedback}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(3, 3, '', '', '{student};{company};{companySupervisor};{supervisor};{type};{startDate};{comments}');

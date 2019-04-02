@@ -47,7 +47,7 @@ public class InternshipJuryAppraiserScoreBO {
 		}
 	}
 	
-	public int save(InternshipJuryAppraiserScore score) throws Exception{
+	public int save(int idUser, InternshipJuryAppraiserScore score) throws Exception{
 		if((score.getScore() < 0) || (score.getScore() > score.getInternshipEvaluationItem().getPonderosity())){
 			throw new Exception("A nota deve estar entre 0 e o peso do quesito.");
 		}
@@ -65,7 +65,7 @@ public class InternshipJuryAppraiserScoreBO {
 		try {
 			InternshipJuryAppraiserScoreDAO dao = new InternshipJuryAppraiserScoreDAO(this.conn);
 			
-			return dao.save(score);
+			return dao.save(idUser, score);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

@@ -28,7 +28,7 @@ public class SigacConfigBO {
 		}
 	}
 	
-	public int save(SigacConfig config) throws Exception{
+	public int save(int idUser, SigacConfig config) throws Exception{
 		if((config.getDepartment() == null) || (config.getDepartment().getIdDepartment() == 0)){
 			throw new Exception("Informe o departamento.");
 		}
@@ -42,7 +42,7 @@ public class SigacConfigBO {
 		try{
 			SigacConfigDAO dao = new SigacConfigDAO();
 			
-			return dao.save(config);
+			return dao.save(idUser, config);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

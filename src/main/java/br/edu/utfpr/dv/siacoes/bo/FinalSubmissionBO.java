@@ -46,7 +46,7 @@ public class FinalSubmissionBO {
 			submission.setDate(DateUtils.getToday().getTime());
 			submission.setReport(report);
 			
-			submission.setIdFinalSubmission(dao.save(submission));
+			submission.setIdFinalSubmission(dao.save(idFeedbackUser, submission));
 			
 			return submission;
 		}catch(SQLException e){

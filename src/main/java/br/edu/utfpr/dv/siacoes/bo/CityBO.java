@@ -46,7 +46,7 @@ public class CityBO {
 		}
 	}
 	
-	public int save(City city) throws Exception{
+	public int save(int idUser, City city) throws Exception{
 		if((city.getState() == null) || (city.getState().getIdState() == 0)){
 			throw new Exception("Informe o estado da cidade.");
 		}
@@ -57,7 +57,7 @@ public class CityBO {
 		try{
 			CityDAO dao = new CityDAO();
 			
-			return dao.save(city);
+			return dao.save(idUser, city);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

@@ -120,7 +120,7 @@ public class ThesisBO {
 		}
 	}
 	
-	public int save(Thesis thesis) throws Exception{
+	public int save(int idUser, Thesis thesis) throws Exception{
 		try {
 			boolean isInsert = (thesis.getIdThesis() == 0);
 			byte[] oldFile = null;
@@ -132,7 +132,7 @@ public class ThesisBO {
 				oldFile = dao.getFile(thesis.getIdThesis());
 			}
 			
-			int ret = dao.save(thesis);
+			int ret = dao.save(idUser, thesis);
 			
 			try {
 				EmailMessageBO bo = new EmailMessageBO();

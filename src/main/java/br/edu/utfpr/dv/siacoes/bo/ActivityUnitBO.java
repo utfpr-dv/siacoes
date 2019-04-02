@@ -34,7 +34,7 @@ public class ActivityUnitBO {
 		}
 	}
 	
-	public int save(ActivityUnit unit) throws Exception{
+	public int save(int idUser, ActivityUnit unit) throws Exception{
 		if(unit.getDescription().isEmpty()){
 			throw new Exception("Informe a descrição da unidade.");
 		}
@@ -48,7 +48,7 @@ public class ActivityUnitBO {
 		try{
 			ActivityUnitDAO dao = new ActivityUnitDAO();
 			
-			return dao.save(unit);
+			return dao.save(idUser, unit);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

@@ -1,14 +1,17 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class JuryAppraiser {
+public class JuryAppraiser implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int idJuryAppraiser;
 	private Jury jury;
 	private User appraiser;
-	private byte[] file;
-	private byte[] additionalFile;
+	private transient byte[] file;
+	private transient byte[] additionalFile;
 	private List<JuryAppraiserScore> scores;
 	private String comments;
 	private boolean chair;

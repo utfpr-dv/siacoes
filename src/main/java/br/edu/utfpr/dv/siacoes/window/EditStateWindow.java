@@ -4,9 +4,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.StateBO;
 import br.edu.utfpr.dv.siacoes.components.CountryComboBox;
 import br.edu.utfpr.dv.siacoes.model.State;
@@ -64,7 +64,7 @@ public class EditStateWindow extends EditWindow {
 			this.state.setName(this.textName.getValue());
 			this.state.setInitials(this.textInitials.getValue());
 			
-			bo.save(this.state);
+			bo.save(Session.getIdUserLog(), this.state);
 			
 			this.showSuccessNotification("Salvar Estado", "Estado salvo com sucesso.");
 			

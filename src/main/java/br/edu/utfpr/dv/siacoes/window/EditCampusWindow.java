@@ -10,10 +10,9 @@ import com.vaadin.server.StreamResource;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
-import br.edu.utfpr.dv.siacoes.SiacoesUI;
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.components.FileUploaderListener;
@@ -131,7 +130,7 @@ public class EditCampusWindow extends EditWindow {
 				this.campus.setLogo(this.uploadLogo.getUploadedFile());
 			}
 			
-			bo.save(this.campus);
+			bo.save(Session.getIdUserLog(), this.campus);
 			
 			this.showSuccessNotification("Salvar Câmpus", "Câmpus salvo com sucesso.");
 			

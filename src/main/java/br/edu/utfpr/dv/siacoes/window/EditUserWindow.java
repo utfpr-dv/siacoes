@@ -19,6 +19,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.ValoTheme;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.bo.UserDepartmentBO;
 import br.edu.utfpr.dv.siacoes.components.CompanyComboBox;
@@ -225,7 +226,7 @@ public class EditUserWindow extends EditWindow {
 			this.user.setActive(this.checkActive.getValue());
 			this.user.setName(this.textName.getValue());
 			
-			bo.save(user);
+			bo.save(Session.getIdUserLog(), this.user);
 			
 			this.showSuccessNotification("Salvar Usuário", "Usuário salvo com sucesso.");
 			

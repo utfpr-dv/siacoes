@@ -1,11 +1,14 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipStatus;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
 
-public class InternshipMissingDocumentsReport {
+public class InternshipMissingDocumentsReport implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private String student;
 	private String supervisor;

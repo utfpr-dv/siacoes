@@ -9,6 +9,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
 import br.edu.utfpr.dv.siacoes.model.LibraryReport;
@@ -443,7 +444,7 @@ public class FinalDocumentDAO {
 		}
 	}
 	
-	public int save(FinalDocument thesis) throws SQLException{
+	public int save(int idUser, FinalDocument thesis) throws SQLException{
 		boolean insert = (thesis.getIdFinalDocument() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -496,6 +497,10 @@ public class FinalDocumentDAO {
 				if(rs.next()){
 					thesis.setIdFinalDocument(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, thesis);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, thesis);
 			}
 			
 			return thesis.getIdFinalDocument();

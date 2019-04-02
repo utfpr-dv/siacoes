@@ -9,6 +9,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 
 public class CampusDAO {
@@ -97,7 +98,7 @@ public class CampusDAO {
 		}
 	}
 	
-	public int save(Campus campus) throws SQLException{
+	public int save(int idUser, Campus campus) throws SQLException{
 		boolean insert = (campus.getIdCampus() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -135,6 +136,10 @@ public class CampusDAO {
 				if(rs.next()){
 					campus.setIdCampus(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, campus);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, campus);
 			}
 			
 			return campus.getIdCampus();

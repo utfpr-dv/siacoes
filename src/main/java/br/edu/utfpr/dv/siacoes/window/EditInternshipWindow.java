@@ -610,7 +610,7 @@ public class EditInternshipWindow extends EditWindow {
 			this.internship.setComments(this.textComments.getValue());
 			this.internship.setReportTitle(this.textReportTitle.getValue());
 			
-			bo.save(this.internship);
+			bo.save(Session.getIdUserLog(), this.internship);
 			
 			this.showSuccessNotification("Salvar Estágio", "Estágio salvo com sucesso.");
 			

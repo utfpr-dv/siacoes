@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vaadin.ui.Notification;
-
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ProposalAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
@@ -100,7 +98,7 @@ public class EditSupervisorIndicationWindow extends EditWindow {
 			}
 			
 			for(ProposalAppraiser a : this.appraisers) {
-				bo.save(a);
+				bo.save(Session.getIdUserLog(), a);
 			}
 			
 			this.close();

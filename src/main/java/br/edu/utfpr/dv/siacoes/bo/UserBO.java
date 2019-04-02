@@ -204,7 +204,7 @@ public class UserBO {
 		}
 	}
 	
-	public int save(User user) throws Exception {
+	public int save(int idUser, User user) throws Exception {
 		int ret = 0;
 		boolean isInsert = (user.getIdUser() == 0);
 		
@@ -241,7 +241,7 @@ public class UserBO {
 				throw new Exception("O e-mail informado já está sendo utilizado.");
 			}
 			
-			ret = dao.save(user);
+			ret = dao.save(idUser, user);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -361,7 +361,7 @@ public class UserBO {
 			
 			user.setPassword(newHash);
 			user.setSalt(newSalt);
-			dao.save(user);
+			dao.save(user.getIdUser(), user);
 			
 			return user;
 		} catch (SQLException e) {
@@ -396,7 +396,7 @@ public class UserBO {
 			
 			user.setPassword(newHash);
 			user.setSalt(newSalt);
-			dao.save(user);
+			dao.save(idUser, user);
 			
 			return user;
 		} catch (SQLException e) {
@@ -486,7 +486,7 @@ public class UserBO {
 					}
 				}
 				
-				this.save(user);
+				this.save(user.getIdUser(), user);
 			}catch(Exception e){
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				

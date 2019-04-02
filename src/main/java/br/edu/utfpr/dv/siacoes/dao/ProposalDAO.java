@@ -9,6 +9,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
@@ -571,7 +572,7 @@ public class ProposalDAO {
 		}
 	}
 	
-	public int save(Proposal proposal) throws SQLException{
+	public int save(int idUser, Proposal proposal) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -618,6 +619,10 @@ public class ProposalDAO {
 				if(rs.next()){
 					proposal.setIdProposal(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, proposal);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, proposal);
 			}
 			
 			if(proposal.getAppraisers() != null){
@@ -626,7 +631,7 @@ public class ProposalDAO {
 				
 				for(ProposalAppraiser pa : proposal.getAppraisers()){
 					pa.setProposal(proposal);
-					int paId = dao.save(pa);
+					int paId = dao.save(idUser, pa);
 					ids = ids + String.valueOf(paId) + ",";
 				}
 				

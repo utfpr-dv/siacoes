@@ -69,6 +69,7 @@ import br.edu.utfpr.dv.siacoes.view.AttendanceReportView;
 import br.edu.utfpr.dv.siacoes.view.AttendanceView;
 import br.edu.utfpr.dv.siacoes.view.BugReportView;
 import br.edu.utfpr.dv.siacoes.view.JuryView;
+import br.edu.utfpr.dv.siacoes.view.LoginLogView;
 import br.edu.utfpr.dv.siacoes.view.CampusView;
 import br.edu.utfpr.dv.siacoes.view.CityView;
 import br.edu.utfpr.dv.siacoes.view.CompanySupervisorView;
@@ -80,6 +81,7 @@ import br.edu.utfpr.dv.siacoes.view.DocumentView;
 import br.edu.utfpr.dv.siacoes.view.EmailMessageView;
 import br.edu.utfpr.dv.siacoes.view.EvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.EventCalendarView;
+import br.edu.utfpr.dv.siacoes.view.EventLogView;
 import br.edu.utfpr.dv.siacoes.view.ExternalSupervisorView;
 import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.FinalSubmissionView;
@@ -1215,6 +1217,10 @@ public class SideMenu extends CustomComponent {
 			layout.addComponent(new MenuEntry("Envio de E-mails", 1, EmailMessageView.NAME));
 			layout.addComponent(new MenuEntry("Usuários", 1, UserView.NAME));
 			layout.addComponent(new MenuEntry("Configurações", 1, new EditAppConfigWindow()));
+			
+			layout.addComponent(new MenuEntry("Auditoria", 0));
+			layout.addComponent(new MenuEntry("Registro de Acessos", 1, LoginLogView.NAME));
+			layout.addComponent(new MenuEntry("Registro de Eventos", 1, EventLogView.NAME));
 		}
 		
 		layout.addComponent(new MenuEntry("Sugestões e Problemas", 0, BugReportView.NAME));

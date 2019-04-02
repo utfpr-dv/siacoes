@@ -1,6 +1,10 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
-public class InternshipByCompany {
+import java.io.Serializable;
+
+public class InternshipByCompany implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
 	private int idCompany;
 	private String companyName;

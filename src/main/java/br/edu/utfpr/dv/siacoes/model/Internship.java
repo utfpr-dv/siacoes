@@ -1,12 +1,15 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
-public class Internship {
+public class Internship implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	public enum InternshipStatus{
 		CURRENT(0), FINISHED(1);
@@ -96,8 +99,8 @@ public class Internship {
 	private Date endDate;
 	private String reportTitle;
 	private int totalHours;
-	private byte[] internshipPlan;
-	private byte[] finalReport;
+	private transient byte[] internshipPlan;
+	private transient byte[] finalReport;
 	private List<InternshipReport> reports;
 	
 	public Internship(){

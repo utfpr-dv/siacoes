@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
@@ -96,7 +97,7 @@ public class EmailMessageDAO {
 		}
 	}
 	
-	public MessageType save(EmailMessage message) throws SQLException{
+	public MessageType save(int idUser, EmailMessage message) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		
@@ -109,6 +110,8 @@ public class EmailMessageDAO {
 			stmt.setInt(3, message.getIdEmailMessage().getValue());
 			
 			stmt.execute();
+			
+			new UpdateEvent(conn).registerUpdate(idUser, message);
 			
 			return message.getIdEmailMessage();
 		}finally{

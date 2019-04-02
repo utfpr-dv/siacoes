@@ -25,6 +25,7 @@ import br.edu.utfpr.dv.siacoes.view.AuthenticateView;
 import br.edu.utfpr.dv.siacoes.view.BasicView;
 import br.edu.utfpr.dv.siacoes.view.BugReportView;
 import br.edu.utfpr.dv.siacoes.view.JuryView;
+import br.edu.utfpr.dv.siacoes.view.LoginLogView;
 import br.edu.utfpr.dv.siacoes.view.CampusView;
 import br.edu.utfpr.dv.siacoes.view.CertificateView;
 import br.edu.utfpr.dv.siacoes.view.CityView;
@@ -39,6 +40,7 @@ import br.edu.utfpr.dv.siacoes.view.Error403View;
 import br.edu.utfpr.dv.siacoes.view.Error404View;
 import br.edu.utfpr.dv.siacoes.view.EvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.EventCalendarView;
+import br.edu.utfpr.dv.siacoes.view.EventLogView;
 import br.edu.utfpr.dv.siacoes.view.ExternalSupervisorView;
 import br.edu.utfpr.dv.siacoes.view.FinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.FinalSubmissionView;
@@ -162,6 +164,8 @@ public class SiacoesUI extends UI {
         getNavigator().addView(JuryRequestView.NAME, JuryRequestView.class);
         getNavigator().addView(ProposalFeedbackReportView.NAME, ProposalFeedbackReportView.class);
         getNavigator().addView(MessageView.NAME, MessageView.class);
+        getNavigator().addView(LoginLogView.NAME, LoginLogView.class);
+        getNavigator().addView(EventLogView.NAME, EventLogView.class);
         
         getNavigator().setErrorView(Error404View.class);
         

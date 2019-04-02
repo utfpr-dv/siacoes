@@ -9,7 +9,6 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Button.ClickEvent;
@@ -220,7 +219,7 @@ public class EditInternshipFinalDocumentWindow extends EditWindow {
 				this.doc.setComments(this.textComments.getValue());
 			}
 			
-			bo.save(this.doc);
+			bo.save(Session.getIdUserLog(), this.doc);
 			
 			this.showSuccessNotification("Salvar Relatório de Estágio", "Relatório de Estágio salvo com sucesso.");
 			

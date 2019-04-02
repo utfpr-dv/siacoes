@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 
@@ -38,7 +39,7 @@ public class SigesConfigDAO {
 		}
 	}
 	
-	public int save(SigesConfig config) throws SQLException{
+	public int save(int idUser, SigesConfig config) throws SQLException{
 		boolean insert = (this.findByDepartment(config.getDepartment().getIdDepartment()) == null);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -63,6 +64,8 @@ public class SigesConfigDAO {
 			stmt.setInt(9, config.getDepartment().getIdDepartment());
 			
 			stmt.execute();
+			
+			new UpdateEvent(conn).registerUpdate(idUser, config);
 			
 			return config.getDepartment().getIdDepartment();
 		}finally{

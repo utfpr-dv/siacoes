@@ -1,11 +1,14 @@
 package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
-public class TutoredBySupervisor {
+public class TutoredBySupervisor implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int idSupervisor;
 	private String supervisorName;

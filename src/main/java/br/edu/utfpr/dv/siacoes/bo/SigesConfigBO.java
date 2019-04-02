@@ -29,7 +29,7 @@ public class SigesConfigBO {
 		}
 	}
 	
-	public int save(SigesConfig config) throws Exception{
+	public int save(int idUser, SigesConfig config) throws Exception{
 		if((config.getDepartment() == null) || (config.getDepartment().getIdDepartment() == 0)){
 			throw new Exception("Informe o departamento.");
 		}
@@ -52,7 +52,7 @@ public class SigesConfigBO {
 		try{
 			SigesConfigDAO dao = new SigesConfigDAO();
 			
-			return dao.save(config);
+			return dao.save(idUser, config);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

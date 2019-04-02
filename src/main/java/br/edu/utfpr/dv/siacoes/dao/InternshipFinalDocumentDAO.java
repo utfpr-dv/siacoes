@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
 
 public class InternshipFinalDocumentDAO {
@@ -222,7 +223,7 @@ public class InternshipFinalDocumentDAO {
 		}
 	}
 	
-	public int save(InternshipFinalDocument thesis) throws SQLException{
+	public int save(int idUser, InternshipFinalDocument thesis) throws SQLException{
 		boolean insert = (thesis.getIdInternshipFinalDocument() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -262,6 +263,10 @@ public class InternshipFinalDocumentDAO {
 				if(rs.next()){
 					thesis.setIdInternshipFinalDocument(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, thesis);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, thesis);
 			}
 			
 			return thesis.getIdInternshipFinalDocument();

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 
 public class SemesterDAO {
@@ -140,7 +141,7 @@ public class SemesterDAO {
 		}
 	}
 	
-	public int save(Semester semester) throws SQLException{
+	public int save(int idUser, Semester semester) throws SQLException{
 		boolean insert = (this.findBySemester(semester.getCampus().getIdCampus(), semester.getSemester(), semester.getYear()) == null);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -161,6 +162,12 @@ public class SemesterDAO {
 			stmt.setInt(5, semester.getYear());
 			
 			stmt.execute();
+			
+			if(insert) {
+				new UpdateEvent(conn).registerInsert(idUser, semester);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, semester);
+			}
 			
 			return semester.getSemester();
 		}finally{

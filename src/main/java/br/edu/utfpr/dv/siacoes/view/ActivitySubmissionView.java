@@ -15,7 +15,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
@@ -321,7 +320,7 @@ public class ActivitySubmissionView extends ListView {
 		try{
 			ActivitySubmissionBO bo = new ActivitySubmissionBO();
 			
-			bo.delete((int)id);
+			bo.delete(Session.getIdUserLog(), (int)id);
 			
 			this.refreshGrid();
 		}catch(Exception e){

@@ -9,6 +9,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
 
@@ -479,7 +480,7 @@ public class ThesisDAO {
 		}
 	}
 	
-	public int save(Thesis thesis) throws SQLException{
+	public int save(int idUser, Thesis thesis) throws SQLException{
 		boolean insert = (thesis.getIdThesis() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -522,6 +523,10 @@ public class ThesisDAO {
 				if(rs.next()){
 					thesis.setIdThesis(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, thesis);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, thesis);
 			}
 			
 			return thesis.getIdThesis();

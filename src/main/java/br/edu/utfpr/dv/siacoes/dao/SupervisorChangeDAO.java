@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.Semester;
@@ -20,7 +21,7 @@ import br.edu.utfpr.dv.siacoes.model.User;
 
 public class SupervisorChangeDAO {
 	
-	public int save(SupervisorChange change) throws SQLException{
+	public int save(int idUser, SupervisorChange change) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -75,6 +76,10 @@ public class SupervisorChangeDAO {
 				if(rs.next()){
 					change.setIdSupervisorChange(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, change);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, change);
 			}
 			
 			if(change.getApproved() == ChangeFeedback.APPROVED){
@@ -91,9 +96,19 @@ public class SupervisorChangeDAO {
 					
 					if(project != null){
 						stmt.execute("UPDATE project SET idSupervisor = " + String.valueOf(change.getNewSupervisor().getIdUser()) + ", idCosupervisor = " + ((change.getNewCosupervisor() == null) || (change.getNewCosupervisor().getIdUser() == 0) ? "NULL" : String.valueOf(change.getNewCosupervisor().getIdUser())) + " WHERE idProject = " + String.valueOf(project.getIdProject()));
+						
+						project.getSupervisor().setIdUser(change.getNewSupervisor().getIdUser());
+						project.getCosupervisor().setIdUser(change.getNewCosupervisor().getIdUser());
+						
+						new UpdateEvent(conn).registerUpdate(idUser, project);
 					}
 				}else{
 					stmt.execute("UPDATE thesis SET idSupervisor = " + String.valueOf(change.getNewSupervisor().getIdUser()) + ", idCosupervisor = " + ((change.getNewCosupervisor() == null) || (change.getNewCosupervisor().getIdUser() == 0) ? "NULL" : String.valueOf(change.getNewCosupervisor().getIdUser())) + " WHERE idThesis = " + String.valueOf(thesis.getIdThesis()));
+					
+					thesis.getSupervisor().setIdUser(change.getNewSupervisor().getIdUser());
+					thesis.getCosupervisor().setIdUser(change.getNewCosupervisor().getIdUser());
+					
+					new UpdateEvent(conn).registerUpdate(idUser, thesis);
 				}
 			}
 			

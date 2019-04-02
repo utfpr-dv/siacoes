@@ -13,7 +13,7 @@ import br.edu.utfpr.dv.siacoes.model.SupervisorChange.ChangeFeedback;
 
 public class SupervisorChangeBO {
 	
-	public int save(SupervisorChange change) throws Exception{
+	public int save(int idUser, SupervisorChange change) throws Exception{
 		if((change.getOldSupervisor() == null) || (change.getOldSupervisor().getIdUser() == 0)){
 			throw new Exception("Informe o orientador atual.");
 		}
@@ -37,7 +37,7 @@ public class SupervisorChangeBO {
 		try {
 			SupervisorChangeDAO dao = new SupervisorChangeDAO();
 			
-			return dao.save(change);
+			return dao.save(idUser, change);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

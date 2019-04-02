@@ -3,9 +3,7 @@
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
@@ -87,7 +85,7 @@ public class EditDocumentWindow extends EditWindow {
 				this.document.setType(this.uploadFile.getFileType());
 			}
 			
-			bo.save(this.document);
+			bo.save(Session.getIdUserLog(), this.document);
 			
 			this.showSuccessNotification("Salvar Documento", "Documento salvo com sucesso.");
 			

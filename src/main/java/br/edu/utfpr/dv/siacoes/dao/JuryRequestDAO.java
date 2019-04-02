@@ -9,6 +9,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.JuryRequest;
@@ -234,7 +235,7 @@ public class JuryRequestDAO {
 		}
 	}
 	
-	public int save(JuryRequest jury) throws SQLException{
+	public int save(int idUser, JuryRequest jury) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -274,6 +275,10 @@ public class JuryRequestDAO {
 				if(rs.next()){
 					jury.setIdJuryRequest(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, jury);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, jury);
 			}
 			
 			if(jury.getAppraisers() != null) {
@@ -282,7 +287,7 @@ public class JuryRequestDAO {
 				
 				for(JuryAppraiserRequest ja : jury.getAppraisers()){
 					ja.setJuryRequest(jury);
-					int paId = dao.save(ja);
+					int paId = dao.save(idUser, ja);
 					ids = ids + String.valueOf(paId) + ",";
 				}
 				
@@ -308,9 +313,10 @@ public class JuryRequestDAO {
 		}
 	}
 	
-	public boolean delete(int id) throws SQLException {
+	public boolean delete(int idUser, int id) throws SQLException {
 		Connection conn = null;
 		Statement stmt = null;
+		JuryRequest jury = this.findById(id);
 		
 		try {
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -320,6 +326,8 @@ public class JuryRequestDAO {
 		
 			stmt.execute("DELETE FROM juryappraiserrequest WHERE idJuryRequest = " + String.valueOf(id));
 			boolean ret = stmt.execute("DELETE FROM juryrequest WHERE idJuryRequest = " + String.valueOf(id));
+			
+			new UpdateEvent(conn).registerDelete(idUser, jury);
 			
 			conn.commit();
 			

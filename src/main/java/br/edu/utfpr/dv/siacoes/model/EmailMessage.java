@@ -1,8 +1,12 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
+
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 
-public class EmailMessage {
+public class EmailMessage implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	public enum MessageType{
 		NONE(0), ACTIVITYSUBMITTED(1), 

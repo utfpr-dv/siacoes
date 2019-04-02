@@ -11,13 +11,13 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.bo.UserDepartmentBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
@@ -177,12 +177,12 @@ public class EditProfessorProfileWindow extends EditWindow {
 			this.user.setArea(this.textArea.getValue());
 			this.user.setResearch(this.textResearch.getValue());
 			
-			new UserBO().save(this.user);
+			new UserBO().save(Session.getIdUserLog(), this.user);
 			
 			this.profile.setUser(this.user);
 			this.profile.setDepartment(this.comboDepartment.getDepartment());
 			
-			new UserDepartmentBO().save(this.profile);
+			new UserDepartmentBO().save(Session.getIdUserLog(), this.profile);
 			
 			this.showSuccessNotification("Salvar Informações", "Informações salvas com sucesso.");
 			

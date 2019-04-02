@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.Country;
 
 public class CountryDAO {
@@ -68,7 +69,7 @@ public class CountryDAO {
 		}
 	}
 	
-	public int save(Country country) throws SQLException{
+	public int save(int idUser, Country country) throws SQLException{
 		boolean insert = (country.getIdCountry() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -97,6 +98,10 @@ public class CountryDAO {
 				if(rs.next()){
 					country.setIdCountry(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, country);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, country);
 			}
 			
 			return country.getIdCountry();

@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.JuryStudent;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
@@ -165,7 +166,7 @@ public class JuryStudentDAO {
 		}
 	}
 	
-	public int save(JuryStudent student) throws SQLException{
+	public int save(int idUser, JuryStudent student) throws SQLException{
 		boolean insert = (student.getIdJuryStudent() == 0);
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -192,6 +193,10 @@ public class JuryStudentDAO {
 				if(rs.next()){
 					student.setIdJuryStudent(rs.getInt(1));
 				}
+
+				new UpdateEvent(this.conn).registerInsert(idUser, student);
+			} else {
+				new UpdateEvent(this.conn).registerUpdate(idUser, student);
 			}
 			
 			return student.getIdJuryStudent();
@@ -203,13 +208,18 @@ public class JuryStudentDAO {
 		}
 	}
 	
-	public boolean delete(int id) throws SQLException{
+	public boolean delete(int idUser, int id) throws SQLException{
 		Statement stmt = null;
+		JuryStudent student = this.findById(id);
 		
 		try{
 			stmt = this.conn.createStatement();
 			
-			return stmt.execute("DELETE FROM jurystudent WHERE idJuryStudent = " + String.valueOf(id));
+			boolean ret = stmt.execute("DELETE FROM jurystudent WHERE idJuryStudent = " + String.valueOf(id));
+			
+			new UpdateEvent(this.conn).registerDelete(idUser, student);
+			
+			return ret;
 		}finally{
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();

@@ -1,8 +1,12 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
+
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 
-public class Document {
+public class Document implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	public enum DocumentType{
 		UNDEFINED(0), PDF(1), DOC(2), DOCX(3), ZIP(4), ODT(5), PPT(6), PPTX(7), JPEG(8), PNG(9), PDFA(10);
@@ -81,7 +85,7 @@ public class Document {
 	private int idDocument;
 	private String name;
 	private DocumentType type;
-	private byte[] file;
+	private transient byte[] file;
 	private int sequence;
 	private Department department;
 	private SystemModule module;

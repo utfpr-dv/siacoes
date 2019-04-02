@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.ActivityGroup;
 
 public class ActivityGroupDAO {
@@ -96,7 +97,7 @@ public class ActivityGroupDAO {
 		}
 	}
 	
-	public int save(ActivityGroup group) throws SQLException{
+	public int save(int idUser, ActivityGroup group) throws SQLException{
 		boolean insert = (group.getIdActivityGroup() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -135,6 +136,10 @@ public class ActivityGroupDAO {
 				if(rs.next()){
 					group.setIdActivityGroup(rs.getInt(1));
 				}
+				
+				new UpdateEvent(conn).registerInsert(idUser, group);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, group);
 			}
 			
 			return group.getIdActivityGroup();

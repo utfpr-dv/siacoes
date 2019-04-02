@@ -144,7 +144,7 @@ public class JuryRequestView extends ListView {
 	@Override
 	public void deleteClick(Object id) {
 		try {
-			new JuryRequestBO().delete((int) id);
+			new JuryRequestBO().delete(Session.getIdUserLog(), (int) id);
 			
 			this.refreshGrid();
 		} catch(Exception e){

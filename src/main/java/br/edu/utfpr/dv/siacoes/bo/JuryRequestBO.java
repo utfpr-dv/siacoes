@@ -108,7 +108,7 @@ public class JuryRequestBO {
 		}
 	}
 	
-	public int save(JuryRequest jury) throws Exception{
+	public int save(int idUser, JuryRequest jury) throws Exception{
 		try {
 			if((jury.getProposal() == null) || (jury.getProposal().getIdProposal() == 0)){
 				throw new Exception("Informe o projeto ou monografia a que a banca pertence.");
@@ -179,7 +179,7 @@ public class JuryRequestBO {
 			
 			JuryRequestDAO dao = new JuryRequestDAO();
 			
-			return  dao.save(jury);
+			return  dao.save(idUser, jury);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -187,19 +187,19 @@ public class JuryRequestBO {
 		}
 	}
 	
-	public boolean delete(int id) throws Exception {
+	public boolean delete(int idUser, int id) throws Exception {
 		JuryRequest request = this.findById(id);
 		
-		return this.delete(request);
+		return this.delete(idUser, request);
 	}
 	
-	public boolean delete(JuryRequest request) throws Exception {
+	public boolean delete(int idUser, JuryRequest request) throws Exception {
 		if((request.getJury() != null) && (request.getJury().getIdJury() != 0)) {
 			throw new Exception("A solicitação não pode ser excluída pois a banca já foi confirmada.");
 		}
 		
 		try {
-			return new JuryRequestDAO().delete(request.getIdJuryRequest());
+			return new JuryRequestDAO().delete(idUser, request.getIdJuryRequest());
 		} catch(SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

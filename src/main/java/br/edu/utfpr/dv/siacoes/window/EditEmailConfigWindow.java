@@ -5,12 +5,12 @@ import java.util.logging.Logger;
 
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.EmailConfigBO;
 import br.edu.utfpr.dv.siacoes.model.EmailConfig;
 
@@ -106,7 +106,7 @@ public class EditEmailConfigWindow extends EditWindow {
 			this.config.setAuthenticate(this.checkAuthenticate.getValue());
 			this.config.setSignature(this.textSignature.getValue());
 			
-			bo.save(this.config);
+			bo.save(Session.getIdUserLog(), this.config);
 			
 			this.showSuccessNotification("Salvar Configurações", "Configurações salvas com sucesso.");
 			this.close();

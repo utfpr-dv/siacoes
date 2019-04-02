@@ -10,6 +10,7 @@ import com.vaadin.ui.HorizontalLayout;
 
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.components.FileUploader;
@@ -107,7 +108,7 @@ public class EditJuryAppraiserFeedbackWindow extends EditWindow {
 			try{
 				JuryAppraiserBO bo = new JuryAppraiserBO();
 				
-				bo.save(this.appraiser);
+				bo.save(Session.getIdUserLog(), this.appraiser);
 				
 				this.showSuccessNotification("Enviar Feedback", "Feedback enviado com sucesso.");
 				

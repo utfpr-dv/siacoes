@@ -4,9 +4,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ActivityUnitBO;
 import br.edu.utfpr.dv.siacoes.model.ActivityUnit;
 import br.edu.utfpr.dv.siacoes.view.ListView;
@@ -62,7 +62,7 @@ public class EditActivityUnitWindow extends EditWindow {
 			this.unit.setFillAmount(this.checkFillAmount.getValue());
 			this.unit.setAmountDescription(this.textAmountDescription.getValue());
 			
-			bo.save(this.unit);
+			bo.save(Session.getIdUserLog(), this.unit);
 			
 			this.showSuccessNotification("Salvar Unidade", "Unidade salva com sucesso.");
 			

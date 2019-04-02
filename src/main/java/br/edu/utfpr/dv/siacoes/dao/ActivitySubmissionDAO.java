@@ -9,6 +9,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.ActivityScore;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
@@ -244,7 +245,7 @@ public class ActivitySubmissionDAO {
 		}
 	}
 	
-	public int save(ActivitySubmission submission) throws SQLException{
+	public int save(int idUser, ActivitySubmission submission) throws SQLException{
 		boolean insert = (submission.getIdActivitySubmission() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -295,6 +296,10 @@ public class ActivitySubmissionDAO {
 				if(rs.next()){
 					submission.setIdActivitySubmission(rs.getInt(1));
 				}
+				
+				new UpdateEvent(conn).registerInsert(idUser, submission);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, submission);
 			}
 			
 			return submission.getIdActivitySubmission();
@@ -342,15 +347,20 @@ public class ActivitySubmissionDAO {
 		return submission;
 	}
 	
-	public boolean delete(int id) throws SQLException{
+	public boolean delete(int idUser, int id) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		ActivitySubmission submission = this.findById(id);
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			return stmt.execute("DELETE FROM activitysubmission WHERE idActivitySubmission = " + String.valueOf(id));
+			boolean ret = stmt.execute("DELETE FROM activitysubmission WHERE idActivitySubmission = " + String.valueOf(id));
+			
+			new UpdateEvent(conn).registerDelete(idUser, submission);
+			
+			return ret;
 		}finally{
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();

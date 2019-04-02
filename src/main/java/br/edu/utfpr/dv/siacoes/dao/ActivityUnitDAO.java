@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.ActivityUnit;
 
 public class ActivityUnitDAO {
@@ -68,7 +69,7 @@ public class ActivityUnitDAO {
 		}
 	}
 	
-	public int save(ActivityUnit unit) throws SQLException{
+	public int save(int idUser, ActivityUnit unit) throws SQLException{
 		boolean insert = (unit.getIdActivityUnit() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -99,6 +100,10 @@ public class ActivityUnitDAO {
 				if(rs.next()){
 					unit.setIdActivityUnit(rs.getInt(1));
 				}
+				
+				new UpdateEvent(conn).registerInsert(idUser, unit);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, unit);
 			}
 			
 			return unit.getIdActivityUnit();

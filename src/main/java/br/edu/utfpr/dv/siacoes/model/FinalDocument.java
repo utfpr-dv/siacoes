@@ -1,8 +1,11 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class FinalDocument {
+public class FinalDocument implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	public enum DocumentFeedback{
 		NONE(0), APPROVED(1), DISAPPROVED(2);
@@ -45,7 +48,7 @@ public class FinalDocument {
 	private Thesis thesis;
 	private String title;
 	private Date submissionDate;
-	private byte[] file;
+	private transient byte[] file;
 	private boolean _private;
 	private boolean companyInfo;
 	private boolean patent;

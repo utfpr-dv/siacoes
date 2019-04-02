@@ -124,7 +124,7 @@ public class InternshipBO {
 		}
 	}
 	
-	public int save(Internship internship) throws Exception{
+	public int save(int idUser, Internship internship) throws Exception{
 		if((internship.getDepartment() == null) || (internship.getDepartment().getIdDepartment() == 0)){
 			throw new Exception("Informe o departamento do estágio.");
 		}
@@ -171,7 +171,7 @@ public class InternshipBO {
 			
 			InternshipDAO dao = new InternshipDAO(conn);
 			
-			ret = dao.save(internship);
+			ret = dao.save(idUser, internship);
 			
 			if(internship.getReports() != null){
 				String ids = "";
@@ -181,7 +181,7 @@ public class InternshipBO {
 					
 					InternshipReportBO bo = new InternshipReportBO(conn);
 					
-					int id = bo.save(report);
+					int id = bo.save(idUser, report);
 					
 					if(ids.isEmpty()){
 						ids = String.valueOf(id);
@@ -230,7 +230,7 @@ public class InternshipBO {
 		return ret;
 	}
 	
-	public boolean delete(int id) throws Exception{
+	public boolean delete(int idUser, int id) throws Exception{
 		try{
 			InternshipReportBO bo = new InternshipReportBO();
 			
@@ -247,7 +247,7 @@ public class InternshipBO {
 			
 			InternshipDAO dao = new InternshipDAO();
 			
-			return dao.delete(id);
+			return dao.delete(idUser, id);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -255,8 +255,8 @@ public class InternshipBO {
 		}
 	}
 	
-	public boolean delete(Internship internship) throws Exception{
-		return this.delete(internship.getIdInternship());
+	public boolean delete(int idUser, Internship internship) throws Exception{
+		return this.delete(idUser, internship.getIdInternship());
 	}
 	
 	public byte[] getMissingDocumentsReport(int idDepartment, int year, int idStudent, int idSupervisor, int idCompany, int type, int status, boolean finalReportMissing) throws Exception{

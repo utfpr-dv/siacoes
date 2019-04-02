@@ -95,7 +95,7 @@ public class ActivitySubmissionBO {
 		}
 	}
 	
-	public int save(ActivitySubmission submission) throws Exception{
+	public int save(int idUser, ActivitySubmission submission) throws Exception{
 		int ret = 0;
 		boolean isInsert = (submission.getIdActivitySubmission() == 0);
 		ActivitySubmissionDAO dao = new ActivitySubmissionDAO();
@@ -141,7 +141,7 @@ public class ActivitySubmissionBO {
 		ActivityFeedback feedback = dao.getFeedback(submission.getIdActivitySubmission());
 		
 		try{
-			ret = dao.save(submission);
+			ret = dao.save(idUser, submission);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -182,13 +182,13 @@ public class ActivitySubmissionBO {
 		return ret;
 	}
 	
-	public boolean delete(int id) throws Exception{
+	public boolean delete(int idUser, int id) throws Exception{
 		ActivitySubmission submission = this.findById(id);
 		
-		return this.delete(submission);
+		return this.delete(idUser, submission);
 	}
 	
-	public boolean delete(ActivitySubmission submission) throws Exception{
+	public boolean delete(int idUser, ActivitySubmission submission) throws Exception{
 		if(submission.getFeedback() != ActivityFeedback.NONE){
 			throw new Exception("Não é possível excluir a atividade pois o parecer para ela já foi emitido.");
 		}
@@ -199,7 +199,7 @@ public class ActivitySubmissionBO {
 		try{
 			ActivitySubmissionDAO dao = new ActivitySubmissionDAO();
 			
-			return dao.delete(submission.getIdActivitySubmission());
+			return dao.delete(idUser, submission.getIdActivitySubmission());
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

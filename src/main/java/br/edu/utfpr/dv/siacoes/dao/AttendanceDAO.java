@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.Attendance;
 import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.Project;
@@ -145,7 +146,7 @@ public class AttendanceDAO {
 		}
 	}
 	
-	public int save(Attendance attendance) throws SQLException{
+	public int save(int idUser, Attendance attendance) throws SQLException{
 		boolean insert = (attendance.getIdAttendance() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -182,6 +183,10 @@ public class AttendanceDAO {
 				if(rs.next()){
 					attendance.setIdAttendance(rs.getInt(1));
 				}
+				
+				new UpdateEvent(conn).registerInsert(idUser, attendance);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, attendance);
 			}
 			
 			return attendance.getIdAttendance();
@@ -195,15 +200,20 @@ public class AttendanceDAO {
 		}
 	}
 	
-	public boolean delete(int id) throws SQLException{
+	public boolean delete(int idUser, int id) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		Attendance attendance = this.findById(id);
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			return stmt.execute("DELETE FROM attendance WHERE idAttendance = " + String.valueOf(id));
+			boolean ret = stmt.execute("DELETE FROM attendance WHERE idAttendance = " + String.valueOf(id));
+			
+			new UpdateEvent(conn).registerDelete(idUser, attendance);
+			
+			return ret;
 		}finally{
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();

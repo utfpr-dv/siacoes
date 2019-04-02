@@ -14,7 +14,6 @@ import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.AttendanceFrequency;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
-import javatests.Issue1833;
 
 public class AttendanceBO {
 
@@ -54,7 +53,7 @@ public class AttendanceBO {
 		}
 	}
 	
-	public int save(Attendance attendance) throws Exception {
+	public int save(int idUser, Attendance attendance) throws Exception {
 		try {
 			if(attendance.getComments().isEmpty()) {
 				throw new Exception("Informe as observações/orientações.");
@@ -65,7 +64,7 @@ public class AttendanceBO {
 			
 			AttendanceDAO dao = new AttendanceDAO();
 			
-			return dao.save(attendance);
+			return dao.save(idUser, attendance);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -134,11 +133,11 @@ public class AttendanceBO {
 		}
 	}
 	
-	public boolean delete(int id) throws Exception{
+	public boolean delete(int idUser, int id) throws Exception{
 		try {
 			AttendanceDAO dao = new AttendanceDAO();
 			
-			return dao.delete(id);
+			return dao.delete(idUser, id);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -146,8 +145,8 @@ public class AttendanceBO {
 		}
 	}
 	
-	public boolean delete(Attendance attendance) throws Exception{
-		return this.delete(attendance.getIdAttendance());
+	public boolean delete(int idUser, Attendance attendance) throws Exception{
+		return this.delete(idUser, attendance.getIdAttendance());
 	}
 	
 	public boolean validateFrequency(int idStudent, int idSupervisor, int idProposal, int stage, AttendanceFrequency frequency) throws Exception {

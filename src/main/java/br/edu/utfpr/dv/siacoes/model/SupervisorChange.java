@@ -1,11 +1,14 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
-public class SupervisorChange {
+public class SupervisorChange implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	public enum ChangeFeedback{
 		NONE(0), APPROVED(1), DISAPPROVED(2);

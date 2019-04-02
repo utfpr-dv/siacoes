@@ -1,6 +1,10 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
-public class LibraryReport {
+import java.io.Serializable;
+
+public class LibraryReport implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int sequence;
 	private String student;

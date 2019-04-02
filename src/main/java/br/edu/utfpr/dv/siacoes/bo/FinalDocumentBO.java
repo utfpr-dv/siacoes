@@ -141,7 +141,7 @@ public class FinalDocumentBO {
 		}
 	}
 	
-	public int save(FinalDocument thesis) throws Exception{
+	public int save(int idUser, FinalDocument thesis) throws Exception{
 		if(((thesis.getThesis() == null) || (thesis.getThesis().getIdThesis() == 0)) && ((thesis.getProject() == null) || (thesis.getProject().getIdProject() == 0))){
 			throw new Exception("Informe o projeto ou monografia.");
 		}
@@ -169,7 +169,7 @@ public class FinalDocumentBO {
 				feedback = dao.findFeedback(thesis.getIdFinalDocument());
 			}
 			
-			int ret = dao.save(thesis);
+			int ret = dao.save(idUser, thesis);
 			
 			try {
 				EmailMessageBO bo = new EmailMessageBO();

@@ -1,9 +1,12 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttendanceReport {
+public class AttendanceReport implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int stage;
 	private String title;

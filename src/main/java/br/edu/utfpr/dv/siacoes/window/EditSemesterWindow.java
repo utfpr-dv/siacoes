@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
@@ -80,7 +79,7 @@ public class EditSemesterWindow extends EditWindow {
 			this.semester.setStartDate(this.textStartDate.getValue());
 			this.semester.setEndDate(this.textEndDate.getValue());
 			
-			bo.save(semester);
+			bo.save(Session.getIdUserLog(), this.semester);
 			
 			this.showSuccessNotification("Salvar Semestre", "Semestre salvo com sucesso.");
 			

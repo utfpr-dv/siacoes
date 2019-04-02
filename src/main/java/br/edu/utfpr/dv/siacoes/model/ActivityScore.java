@@ -1,6 +1,10 @@
 package br.edu.utfpr.dv.siacoes.model;
 
-public class ActivityScore {
+import java.io.Serializable;
+
+public class ActivityScore implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int idActivity;
 	private String activity;

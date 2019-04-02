@@ -54,7 +54,7 @@ public class EmailMessageBO {
 		}
 	}
 	
-	public MessageType save(EmailMessage message) throws Exception{
+	public MessageType save(int idUser, EmailMessage message) throws Exception{
 		if(message.getSubject().trim().isEmpty()){
 			throw new Exception("Informe o assunto da mensagem.");
 		}
@@ -65,7 +65,7 @@ public class EmailMessageBO {
 		try{
 			EmailMessageDAO dao = new EmailMessageDAO();
 			
-			return dao.save(message);
+			return dao.save(idUser, message);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

@@ -4,14 +4,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.components.CompanyComboBox;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
-import br.edu.utfpr.dv.siacoes.util.StringUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditCompanySupervisorWindow extends EditWindow {
@@ -87,7 +86,7 @@ public class EditCompanySupervisorWindow extends EditWindow {
 				this.user.getProfiles().add(UserProfile.COMPANYSUPERVISOR);
 			}
 			
-			new UserBO().save(this.user);
+			new UserBO().save(Session.getIdUserLog(), this.user);
 			
 			this.showSuccessNotification("Salvar Supervisor", "Supervisor salvo com sucesso.");
 			

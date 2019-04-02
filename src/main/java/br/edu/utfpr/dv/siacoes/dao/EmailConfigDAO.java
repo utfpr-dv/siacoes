@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.EmailConfig;
 
 public class EmailConfigDAO {
@@ -47,7 +48,7 @@ public class EmailConfigDAO {
 		}
 	}
 	
-	public int save(EmailConfig email) throws SQLException{
+	public int save(int idUser, EmailConfig email) throws SQLException{
 		boolean insert = (email.getIdEmailConfig() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -82,6 +83,10 @@ public class EmailConfigDAO {
 				if(rs.next()){
 					email.setIdEmailConfig(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, email);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, email);
 			}
 			
 			return email.getIdEmailConfig();

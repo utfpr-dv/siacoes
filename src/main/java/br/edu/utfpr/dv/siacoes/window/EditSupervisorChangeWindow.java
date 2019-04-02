@@ -9,7 +9,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -229,7 +228,7 @@ public class EditSupervisorChangeWindow extends EditWindow {
 				this.supervisorChange.setApprovalDate(DateUtils.getNow().getTime());
 			}
 			
-			bo.save(this.supervisorChange);
+			bo.save(Session.getIdUserLog(), this.supervisorChange);
 			
 			this.comboNewSupervisor.setEnabled(false);
 			this.comboNewCosupervisor.setEnabled(false);

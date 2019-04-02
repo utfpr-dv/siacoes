@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import com.vaadin.ui.TextField;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.SigacConfigBO;
 import br.edu.utfpr.dv.siacoes.components.ByteSizeField;
 import br.edu.utfpr.dv.siacoes.model.SigacConfig;
@@ -46,7 +47,7 @@ public class EditSigacWindow extends EditWindow {
 			this.config.setMinimumScore(Double.parseDouble(this.textMinimumScore.getValue().replace(",", ".")));
 			this.config.setMaxFileSize((int)this.textMaxFileSize.getValue());
 			
-			bo.save(this.config);
+			bo.save(Session.getIdUserLog(), this.config);
 			
 			this.showSuccessNotification("Salvar Configurações", "Configurações salvas com sucesso.");
 			

@@ -78,7 +78,7 @@ public class InternshipFinalDocumentBO {
 		}
 	}
 	
-	public int save(InternshipFinalDocument doc) throws Exception{
+	public int save(int idUser, InternshipFinalDocument doc) throws Exception{
 		if((doc.getInternship() == null) || (doc.getInternship().getIdInternship() == 0)){
 			throw new Exception("Informe o estágio.");
 		}
@@ -104,7 +104,7 @@ public class InternshipFinalDocumentBO {
 				feedback = dao.findFeedback(doc.getIdInternshipFinalDocument());
 			}
 			
-			int ret = dao.save(doc);
+			int ret = dao.save(idUser, doc);
 			
 			try {
 				EmailMessageBO ebo = new EmailMessageBO();

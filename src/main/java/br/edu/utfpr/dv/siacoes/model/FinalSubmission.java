@@ -1,10 +1,13 @@
 package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
-public class FinalSubmission {
+public class FinalSubmission implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int idFinalSubmission;
 	private Department department;
@@ -12,7 +15,7 @@ public class FinalSubmission {
 	private double finalScore;
 	private User feedbackUser;
 	private Date date;
-	private byte[] report;
+	private transient byte[] report;
 	
 	public FinalSubmission() {
 		this.setIdFinalSubmission(0);

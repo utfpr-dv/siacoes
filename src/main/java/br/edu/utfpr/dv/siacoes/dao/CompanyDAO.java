@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.Company;
 
 public class CompanyDAO {
@@ -71,7 +72,7 @@ public class CompanyDAO {
 		}
 	}
 	
-	public int save(Company company) throws SQLException{
+	public int save(int idUser, Company company) throws SQLException{
 		boolean insert = (company.getIdCompany() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -105,6 +106,10 @@ public class CompanyDAO {
 				if(rs.next()){
 					company.setIdCompany(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, company);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, company);
 			}
 			
 			return company.getIdCompany();

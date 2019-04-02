@@ -446,7 +446,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 				this.submission.setFile(this.uploadFile.getUploadedFile());
 			}
 			
-			bo.save(this.submission);
+			bo.save(Session.getIdUserLog(), this.submission);
 			
 			this.showSuccessNotification("Salvar Submissão", "Submissão salva com sucesso.");
 			

@@ -1,6 +1,10 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
-public class SupervisorFeedbackReport {
+import java.io.Serializable;
+
+public class SupervisorFeedbackReport implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int stage;
 	private String title;

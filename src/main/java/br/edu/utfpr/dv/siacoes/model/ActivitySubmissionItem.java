@@ -1,8 +1,12 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
+
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
 
-public class ActivitySubmissionItem {
+public class ActivitySubmissionItem implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int idActivitySubmissionItem;
 	private Activity activity;

@@ -74,7 +74,7 @@ public class EvaluationItemBO {
 		}
 	}
 	
-	public int save(EvaluationItem item) throws Exception{
+	public int save(int idUser, EvaluationItem item) throws Exception{
 		try {
 			if(item.getDescription().isEmpty()){
 				throw new Exception("Informe a descrição do quesito.");
@@ -85,7 +85,7 @@ public class EvaluationItemBO {
 			
 			EvaluationItemDAO dao = new EvaluationItemDAO();
 			
-			return dao.save(item);
+			return dao.save(idUser, item);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -93,7 +93,7 @@ public class EvaluationItemBO {
 		}
 	}
 	
-	public boolean delete(int id) throws Exception{
+	public boolean delete(int idUser, int id) throws Exception{
 		if(this.hasScores(id)){
 			throw new Exception("Este quesito já tem notas lançadas e não pode ser excluído.");
 		}
@@ -101,7 +101,7 @@ public class EvaluationItemBO {
 		try {
 			EvaluationItemDAO dao = new EvaluationItemDAO();
 			
-			return dao.delete(id);
+			return dao.delete(idUser, id);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -109,8 +109,8 @@ public class EvaluationItemBO {
 		}
 	}
 	
-	public boolean delete(EvaluationItem item) throws Exception{
-		return this.delete(item.getIdEvaluationItem());
+	public boolean delete(int idUser, EvaluationItem item) throws Exception{
+		return this.delete(idUser, item.getIdEvaluationItem());
 	}
 	
 	public void moveUp(int idEvaluationItem) throws Exception{

@@ -70,7 +70,7 @@ public class ActivityBO {
 		}
 	}
 	
-	public int save(Activity activity) throws Exception{
+	public int save(int idUser, Activity activity) throws Exception{
 		if((activity.getDepartment() == null) || (activity.getDepartment().getIdDepartment() == 0)){
 			throw new Exception("Informe o departamento/coordenação.");
 		}
@@ -90,7 +90,7 @@ public class ActivityBO {
 		try{
 			ActivityDAO dao = new ActivityDAO();
 			
-			return dao.save(activity);
+			return dao.save(idUser, activity);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

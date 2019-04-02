@@ -21,11 +21,11 @@ public class EmailConfigBO {
 		}
 	}
 	
-	public int save(EmailConfig email) throws Exception {
+	public int save(int idUser, EmailConfig email) throws Exception {
 		try{
 			EmailConfigDAO dao = new EmailConfigDAO();
 			
-			return dao.save(email);
+			return dao.save(idUser, email);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

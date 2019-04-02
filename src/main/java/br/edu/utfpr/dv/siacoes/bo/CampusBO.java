@@ -45,7 +45,7 @@ public class CampusBO {
 		}
 	}
 	
-	public int save(Campus campus) throws Exception{
+	public int save(int idUser, Campus campus) throws Exception{
 		if(campus.getName().isEmpty()){
 			throw new Exception("Informe o nome do câmpus.");
 		}
@@ -53,7 +53,7 @@ public class CampusBO {
 		try{
 			CampusDAO dao = new CampusDAO();
 			
-			return dao.save(campus);
+			return dao.save(idUser, campus);
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

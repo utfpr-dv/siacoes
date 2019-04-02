@@ -1,8 +1,12 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
+
 import br.edu.utfpr.dv.siacoes.components.ByteSizeField;
 
-public class SigetConfig {
+public class SigetConfig implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	public enum SupervisorFilter {
 		DEPARTMENT(0), CAMPUS(1), INSTITUTION(2), EVERYONE(3);

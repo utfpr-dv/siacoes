@@ -11,7 +11,6 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.renderers.ImageRenderer;
@@ -184,7 +183,7 @@ public class DocumentView extends ListView {
 		try {
 			DocumentBO bo = new DocumentBO();
 			
-			bo.delete((int)id);
+			bo.delete(Session.getIdUserLog(), (int)id);
 			this.refreshGrid();
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);

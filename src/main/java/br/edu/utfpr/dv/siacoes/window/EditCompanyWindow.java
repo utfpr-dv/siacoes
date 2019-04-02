@@ -6,9 +6,9 @@ import java.util.logging.Logger;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CityBO;
 import br.edu.utfpr.dv.siacoes.bo.CompanyBO;
 import br.edu.utfpr.dv.siacoes.components.CityComboBox;
@@ -132,7 +132,7 @@ public class EditCompanyWindow extends EditWindow {
 			this.company.setEmail(this.textEmail.getValue());
 			this.company.setAgreement(this.textAgreement.getValue());
 			
-			bo.save(this.company);
+			bo.save(Session.getIdUserLog(), this.company);
 			
 			this.showSuccessNotification("Salvar Empresa", "Empresa salva com sucesso.");
 			

@@ -34,7 +34,7 @@ public class CountryBO {
 		}
 	}
 	
-	public int save(Country country) throws Exception{
+	public int save(int idUser, Country country) throws Exception{
 		if(country.getName().isEmpty()){
 			throw new Exception("Informe o nome do país.");
 		}
@@ -42,7 +42,7 @@ public class CountryBO {
 		try{
 			CountryDAO dao = new CountryDAO();
 			
-			return dao.save(country);
+			return dao.save(idUser, country);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
 
 public class DeadlineDAO {
@@ -124,7 +125,7 @@ public class DeadlineDAO {
 		}
 	}
 	
-	public int save(Deadline deadline) throws SQLException{
+	public int save(int idUser, Deadline deadline) throws SQLException{
 		boolean insert = (deadline.getIdDeadline() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -160,6 +161,10 @@ public class DeadlineDAO {
 				if(rs.next()){
 					deadline.setIdDeadline(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, deadline);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, deadline);
 			}
 			
 			return deadline.getIdDeadline();

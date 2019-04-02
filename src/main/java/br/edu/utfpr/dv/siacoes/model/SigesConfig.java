@@ -1,9 +1,13 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
+
 import br.edu.utfpr.dv.siacoes.components.ByteSizeField;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 
-public class SigesConfig {
+public class SigesConfig implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	public Department department;
 	public double minimumScore;

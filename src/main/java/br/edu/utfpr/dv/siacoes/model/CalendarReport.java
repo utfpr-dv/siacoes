@@ -1,8 +1,11 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class CalendarReport {
+public class CalendarReport implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private Date date;
 	private String local;

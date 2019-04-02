@@ -5,9 +5,9 @@ import java.util.logging.Logger;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CityBO;
 import br.edu.utfpr.dv.siacoes.components.CountryComboBox;
 import br.edu.utfpr.dv.siacoes.components.StateComboBox;
@@ -74,7 +74,7 @@ public class EditCityWindow extends EditWindow {
 			this.city.setState(this.comboState.getStateValue());
 			this.city.setName(this.textName.getValue());
 			
-			bo.save(this.city);
+			bo.save(Session.getIdUserLog(), this.city);
 			
 			this.showSuccessNotification("Salvar Cidade", "Cidade salva com sucesso.");
 			

@@ -277,7 +277,7 @@ public class EditJuryRequestWindow extends EditWindow {
 			this.jury.setComments(this.textComments.getValue());
 			this.jury.setSupervisorAbsenceReason(this.textSupervisorAbsenceReason.getValue());
 			
-			bo.save(this.jury);
+			bo.save(Session.getIdUserLog(), this.jury);
 			
 			this.showReport(bo.getJuryRequestForm(this.jury.getIdJuryRequest()));
 			

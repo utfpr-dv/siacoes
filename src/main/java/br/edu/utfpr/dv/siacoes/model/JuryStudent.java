@@ -1,6 +1,10 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
-public class JuryStudent {
+import java.io.Serializable;
+
+public class JuryStudent implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int idJuryStudent;
 	private Jury jury;

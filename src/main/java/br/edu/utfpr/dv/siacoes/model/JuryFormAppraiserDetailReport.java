@@ -1,6 +1,10 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
-public class JuryFormAppraiserDetailReport {
+import java.io.Serializable;
+
+public class JuryFormAppraiserDetailReport implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private String evaluationItemType;
 	private int order;

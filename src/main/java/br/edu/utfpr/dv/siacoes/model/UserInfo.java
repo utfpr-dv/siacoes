@@ -1,8 +1,12 @@
 package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
+
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
-public class UserInfo {
+public class UserInfo implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private String name;
 	private String login;

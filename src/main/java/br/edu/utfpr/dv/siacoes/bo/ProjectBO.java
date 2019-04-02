@@ -143,7 +143,7 @@ public class ProjectBO {
 		}
 	}
 	
-	public int save(Project project) throws Exception{
+	public int save(int idUser, Project project) throws Exception{
 		try {
 			boolean isInsert = (project.getIdProject() == 0);
 			byte[] oldFile = null;
@@ -155,7 +155,7 @@ public class ProjectBO {
 				oldFile = dao.getFile(project.getIdProject());
 			}
 			
-			int ret = dao.save(project);
+			int ret = dao.save(idUser, project);
 			
 			try {
 				EmailMessageBO bo = new EmailMessageBO();

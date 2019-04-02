@@ -46,7 +46,7 @@ public class ActivityGroupBO {
 		}
 	}
 	
-	public int save(ActivityGroup group) throws Exception{
+	public int save(int idUser, ActivityGroup group) throws Exception{
 		if(group.getDescription().isEmpty()){
 			throw new Exception("Informe a descrição do grupo.");
 		}
@@ -60,7 +60,7 @@ public class ActivityGroupBO {
 		try{
 			ActivityGroupDAO dao = new ActivityGroupDAO();
 			
-			return dao.save(group);
+			return dao.save(idUser, group);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

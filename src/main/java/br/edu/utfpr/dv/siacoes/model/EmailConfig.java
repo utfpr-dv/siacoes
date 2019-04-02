@@ -1,6 +1,10 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
-public class EmailConfig {
+import java.io.Serializable;
+
+public class EmailConfig implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
 	private int idEmailConfig;
 	private String host;

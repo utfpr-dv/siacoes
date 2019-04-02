@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.State;
 
 public class StateDAO {
@@ -102,7 +103,7 @@ public class StateDAO {
 		}
 	}
 	
-	public int save(State state) throws SQLException{
+	public int save(int idUser, State state) throws SQLException{
 		boolean insert = (state.getIdState() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -133,6 +134,10 @@ public class StateDAO {
 				if(rs.next()){
 					state.setIdState(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, state);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, state);
 			}
 			
 			return state.getIdState();

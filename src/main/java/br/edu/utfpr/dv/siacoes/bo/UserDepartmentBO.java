@@ -60,7 +60,7 @@ public class UserDepartmentBO {
 		}
 	}
 	
-	public int save(UserDepartment user) throws Exception {
+	public int save(int idUser, UserDepartment user) throws Exception {
 		if((user.getUser() == null) || (user.getUser().getIdUser() == 0)) {
 			throw new Exception("Informe o usuário.");
 		}
@@ -89,7 +89,7 @@ public class UserDepartmentBO {
 		try {
 			UserDepartmentDAO dao = new UserDepartmentDAO();
 			
-			return dao.save(user);
+			return dao.save(idUser, user);
 		} catch(SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

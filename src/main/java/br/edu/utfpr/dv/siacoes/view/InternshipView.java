@@ -357,7 +357,7 @@ public class InternshipView extends ListView {
 		try {
 			InternshipBO bo = new InternshipBO();
 			
-			bo.delete((int)id);
+			bo.delete(Session.getIdUserLog(), (int)id);
 			
 			this.refreshGrid();
 		} catch (Exception e) {

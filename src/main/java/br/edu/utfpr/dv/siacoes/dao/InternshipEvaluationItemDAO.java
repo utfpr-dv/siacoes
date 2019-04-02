@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.EvaluationItem.EvaluationItemType;
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.InternshipEvaluationItem;
 
 public class InternshipEvaluationItemDAO {
@@ -120,7 +121,7 @@ public class InternshipEvaluationItemDAO {
 		}
 	}
 	
-	public int save(InternshipEvaluationItem item) throws SQLException{
+	public int save(int idUser, InternshipEvaluationItem item) throws SQLException{
 		boolean insert = (item.getIdInternshipEvaluationItem() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -136,6 +137,8 @@ public class InternshipEvaluationItemDAO {
 				stmt.setInt(2, item.getIdInternshipEvaluationItem());
 				
 				stmt.execute();
+				
+				new UpdateEvent(conn).registerUpdate(idUser, item);
 			}else{
 				if(insert){
 					stmt = conn.prepareStatement("INSERT INTO internshipevaluationitem(idDepartment, description, ponderosity, active, sequence, type) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
@@ -169,6 +172,10 @@ public class InternshipEvaluationItemDAO {
 					if(rs.next()){
 						item.setIdInternshipEvaluationItem(rs.getInt(1));
 					}
+
+					new UpdateEvent(conn).registerInsert(idUser, item);
+				} else {
+					new UpdateEvent(conn).registerUpdate(idUser, item);
 				}
 			}
 			
@@ -197,15 +204,20 @@ public class InternshipEvaluationItemDAO {
 		return item;
 	}
 	
-	public boolean delete(int id) throws SQLException{
+	public boolean delete(int idUser, int id) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		InternshipEvaluationItem item = this.findById(id);
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			return stmt.execute("DELETE FROM internshipevaluationitem WHERE idInternshipEvaluationItem = " + String.valueOf(id));
+			boolean ret = stmt.execute("DELETE FROM internshipevaluationitem WHERE idInternshipEvaluationItem = " + String.valueOf(id));
+			
+			new UpdateEvent(conn).registerDelete(idUser, item);
+			
+			return ret;
 		}finally{
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();

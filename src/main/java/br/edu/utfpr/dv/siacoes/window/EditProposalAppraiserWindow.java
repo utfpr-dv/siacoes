@@ -161,7 +161,7 @@ public class EditProposalAppraiserWindow extends EditWindow {
 			if(this.editProposalWindow == null){
 				ProposalAppraiserBO bo = new ProposalAppraiserBO();
 				
-				bo.save(this.appraiser);
+				bo.save(Session.getIdUserLog(), this.appraiser);
 				
 				this.showReport(bo.getFeedbackReport(this.appraiser.getProposal().getIdProposal(), this.appraiser.getAppraiser().getIdUser()));
 			}else{

@@ -243,7 +243,7 @@ public class AttendanceView extends ListView {
 		try {
 			AttendanceBO bo = new AttendanceBO();
 			
-			bo.delete((int)id);
+			bo.delete(Session.getIdUserLog(), (int)id);
 			
 			this.refreshGrid();
 		} catch (Exception e) {

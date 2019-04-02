@@ -1,12 +1,15 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
 
-public class InternshipJuryFormReport {
+public class InternshipJuryFormReport implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private String title;
 	private Date date;

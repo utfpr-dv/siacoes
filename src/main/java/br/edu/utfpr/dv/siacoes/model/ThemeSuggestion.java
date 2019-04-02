@@ -1,8 +1,11 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ThemeSuggestion {
+public class ThemeSuggestion implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int idThemeSuggestion;
 	private Department department;

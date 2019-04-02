@@ -45,7 +45,7 @@ public class DepartmentBO {
 		}
 	}
 	
-	public int save(Department department) throws Exception{
+	public int save(int idUser, Department department) throws Exception{
 		if((department.getCampus() == null) || (department.getCampus().getIdCampus() == 0)){
 			throw new Exception("Informe o câmpus do departamento.");
 		}
@@ -56,7 +56,7 @@ public class DepartmentBO {
 		try{
 			DepartmentDAO dao = new DepartmentDAO();
 			
-			return dao.save(department);
+			return dao.save(idUser, department);
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

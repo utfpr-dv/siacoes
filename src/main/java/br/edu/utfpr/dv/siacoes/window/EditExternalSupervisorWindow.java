@@ -7,6 +7,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
@@ -107,7 +108,7 @@ public class EditExternalSupervisorWindow extends EditWindow {
 				this.user.getProfiles().add(UserProfile.SUPERVISOR);
 			}
 			
-			new UserBO().save(this.user);
+			new UserBO().save(Session.getIdUserLog(), this.user);
 			
 			this.showSuccessNotification("Salvar Informações", "Informações salvas com sucesso.");
 			

@@ -1,6 +1,10 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
-public class InternshipJuryAppraiserScore {
+import java.io.Serializable;
+
+public class InternshipJuryAppraiserScore implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int idInternshipJuryAppraiserScore;
 	private InternshipJuryAppraiser internshipJuryAppraiser;

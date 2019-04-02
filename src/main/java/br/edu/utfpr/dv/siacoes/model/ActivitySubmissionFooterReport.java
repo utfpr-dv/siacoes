@@ -1,6 +1,10 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
-public class ActivitySubmissionFooterReport {
+import java.io.Serializable;
+
+public class ActivitySubmissionFooterReport implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int idActivityGroup;
 	private String group;

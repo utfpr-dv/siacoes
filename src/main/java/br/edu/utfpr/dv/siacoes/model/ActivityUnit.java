@@ -1,6 +1,10 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
-public class ActivityUnit {
+import java.io.Serializable;
+
+public class ActivityUnit implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int idActivityUnit;
 	private String description;

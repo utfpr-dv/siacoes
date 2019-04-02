@@ -61,7 +61,7 @@ public class UserService {
 				user.setStudentCode(info.getStudentCode());
 			}
 			
-			new UserBO().save(user);
+			new UserBO().save(user.getIdUser(), user);
 			
 			return Response.ok().build();
 		} catch (Exception e) {

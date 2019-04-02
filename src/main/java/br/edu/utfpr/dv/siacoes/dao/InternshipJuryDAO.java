@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryStudent;
@@ -195,7 +196,7 @@ public class InternshipJuryDAO {
 		}
 	}
 	
-	public int save(InternshipJury jury) throws SQLException{
+	public int save(int idUser, InternshipJury jury) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -257,6 +258,10 @@ public class InternshipJuryDAO {
 				if(rs.next()){
 					jury.setIdInternshipJury(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, jury);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, jury);
 			}
 			
 			if(jury.getAppraisers() != null){
@@ -265,7 +270,7 @@ public class InternshipJuryDAO {
 				
 				for(InternshipJuryAppraiser ja : jury.getAppraisers()){
 					ja.setInternshipJury(jury);
-					int paId = dao.save(ja);
+					int paId = dao.save(idUser, ja);
 					ids = ids + String.valueOf(paId) + ",";
 				}
 				
@@ -281,7 +286,7 @@ public class InternshipJuryDAO {
 				for(InternshipJuryStudent js : jury.getParticipants()){
 					if((js.getStudent() != null) && (js.getStudent().getIdUser() != 0)){
 						js.setInternshipJury(jury);
-						int paId = dao.save(js);
+						int paId = dao.save(idUser, js);
 						ids = ids + String.valueOf(paId) + ",";	
 					}
 				}

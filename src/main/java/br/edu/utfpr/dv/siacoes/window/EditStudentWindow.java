@@ -3,7 +3,6 @@
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
 import br.edu.utfpr.dv.siacoes.Session;
@@ -72,11 +71,11 @@ public class EditStudentWindow extends EditWindow {
 				this.user.setLogin(bo.formatLoginFromStudentCode(this.user.getStudentCode()));
 			}
 			
-			bo.save(this.user);
+			bo.save(Session.getIdUserLog(), this.user);
 			
 			this.department.setUser(this.user);
 			
-			new UserDepartmentBO().save(this.department);
+			new UserDepartmentBO().save(Session.getIdUserLog(), this.department);
 			
 			this.showSuccessNotification("Salvar Acadêmico", "Acadêmico salvo com sucesso.");
 			

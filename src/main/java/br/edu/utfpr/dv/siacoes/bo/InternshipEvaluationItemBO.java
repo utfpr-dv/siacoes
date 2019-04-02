@@ -58,7 +58,7 @@ public class InternshipEvaluationItemBO {
 		}
 	}
 		
-	public int save(InternshipEvaluationItem item) throws Exception{
+	public int save(int idUser, InternshipEvaluationItem item) throws Exception{
 		try {
 			if(item.getDescription().isEmpty()){
 				throw new Exception("Informe a descrição do quesito.");
@@ -69,7 +69,7 @@ public class InternshipEvaluationItemBO {
 			
 			InternshipEvaluationItemDAO dao = new InternshipEvaluationItemDAO();
 			
-			return dao.save(item);
+			return dao.save(idUser, item);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -77,7 +77,7 @@ public class InternshipEvaluationItemBO {
 		}
 	}
 	
-	public boolean delete(int id) throws Exception{
+	public boolean delete(int idUser, int id) throws Exception{
 		if(this.hasScores(id)){
 			throw new Exception("Este quesito já tem notas lançadas e não pode ser excluído.");
 		}
@@ -85,7 +85,7 @@ public class InternshipEvaluationItemBO {
 		try {
 			InternshipEvaluationItemDAO dao = new InternshipEvaluationItemDAO();
 			
-			return dao.delete(id);
+			return dao.delete(idUser, id);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -93,8 +93,8 @@ public class InternshipEvaluationItemBO {
 		}
 	}
 	
-	public boolean delete(InternshipEvaluationItem item) throws Exception{
-		return this.delete(item.getIdInternshipEvaluationItem());
+	public boolean delete(int idUser, InternshipEvaluationItem item) throws Exception{
+		return this.delete(idUser, item.getIdInternshipEvaluationItem());
 	}
 	
 	public void moveUp(int idEvaluationItem) throws Exception{

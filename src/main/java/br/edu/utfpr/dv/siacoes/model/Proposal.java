@@ -1,12 +1,15 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
-public class Proposal {
+public class Proposal implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
 	private int idProposal;
 	private String title;
@@ -14,7 +17,7 @@ public class Proposal {
 	private User student;
 	private User supervisor;
 	private User cosupervisor;
-	private byte[] file;
+	private transient byte[] file;
 	private List<ProposalAppraiser> appraisers;
 	private int semester;
 	private int year;

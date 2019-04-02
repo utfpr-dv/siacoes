@@ -1,10 +1,13 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
-public class ActivitySubmission {
+public class ActivitySubmission implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	public enum ActivityFeedback{
 		NONE(0), APPROVED(1), DISAPPROVED(2);
@@ -50,7 +53,7 @@ public class ActivitySubmission {
 	private int semester;
 	private int year;
 	private Date submissionDate;
-	private byte[] file;
+	private transient byte[] file;
 	private double amount;
 	private ActivityFeedback feedback;
 	private Date feedbackDate;

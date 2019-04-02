@@ -2,6 +2,7 @@
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,7 +23,9 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import br.edu.utfpr.dv.siacoes.dao.ConnectionDAO;
 
-public class AppConfig {
+public class AppConfig implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	public enum AppTheme{
 		DEFAULT(0), FACEBOOK(1), FLAT(2), LIGHT(3), METRO(4), PINK(5);

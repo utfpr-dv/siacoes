@@ -34,7 +34,7 @@ public class DeadlineBO {
 		}
 	}
 	
-	public int save(Deadline deadline) throws Exception{
+	public int save(int idUser, Deadline deadline) throws Exception{
 		try {
 			if((deadline.getSemester() < 1) || (deadline.getSemester() > 2)){
 				throw new Exception("Informe o semestre.");
@@ -57,7 +57,7 @@ public class DeadlineBO {
 				throw new Exception("Já existe um registro para este semestre.");
 			}
 			
-			return dao.save(deadline);
+			return dao.save(idUser, deadline);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

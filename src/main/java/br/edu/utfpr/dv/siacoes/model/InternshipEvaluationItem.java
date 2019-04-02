@@ -1,8 +1,12 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
+
 import br.edu.utfpr.dv.siacoes.model.EvaluationItem.EvaluationItemType;
 
-public class InternshipEvaluationItem {
+public class InternshipEvaluationItem implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
 	private int idInternshipEvaluationItem;
 	private String description;

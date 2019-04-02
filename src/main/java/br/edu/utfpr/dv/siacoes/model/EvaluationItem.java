@@ -1,6 +1,10 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
-public class EvaluationItem {
+import java.io.Serializable;
+
+public class EvaluationItem implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	public enum EvaluationItemType{
 		WRITING(0), ORAL(1), ARGUMENTATION(2);

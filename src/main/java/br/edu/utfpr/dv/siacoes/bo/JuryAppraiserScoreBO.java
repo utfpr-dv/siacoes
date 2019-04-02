@@ -47,7 +47,7 @@ public class JuryAppraiserScoreBO {
 		}
 	}
 	
-	public int save(JuryAppraiserScore score) throws Exception{
+	public int save(int idUser, JuryAppraiserScore score) throws Exception{
 		if((score.getScore() < 0) || (score.getScore() > score.getEvaluationItem().getPonderosity())){
 			throw new Exception("A nota deve estar entre 0 e peso do quesito.");
 		}
@@ -65,7 +65,7 @@ public class JuryAppraiserScoreBO {
 		try {
 			JuryAppraiserScoreDAO dao = new JuryAppraiserScoreDAO(this.conn);
 			
-			return dao.save(score);
+			return dao.save(idUser, score);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

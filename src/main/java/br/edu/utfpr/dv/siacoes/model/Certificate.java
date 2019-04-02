@@ -1,11 +1,14 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
-public class Certificate {
+public class Certificate implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int idCertificate;
 	private Department department;
@@ -13,7 +16,7 @@ public class Certificate {
 	private SystemModule module;
 	private Date date;
 	private String guid;
-	private byte[] file;
+	private transient byte[] file;
 	
 	public Certificate(){
 		this.setIdCertificate(0);

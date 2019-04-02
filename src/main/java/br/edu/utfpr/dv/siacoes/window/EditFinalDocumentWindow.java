@@ -296,7 +296,7 @@ public class EditFinalDocumentWindow extends EditWindow {
 				this.thesis.setComments(this.textComments.getValue());
 			}
 			
-			bo.save(this.thesis);
+			bo.save(Session.getIdUserLog(), this.thesis);
 			
 			this.showSuccessNotification("Salvar Projeto/Monografia", "Projeto/Monografia salvo com sucesso.");
 			

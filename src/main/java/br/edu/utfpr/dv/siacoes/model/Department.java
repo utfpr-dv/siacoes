@@ -1,12 +1,16 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
-public class Department {
+import java.io.Serializable;
+
+public class Department implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int idDepartment;
 	private Campus campus;
 	private String name;
 	private String fullName;
-	private byte[] logo;
+	private transient byte[] logo;
 	private boolean active;
 	private String site;
 	private String initials;

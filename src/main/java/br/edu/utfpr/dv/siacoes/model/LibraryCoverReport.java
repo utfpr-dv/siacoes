@@ -1,8 +1,12 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
+
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
-public class LibraryCoverReport {
+public class LibraryCoverReport implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private String city;
 	private String course;

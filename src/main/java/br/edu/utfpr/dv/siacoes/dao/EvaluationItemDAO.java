@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.EvaluationItem;
 import br.edu.utfpr.dv.siacoes.model.EvaluationItem.EvaluationItemType;
 
@@ -147,7 +148,7 @@ public class EvaluationItemDAO {
 		}
 	}
 	
-	public int save(EvaluationItem item) throws SQLException{
+	public int save(int idUser, EvaluationItem item) throws SQLException{
 		boolean insert = (item.getIdEvaluationItem() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -163,6 +164,8 @@ public class EvaluationItemDAO {
 				stmt.setInt(2, item.getIdEvaluationItem());
 				
 				stmt.execute();
+				
+				new UpdateEvent(conn).registerUpdate(idUser, item);
 			}else{
 				if(insert){
 					stmt = conn.prepareStatement("INSERT INTO evaluationitem(idDepartment, description, ponderosity, stage, active, sequence, type) VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
@@ -197,6 +200,10 @@ public class EvaluationItemDAO {
 					if(rs.next()){
 						item.setIdEvaluationItem(rs.getInt(1));
 					}
+
+					new UpdateEvent(conn).registerInsert(idUser, item);
+				} else {
+					new UpdateEvent(conn).registerUpdate(idUser, item);
 				}
 			}
 			
@@ -226,15 +233,20 @@ public class EvaluationItemDAO {
 		return item;
 	}
 	
-	public boolean delete(int id) throws SQLException{
+	public boolean delete(int idUser, int id) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		EvaluationItem item = this.findById(id);
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			return stmt.execute("DELETE FROM evaluationitem WHERE idEvaluationItem = " + String.valueOf(id));
+			boolean ret = stmt.execute("DELETE FROM evaluationitem WHERE idEvaluationItem = " + String.valueOf(id));
+			
+			new UpdateEvent(conn).registerDelete(idUser, item);
+			
+			return ret;
 		}finally{
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();

@@ -1,10 +1,13 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
-public class Deadline {
+public class Deadline implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
 	private int idDeadline;
 	private int semester;

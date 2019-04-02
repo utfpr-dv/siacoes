@@ -70,7 +70,7 @@ public class InternshipReportBO {
 		}
 	}
 	
-	public int save(InternshipReport report) throws Exception{
+	public int save(int idUser, InternshipReport report) throws Exception{
 		if((report.getInternship() == null) || (report.getInternship().getIdInternship() == 0)){
 			throw new Exception("Informe o estágio do relatório.");
 		}
@@ -81,7 +81,7 @@ public class InternshipReportBO {
 		try{
 			InternshipReportDAO dao = new InternshipReportDAO(this.conn);
 			
-			return dao.save(report);
+			return dao.save(idUser, report);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

@@ -9,11 +9,14 @@ import javax.servlet.http.Cookie;
 
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.server.WebBrowser;
+import com.vaadin.ui.UI;
 
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.UserDepartment;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.bo.UserDepartmentBO;
+import br.edu.utfpr.dv.siacoes.log.LoginEvent;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 
 public class Session {
@@ -22,12 +25,17 @@ public class Session {
 		return ((VaadinSession.getCurrent().getAttribute("user") != null) && (((User)VaadinSession.getCurrent().getAttribute("user")).getIdUser() != 0));
 	}
 
-	public static void setUser(User user){
+	public static void setUser(User user) {
 		VaadinSession.getCurrent().setAttribute("user", user);
 		if((user != null) && (user.getProfiles() != null) && (user.getProfiles().size() > 0)) {
 			Session.setSelectedProfile(user.getProfiles().get(0));	
 		} else {
 			Session.setSelectedProfile(null);
+		}
+		
+		if((user != null) && ((Session.getAdministrator() == null) || (Session.getAdministrator().getIdUser() == 0))) {
+			WebBrowser webBrowser = UI.getCurrent().getPage().getWebBrowser();
+			LoginEvent.registerLogin(user.getIdUser(), webBrowser.getAddress(), webBrowser.getBrowserApplication() + " " + webBrowser.getBrowserMajorVersion() + "." + webBrowser.getBrowserMinorVersion());
 		}
 	}
 	
@@ -124,7 +132,7 @@ public class Session {
 		}
 	}
 	
-	public static void loginAs(User user){
+	public static void loginAs(User user) {
 		if(Session.isUserAdministrator()){
 			if(VaadinSession.getCurrent().getAttribute("admin") == null){
 				Session.setAdministrator(Session.getUser());
@@ -144,7 +152,7 @@ public class Session {
 		}
 	}
 	
-	public static void logoffAs(){
+	public static void logoffAs() {
 		if(VaadinSession.getCurrent().getAttribute("admin") != null){
 			Session.setUser(Session.getAdministrator());
 			Session.setAdministrator(null);
@@ -165,7 +173,10 @@ public class Session {
 		return (VaadinSession.getCurrent().getAttribute("admin") != null);
 	}
 	
-	public static void logoff(){
+	public static void logoff() {
+		WebBrowser webBrowser = UI.getCurrent().getPage().getWebBrowser();
+		LoginEvent.registerLogout(Session.getUser().getIdUser(), webBrowser.getAddress(), webBrowser.getBrowserApplication() + " " + webBrowser.getBrowserMajorVersion() + "." + webBrowser.getBrowserMinorVersion());
+		
 		Session.setUser(null);
         Session.setAdministrator(null);
         Session.setSelectedProfile(null);
@@ -174,7 +185,7 @@ public class Session {
         cookie.setMaxAge(60 * 24 * 3600);
 		cookie.setPath("/");
         VaadinService.getCurrentResponse().addCookie(cookie);
-        VaadinSession.getCurrent().close();
+        //VaadinSession.getCurrent().close();
 	}
 	
 	public static boolean isUserProfessor(){
@@ -267,6 +278,16 @@ public class Session {
 		VaadinSession.getCurrent().setAttribute(id, null);
 		
 		return report;
+	}
+	
+	public static int getIdUserLog() {
+		if((Session.getAdministrator() != null) && (Session.getAdministrator().getIdUser() != 0)) {
+			return Session.getAdministrator().getIdUser();
+		} else if(Session.getUser() != null) {
+			return Session.getUser().getIdUser();
+		} else {
+			return 0;
+		}
 	}
 	
 }

@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
 import br.edu.utfpr.dv.siacoes.Session;
@@ -118,7 +117,7 @@ public class EditInternshipEvaluationItemWindow extends EditWindow {
 			
 			this.item.setActive(this.checkActive.getValue());
 			
-			bo.save(this.item);
+			bo.save(Session.getIdUserLog(), this.item);
 			
 			this.showSuccessNotification("Salvar Quesito", "Quesito salvo com sucesso.");
 			

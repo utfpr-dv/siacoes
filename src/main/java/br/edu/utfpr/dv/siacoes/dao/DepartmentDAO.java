@@ -9,6 +9,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.Department;
 
 public class DepartmentDAO {
@@ -104,7 +105,7 @@ public class DepartmentDAO {
 		}
 	}
 	
-	public int save(Department department) throws SQLException{
+	public int save(int idUser, Department department) throws SQLException{
 		boolean insert = (department.getIdDepartment() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -143,6 +144,10 @@ public class DepartmentDAO {
 				if(rs.next()){
 					department.setIdDepartment(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, department);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, department);
 			}
 			
 			return department.getIdDepartment();

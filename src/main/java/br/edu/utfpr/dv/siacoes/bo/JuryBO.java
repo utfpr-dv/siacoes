@@ -305,7 +305,7 @@ public class JuryBO {
 		}
 	}
 	
-	public int save(Jury jury) throws Exception{
+	public int save(int idUser, Jury jury) throws Exception{
 		try {
 			boolean insert = (jury.getIdJury() == 0);
 			Jury oldJury = null;
@@ -397,7 +397,7 @@ public class JuryBO {
 				oldJury.setAppraisers(new JuryAppraiserBO().listAppraisers(jury.getIdJury()));
 			}
 			
-			int id = dao.save(jury);
+			int id = dao.save(idUser, jury);
 			
 			try{
 				if(jury.getStage() == 2){

@@ -9,6 +9,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.InternshipByCompany;
 import br.edu.utfpr.dv.siacoes.model.InternshipMissingDocumentsReport;
@@ -293,7 +294,7 @@ public class InternshipDAO {
 		}
 	}
 	
-	public int save(Internship internship) throws SQLException{
+	public int save(int idUser, Internship internship) throws SQLException{
 		boolean insert = (internship.getIdInternship() == 0);
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -339,6 +340,10 @@ public class InternshipDAO {
 				if(rs.next()){
 					internship.setIdInternship(rs.getInt(1));
 				}
+
+				new UpdateEvent(conn).registerInsert(idUser, internship);
+			} else {
+				new UpdateEvent(conn).registerUpdate(idUser, internship);
 			}
 			
 			return internship.getIdInternship();
@@ -377,15 +382,20 @@ public class InternshipDAO {
 		return internship;
 	}
 	
-	public boolean delete(int id) throws SQLException{
+	public boolean delete(int idUser, int id) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
+		Internship internship = this.findById(id);
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			return stmt.execute("DELETE FROM internship WHERE idinternship = " + String.valueOf(id));
+			boolean ret = stmt.execute("DELETE FROM internship WHERE idinternship = " + String.valueOf(id));
+			
+			new UpdateEvent(conn).registerDelete(idUser, internship);
+			
+			return ret;
 		}finally{
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();

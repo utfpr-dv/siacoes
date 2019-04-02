@@ -1,6 +1,10 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
-public class State {
+import java.io.Serializable;
+
+public class State implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int idState;
 	private Country country;

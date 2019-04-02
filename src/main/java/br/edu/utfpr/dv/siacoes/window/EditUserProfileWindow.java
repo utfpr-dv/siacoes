@@ -9,13 +9,13 @@ import java.util.logging.Logger;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.components.FileUploaderListener;
@@ -150,7 +150,7 @@ public class EditUserProfileWindow extends EditWindow {
 				this.user.setInstitution(this.textInstitution.getValue());
 			}
 			
-			new UserBO().save(this.user);
+			new UserBO().save(Session.getIdUserLog(), this.user);
 			
 			this.showSuccessNotification("Salvar Informações", "Informações salvas com sucesso.");
 			

@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportType;
 
@@ -120,7 +121,7 @@ public class InternshipReportDAO {
 		}
 	}
 	
-	public int save(InternshipReport report) throws SQLException{
+	public int save(int idUser, InternshipReport report) throws SQLException{
 		boolean insert = (report.getIdInternshipReport() == 0);
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -149,6 +150,10 @@ public class InternshipReportDAO {
 				if(rs.next()){
 					report.setIdInternshipReport(rs.getInt(1));
 				}
+
+				new UpdateEvent(this.conn).registerInsert(idUser, report);
+			} else {
+				new UpdateEvent(this.conn).registerUpdate(idUser, report);
 			}
 			
 			return report.getIdInternshipReport();

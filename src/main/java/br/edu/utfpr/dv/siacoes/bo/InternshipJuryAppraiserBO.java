@@ -47,11 +47,11 @@ public class InternshipJuryAppraiserBO {
 		}
 	}
 	
-	public int save(InternshipJuryAppraiser appraiser) throws Exception{
+	public int save(int idUser, InternshipJuryAppraiser appraiser) throws Exception{
 		try {
 			InternshipJuryAppraiserDAO dao = new InternshipJuryAppraiserDAO();
 			
-			return dao.save(appraiser);
+			return dao.save(idUser, appraiser);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

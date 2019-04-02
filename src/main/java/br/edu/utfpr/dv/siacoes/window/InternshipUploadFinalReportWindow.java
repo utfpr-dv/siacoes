@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import com.vaadin.ui.TextField;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.components.FileUploader;
@@ -63,7 +64,7 @@ public class InternshipUploadFinalReportWindow extends EditWindow {
 				throw new Exception("É necessário enviar o relatório final.");
 			}
 			
-			bo.save(this.internship);
+			bo.save(Session.getIdUserLog(), this.internship);
 			
 			this.showSuccessNotification("Salvar Relatório de Estágio", "Relatório salvo com sucesso.");
 			

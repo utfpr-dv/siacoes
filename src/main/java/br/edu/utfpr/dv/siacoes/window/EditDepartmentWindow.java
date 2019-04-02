@@ -10,9 +10,9 @@ import com.vaadin.server.StreamResource;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.DepartmentBO;
 import br.edu.utfpr.dv.siacoes.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.components.FileUploader;
@@ -138,7 +138,7 @@ public class EditDepartmentWindow extends EditWindow {
 				this.department.setLogo(this.uploadLogo.getUploadedFile());
 			}
 			
-			bo.save(this.department);
+			bo.save(Session.getIdUserLog(), this.department);
 			
 			this.showSuccessNotification("Salvar Departamento", "Departamento salvo com sucesso.");
 			

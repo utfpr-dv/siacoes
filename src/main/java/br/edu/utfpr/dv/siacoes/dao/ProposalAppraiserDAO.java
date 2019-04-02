@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 
@@ -122,7 +123,7 @@ public class ProposalAppraiserDAO {
 		}
 	}
 	
-	public int save(ProposalAppraiser appraiser) throws SQLException{
+	public int save(int idUser, ProposalAppraiser appraiser) throws SQLException{
 		boolean insert = (appraiser.getIdProposalAppraiser() == 0);
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -154,6 +155,10 @@ public class ProposalAppraiserDAO {
 				if(rs.next()){
 					appraiser.setIdProposalAppraiser(rs.getInt(1));
 				}
+
+				new UpdateEvent(this.conn).registerInsert(idUser, appraiser);
+			} else {
+				new UpdateEvent(this.conn).registerUpdate(idUser, appraiser);
 			}
 			
 			return appraiser.getIdProposalAppraiser();

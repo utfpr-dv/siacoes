@@ -1,9 +1,12 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class User {
+public class User implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	public enum UserProfile{
 		STUDENT(0), PROFESSOR(1), ADMINISTRATOR(2), MANAGER(3), COMPANYSUPERVISOR(4), SUPERVISOR(5), ADMINISTRATIVE(6);
@@ -53,7 +56,7 @@ public class User {
 	private Company company;
 	private String name;
 	private String login;
-	private String password;
+	private transient String password;
 	private String salt;
 	private String email;
 	private String phone;

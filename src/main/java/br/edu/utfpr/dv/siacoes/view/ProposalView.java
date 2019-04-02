@@ -11,7 +11,6 @@ import org.vaadin.dialogs.ConfirmDialog;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.renderers.DateRenderer;
@@ -187,7 +186,7 @@ public class ProposalView extends ListView {
                     if (dialog.isConfirmed()) {
                     	try {
                     		ProposalBO bo = new ProposalBO();
-							bo.invalidated((int)value);
+							bo.invalidated(Session.getIdUserLog(), (int)value);
 							
 							refreshGrid();
 							

@@ -34,7 +34,7 @@ public class CompanyBO {
 		}
 	}
 	
-	public int save(Company company) throws Exception{
+	public int save(int idUser, Company company) throws Exception{
 		if((company.getCity() == null) || (company.getCity().getIdCity() == 0)){
 			throw new Exception("Informe a cidade da empresa.");
 		}
@@ -45,7 +45,7 @@ public class CompanyBO {
 		try{
 			CompanyDAO dao = new CompanyDAO();
 			
-			return dao.save(company);
+			return dao.save(idUser, company);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

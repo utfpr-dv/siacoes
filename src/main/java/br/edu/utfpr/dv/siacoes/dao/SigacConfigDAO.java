@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.SigacConfig;
 
 public class SigacConfigDAO {
@@ -37,7 +38,7 @@ public class SigacConfigDAO {
 		}
 	}
 	
-	public int save(SigacConfig config) throws SQLException{
+	public int save(int idUser, SigacConfig config) throws SQLException{
 		boolean insert = (this.findByDepartment(config.getDepartment().getIdDepartment()) == null);
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -56,6 +57,8 @@ public class SigacConfigDAO {
 			stmt.setInt(3, config.getDepartment().getIdDepartment());
 			
 			stmt.execute();
+			
+			new UpdateEvent(conn).registerUpdate(idUser, config);
 			
 			return config.getDepartment().getIdDepartment();
 		}finally{

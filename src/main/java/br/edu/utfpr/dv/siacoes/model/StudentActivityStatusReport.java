@@ -1,9 +1,12 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudentActivityStatusReport {
+public class StudentActivityStatusReport implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	public enum StudentStage{
 		REGULAR(0), FINISHINGCOURSE(1), ALMOSTGRADUATED(2), GRADUATED(3);
