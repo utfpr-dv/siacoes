@@ -264,6 +264,7 @@ public class LoginView extends CustomComponent implements View {
         		this.saveCookieLogin(username, password);
         	}
         	
+        	Session.setAdministrator(null);
         	Session.setUser(user);
         	if((user.getProfiles() != null) && (user.getProfiles().size() > 0)) {
         		Session.setSelectedProfile(user.getProfiles().get(0));
