@@ -32,12 +32,6 @@
 	</dependencyManagement>
   
   	<dependencies>
-    	<dependency>
-      		<groupId>junit</groupId>
-      		<artifactId>junit</artifactId>
-      		<version>3.8.1</version>
-      		<scope>test</scope>
-    	</dependency>
     	<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
 		<dependency>
       		<groupId>javax.servlet</groupId>
@@ -171,7 +165,19 @@
 		<dependency>
       		<groupId>org.bouncycastle</groupId>
       		<artifactId>bcpkix-jdk15on</artifactId>
-      		<version>1.58</version>
+      		<version>1.60</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
+		<dependency>
+		    <groupId>org.bouncycastle</groupId>
+		    <artifactId>bcprov-jdk15on</artifactId>
+		    <version>1.60</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-ext-jdk15on -->
+		<dependency>
+		    <groupId>org.bouncycastle</groupId>
+		    <artifactId>bcprov-ext-jdk15on</artifactId>
+		    <version>1.60</version>
 		</dependency>
     	<!-- https://mvnrepository.com/artifact/org.knowm.xchart/xchart -->
 		<dependency>
