@@ -708,6 +708,7 @@ public class ProposalDAO {
 		p.setSupervisorFeedback(ProposalFeedback.valueOf(rs.getInt("supervisorFeedback")));
 		p.setSupervisorFeedbackDate(rs.getDate("supervisorFeedbackDate"));
 		p.setSupervisorComments(rs.getString("supervisorComments"));
+		p.setFileUploaded(rs.getBytes("file") != null);
 		
 		if(loadFiles) {
 			p.setFile(rs.getBytes("file"));

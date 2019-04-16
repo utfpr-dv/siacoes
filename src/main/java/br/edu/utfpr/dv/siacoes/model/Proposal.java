@@ -27,6 +27,7 @@ public class Proposal implements Serializable {
 	private ProposalFeedback supervisorFeedback;
 	private Date supervisorFeedbackDate;
 	private String supervisorComments;
+	private transient boolean fileUploaded;
 	
 	public Proposal(){
 		this.setIdProposal(0);
@@ -45,6 +46,7 @@ public class Proposal implements Serializable {
 		this.setSupervisorFeedback(ProposalFeedback.NONE);
 		this.setSupervisorFeedbackDate(null);
 		this.setSupervisorComments("");
+		this.setFileUploaded(false);
 	}
 	
 	public Proposal(User student){
@@ -64,6 +66,7 @@ public class Proposal implements Serializable {
 		this.setSupervisorFeedback(ProposalFeedback.NONE);
 		this.setSupervisorFeedbackDate(null);
 		this.setSupervisorComments("");
+		this.setFileUploaded(false);
 	}
 	
 	public int getIdProposal() {
@@ -164,6 +167,12 @@ public class Proposal implements Serializable {
 	}
 	public void setSupervisorComments(String supervisorComments) {
 		this.supervisorComments = supervisorComments;
+	}
+	public boolean isFileUploaded() {
+		return fileUploaded;
+	}
+	public void setFileUploaded(boolean fileUploaded) {
+		this.fileUploaded = fileUploaded;
 	}
 	
 }

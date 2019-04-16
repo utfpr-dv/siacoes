@@ -142,7 +142,7 @@ public class ProposalView extends ListView {
 	    	List<Proposal> list = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 	    	
 	    	for(Proposal p : list){
-				Object itemId = this.getGrid().addRow(p.getSemester(), p.getYear(), p.getStudent().getName(), p.getSupervisor().getName(), p.getTitle(), p.getSubmissionDate(), ((p.getFile() == null) ? "Não" : "Sim"), ((p.getSupervisorFeedback() == ProposalFeedback.APPROVED) ? "Favorável" : ((p.getSupervisorFeedback() == ProposalFeedback.DISAPPROVED) ? "Desfavorável" : "Nenhum")));
+				Object itemId = this.getGrid().addRow(p.getSemester(), p.getYear(), p.getStudent().getName(), p.getSupervisor().getName(), p.getTitle(), p.getSubmissionDate(), (p.isFileUploaded() ? "Sim" : "Não"), ((p.getSupervisorFeedback() == ProposalFeedback.APPROVED) ? "Favorável" : ((p.getSupervisorFeedback() == ProposalFeedback.DISAPPROVED) ? "Desfavorável" : "Nenhum")));
 				this.addRowId(itemId, p.getIdProposal());
 			}
 		} catch (Exception e) {
