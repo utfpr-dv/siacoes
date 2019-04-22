@@ -206,6 +206,8 @@ public class TutoredBO {
 						
 						if((p.getYear() < semester.getYear()) || ((p.getYear() == semester.getYear()) && (p.getSemester() < semester.getSemester()))){
 							t.setStage(2);
+							t.setSemester(semester.getSemester());
+							t.setYear(semester.getYear());
 						}
 					}
 				}
