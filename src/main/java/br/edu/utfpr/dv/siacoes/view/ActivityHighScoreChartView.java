@@ -1,35 +1,18 @@
 package br.edu.utfpr.dv.siacoes.view;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.dussan.vaadin.dcharts.DCharts;
-import org.dussan.vaadin.dcharts.base.elements.XYaxis;
-import org.dussan.vaadin.dcharts.base.elements.XYseries;
-import org.dussan.vaadin.dcharts.data.DataSeries;
-import org.dussan.vaadin.dcharts.data.Ticks;
-import org.dussan.vaadin.dcharts.metadata.LegendPlacements;
-import org.dussan.vaadin.dcharts.metadata.SeriesToggles;
-import org.dussan.vaadin.dcharts.metadata.TooltipAxes;
-import org.dussan.vaadin.dcharts.metadata.locations.TooltipLocations;
-import org.dussan.vaadin.dcharts.metadata.renderers.AxisRenderers;
-import org.dussan.vaadin.dcharts.metadata.renderers.SeriesRenderers;
-import org.dussan.vaadin.dcharts.options.Axes;
-import org.dussan.vaadin.dcharts.options.Highlighter;
-import org.dussan.vaadin.dcharts.options.Legend;
-import org.dussan.vaadin.dcharts.options.Options;
-import org.dussan.vaadin.dcharts.options.Series;
-import org.dussan.vaadin.dcharts.options.SeriesDefaults;
-import org.dussan.vaadin.dcharts.options.Title;
-import org.dussan.vaadin.dcharts.renderers.legend.EnhancedLegendRenderer;
-import org.dussan.vaadin.dcharts.renderers.series.PieRenderer;
-
+import com.byteowls.vaadin.chartjs.config.ChartConfig;
+import com.byteowls.vaadin.chartjs.config.PieChartConfig;
+import com.byteowls.vaadin.chartjs.data.PieDataset;
+import com.byteowls.vaadin.chartjs.utils.ColorUtils;
 import com.vaadin.ui.HorizontalLayout;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ActivitySubmissionBO;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.ActivityScore;
-import br.edu.utfpr.dv.siacoes.model.InternshipByCompany;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 
@@ -55,28 +38,38 @@ public class ActivityHighScoreChartView extends ChartView {
 	}
 
 	@Override
-	public DCharts generateChart() throws Exception {
+	public ChartConfig generateChart() throws Exception {
 		List<ActivityScore> list = new ActivitySubmissionBO().getActivityScore(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textInitialYear.getYear(), this.textFinalYear.getYear(), 10);
+		List<String> colors = new ArrayList<>();
 		
-		DataSeries dataSeries = new DataSeries();
+		PieChartConfig config = new PieChartConfig();
 		
-		Title title = new Title("Atividades mais Pontuadas");
+		config.data().extractLabelsFromDataset(true);
 		
-		SeriesDefaults seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.PIE).setRendererOptions(new PieRenderer().setShowDataLabels(true));
+		PieDataset ds = new PieDataset();
 		
 		for(ActivityScore item : list){
-        	dataSeries.newSeries().add(item.getActivity(), item.getScore());
+        	ds.addLabeledData(item.getActivity(), item.getScore());
+        	colors.add(ColorUtils.randomColor(0.7));
         }
 		
-		Legend legend = new Legend().setShow(true).setRendererOptions(new EnhancedLegendRenderer().setSeriesToggle(SeriesToggles.SLOW).setSeriesToggleReplot(true)).setPlacement(LegendPlacements.OUTSIDE_GRID);
-
-		Highlighter highlighter = new Highlighter().setShow(true).setShowTooltip(true).setTooltipAlwaysVisible(true).setKeepTooltipInsideChart(true).setTooltipLocation(TooltipLocations.NORTH);
-
-		Options options = new Options().setTitle(title).setSeriesDefaults(seriesDefaults).setHighlighter(highlighter).setLegend(legend);
-
-		DCharts chart = new DCharts().setDataSeries(dataSeries).setOptions(options);
+		ds.backgroundColor(colors.toArray(new String[colors.size()]));
 		
-		return chart;
+		config.
+	        options()
+	            .responsive(true)
+	            .title()
+	                .display(true)
+	                .fontSize(24)
+	                .text("Atividades mais Pontuadas")
+	                .and()
+	            .animation()
+	                //.animateScale(true)
+	                .animateRotate(true)
+	                .and()
+	           .done();
+		
+		return config;
 	}
 	
 }

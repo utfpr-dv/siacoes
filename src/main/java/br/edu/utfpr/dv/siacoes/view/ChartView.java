@@ -3,10 +3,8 @@
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.dussan.vaadin.dcharts.ChartImageFormat;
-import org.dussan.vaadin.dcharts.DCharts;
-import org.dussan.vaadin.dcharts.DownloadButtonLocation;
-
+import com.byteowls.vaadin.chartjs.ChartJs;
+import com.byteowls.vaadin.chartjs.config.ChartConfig;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
@@ -14,7 +12,6 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -118,14 +115,21 @@ public abstract class ChartView extends BasicView {
     }
     
     private void plotChart() throws Exception {
-    	DCharts chart = generateChart().setEnableDownload(true).setDownloadButtonCaption("Salvar Gráfico").setDownloadButtonLocation(DownloadButtonLocation.BOTTOM_LEFT).setChartImageFormat(ChartImageFormat.PNG);
-    	chart.setHeight("95%");
-    	chart.show();
+    	ChartConfig config = generateChart();
+    	ChartJs chart = new ChartJs(config);
+    	chart.setJsLoggingEnabled(true);
+        chart.setWidth("100%");
+    	//chart.setHeight("95%");
+    	//chart.setSizeFull();
+    	
+    	VerticalLayout vl = new VerticalLayout(chart);
+    	vl.setWidth("100%");
+    	vl.setHeight("95%");
 		
-		this.panelChart.setContent(chart);
+		this.panelChart.setContent(vl);
     }
     
-    public abstract DCharts generateChart() throws Exception;
+    public abstract ChartConfig generateChart() throws Exception;
     
     @Override
 	public void enter(ViewChangeEvent event) {

@@ -1009,7 +1009,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.7.12";
+	content: "7.7.17";
 }
 
 .v-widget {
@@ -1960,6 +1960,12 @@ div.v-layout.v-horizontal.v-widget {
 
 .flat .v-tooltip h1, .flat .v-tooltip h2, .flat .v-tooltip h3, .flat .v-tooltip h4 {
 	color: inherit;
+}
+
+.flat .v-tooltip pre.v-tooltip-pre {
+	font: inherit;
+	white-space: pre-wrap;
+	margin: 0;
 }
 
 .flat .v-contextmenu {
@@ -9215,6 +9221,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .flat .v-table-body {
 	border: 2px solid #c1c1c1;
+	overflow-anchor: none;
 	-webkit-user-select: text;
 	-moz-user-select: text;
 	-ms-user-select: text;

@@ -2,26 +2,11 @@
 
 import java.util.List;
 
-import org.dussan.vaadin.dcharts.DCharts;
-import org.dussan.vaadin.dcharts.base.elements.XYaxis;
-import org.dussan.vaadin.dcharts.base.elements.XYseries;
-import org.dussan.vaadin.dcharts.data.DataSeries;
-import org.dussan.vaadin.dcharts.data.Ticks;
-import org.dussan.vaadin.dcharts.metadata.LegendPlacements;
-import org.dussan.vaadin.dcharts.metadata.SeriesToggles;
-import org.dussan.vaadin.dcharts.metadata.TooltipAxes;
-import org.dussan.vaadin.dcharts.metadata.locations.TooltipLocations;
-import org.dussan.vaadin.dcharts.metadata.renderers.AxisRenderers;
-import org.dussan.vaadin.dcharts.metadata.renderers.SeriesRenderers;
-import org.dussan.vaadin.dcharts.options.Axes;
-import org.dussan.vaadin.dcharts.options.Highlighter;
-import org.dussan.vaadin.dcharts.options.Legend;
-import org.dussan.vaadin.dcharts.options.Options;
-import org.dussan.vaadin.dcharts.options.Series;
-import org.dussan.vaadin.dcharts.options.SeriesDefaults;
-import org.dussan.vaadin.dcharts.options.Title;
-import org.dussan.vaadin.dcharts.renderers.legend.EnhancedLegendRenderer;
-
+import com.byteowls.vaadin.chartjs.config.BarChartConfig;
+import com.byteowls.vaadin.chartjs.config.ChartConfig;
+import com.byteowls.vaadin.chartjs.data.BarDataset;
+import com.byteowls.vaadin.chartjs.options.Position;
+import com.byteowls.vaadin.chartjs.utils.ColorUtils;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.HorizontalLayout;
@@ -131,25 +116,25 @@ public class InternshipCompanyChartView extends ChartView {
 	}
 
 	@Override
-	public DCharts generateChart() throws Exception {
+	public ChartConfig generateChart() throws Exception {
 		List<InternshipByCompany> list;
-		Title title;
+		String title;
 		
 		if(this.optionDetailType.getValue().equals(InternshipCompanyChartView.COUNTRYDETAIL)) {
-			title = new Title("Estagiários por País");
+			title = "Estagiários por País";
 			list = new InternshipBO().listInternshipByCountry(Session.getSelectedDepartment().getDepartment().getIdDepartment(), 
 					(this.comboType.getValue().equals("Todos") ? -1 : ((InternshipType)this.comboType.getValue()).getValue()), 
 					(this.comboStatus.getValue().equals("Todos") ? -1 : ((InternshipStatus)this.comboStatus.getValue()).getValue()),
 					(this.comboCompanyStatus.getValue().equals("Todas") ? -1 : (this.comboCompanyStatus.getValue().equals(InternshipCompanyChartView.COMPANYWITHAGREEMENT) ? 1 : 0)));
 		} else if(this.optionDetailType.getValue().equals(InternshipCompanyChartView.STATEDETAIL)) {
-			title = new Title("Estagiários por Estado");
+			title = "Estagiários por Estado";
 			list = new InternshipBO().listInternshipByState(Session.getSelectedDepartment().getDepartment().getIdDepartment(), 
 					(this.comboCountry.getCountry() == null ? 0 : this.comboCountry.getCountry().getIdCountry()), 
 					(this.comboType.getValue().equals("Todos") ? -1 : ((InternshipType)this.comboType.getValue()).getValue()), 
 					(this.comboStatus.getValue().equals("Todos") ? -1 : ((InternshipStatus)this.comboStatus.getValue()).getValue()),
 					(this.comboCompanyStatus.getValue().equals("Todas") ? -1 : (this.comboCompanyStatus.getValue().equals(InternshipCompanyChartView.COMPANYWITHAGREEMENT) ? 1 : 0)));
 		} else if(this.optionDetailType.getValue().equals(InternshipCompanyChartView.CITYDETAIL)) {
-			title = new Title("Estagiários por Cidade");
+			title = "Estagiários por Cidade";
 			list = new InternshipBO().listInternshipByCity(Session.getSelectedDepartment().getDepartment().getIdDepartment(), 
 					(this.comboCountry.getCountry() == null ? 0 : this.comboCountry.getCountry().getIdCountry()), 
 					(this.comboState.getStateValue() == null ? 0 : this.comboState.getStateValue().getIdState()), 
@@ -157,7 +142,7 @@ public class InternshipCompanyChartView extends ChartView {
 					(this.comboStatus.getValue().equals("Todos") ? -1 : ((InternshipStatus)this.comboStatus.getValue()).getValue()),
 					(this.comboCompanyStatus.getValue().equals("Todas") ? -1 : (this.comboCompanyStatus.getValue().equals(InternshipCompanyChartView.COMPANYWITHAGREEMENT) ? 1 : 0)));
 		} else {
-			title = new Title("Estagiários por Empresa");
+			title = "Estagiários por Empresa";
 			list = new InternshipBO().listInternshipByCompany(Session.getSelectedDepartment().getDepartment().getIdDepartment(), 
 					(this.comboCountry.getCountry() == null ? 0 : this.comboCountry.getCountry().getIdCountry()), 
 					(this.comboState.getStateValue() == null ? 0 : this.comboState.getStateValue().getIdState()), 
@@ -167,27 +152,29 @@ public class InternshipCompanyChartView extends ChartView {
 					(this.comboCompanyStatus.getValue().equals("Todas") ? -1 : (this.comboCompanyStatus.getValue().equals(InternshipCompanyChartView.COMPANYWITHAGREEMENT) ? 1 : 0)));
 		}
 		
-		DataSeries dataSeries = new DataSeries();
+		BarChartConfig config = new BarChartConfig();
 		
-		SeriesDefaults seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.BAR);
-		Series series = new Series();
+		config.data().extractLabelsFromDataset(true);
 		
-		for(InternshipByCompany item : list){
-        	dataSeries.add(item.getTotalStudents());
-        	series.addSeries(new XYseries().setLabel(item.getCompanyName()));
-        }
+		BarDataset ds = new BarDataset().type().backgroundColor(ColorUtils.randomColor(0.7));
+		for(InternshipByCompany item : list) {
+			ds.addLabeledData(item.getCompanyName(), (double)item.getTotalStudents());
+		}
+		config.data().addDataset(ds);
 		
-		Legend legend = new Legend().setShow(true).setRendererOptions(new EnhancedLegendRenderer().setSeriesToggle(SeriesToggles.SLOW).setSeriesToggleReplot(true)).setPlacement(LegendPlacements.OUTSIDE_GRID);
-
-		Axes axes = new Axes().addAxis(new XYaxis().setRenderer(AxisRenderers.CATEGORY).setTicks(new Ticks().add("")));
-
-		Highlighter highlighter = new Highlighter().setShow(true).setShowTooltip(true).setTooltipAlwaysVisible(true).setKeepTooltipInsideChart(true).setTooltipLocation(TooltipLocations.NORTH).setTooltipAxes(TooltipAxes.XY_BAR);
-
-		Options options = new Options().setTitle(title).setSeriesDefaults(seriesDefaults).setAxes(axes).setHighlighter(highlighter).setSeries(series).setLegend(legend);
-
-		DCharts chart = new DCharts().setDataSeries(dataSeries).setOptions(options);
+		config.data().and();
 		
-		return chart;
+		config.
+	        options()
+	            .responsive(true)
+	            .title()
+	                .display(true)
+	                .position(Position.TOP)
+	                .text(title)
+	                .and()
+	           .done();
+		
+		return config;
 	}
 
 }

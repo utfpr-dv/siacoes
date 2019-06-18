@@ -2,25 +2,13 @@ package br.edu.utfpr.dv.siacoes.view;
 
 import java.util.List;
 
-import org.dussan.vaadin.dcharts.DCharts;
-import org.dussan.vaadin.dcharts.base.elements.XYaxis;
-import org.dussan.vaadin.dcharts.base.elements.XYseries;
-import org.dussan.vaadin.dcharts.data.DataSeries;
-import org.dussan.vaadin.dcharts.metadata.LegendPlacements;
-import org.dussan.vaadin.dcharts.metadata.SeriesToggles;
-import org.dussan.vaadin.dcharts.metadata.TooltipAxes;
-import org.dussan.vaadin.dcharts.metadata.locations.TooltipLocations;
-import org.dussan.vaadin.dcharts.metadata.renderers.AxisRenderers;
-import org.dussan.vaadin.dcharts.metadata.renderers.SeriesRenderers;
-import org.dussan.vaadin.dcharts.options.Axes;
-import org.dussan.vaadin.dcharts.options.Highlighter;
-import org.dussan.vaadin.dcharts.options.Legend;
-import org.dussan.vaadin.dcharts.options.Options;
-import org.dussan.vaadin.dcharts.options.Series;
-import org.dussan.vaadin.dcharts.options.SeriesDefaults;
-import org.dussan.vaadin.dcharts.options.Title;
-import org.dussan.vaadin.dcharts.renderers.legend.EnhancedLegendRenderer;
-
+import com.byteowls.vaadin.chartjs.config.BarChartConfig;
+import com.byteowls.vaadin.chartjs.config.ChartConfig;
+import com.byteowls.vaadin.chartjs.config.LineChartConfig;
+import com.byteowls.vaadin.chartjs.data.BarDataset;
+import com.byteowls.vaadin.chartjs.data.LineDataset;
+import com.byteowls.vaadin.chartjs.options.Position;
+import com.byteowls.vaadin.chartjs.utils.ColorUtils;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.OptionGroup;
 
@@ -60,44 +48,70 @@ public class JurySemesterChartView extends ChartView {
 	}
 
 	@Override
-	public DCharts generateChart() throws Exception {
+	public ChartConfig generateChart() throws Exception {
 		List<JuryBySemester> list = new JuryBO().listJuryBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textInitialYear.getYear(), this.textFinalYear.getYear());
 		
-		DataSeries dataSeries = new DataSeries();
-		Series series = new Series();
-		
-		dataSeries.newSeries();
-		series.addSeries(new XYseries().setLabel("TCC 1"));
-		for(JuryBySemester item : list) {
-			dataSeries.add(String.valueOf(item.getSemester()) + "/" + String.valueOf(item.getYear()), item.getJuryStage1());
-		}
-		
-		dataSeries.newSeries();
-		series.addSeries(new XYseries().setLabel("TCC 2"));
-		for(JuryBySemester item : list) {
-			dataSeries.add(String.valueOf(item.getSemester()) + "/" + String.valueOf(item.getYear()), item.getJuryStage2());
-		}
-		
-		Title title = new Title("Bancas por Semestre");
-		
-		Legend legend = new Legend().setShow(true).setRendererOptions(new EnhancedLegendRenderer().setSeriesToggle(SeriesToggles.SLOW).setSeriesToggleReplot(true)).setPlacement(LegendPlacements.OUTSIDE_GRID);
-		
-		SeriesDefaults seriesDefaults;
 		if(this.optionFilterType.isSelected(this.optionFilterType.getItemIds().iterator().next())) {
-			seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.BAR);
+			BarChartConfig config = new BarChartConfig();
+			
+			config.data().extractLabelsFromDataset(true);
+			
+			BarDataset ds1 = new BarDataset().type().label("TCC 1").backgroundColor(ColorUtils.randomColor(0.7));
+			for(JuryBySemester item : list) {
+				ds1.addLabeledData(String.valueOf(item.getSemester()) + "/" + String.valueOf(item.getYear()), (double)item.getJuryStage1());
+			}
+			config.data().addDataset(ds1);
+			
+			BarDataset ds2 = new BarDataset().type().label("TCC 2").backgroundColor(ColorUtils.randomColor(0.7));
+			for(JuryBySemester item : list) {
+				ds2.addLabeledData(String.valueOf(item.getSemester()) + "/" + String.valueOf(item.getYear()), (double)item.getJuryStage2());
+			}
+			config.data().addDataset(ds2);
+			
+			config.data().and();
+			
+			config.
+		        options()
+		            .responsive(true)
+		            .title()
+		                .display(true)
+		                .position(Position.TOP)
+		                .text("Bancas por Semestre")
+		                .and()
+		           .done();
+			
+			return config;
 		} else {
-			seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.LINE);
+			LineChartConfig config = new LineChartConfig();
+			
+			config.data().extractLabelsFromDataset(true);
+			
+			LineDataset ds1 = new LineDataset().type().label("TCC 1").backgroundColor(ColorUtils.randomColor(0.7));
+			for(JuryBySemester item : list) {
+				ds1.addLabeledData(String.valueOf(item.getSemester()) + "/" + String.valueOf(item.getYear()), (double)item.getJuryStage1());
+			}
+			config.data().addDataset(ds1);
+			
+			LineDataset ds2 = new LineDataset().type().label("TCC 2").backgroundColor(ColorUtils.randomColor(0.7));
+			for(JuryBySemester item : list) {
+				ds2.addLabeledData(String.valueOf(item.getSemester()) + "/" + String.valueOf(item.getYear()), (double)item.getJuryStage2());
+			}
+			config.data().addDataset(ds2);
+			
+			config.data().and();
+			
+			config.
+		        options()
+		            .responsive(true)
+		            .title()
+		                .display(true)
+		                .position(Position.TOP)
+		                .text("Bancas por Semestre")
+		                .and()
+		           .done();
+			
+			return config;
 		}
-		
-		Axes axes = new Axes().addAxis(new XYaxis().setRenderer(AxisRenderers.CATEGORY));
-		
-		Highlighter highlighter = new Highlighter().setShow(true).setShowTooltip(true).setTooltipAlwaysVisible(true).setKeepTooltipInsideChart(true).setTooltipLocation(TooltipLocations.NORTH).setTooltipAxes(TooltipAxes.XY_BAR);
-
-		Options options = new Options().setTitle(title).setSeriesDefaults(seriesDefaults).setAxes(axes).setHighlighter(highlighter).setSeries(series).setLegend(legend);
-
-		DCharts chart = new DCharts().setDataSeries(dataSeries).setOptions(options);
-		
-		return chart;
 	}
 
 }

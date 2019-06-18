@@ -2,25 +2,11 @@ package br.edu.utfpr.dv.siacoes.view;
 
 import java.util.List;
 
-import org.dussan.vaadin.dcharts.DCharts;
-import org.dussan.vaadin.dcharts.base.elements.XYaxis;
-import org.dussan.vaadin.dcharts.base.elements.XYseries;
-import org.dussan.vaadin.dcharts.data.DataSeries;
-import org.dussan.vaadin.dcharts.metadata.LegendPlacements;
-import org.dussan.vaadin.dcharts.metadata.SeriesToggles;
-import org.dussan.vaadin.dcharts.metadata.TooltipAxes;
-import org.dussan.vaadin.dcharts.metadata.locations.TooltipLocations;
-import org.dussan.vaadin.dcharts.metadata.renderers.AxisRenderers;
-import org.dussan.vaadin.dcharts.metadata.renderers.SeriesRenderers;
-import org.dussan.vaadin.dcharts.options.Axes;
-import org.dussan.vaadin.dcharts.options.Highlighter;
-import org.dussan.vaadin.dcharts.options.Legend;
-import org.dussan.vaadin.dcharts.options.Options;
-import org.dussan.vaadin.dcharts.options.Series;
-import org.dussan.vaadin.dcharts.options.SeriesDefaults;
-import org.dussan.vaadin.dcharts.options.Title;
-import org.dussan.vaadin.dcharts.renderers.legend.EnhancedLegendRenderer;
-
+import com.byteowls.vaadin.chartjs.config.BarChartConfig;
+import com.byteowls.vaadin.chartjs.config.ChartConfig;
+import com.byteowls.vaadin.chartjs.data.BarDataset;
+import com.byteowls.vaadin.chartjs.options.Position;
+import com.byteowls.vaadin.chartjs.utils.ColorUtils;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.NativeSelect;
 
@@ -59,45 +45,45 @@ public class ActivityGroupStatusChartView extends ChartView {
 	}
 
 	@Override
-	public DCharts generateChart() throws Exception {
+	public ChartConfig generateChart() throws Exception {
 		List<ActivityGroupStatus> list = new ActivitySubmissionBO().getStudentActivityGroupStatus(Session.getSelectedDepartment().getDepartment().getIdDepartment(), (StudentStage)this.comboStage.getValue(), this.checkStudentsWithoutPoints.getValue());
 		
-		DataSeries dataSeries = new DataSeries();
-		Series series = new Series();
+		BarChartConfig config = new BarChartConfig();
 		
-		dataSeries.newSeries();
-		series.addSeries(new XYseries().setLabel("Pontuação Mínima do Grupo"));
+		config.data().extractLabelsFromDataset(true);
+		
+		BarDataset ds1 = new BarDataset().type().label("Pontuação Mínima do Grupo").backgroundColor(ColorUtils.randomColor(0.7));
 		for(ActivityGroupStatus item : list) {
-			dataSeries.add("Grupo " + String.valueOf(item.getGroup().getSequence()), item.getGroup().getMinimumScore());
+			ds1.addLabeledData("Grupo " + String.valueOf(item.getGroup().getSequence()), (double)item.getGroup().getMinimumScore());
 		}
+		config.data().addDataset(ds1);
 		
-		dataSeries.newSeries();
-		series.addSeries(new XYseries().setLabel("Pontuação Média dos Acadêmicos"));
+		BarDataset ds2 = new BarDataset().type().label("Pontuação Média dos Acadêmicos").backgroundColor(ColorUtils.randomColor(0.7));
 		for(ActivityGroupStatus item : list) {
-			dataSeries.add("Grupo " + String.valueOf(item.getGroup().getSequence()), item.getAverageScore());
+			ds2.addLabeledData("Grupo " + String.valueOf(item.getGroup().getSequence()), (double)item.getAverageScore());
 		}
+		config.data().addDataset(ds2);
 		
-		dataSeries.newSeries();
-		series.addSeries(new XYseries().setLabel("Pontuação Máxima do Grupo"));
+		BarDataset ds3 = new BarDataset().type().label("Pontuação Máxima do Grupo").backgroundColor(ColorUtils.randomColor(0.7));
 		for(ActivityGroupStatus item : list) {
-			dataSeries.add("Grupo " + String.valueOf(item.getGroup().getSequence()), item.getGroup().getMaximumScore());
+			ds3.addLabeledData("Grupo " + String.valueOf(item.getGroup().getSequence()), (double)item.getGroup().getMaximumScore());
 		}
+		config.data().addDataset(ds3);
 		
-		Title title = new Title("Pontuação Média por Grupo");
+		config.data().and();
 		
-		Legend legend = new Legend().setShow(true).setRendererOptions(new EnhancedLegendRenderer().setSeriesToggle(SeriesToggles.SLOW).setSeriesToggleReplot(true)).setPlacement(LegendPlacements.OUTSIDE_GRID);
+		config.
+	        options()
+	            .responsive(true)
+	            .title()
+	                .display(true)
+	                .position(Position.TOP)
+	                .fontSize(24)
+	                .text("Pontuação Média por Grupo")
+	                .and()
+	           .done();
 		
-		SeriesDefaults seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.BAR);
-		
-		Axes axes = new Axes().addAxis(new XYaxis().setRenderer(AxisRenderers.CATEGORY));
-		
-		Highlighter highlighter = new Highlighter().setShow(true).setShowTooltip(true).setTooltipAlwaysVisible(true).setKeepTooltipInsideChart(true).setTooltipLocation(TooltipLocations.NORTH).setTooltipAxes(TooltipAxes.XY_BAR);
-
-		Options options = new Options().setTitle(title).setSeriesDefaults(seriesDefaults).setAxes(axes).setHighlighter(highlighter).setSeries(series).setLegend(legend);
-
-		DCharts chart = new DCharts().setDataSeries(dataSeries).setOptions(options);
-		
-		return chart;
+		return config;
 	}
 	
 }

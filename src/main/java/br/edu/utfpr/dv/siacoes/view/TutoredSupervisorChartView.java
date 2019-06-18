@@ -2,25 +2,13 @@ package br.edu.utfpr.dv.siacoes.view;
 
 import java.util.List;
 
-import org.dussan.vaadin.dcharts.DCharts;
-import org.dussan.vaadin.dcharts.base.elements.XYaxis;
-import org.dussan.vaadin.dcharts.base.elements.XYseries;
-import org.dussan.vaadin.dcharts.data.DataSeries;
-import org.dussan.vaadin.dcharts.metadata.LegendPlacements;
-import org.dussan.vaadin.dcharts.metadata.SeriesToggles;
-import org.dussan.vaadin.dcharts.metadata.TooltipAxes;
-import org.dussan.vaadin.dcharts.metadata.locations.TooltipLocations;
-import org.dussan.vaadin.dcharts.metadata.renderers.AxisRenderers;
-import org.dussan.vaadin.dcharts.metadata.renderers.SeriesRenderers;
-import org.dussan.vaadin.dcharts.options.Axes;
-import org.dussan.vaadin.dcharts.options.Highlighter;
-import org.dussan.vaadin.dcharts.options.Legend;
-import org.dussan.vaadin.dcharts.options.Options;
-import org.dussan.vaadin.dcharts.options.Series;
-import org.dussan.vaadin.dcharts.options.SeriesDefaults;
-import org.dussan.vaadin.dcharts.options.Title;
-import org.dussan.vaadin.dcharts.renderers.legend.EnhancedLegendRenderer;
-
+import com.byteowls.vaadin.chartjs.config.BarChartConfig;
+import com.byteowls.vaadin.chartjs.config.ChartConfig;
+import com.byteowls.vaadin.chartjs.config.LineChartConfig;
+import com.byteowls.vaadin.chartjs.data.BarDataset;
+import com.byteowls.vaadin.chartjs.data.LineDataset;
+import com.byteowls.vaadin.chartjs.options.Position;
+import com.byteowls.vaadin.chartjs.utils.ColorUtils;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.OptionGroup;
 
@@ -65,42 +53,69 @@ public class TutoredSupervisorChartView extends ChartView {
 	}
 	
 	@Override
-	public DCharts generateChart() throws Exception {
+	public ChartConfig generateChart() throws Exception {
 		List<TutoredGroupedBySupervisor> list = new TutoredBO().listTutoredGroupedBySupervisor(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textInitialYear.getYear(), this.textFinalYear.getYear(), this.comboStage.getStage());
+		String title = "Orientados por Orientador (TCC " + (this.comboStage.isBothSelected() ? "1 e 2" : String.valueOf(this.comboStage.getStage())) + ")";
 		
-		DataSeries dataSeries = new DataSeries();
-		Series series = new Series();
-		
-		for(TutoredGroupedBySupervisor item : list) {
-			dataSeries.newSeries();
+		if(this.optionFilterType.isSelected(this.optionFilterType.getItemIds().iterator().next())) {
+			BarChartConfig config = new BarChartConfig();
 			
-			for(TutoredBySupervisor t : item.getTutored()) {
-				dataSeries.add(String.valueOf(t.getSemester()) + "/" + String.valueOf(t.getYear()), t.getTotal());
+			config.data().extractLabelsFromDataset(true);
+			
+			for(TutoredGroupedBySupervisor item : list) {
+				BarDataset ds = new BarDataset().type().label(item.getSupervisorName()).backgroundColor(ColorUtils.randomColor(0.7));
+				
+				for(TutoredBySupervisor t : item.getTutored()) {
+					ds.addLabeledData(String.valueOf(t.getSemester()) + "/" + String.valueOf(t.getYear()), (double)t.getTotal());
+				}
+				
+				config.data().addDataset(ds);
 			}
 			
-			series.addSeries(new XYseries().setLabel(item.getSupervisorName()));
-		}
-		
-		Title title = new Title("Orientados por Orientador (TCC " + (this.comboStage.isBothSelected() ? "1 e 2" : String.valueOf(this.comboStage.getStage())) + ")");
-		
-		Legend legend = new Legend().setShow(true).setRendererOptions(new EnhancedLegendRenderer().setSeriesToggle(SeriesToggles.SLOW).setSeriesToggleReplot(true)).setPlacement(LegendPlacements.OUTSIDE_GRID);
-		
-		SeriesDefaults seriesDefaults;
-		if(this.optionFilterType.isSelected(this.optionFilterType.getItemIds().iterator().next())) {
-			seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.BAR);
+			config.data().and();
+			
+			config.
+		        options()
+		            .responsive(true)
+		            .title()
+		                .display(true)
+		                .position(Position.TOP)
+		                .fontSize(24)
+		                .text(title)
+		                .and()
+		           .done();
+			
+			return config;
 		} else {
-			seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.LINE);
+			LineChartConfig config = new LineChartConfig();
+			
+			config.data().extractLabelsFromDataset(true);
+			
+			for(TutoredGroupedBySupervisor item : list) {
+				LineDataset ds = new LineDataset().type().label(item.getSupervisorName()).fill(false).backgroundColor(ColorUtils.randomColor(0.7));
+				
+				for(TutoredBySupervisor t : item.getTutored()) {
+					ds.addLabeledData(String.valueOf(t.getSemester()) + "/" + String.valueOf(t.getYear()), (double)t.getTotal());
+				}
+				
+				config.data().addDataset(ds);
+			}
+			
+			config.data().and();
+			
+			config.
+		        options()
+		            .responsive(true)
+		            .title()
+		                .display(true)
+		                .position(Position.TOP)
+		                .fontSize(24)
+		                .text(title)
+		                .and()
+		           .done();
+			
+			return config;
 		}
-		
-		Axes axes = new Axes().addAxis(new XYaxis().setRenderer(AxisRenderers.CATEGORY));
-		
-		Highlighter highlighter = new Highlighter().setShow(true).setShowTooltip(true).setTooltipAlwaysVisible(true).setKeepTooltipInsideChart(true).setTooltipLocation(TooltipLocations.NORTH).setTooltipAxes(TooltipAxes.XY_BAR);
-
-		Options options = new Options().setTitle(title).setSeriesDefaults(seriesDefaults).setAxes(axes).setHighlighter(highlighter).setSeries(series).setLegend(legend);
-
-		DCharts chart = new DCharts().setDataSeries(dataSeries).setOptions(options);
-		
-		return chart;
 	}
 
 }
