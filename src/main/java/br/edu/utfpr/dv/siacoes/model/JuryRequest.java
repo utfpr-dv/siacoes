@@ -6,6 +6,7 @@ import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
+import br.edu.utfpr.dv.siacoes.bo.SupervisorChangeBO;
 import br.edu.utfpr.dv.siacoes.bo.ThesisBO;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
@@ -98,67 +99,23 @@ public class JuryRequest implements Serializable {
 	public User getSupervisor() {
 		if((this.getProposal() == null) || (this.getProposal().getIdProposal() == 0)) {
 			return new User();
-		}
-		
-		try {
-			Thesis thesis = null;
-			
-			if(this.getStage() == 2) {
-				thesis = new ThesisBO().findByProposal(this.getProposal().getIdProposal());
-			} 
-			
-			if(thesis != null) {
-				return thesis.getSupervisor();
-			} else {
-				Project project = new ProjectBO().findByProposal(this.getProposal().getIdProposal());
-				
-				if(project != null) {
-					return project.getSupervisor();
-				} else {
-					Proposal proposal = new ProposalBO().findById(this.getProposal().getIdProposal());
-					
-					if(proposal != null) {
-						return proposal.getSupervisor();
-					} else {
-						return new User();
-					}
-				}
+		} else {
+			try {
+				return new SupervisorChangeBO().findCurrentSupervisor(this.getProposal().getIdProposal());
+			} catch (Exception e) {
+				return new User();
 			}
-		} catch (Exception e) {
-			return new User();
 		}
 	}
 	public User getCosupervisor() {
 		if((this.getProposal() == null) || (this.getProposal().getIdProposal() == 0)) {
 			return null;
-		}
-		
-		try {
-			Thesis thesis = null;
-			
-			if(this.getStage() == 2) {
-				thesis = new ThesisBO().findByProposal(this.getProposal().getIdProposal());
-			} 
-			
-			if(thesis != null) {
-				return thesis.getCosupervisor();
-			} else {
-				Project project = new ProjectBO().findByProposal(this.getProposal().getIdProposal());
-				
-				if(project != null) {
-					return project.getCosupervisor();
-				} else {
-					Proposal proposal = new ProposalBO().findById(this.getProposal().getIdProposal());
-					
-					if(proposal != null) {
-						return proposal.getCosupervisor();
-					} else {
-						return null;
-					}
-				}
+		} else {
+			try {
+				return new SupervisorChangeBO().findCurrentCosupervisor(this.getProposal().getIdProposal());
+			} catch (Exception e) {
+				return new User();
 			}
-		} catch (Exception e) {
-			return null;
 		}
 	}
 	public String getStudent() {

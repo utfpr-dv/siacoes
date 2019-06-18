@@ -270,12 +270,30 @@ public class EditJuryRequestWindow extends EditWindow {
 	public void save() {
 		try{
 			JuryRequestBO bo = new JuryRequestBO();
+			boolean foundChair = false;
 			
 			this.jury.setLocal(this.textLocal.getValue());
 			this.jury.setComments(this.textComments.getValue());
 			this.jury.setDate(this.textDate.getValue());
 			this.jury.setComments(this.textComments.getValue());
 			this.jury.setSupervisorAbsenceReason(this.textSupervisorAbsenceReason.getValue());
+			
+			for(int i = 0; i < this.jury.getAppraisers().size(); i++) {
+				if(this.jury.getAppraisers().get(i).isChair()) {
+					this.jury.getAppraisers().get(i).setAppraiser(this.comboChair.getProfessor());
+					foundChair = true;
+				}
+			}
+			
+			if(!foundChair) {
+				JuryAppraiserRequest chair = new JuryAppraiserRequest();
+				
+				chair.setAppraiser(this.comboChair.getProfessor());
+				chair.setChair(true);
+				chair.setSubstitute(false);
+				
+				this.jury.getAppraisers().add(chair);
+			}
 			
 			bo.save(Session.getIdUserLog(), this.jury);
 			
