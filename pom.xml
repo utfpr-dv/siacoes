@@ -9,8 +9,8 @@
   	<url>http://maven.apache.org</url>
   
   	<properties>
-		<vaadin.version>7.7.12</vaadin.version>
-		<vaadin.plugin.version>7.7.12</vaadin.plugin.version>
+		<vaadin.version>7.7.17</vaadin.version>
+		<vaadin.plugin.version>7.7.17</vaadin.plugin.version>
 		<jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -70,6 +70,8 @@
       		<groupId>com.vaadin</groupId>
       		<artifactId>vaadin-client-compiler</artifactId>
       		<scope>provided</scope>
+      		<exclusions>
+	    </exclusions>
 		</dependency>
     	<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
 		<dependency>
@@ -241,6 +243,12 @@
 		    <artifactId>dcharts-widget</artifactId>
 		    <version>1.7.0</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.byteowls/vaadin-chartjs -->
+		<dependency>
+		    <groupId>com.byteowls</groupId>
+		    <artifactId>vaadin-chartjs</artifactId>
+		    <version>0.4.0</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
 		<dependency>
 		    <groupId>org.apache.pdfbox</groupId>
@@ -382,14 +390,14 @@
 				<groupId>com.vaadin</groupId>
 				<artifactId>vaadin-maven-plugin</artifactId>
 				<version>${vaadin.plugin.version}</version>
-				<configuration>
+				<!-- <configuration>
 				    <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
 				    <webappDirectory>${basedir}/target/classes/VAADIN/widgetsets</webappDirectory>
 				    <draftCompile>false</draftCompile>
 				    <compileReport>false</compileReport>
 				    <style>OBF</style>
 				    <strict>true</strict>
-			  	</configuration>
+			  	</configuration>-->
 				<executions>
 					<execution>
 						<goals>
