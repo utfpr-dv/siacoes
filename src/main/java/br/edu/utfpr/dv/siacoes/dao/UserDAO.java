@@ -161,7 +161,7 @@ public class UserDAO {
 					sql += " AND 1=2 ";
 			}
 			
-			sql += " ORDER BY userdepartment.profile";
+			sql += " ORDER BY userdepartment.profile, userdepartment.departmentmanager";
 			
 			stmt = conn.prepareStatement(sql);
 		

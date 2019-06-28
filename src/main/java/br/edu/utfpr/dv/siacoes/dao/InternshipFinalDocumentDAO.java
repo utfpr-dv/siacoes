@@ -62,7 +62,7 @@ public class InternshipFinalDocumentDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs, false);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -97,7 +97,7 @@ public class InternshipFinalDocumentDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs, false);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -131,7 +131,7 @@ public class InternshipFinalDocumentDAO {
 			List<InternshipFinalDocument> list = new ArrayList<InternshipFinalDocument>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs, true));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
@@ -169,7 +169,7 @@ public class InternshipFinalDocumentDAO {
 			List<InternshipFinalDocument> list = new ArrayList<InternshipFinalDocument>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs, true));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
@@ -209,7 +209,7 @@ public class InternshipFinalDocumentDAO {
 			List<InternshipFinalDocument> list = new ArrayList<InternshipFinalDocument>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs, true));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
