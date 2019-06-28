@@ -55,6 +55,8 @@ public class ActivityHighScoreChartView extends ChartView {
 		
 		ds.backgroundColor(colors.toArray(new String[colors.size()]));
 		
+		config.data().addDataset(ds).and();
+		
 		config.
 	        options()
 	            .responsive(true)
