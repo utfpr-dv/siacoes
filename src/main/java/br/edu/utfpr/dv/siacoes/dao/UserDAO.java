@@ -218,6 +218,36 @@ public class UserDAO {
 		}
 	}
 	
+	public User findSystemAdmin() throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery(
+				"SELECT \"user\".*, company.name AS companyName " +
+				"FROM \"user\" INNER JOIN userprofile ON userprofile.idUser=\"user\".idUser " +
+				"LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
+				"WHERE userprofile.profile = 2");
+			
+			if(rs.next()){
+				return this.loadObject(rs, conn);
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public int findId(String login) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;

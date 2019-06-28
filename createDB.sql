@@ -834,3 +834,5 @@ INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) V
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(36, 1, '', '', '{documenttype};{student};{title};{supervisor};{feedback}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(37, 3, '', '', '{student};{company};{supervisor}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(38, 3, '', '', '{student};{company};{supervisor};{feedback}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(39, 0, '', '', '{type};{title};{description}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(40, 0, '', '', '{type};{title};{description};{status};{statusdescription};{user}');

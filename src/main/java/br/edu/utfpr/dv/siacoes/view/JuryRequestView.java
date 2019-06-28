@@ -93,8 +93,10 @@ public class JuryRequestView extends ListView {
 		this.getGrid().addColumn("TCC", Integer.class);
 		this.getGrid().addColumn("Acadêmico", String.class);
 		this.getGrid().addColumn("Presidente", String.class);
+		this.getGrid().addColumn("Confirmada", String.class);
 		this.getGrid().getColumns().get(0).setWidth(150);
 		this.getGrid().getColumns().get(2).setWidth(50);
+		this.getGrid().getColumns().get(5).setWidth(75);
 		
 		try {
 			List<JuryRequest> list = new JuryRequestBO().listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
@@ -111,7 +113,7 @@ public class JuryRequestView extends ListView {
 						}
 					}
 					
-					Object itemId = this.getGrid().addRow(jury.getDate(), jury.getLocal(), jury.getStage(), jury.getStudent(), chair);
+					Object itemId = this.getGrid().addRow(jury.getDate(), jury.getLocal(), jury.getStage(), jury.getStudent(), chair, (jury.isConfirmed() ? "Sim" : "Não"));
 					this.addRowId(itemId, jury.getIdJuryRequest());
 				}
 			}

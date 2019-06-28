@@ -204,6 +204,18 @@ public class UserBO {
 		}
 	}
 	
+	public User findSystemAdmin() throws Exception{
+		try{
+			UserDAO dao = new UserDAO();
+			
+			return dao.findSystemAdmin();
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public int save(int idUser, User user) throws Exception {
 		int ret = 0;
 		boolean isInsert = (user.getIdUser() == 0);
