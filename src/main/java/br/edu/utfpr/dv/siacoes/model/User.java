@@ -68,7 +68,7 @@ public class User implements Serializable {
 	private boolean external;
 	private boolean active;
 	private String studentCode;
-	private byte[] photo;
+	private transient byte[] photo;
 	private List<UserDepartment> departments;
 	
 	public User(){
