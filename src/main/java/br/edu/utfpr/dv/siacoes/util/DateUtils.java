@@ -58,7 +58,7 @@ public class DateUtils {
 		return cal.get(Calendar.YEAR);
 	}
 	
-	public static int getMoth(){
+	public static int getMonth(){
 		Calendar today = DateUtils.getToday();
 		
 		return today.get(Calendar.MONTH);
@@ -68,6 +68,18 @@ public class DateUtils {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		return cal.get(Calendar.MONTH);
+	}
+	
+	public static int getDaysInMonth(int month, int year) {
+		Calendar cal = new GregorianCalendar(year, month, 1);
+		
+		return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+	}
+	
+	public static int getDaysInYear(int year) {
+		Calendar cal = new GregorianCalendar(year, 1, 1);
+		
+		return cal.getActualMaximum(Calendar.DAY_OF_YEAR);
 	}
 	
 	public static int getWeekOfYear(){

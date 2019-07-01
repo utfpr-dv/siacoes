@@ -112,6 +112,7 @@ import br.edu.utfpr.dv.siacoes.view.StudentActivityStatusReportView;
 import br.edu.utfpr.dv.siacoes.view.StudentView;
 import br.edu.utfpr.dv.siacoes.view.SupervisorChangeView;
 import br.edu.utfpr.dv.siacoes.view.SupervisorView;
+import br.edu.utfpr.dv.siacoes.view.SystemInfoView;
 import br.edu.utfpr.dv.siacoes.view.ThemeSuggestionView;
 import br.edu.utfpr.dv.siacoes.view.ThesisView;
 import br.edu.utfpr.dv.siacoes.view.TutoredSupervisorChartView;
@@ -1221,6 +1222,8 @@ public class SideMenu extends CustomComponent {
 			layout.addComponent(new MenuEntry("Auditoria", 0));
 			layout.addComponent(new MenuEntry("Registro de Acessos", 1, LoginLogView.NAME));
 			layout.addComponent(new MenuEntry("Registro de Eventos", 1, EventLogView.NAME));
+			
+			layout.addComponent(new MenuEntry("Informações do Sistema", 0, SystemInfoView.NAME));
 		}
 		
 		layout.addComponent(new MenuEntry("Sugestões e Problemas", 0, BugReportView.NAME));

@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -188,6 +190,67 @@ public class LoginEvent {
 			stmt.setString(5, device);
 			
 			stmt.execute();
+		} finally {
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public static Map<Integer, Integer> listTotalByYear(int year) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT month(date) AS \"month\", COUNT(*) AS total FROM loginlog WHERE year(date) = ? GROUP BY month(date) ORDER BY \"month\"");
+			
+			stmt.setInt(1, year);
+			
+			rs = stmt.executeQuery();
+			
+			Map<Integer, Integer> list = new HashMap<Integer, Integer>();
+			
+			while(rs.next()) {
+				list.put(rs.getInt("month"), rs.getInt("total"));
+			}
+			
+			return list;
+		} finally {
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public static Map<Integer, Integer> listTotalByMonth(int year, int month) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT day(date) AS \"day\", COUNT(*) AS total FROM loginlog WHERE year(date) = ? AND month(date) = ? GROUP BY month(date), day(date) ORDER BY \"day\"");
+			
+			stmt.setInt(1, year);
+			stmt.setInt(2, month);
+			
+			rs = stmt.executeQuery();
+			
+			Map<Integer, Integer> list = new HashMap<Integer, Integer>();
+			
+			while(rs.next()) {
+				list.put(rs.getInt("day"), rs.getInt("total"));
+			}
+			
+			return list;
 		} finally {
 			if((rs != null) && !rs.isClosed())
 				rs.close();
