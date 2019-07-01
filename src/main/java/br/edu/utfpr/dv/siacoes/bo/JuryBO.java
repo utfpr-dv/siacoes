@@ -323,9 +323,9 @@ public class JuryBO {
 					SigetConfig config = new SigetConfigBO().findByDepartment(((jury.getThesis() != null) && (jury.getThesis().getIdThesis() != 0)) ? new ThesisBO().findIdDepartment(jury.getThesis().getIdThesis()) : new ProjectBO().findIdDepartment(jury.getProject().getIdProject()));
 					
 					if((jury.getThesis() != null) && (jury.getThesis().getIdThesis() != 0)) {
-						jury.setEndTime(DateUtils.addHour(jury.getStartTime(), config.getJuryTimeStage2()));
+						jury.setEndTime(DateUtils.addMinute(jury.getStartTime(), config.getJuryTimeStage2()));
 					} else {
-						jury.setEndTime(DateUtils.addHour(jury.getStartTime(), config.getJuryTimeStage1()));
+						jury.setEndTime(DateUtils.addMinute(jury.getStartTime(), config.getJuryTimeStage1()));
 					}
 				} catch (Exception e) {
 					jury.setEndTime(DateUtils.addMinute(jury.getStartTime(), 60));	
