@@ -209,9 +209,13 @@ public class TutoredBO {
 						Semester semester = new SemesterBO().findByDate(new ProjectBO().findIdCampus(p.getIdProject()), DateUtils.getToday().getTime());
 						
 						if((p.getYear() < semester.getYear()) || ((p.getYear() == semester.getYear()) && (p.getSemester() < semester.getSemester()))){
-							t.setStage(2);
-							t.setSemester(semester.getSemester());
-							t.setYear(semester.getYear());
+							if(((p.getYear() + 1) < semester.getYear()) || (((p.getYear() + 1) == semester.getYear()) && (p.getSemester() < semester.getSemester()))) {
+								t.setStage(1);
+							} else {
+								t.setStage(2);
+								t.setSemester(semester.getSemester());
+								t.setYear(semester.getYear());
+							}
 						}
 					}
 				}
