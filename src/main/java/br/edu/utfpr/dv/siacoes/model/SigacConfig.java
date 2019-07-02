@@ -3,6 +3,7 @@
 import java.io.Serializable;
 
 import br.edu.utfpr.dv.siacoes.components.ByteSizeField;
+import br.edu.utfpr.dv.siacoes.util.StringUtils;
 
 public class SigacConfig implements Serializable {
 	
@@ -40,7 +41,7 @@ public class SigacConfig implements Serializable {
 		if(this.getMaxFileSize() <= 0) {
 			return "Tamanho Ilimitado";
 		} else {
-			return "Tam. Máx. " + ByteSizeField.getSizeAsString(this.getMaxFileSize());
+			return "Tam. Máx. " + StringUtils.getFormattedBytes(this.getMaxFileSize());
 		}
 	}
 

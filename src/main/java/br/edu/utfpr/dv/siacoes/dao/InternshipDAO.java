@@ -33,6 +33,60 @@ public class InternshipDAO {
 		}
 	}
 	
+	public byte[] getInternshipPlan(int id) throws SQLException{
+		if(id == 0){
+			return null;
+		}
+		
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			this.conn = ConnectionDAO.getInstance().getConnection();
+			stmt = this.conn.createStatement();
+		
+			rs = stmt.executeQuery("SELECT internship.internshipPlan FROM internship WHERE idInternship=" + id);
+			
+			if(rs.next()){
+				return rs.getBytes("internshipPlan");
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
+	}
+	
+	public byte[] getFinalReport(int id) throws SQLException{
+		if(id == 0){
+			return null;
+		}
+		
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			this.conn = ConnectionDAO.getInstance().getConnection();
+			stmt = this.conn.createStatement();
+		
+			rs = stmt.executeQuery("SELECT internship.finalReport FROM internship WHERE idInternship=" + id);
+			
+			if(rs.next()){
+				return rs.getBytes("finalReport");
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
+	}
+	
 	public List<Internship> listAll() throws SQLException{
 		ResultSet rs = null;
 		Statement stmt = null;
@@ -238,13 +292,12 @@ public class InternshipDAO {
 	}
 	
 	public int findIdDepartment(int idInternship) throws SQLException{
-		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		
 		try{
-			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT idDepartment FROM internship WHERE idInternship=?");
+			this.conn = ConnectionDAO.getInstance().getConnection();
+			stmt = this.conn.prepareStatement("SELECT idDepartment FROM internship WHERE idInternship=?");
 		
 			stmt.setInt(1, idInternship);
 			
@@ -260,8 +313,31 @@ public class InternshipDAO {
 				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
-			if((conn != null) && !conn.isClosed())
-				conn.close();
+		}
+	}
+	
+	public InternshipType getType(int idInternship) throws SQLException{
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			this.conn = ConnectionDAO.getInstance().getConnection();
+			stmt = this.conn.prepareStatement("SELECT type FROM internship WHERE idInternship=?");
+		
+			stmt.setInt(1, idInternship);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return InternshipType.valueOf(rs.getInt("type"));
+			}else{
+				return InternshipType.NONREQUIRED;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
 		}
 	}
 	

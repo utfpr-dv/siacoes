@@ -16,6 +16,10 @@ import br.edu.utfpr.dv.siacoes.model.User;
 public class ProjectDAO {
 	
 	public byte[] getFile(int idProject) throws SQLException {
+		if(idProject == 0){
+			return null;
+		}
+		
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;

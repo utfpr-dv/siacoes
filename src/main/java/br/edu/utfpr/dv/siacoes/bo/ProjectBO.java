@@ -20,6 +20,7 @@ import br.edu.utfpr.dv.siacoes.model.SupervisorFeedbackReport;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
+import br.edu.utfpr.dv.siacoes.util.StringUtils;
 
 public class ProjectBO {
 	
@@ -140,6 +141,10 @@ public class ProjectBO {
 		}
 		if((project.getSemester() == 0) || (project.getYear() == 0)){
 			throw new Exception("Informe o ano e semestre do projeto.");
+		}
+		SigetConfig config = new SigetConfigBO().findByDepartment(new ProposalBO().findIdDepartment(project.getProposal().getIdProposal()));
+		if((config.getMaxFileSize() > 0) && ((project.getIdProject() == 0) || !Arrays.equals(project.getFile(), new ProjectDAO().getFile(project.getIdProject()))) && (project.getFile().length > config.getMaxFileSize())) {
+			throw new Exception("O arquivo deve ter um tamanho máximo de " + StringUtils.getFormattedBytes(config.getMaxFileSize()) + ".");
 		}
 	}
 	

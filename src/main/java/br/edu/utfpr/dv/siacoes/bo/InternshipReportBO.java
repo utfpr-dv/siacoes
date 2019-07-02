@@ -2,13 +2,16 @@
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.InternshipReportDAO;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportType;
+import br.edu.utfpr.dv.siacoes.util.StringUtils;
 
 public class InternshipReportBO {
 	
@@ -78,9 +81,14 @@ public class InternshipReportBO {
 			throw new Exception("Faça o upload do relatório.");
 		}
 		
+		InternshipReportDAO dao = new InternshipReportDAO(this.conn);
+		SigesConfig config = new SigesConfigBO().findByDepartment(new InternshipBO().findIdDepartment(report.getInternship().getIdInternship()));
+		
+		if((config.getMaxFileSize() > 0) && ((report.getIdInternshipReport() == 0) || !Arrays.equals(report.getReport(), dao.getReport(report.getIdInternshipReport()))) && (report.getReport().length > config.getMaxFileSize())) {
+			throw new Exception("O arquivo deve ter um tamanho máximo de " + StringUtils.getFormattedBytes(config.getMaxFileSize()) + ".");
+		}
+		
 		try{
-			InternshipReportDAO dao = new InternshipReportDAO(this.conn);
-			
 			return dao.save(idUser, report);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);

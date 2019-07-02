@@ -50,6 +50,36 @@ public class ActivitySubmissionDAO {
 		}
 	}
 	
+	public byte[] getFile(int idActivitySubmission) throws SQLException{
+		if(idActivitySubmission == 0){
+			return null;
+		}
+		
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+		
+			rs = stmt.executeQuery("SELECT activitysubmission.file FROM activitysubmission WHERE idactivitysubmission=" + idActivitySubmission);
+			
+			if(rs.next()){
+				return rs.getBytes("file");
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public List<ActivitySubmission> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;

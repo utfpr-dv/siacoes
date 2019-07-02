@@ -27,6 +27,35 @@ public class ProposalAppraiserDAO {
 			this.conn = conn;
 		}
 	}
+	
+	public byte[] getFile(int id) throws SQLException {
+		if(id == 0){
+			return null;
+		}
+		
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			this.conn = ConnectionDAO.getInstance().getConnection();
+			stmt = this.conn.prepareStatement("SELECT proposalappraiser.file FROM proposalappraiser WHERE idProposalAppraiser = ?");
+		
+			stmt.setInt(1, id);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getBytes("file");
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
+	}
 
 	public List<ProposalAppraiser> listAppraisers(int idProposal) throws SQLException{
 		ResultSet rs = null;

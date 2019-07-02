@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.catalina.tribes.util.Arrays;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 
 import br.edu.utfpr.dv.siacoes.dao.ActivityGroupDAO;
@@ -32,6 +33,7 @@ import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.UserDepartment;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
+import br.edu.utfpr.dv.siacoes.util.StringUtils;
 
 public class ActivitySubmissionBO {
 
@@ -134,6 +136,10 @@ public class ActivitySubmissionBO {
 		} else if(submission.getFeedback() != ActivityFeedback.APPROVED) {
 			submission.setValidatedAmount(0);
 		}
+		SigacConfig config = new SigacConfigBO().findByDepartment(submission.getDepartment().getIdDepartment());
+		if((config.getMaxFileSize() > 0) && ((submission.getIdActivitySubmission() == 0) || !Arrays.equals(submission.getFile(), dao.getFile(submission.getIdActivitySubmission()))) && (submission.getFile().length > config.getMaxFileSize())) {
+			throw new Exception("O comprovante deve ter um tamanho máximo de " + StringUtils.getFormattedBytes(config.getMaxFileSize()) + ".");
+		}
 		if(new FinalSubmissionBO().studentHasSubmission(submission.getStudent().getIdUser(), submission.getDepartment().getIdDepartment())) {
 			throw new Exception("Não é possível incluir ou editar a atividade pois o acadêmico já foi sinalizado como Aprovado.");
 		}
@@ -159,15 +165,12 @@ public class ActivitySubmissionBO {
 			keys.add(new EmailMessageEntry<String, String>("year", String.valueOf(submission.getYear())));
 			keys.add(new EmailMessageEntry<String, String>("comments", submission.getComments()));
 			keys.add(new EmailMessageEntry<String, String>("description", submission.getDescription()));
+			keys.add(new EmailMessageEntry<String, String>("feedbackUser", submission.getFeedbackUser().getName()));
 			
-			if(submission.getFeedback() != ActivityFeedback.NONE){
-				keys.add(new EmailMessageEntry<String, String>("feedbackUser", submission.getFeedbackUser().getName()));
-				
-				if(submission.getFeedback() == ActivityFeedback.APPROVED){
-					keys.add(new EmailMessageEntry<String, String>("feedback", "APROVADA"));
-				}else if(submission.getFeedback() == ActivityFeedback.DISAPPROVED){
-					keys.add(new EmailMessageEntry<String, String>("feedback", "REPROVADA"));
-				}
+			if(submission.getFeedback() == ActivityFeedback.APPROVED){
+				keys.add(new EmailMessageEntry<String, String>("feedback", "APROVADA"));
+			}else if(submission.getFeedback() == ActivityFeedback.DISAPPROVED){
+				keys.add(new EmailMessageEntry<String, String>("feedback", "REPROVADA"));
 			}
 			
 			if(isInsert) {

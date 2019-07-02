@@ -21,6 +21,38 @@ import br.edu.utfpr.dv.siacoes.model.Semester;
 
 public class ProposalDAO {
 	
+	public byte[] getFile(int id) throws SQLException {
+		if(id == 0){
+			return null;
+		}
+		
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT proposal.file FROM proposal WHERE idProposal = ?");
+		
+			stmt.setInt(1, id);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getBytes("file");
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public List<User> listSupervisors(int idProposal, boolean includeCosupervisor) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;

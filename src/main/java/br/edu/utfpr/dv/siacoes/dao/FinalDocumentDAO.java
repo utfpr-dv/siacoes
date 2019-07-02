@@ -43,6 +43,38 @@ public class FinalDocumentDAO {
 		}
 	}
 	
+	public byte[] getFile(int id) throws SQLException {
+		if(id == 0){
+			return null;
+		}
+		
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT finaldocument.file FROM finaldocument WHERE idFinalDocument = ?");
+		
+			stmt.setInt(1, id);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getBytes("file");
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public FinalDocument findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;

@@ -2,6 +2,7 @@ package br.edu.utfpr.dv.siacoes.bo;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,9 +11,11 @@ import br.edu.utfpr.dv.siacoes.dao.ProposalAppraiserDAO;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
+import br.edu.utfpr.dv.siacoes.util.StringUtils;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
@@ -86,6 +89,10 @@ public class ProposalAppraiserBO {
 			ProposalAppraiser a = dao.findByAppraiser(appraiser.getProposal().getIdProposal(), appraiser.getAppraiser().getIdUser());
 			if((a != null) && (a.getIdProposalAppraiser() != appraiser.getIdProposalAppraiser())) {
 				throw new Exception("O avaliador " + appraiser.getAppraiser().getName() + " já foi indicado para avaliação deste trabalho.");
+			}
+			SigetConfig config = new SigetConfigBO().findByDepartment(proposal.getDepartment().getIdDepartment());
+			if((config.getMaxFileSize() > 0) && (appraiser.getFile() != null) && ((appraiser.getIdProposalAppraiser() == 0) || !Arrays.equals(appraiser.getFile(), new ProposalAppraiserDAO().getFile(appraiser.getIdProposalAppraiser()))) && (appraiser.getFile().length > config.getMaxFileSize())) {
+				throw new Exception("O arquivo deve ter um tamanho máximo de " + StringUtils.getFormattedBytes(config.getMaxFileSize()) + ".");
 			}
 			
 			ret = dao.save(idUser, appraiser);

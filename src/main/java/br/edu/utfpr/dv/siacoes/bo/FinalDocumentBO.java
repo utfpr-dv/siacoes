@@ -3,6 +3,7 @@
 import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,11 +22,13 @@ import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.LibraryCoverReport;
 import br.edu.utfpr.dv.siacoes.model.LibraryReport;
 import br.edu.utfpr.dv.siacoes.model.Project;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
+import br.edu.utfpr.dv.siacoes.util.StringUtils;
 
 public class FinalDocumentBO {
 	
@@ -142,6 +145,8 @@ public class FinalDocumentBO {
 	}
 	
 	public int save(int idUser, FinalDocument thesis) throws Exception{
+		SigetConfig config;
+		
 		if(((thesis.getThesis() == null) || (thesis.getThesis().getIdThesis() == 0)) && ((thesis.getProject() == null) || (thesis.getProject().getIdProject() == 0))){
 			throw new Exception("Informe o projeto ou monografia.");
 		}
@@ -158,6 +163,14 @@ public class FinalDocumentBO {
 			if(thesis.getEnglishAbstract().trim().isEmpty()) {
 				throw new Exception("É necessário preencher o resumo na língua inglesa.");
 			}
+			
+			config = new SigetConfigBO().findByDepartment(new ThesisBO().findIdDepartment(thesis.getThesis().getIdThesis()));
+		} else {
+			config = new SigetConfigBO().findByDepartment(new ProjectBO().findIdDepartment(thesis.getProject().getIdProject()));
+		}
+		
+		if((config.getMaxFileSize() > 0) && ((thesis.getIdFinalDocument() == 0) || !Arrays.equals(thesis.getFile(), new FinalDocumentDAO().getFile(thesis.getIdFinalDocument()))) && (thesis.getFile().length > config.getMaxFileSize())) {
+			throw new Exception("O arquivo deve ter um tamanho máximo de " + StringUtils.getFormattedBytes(config.getMaxFileSize()) + ".");
 		}
 		
 		try{

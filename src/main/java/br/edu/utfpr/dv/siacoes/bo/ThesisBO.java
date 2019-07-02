@@ -18,6 +18,7 @@ import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
+import br.edu.utfpr.dv.siacoes.util.StringUtils;
 
 public class ThesisBO {
 	
@@ -117,6 +118,10 @@ public class ThesisBO {
 		}
 		if(thesis.getAbstract().isEmpty()){
 			throw new Exception("Informe o resumo da monografia.");
+		}
+		SigetConfig config = new SigetConfigBO().findByDepartment(new ProjectBO().findIdDepartment(thesis.getProject().getIdProject()));
+		if((config.getMaxFileSize() > 0) && ((thesis.getIdThesis() == 0) || !Arrays.equals(thesis.getFile(), new ThesisDAO().getFile(thesis.getIdThesis()))) && (thesis.getFile().length > config.getMaxFileSize())) {
+			throw new Exception("O arquivo deve ter um tamanho máximo de " + StringUtils.getFormattedBytes(config.getMaxFileSize()) + ".");
 		}
 	}
 	

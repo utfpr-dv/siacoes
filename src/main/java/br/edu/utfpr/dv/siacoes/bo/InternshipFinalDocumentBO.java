@@ -2,6 +2,7 @@
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,7 +12,9 @@ import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.util.StringUtils;
 import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
@@ -89,10 +92,14 @@ public class InternshipFinalDocumentBO {
 			throw new Exception("É necessário enviar o arquivo.");
 		}
 		
-		InternshipBO bo = new InternshipBO();
-		Internship internship = bo.findById(doc.getInternship().getIdInternship());
+		Internship internship = new InternshipBO().findById(doc.getInternship().getIdInternship());
 		if(internship.getType() != InternshipType.REQUIRED){
 			throw new Exception("O envio do relatório corrigido só é permitido para o estágio obrigatório.");
+		}
+		
+		SigesConfig config = new SigesConfigBO().findByDepartment(internship.getDepartment().getIdDepartment());
+		if((config.getMaxFileSize() > 0) && (doc.getFile() != null) && ((doc.getIdInternshipFinalDocument() == 0) || !Arrays.equals(doc.getFile(), new InternshipFinalDocumentDAO().getFile(doc.getIdInternshipFinalDocument()))) && (doc.getFile().length > config.getMaxFileSize())) {
+			throw new Exception("O arquivo deve ter um tamanho máximo de " + StringUtils.getFormattedBytes(config.getMaxFileSize()) + ".");
 		}
 		
 		try{

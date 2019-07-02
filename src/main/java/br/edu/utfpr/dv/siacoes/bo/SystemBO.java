@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.SystemDAO;
+import br.edu.utfpr.dv.siacoes.util.StringUtils;
 
 public class SystemBO {
 
@@ -70,7 +71,7 @@ public class SystemBO {
 	
 	public String getDatabaseSizeAsString() throws Exception {
 		try {
-			return this.getFormattedBytes(this.getDatabaseSize());
+			return StringUtils.getFormattedBytes(this.getDatabaseSize());
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -80,7 +81,7 @@ public class SystemBO {
 	
 	public String getCertificatesSizeAsString() throws Exception {
 		try {
-			return this.getFormattedBytes(this.getCertificatesSize());
+			return StringUtils.getFormattedBytes(this.getCertificatesSize());
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -90,7 +91,7 @@ public class SystemBO {
 	
 	public String getSigacSizeAsString() throws Exception {
 		try {
-			return this.getFormattedBytes(this.getSigacSize());
+			return StringUtils.getFormattedBytes(this.getSigacSize());
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -100,7 +101,7 @@ public class SystemBO {
 	
 	public String getSigesSizeAsString() throws Exception {
 		try {
-			return this.getFormattedBytes(this.getSigesSize());
+			return StringUtils.getFormattedBytes(this.getSigesSize());
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -110,7 +111,7 @@ public class SystemBO {
 	
 	public String getSigetSizeAsString() throws Exception {
 		try {
-			return this.getFormattedBytes(this.getSigetSize());
+			return StringUtils.getFormattedBytes(this.getSigetSize());
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -120,25 +121,12 @@ public class SystemBO {
 	
 	public String getLogSizeAsString() throws Exception {
 		try {
-			return this.getFormattedBytes(this.getLogSize());
+			return StringUtils.getFormattedBytes(this.getLogSize());
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			throw new Exception(e);
 		}
-	}
-	
-	private String getFormattedBytes(int bytes) {
-		String[] units = {"bytes", "KB", "MB", "GB", "TB", "PB", "YB"};
-		int i = 0;
-		float bytes2 = bytes;
-		
-		while((i < (units.length - 1)) && (bytes2 > 1024)) {
-			bytes2 = bytes2 / 1024;
-			i++;
-		}
-		
-		return String.format("%.2f %s", bytes2, units[i]);
 	}
 	
 }

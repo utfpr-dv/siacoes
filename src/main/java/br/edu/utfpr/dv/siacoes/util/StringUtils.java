@@ -20,4 +20,17 @@ public class StringUtils {
 		return s.substring(s.lastIndexOf("-") + 1);
 	}
 	
+	public static String getFormattedBytes(int bytes) {
+		String[] units = {"bytes", "KB", "MB", "GB", "TB", "PB", "YB"};
+		int i = 0;
+		float bytes2 = bytes;
+		
+		while((i < (units.length - 1)) && (bytes2 > 1024)) {
+			bytes2 = bytes2 / 1024;
+			i++;
+		}
+		
+		return String.format("%.2f %s", bytes2, units[i]);
+	}
+	
 }

@@ -28,6 +28,33 @@ public class InternshipReportDAO {
 		}
 	}
 	
+	public byte[] getReport(int id) throws SQLException{
+		if(id == 0){
+			return null;
+		}
+		
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+		
+			rs = stmt.executeQuery("SELECT internshipreport.report FROM internshipreport WHERE idinternshipreport=" + id);
+			
+			if(rs.next()){
+				return rs.getBytes("report");
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
+	}
+	
 	public List<InternshipReport> listAll() throws SQLException{
 		ResultSet rs = null;
 		Statement stmt = null;

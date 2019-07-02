@@ -29,6 +29,64 @@ public class InternshipJuryAppraiserDAO {
 		}
 	}
 	
+	public byte[] getFile(int id) throws SQLException {
+		if(id == 0){
+			return null;
+		}
+		
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			this.conn = ConnectionDAO.getInstance().getConnection();
+			stmt = this.conn.prepareStatement("SELECT internshipjuryappraiser.file FROM internshipjuryappraiser WHERE idInternshipJuryAppraiser = ?");
+		
+			stmt.setInt(1, id);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getBytes("file");
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
+	}
+	
+	public byte[] getAdditionalFile(int id) throws SQLException {
+		if(id == 0){
+			return null;
+		}
+		
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			this.conn = ConnectionDAO.getInstance().getConnection();
+			stmt = this.conn.prepareStatement("SELECT internshipjuryappraiser.additionalFile FROM internshipjuryappraiser WHERE idInternshipJuryAppraiser = ?");
+		
+			stmt.setInt(1, id);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return rs.getBytes("additionalFile");
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
+	}
+	
 	public InternshipJuryAppraiser findById(int id) throws SQLException{
 		ResultSet rs = null;
 		PreparedStatement stmt = null; 

@@ -16,6 +16,10 @@ import br.edu.utfpr.dv.siacoes.model.User;
 public class ThesisDAO {
 	
 	public byte[] getFile(int idThesis) throws SQLException {
+		if(idThesis == 0){
+			return null;
+		}
+		
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;

@@ -226,7 +226,7 @@ public class UserBO {
 		try {
 			if(isInsert && user.getPassword().isEmpty()) {
 				user.setSalt(StringUtils.generateSalt());
-				user.setPassword(StringUtils.generateSHA3Hash(user.getLogin() + user.getSalt()));
+				user.setPassword(StringUtils.generateSHA3Hash(StringUtils.generateSalt() + user.getSalt()));
 			}
 			if((user.getProfiles() == null) || (user.getProfiles().size() == 0)){
 				throw new Exception("Informe ao menos um perfil para o usuário.");
@@ -242,6 +242,9 @@ public class UserBO {
 			}
 			if(user.hasProfile(UserProfile.COMPANYSUPERVISOR) && ((user.getCompany() == null) || (user.getCompany().getIdCompany() == 0))){
 				throw new Exception("Informe a empresa.");
+			}
+			if((user.getPhoto() != null) && (user.getPhoto().length > (300 * 1024))) {
+				throw new Exception("A foto de perfil deve ter no máximo 300 KB.");
 			}
 			
 			UserDAO dao = new UserDAO();

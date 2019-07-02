@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,9 +18,11 @@ import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.InternshipByCompany;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
+import br.edu.utfpr.dv.siacoes.util.StringUtils;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipMissingDocumentsReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 
 public class InternshipBO {
@@ -112,6 +115,18 @@ public class InternshipBO {
 		}
 	}
 	
+	public InternshipType getType(int id) throws Exception{
+		try{
+			InternshipDAO dao = new InternshipDAO();
+			
+			return dao.getType(id);
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
+	}
+	
 	public int findIdDepartment(int idInternship) throws Exception{
 		try {
 			InternshipDAO dao = new InternshipDAO();
@@ -161,6 +176,14 @@ public class InternshipBO {
 			if((jury != null) && (jury.getIdInternshipJury() != 0)){
 				throw new Exception("Este estágio não pode ser alterado para Não Obrigatório pois já foi marcada banca.");
 			}
+		}
+		
+		SigesConfig config = new SigesConfigBO().findByDepartment(internship.getDepartment().getIdDepartment());
+		if((config.getMaxFileSize() > 0) && ((internship.getIdInternship() == 0) || !Arrays.equals(internship.getInternshipPlan(), new InternshipDAO().getInternshipPlan(internship.getIdInternship()))) && (internship.getInternshipPlan().length > config.getMaxFileSize())) {
+			throw new Exception("O plano de estágio deve ter um tamanho máximo de " + StringUtils.getFormattedBytes(config.getMaxFileSize()) + ".");
+		}
+		if((config.getMaxFileSize() > 0) && ((internship.getIdInternship() == 0) || !Arrays.equals(internship.getFinalReport(), new InternshipDAO().getFinalReport(internship.getIdInternship()))) && (internship.getFinalReport().length > config.getMaxFileSize())) {
+			throw new Exception("O relatório final deve ter um tamanho máximo de " + StringUtils.getFormattedBytes(config.getMaxFileSize()) + ".");
 		}
 		
 		Connection conn = ConnectionDAO.getInstance().getConnection();

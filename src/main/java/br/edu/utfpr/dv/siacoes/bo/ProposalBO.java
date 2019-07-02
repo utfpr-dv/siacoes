@@ -20,6 +20,7 @@ import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
+import br.edu.utfpr.dv.siacoes.util.StringUtils;
 
 public class ProposalBO {
 	
@@ -136,12 +137,17 @@ public class ProposalBO {
 	}
 	
 	public void validate(Proposal proposal) throws Exception {
+		SigetConfig config = new SigetConfigBO().findByDepartment(proposal.getDepartment().getIdDepartment());
+		
 		if(proposal.getFile() != null) {
 			if(proposal.getTitle().isEmpty()) {
 				throw new Exception("Informe o título da proposta.");
 			}
 			if(proposal.getSubarea().isEmpty()) {
 				throw new Exception("Informe a área e subárea da proposta.");
+			}
+			if((config.getMaxFileSize() > 0) && ((proposal.getIdProposal() == 0) || !Arrays.equals(proposal.getFile(), new ProposalDAO().getFile(proposal.getIdProposal()))) && (proposal.getFile().length > config.getMaxFileSize())) {
+				throw new Exception("O arquivo deve ter um tamanho máximo de " + StringUtils.getFormattedBytes(config.getMaxFileSize()) + ".");
 			}
 		}
 		if((proposal.getStudent() == null) || (proposal.getStudent().getIdUser() == 0)) {
@@ -153,7 +159,6 @@ public class ProposalBO {
 		if((proposal.getSemester() == 0) || (proposal.getYear() == 0)) {
 			throw new Exception("Informe o ano e semestre da proposta.");
 		}
-		SigetConfig config = new SigetConfigBO().findByDepartment(proposal.getDepartment().getIdDepartment());
 		if(this.getCountTutored(proposal.getIdProposal(), proposal.getDepartment().getIdDepartment(), proposal.getSupervisor().getIdUser(), proposal.getSemester(), proposal.getYear()) >= config.getMaxTutoredStage1()) {
 			throw new Exception("O orientador " + proposal.getSupervisor().getName() + " já atingiu o limite de " + config.getMaxTutoredStage1() + " orientados para o TCC 1.");
 		}
