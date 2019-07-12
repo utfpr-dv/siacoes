@@ -48,7 +48,7 @@ public class Document implements Serializable {
 		}
 		
 		public static DocumentType fromMimeType(String mimeType){
-			if(mimeType.equals("application/pdf")){
+			if(mimeType.equals("application/pdf") || mimeType.equals("application/wps-office.pdf")){
 				return DocumentType.PDF;
 			}else if(mimeType.equals("application/msword") || mimeType.equals("application/vnd.ms-word") || mimeType.equals("application/x-msword") || mimeType.equals("application/wps-office.doc")){
 				return DocumentType.DOC;
