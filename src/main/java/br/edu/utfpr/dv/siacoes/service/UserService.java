@@ -40,7 +40,7 @@ public class UserService {
 	
 	@Secure
 	@POST
-	@Path("/profile")
+	@Path("/profile/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response updateProfile(@Context SecurityContext securityContext, UserInfo info) {
 		try {
