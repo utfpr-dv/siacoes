@@ -2,6 +2,7 @@
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -326,6 +327,7 @@ public class SideMenu extends CustomComponent {
         this.layoutExpanded.addComponent(this.buildLinkMenu());
         this.layoutExpanded.addComponent(this.accordionMenu);
         
+        /*
         if(AppConfig.getInstance().isMobileEnabled()) {
 	        Label l1 = new Label("Efetue o download do SIACOES Mobile na loja de aplicativos do seu celular.");
 	        this.layoutExpanded.addComponent(l1);
@@ -369,6 +371,7 @@ public class SideMenu extends CustomComponent {
 			this.layoutExpanded.addComponent(imageQRCode);
 			this.layoutExpanded.setComponentAlignment(imageQRCode, Alignment.TOP_CENTER);
         }
+        */
         
         this.menuContent.addComponent(this.layoutExpanded);
         
@@ -396,7 +399,7 @@ public class SideMenu extends CustomComponent {
 	                public InputStream getStream() {
 	                    return new ByteArrayInputStream(user.getPhoto());
 	                }
-	            }, "userphoto" + String.valueOf(user.getPhoto()) + ".jpg");
+	            }, "userphoto" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(DateUtils.getNow().getTime()) + ".png");
 	
     		settingsItem.setIcon(resource);
         }
