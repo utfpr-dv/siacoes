@@ -49,11 +49,11 @@ public class ActivitySubmissionBO {
 		}
 	}
 	
-	public List<ActivitySubmission> listByStudent(int idStudent, int idDepartment, int feedback) throws Exception{
+	public List<ActivitySubmission> listByStudent(int idStudent, int idDepartment, int feedback, boolean loadFiles) throws Exception{
 		try{
 			ActivitySubmissionDAO dao = new ActivitySubmissionDAO();
 			
-			return dao.listByStudent(idStudent, idDepartment, feedback);
+			return dao.listByStudent(idStudent, idDepartment, feedback, loadFiles);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -211,7 +211,7 @@ public class ActivitySubmissionBO {
 	}
 	
 	public List<ActivitySubmissionFooterReport> getFooterReport(int idStudent, int idDepartment) throws Exception{
-		List<ActivitySubmission> list = this.listByStudent(idStudent, idDepartment, ActivityFeedback.APPROVED.getValue());
+		List<ActivitySubmission> list = this.listByStudent(idStudent, idDepartment, ActivityFeedback.APPROVED.getValue(), false);
 		
 		return this.getFooterReport(list);
 	}
@@ -225,7 +225,7 @@ public class ActivitySubmissionBO {
 	}
 	
 	public ByteArrayOutputStream getReport(int idStudent, int idDepartment) throws Exception{
-		List<ActivitySubmission> list = this.listByStudent(idStudent, idDepartment, ActivityFeedback.APPROVED.getValue());
+		List<ActivitySubmission> list = this.listByStudent(idStudent, idDepartment, ActivityFeedback.APPROVED.getValue(), true);
 		UserBO bo = new UserBO();
 		User student = bo.findById(idStudent);
 		
@@ -453,7 +453,7 @@ public class ActivitySubmissionBO {
 			
 			for(StudentActivityStatusReport user : students) {
 				if((user.getStage() >= stage.getValue()) && (user.getStage() != StudentStage.GRADUATED.getValue())) {
-					list = this.listByStudent(user.getIdUser(), idDepartment, ActivityFeedback.APPROVED.getValue());
+					list = this.listByStudent(user.getIdUser(), idDepartment, ActivityFeedback.APPROVED.getValue(), false);
 					scores = this.getFooterReport(list);
 					
 					user.setScores(scores);

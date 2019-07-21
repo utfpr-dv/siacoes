@@ -1,5 +1,6 @@
 package br.edu.utfpr.dv.siacoes.service;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,18 +13,22 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
 
-import br.edu.utfpr.dv.siacoes.model.AppConfig;
+import br.edu.utfpr.dv.siacoes.bo.ActivityGroupBO;
+import br.edu.utfpr.dv.siacoes.model.ActivityGroup;
 
-@Path("/application")
-public class ApplicationService {
+@Path("/activitygroup")
+public class ActivityGroupService {
 	
 	@Secure
 	@GET
-	@Path("/config")
+	@Path("/list")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getConfig(@Context SecurityContext securityContext) {
+	public Response list(@Context SecurityContext securityContext) {
 		try {
-			return Response.ok(AppConfig.getInstance()).build();
+			ActivityGroupBO bo = new ActivityGroupBO();
+			List<ActivityGroup> list = bo.listAll();
+			
+			return Response.ok(list).build();
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 

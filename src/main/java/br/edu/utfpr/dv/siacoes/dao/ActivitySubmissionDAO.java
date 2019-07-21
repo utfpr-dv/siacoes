@@ -102,7 +102,7 @@ public class ActivitySubmissionDAO {
 			List<ActivitySubmission> list = new ArrayList<ActivitySubmission>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
@@ -116,7 +116,7 @@ public class ActivitySubmissionDAO {
 		}
 	}
 	
-	public List<ActivitySubmission> listByStudent(int idStudent, int idDepartment, int feedback) throws SQLException{
+	public List<ActivitySubmission> listByStudent(int idStudent, int idDepartment, int feedback, boolean loadFiles) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -140,7 +140,7 @@ public class ActivitySubmissionDAO {
 			List<ActivitySubmission> list = new ArrayList<ActivitySubmission>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, loadFiles));
 			}
 			
 			return list;
@@ -178,7 +178,7 @@ public class ActivitySubmissionDAO {
 			List<ActivitySubmission> list = new ArrayList<ActivitySubmission>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
@@ -220,7 +220,7 @@ public class ActivitySubmissionDAO {
 			List<ActivitySubmission> list = new ArrayList<ActivitySubmission>();
 			
 			while(rs.next()){
-				ActivitySubmission a = this.loadObject(rs);
+				ActivitySubmission a = this.loadObject(rs, false);
 				
 				a.setStage(rs.getInt("stage"));
 				
@@ -261,7 +261,7 @@ public class ActivitySubmissionDAO {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()){
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			}else{
 				return null;
 			}
@@ -343,7 +343,7 @@ public class ActivitySubmissionDAO {
 		}
 	}
 	
-	private ActivitySubmission loadObject(ResultSet rs) throws SQLException{
+	private ActivitySubmission loadObject(ResultSet rs, boolean loadFile) throws SQLException{
 		ActivitySubmission submission = new ActivitySubmission();
 		
 		submission.setIdActivitySubmission(rs.getInt("idActivitySubmission"));
@@ -359,7 +359,6 @@ public class ActivitySubmissionDAO {
 		submission.setSemester(rs.getInt("semester"));
 		submission.setYear(rs.getInt("year"));
 		submission.setSubmissionDate(rs.getDate("submissionDate"));
-		submission.setFile(rs.getBytes("file"));
 		submission.setAmount(rs.getDouble("amount"));
 		submission.setFeedback(ActivityFeedback.valueOf(rs.getInt("feedback")));
 		submission.setFeedbackDate(rs.getDate("feedbackDate"));
@@ -373,6 +372,10 @@ public class ActivitySubmissionDAO {
 		submission.getActivity().getUnit().setFillAmount(rs.getInt("fillAmount") == 1);
 		submission.getActivity().getUnit().setDescription(rs.getString("unit"));
 		submission.getActivity().setMaximumInSemester(rs.getDouble("maximumInSemester"));
+		
+		if(loadFile) {
+			submission.setFile(rs.getBytes("file"));
+		}
 		
 		return submission;
 	}

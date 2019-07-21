@@ -52,9 +52,12 @@ public class UserInfo implements Serializable {
 		this.setExternal(user.isExternal());
 		this.setActive(user.isActive());
 		this.setStudentCode(user.getStudentCode());
-		this.setRegisterSemester(department.getRegisterSemester());
-		this.setRegisterYear(department.getRegisterYear());
 		this.setPhoto(user.getPhoto());
+		
+		if(department != null) {
+			this.setRegisterSemester(department.getRegisterSemester());
+			this.setRegisterYear(department.getRegisterYear());
+		}
 	}
 	
 	public String getName() {

@@ -183,7 +183,15 @@ public class JuryDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			rs = stmt.executeQuery("SELECT jury.* FROM jury INNER JOIN juryappraiser ON juryappraiser.idJury=jury.idJury LEFT JOIN project ON project.idProject=jury.idProject LEFT JOIN thesis ON thesis.idThesis=jury.idThesis WHERE juryappraiser.idAppraiser=" + String.valueOf(idUser) + " AND (project.semester=" + String.valueOf(semester) + " OR thesis.semester=" + String.valueOf(semester) + ") AND (project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + ") ORDER BY jury.date");
+			rs = stmt.executeQuery("SELECT jury.* FROM jury " +
+					"INNER JOIN juryappraiser ON juryappraiser.idJury=jury.idJury " +
+					"LEFT JOIN project ON project.idProject=jury.idProject " +
+					"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " +
+					"WHERE juryappraiser.idAppraiser=" + String.valueOf(idUser) + 
+					(((semester > 0) && (year > 0)) ? 
+					" AND (project.semester=" + String.valueOf(semester) + " OR thesis.semester=" + String.valueOf(semester) + 
+					") AND (project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + ")" : "") +
+					" ORDER BY jury.date");
 			
 			List<Jury> list = new ArrayList<Jury>();
 			
@@ -211,7 +219,15 @@ public class JuryDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			rs = stmt.executeQuery("SELECT jury.* FROM jury INNER JOIN jurystudent ON jurystudent.idJury=jury.idJury LEFT JOIN project ON project.idProject=jury.idProject LEFT JOIN thesis ON thesis.idThesis=jury.idThesis WHERE jurystudent.idStudent=" + String.valueOf(idUser) + " AND (project.semester=" + String.valueOf(semester) + " OR thesis.semester=" + String.valueOf(semester) + ") AND (project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + ") ORDER BY jury.date");
+			rs = stmt.executeQuery("SELECT jury.* FROM jury " +
+					"INNER JOIN jurystudent ON jurystudent.idJury=jury.idJury " +
+					"LEFT JOIN project ON project.idProject=jury.idProject " +
+					"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " +
+					"WHERE jurystudent.idStudent=" + String.valueOf(idUser) + 
+					(((semester > 0) && (year > 0)) ? 
+					" AND (project.semester=" + String.valueOf(semester) + " OR thesis.semester=" + String.valueOf(semester) + 
+					") AND (project.year=" + String.valueOf(year) + " OR thesis.year=" + String.valueOf(year) + ")" : "") +
+					" ORDER BY jury.date");
 			
 			List<Jury> list = new ArrayList<Jury>();
 			

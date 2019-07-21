@@ -116,7 +116,9 @@ public class InternshipJuryDAO {
 			rs = stmt.executeQuery("SELECT internshipjury.* " +
 					"FROM internshipjury INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJury=internshipjury.idInternshipJury " +
 					"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " +
-					"WHERE internshipjuryappraiser.idAppraiser=" + String.valueOf(idUser) + " AND MONTH(internshipjury.date) " + (semester == 1 ? "<= 7 " : " > 7") + " AND YEAR(internshipjury.date)=" + String.valueOf(year) + " ORDER BY internshipjury.date");
+					"WHERE internshipjuryappraiser.idAppraiser=" + String.valueOf(idUser) + 
+					(((semester > 0) && (year > 0)) ? " AND MONTH(internshipjury.date) " + (semester == 1 ? "<= 7 " : " > 7") + " AND YEAR(internshipjury.date)=" + String.valueOf(year) : "" ) + 
+					" ORDER BY internshipjury.date");
 			
 			List<InternshipJury> list = new ArrayList<InternshipJury>();
 			
@@ -147,7 +149,9 @@ public class InternshipJuryDAO {
 			rs = stmt.executeQuery("SELECT internshipjury.* " +
 					"FROM internshipjury INNER JOIN internshipjurystudent ON internshipjurystudent.idInternshipJury=internshipjury.idInternshipJury " +
 					"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " +
-					"WHERE internshipjurystudent.idStudent=" + String.valueOf(idUser) + " AND MONTH(internshipjury.date) " + (semester == 1 ? "<= 7 " : " > 7") + " AND YEAR(internshipjury.date)=" + String.valueOf(year) + " ORDER BY internshipjury.date");
+					"WHERE internshipjurystudent.idStudent=" + String.valueOf(idUser) + 
+					(((semester > 0) && (year > 0)) ? " AND MONTH(internshipjury.date) " + (semester == 1 ? "<= 7 " : " > 7") + " AND YEAR(internshipjury.date)=" + String.valueOf(year) : "" ) + 
+					" ORDER BY internshipjury.date");
 			
 			List<InternshipJury> list = new ArrayList<InternshipJury>();
 			

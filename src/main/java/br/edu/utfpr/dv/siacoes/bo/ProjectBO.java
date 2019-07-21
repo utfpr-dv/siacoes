@@ -270,7 +270,7 @@ public class ProjectBO {
 				if(new SigetConfigBO().findByDepartment(idDepartment).isRegisterProposal()) {
 					throw new Exception("Não foi encontrada a submissão da proposta. É necessário primeiramente submeter a proposta.");
 				} else {
-					throw new Exception("Não foi encontrada o registro de orientação. É necessário primeiramente registrar a orientação.");
+					throw new Exception("Não foi encontrado o registro de orientação. É necessário primeiramente registrar a orientação.");
 				}
 			}
 			

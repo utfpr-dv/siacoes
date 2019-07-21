@@ -327,17 +327,16 @@ public class SideMenu extends CustomComponent {
         this.layoutExpanded.addComponent(this.buildLinkMenu());
         this.layoutExpanded.addComponent(this.accordionMenu);
         
-        /*
         if(AppConfig.getInstance().isMobileEnabled()) {
 	        Label l1 = new Label("Efetue o download do SIACOES Mobile na loja de aplicativos do seu celular.");
 	        this.layoutExpanded.addComponent(l1);
 	        this.layoutExpanded.setComponentAlignment(l1, Alignment.TOP_CENTER);
 	        
-	        Link linkAppStore = new Link(null, new ExternalResource("https://www.apple.com/br/ios/app-store"));
+	        /*Link linkAppStore = new Link(null, new ExternalResource("https://www.apple.com/br/ios/app-store"));
 			linkAppStore.setIcon(new ThemeResource("images/appstore100.png"));
 			linkAppStore.setWidth("100px");
 			this.layoutExpanded.addComponent(linkAppStore);
-			this.layoutExpanded.setComponentAlignment(linkAppStore, Alignment.TOP_CENTER);
+			this.layoutExpanded.setComponentAlignment(linkAppStore, Alignment.TOP_CENTER);*/
 			
 			VerticalLayout v1 = new VerticalLayout();
 			v1.setHeight("5px");
@@ -349,7 +348,7 @@ public class SideMenu extends CustomComponent {
 			this.layoutExpanded.addComponent(linkPlayStore);
 			this.layoutExpanded.setComponentAlignment(linkPlayStore, Alignment.TOP_CENTER);
 			
-	        Label l2 = new Label("Leia o QRCode abaixo para configurar o acesso de seu aplicativo.");
+	        /*Label l2 = new Label("Leia o QRCode abaixo para configurar o acesso de seu aplicativo.");
 	        this.layoutExpanded.addComponent(l2);
 	        this.layoutExpanded.setComponentAlignment(l2, Alignment.TOP_CENTER);
 	        
@@ -369,9 +368,8 @@ public class SideMenu extends CustomComponent {
 	            }, "qrcode.png");
 			imageQRCode.setSource(resource);
 			this.layoutExpanded.addComponent(imageQRCode);
-			this.layoutExpanded.setComponentAlignment(imageQRCode, Alignment.TOP_CENTER);
+			this.layoutExpanded.setComponentAlignment(imageQRCode, Alignment.TOP_CENTER);*/
         }
-        */
         
         this.menuContent.addComponent(this.layoutExpanded);
         

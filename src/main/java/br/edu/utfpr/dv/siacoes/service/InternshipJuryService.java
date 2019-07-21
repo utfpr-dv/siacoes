@@ -1,5 +1,6 @@
 package br.edu.utfpr.dv.siacoes.service;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,18 +13,22 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
 
-import br.edu.utfpr.dv.siacoes.model.AppConfig;
+import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
+import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 
-@Path("/application")
-public class ApplicationService {
+@Path("/internshipjury")
+public class InternshipJuryService {
 	
 	@Secure
 	@GET
-	@Path("/config")
+	@Path("/list/student")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getConfig(@Context SecurityContext securityContext) {
+	public Response listByStudent(@Context SecurityContext securityContext) {
 		try {
-			return Response.ok(AppConfig.getInstance()).build();
+			InternshipJuryBO bo = new InternshipJuryBO();
+			List<InternshipJury> list = bo.listByStudent(new LoginService().getUser(securityContext).getIdUser(), 0, 0);
+			
+			return Response.ok(list).build();
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 

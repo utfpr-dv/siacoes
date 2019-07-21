@@ -194,26 +194,26 @@ public class ActivitySubmissionView extends ListView {
 					this.panelScore.setVisible(false);
 					this.panelLabel.setVisible(true);
 				}else{
-					list = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), feedback);
+					list = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), feedback, (feedback == ActivityFeedback.APPROVED.getValue()));
 					List<ActivitySubmission> listReport;
 					
 					if(feedback == ActivityFeedback.APPROVED.getValue()) {
 						listReport = list;
 					} else {
-						listReport = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), ActivityFeedback.APPROVED.getValue());
+						listReport = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), ActivityFeedback.APPROVED.getValue(), true);
 					}
 					
 					report = bo.getReport(listReport, this.comboStudent.getStudent(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 					scores = bo.getFooterReport(listReport);
 				}
 			}else{
-				list = bo.listByStudent(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), feedback);
+				list = bo.listByStudent(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), feedback, (feedback == ActivityFeedback.APPROVED.getValue()));
 				List<ActivitySubmission> listReport;
 				
 				if(feedback == ActivityFeedback.APPROVED.getValue()) {
 					listReport = list;
 				} else {
-					listReport = bo.listByStudent(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), ActivityFeedback.APPROVED.getValue());
+					listReport = bo.listByStudent(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), ActivityFeedback.APPROVED.getValue(), true);
 				}
 				
 				report = bo.getReport(listReport, Session.getUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
