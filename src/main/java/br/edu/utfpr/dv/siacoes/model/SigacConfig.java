@@ -2,15 +2,14 @@
 
 import java.io.Serializable;
 
-import br.edu.utfpr.dv.siacoes.components.ByteSizeField;
 import br.edu.utfpr.dv.siacoes.util.StringUtils;
 
 public class SigacConfig implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public Department department;
-	public double minimumScore;
+	private Department department;
+	private double minimumScore;
 	private int maxFileSize;
 	
 	public SigacConfig(){

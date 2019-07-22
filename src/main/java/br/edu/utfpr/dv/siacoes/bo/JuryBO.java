@@ -76,7 +76,18 @@ public class JuryBO {
 		try {
 			JuryDAO dao = new JuryDAO();
 			
-			return dao.listByStudent(idUser, semester, year);
+			List<Jury> list = dao.listByStudent(idUser, semester, year);
+			
+			for(Jury jury : list) {
+				if(jury.getProject() != null) {
+					jury.getProject().setFile(null);
+				}
+				if(jury.getThesis() != null) {
+					jury.getThesis().setFile(null);
+				}
+			}
+			
+			return list;
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

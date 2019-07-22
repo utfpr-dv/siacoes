@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response.Status;
 
 import br.edu.utfpr.dv.siacoes.bo.AttendanceBO;
 import br.edu.utfpr.dv.siacoes.model.Attendance;
+import br.edu.utfpr.dv.siacoes.model.User;
 
 @Path("/attendance")
 public class AttendanceService {
@@ -30,6 +31,28 @@ public class AttendanceService {
 			List<Attendance> list = bo.listByStudent(new LoginService().getUser(securityContext).getIdUser(), idSupervisor, idProposal, stage);
 			
 			return Response.ok(list).build();
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR.ordinal(), e.getMessage()).build();
+		}
+	}
+	
+	@Secure
+	@GET
+	@Path("/find/{idattendance}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response find(@Context SecurityContext securityContext, @PathParam("idattendance") int idAttendance) {
+		try {
+			User user = new LoginService().getUser(securityContext);
+			AttendanceBO bo = new AttendanceBO();
+			Attendance attendance = bo.findById(idAttendance);
+			
+			if(attendance.getStudent().getIdUser() != user.getIdUser()) {
+				throw new Exception("O registro de reunião requisitado não pertence ao acadêmico.");
+			}
+			
+			return Response.ok(attendance).build();
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 

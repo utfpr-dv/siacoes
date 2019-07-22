@@ -20,7 +20,7 @@ public class SigesService {
 	
 	@Secure
 	@GET
-	@Path("/config/{department}")
+	@Path("/config/{iddepartment}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getConfig(@Context SecurityContext securityContext, @PathParam("iddepartment") int idDepartment) {
 		try {

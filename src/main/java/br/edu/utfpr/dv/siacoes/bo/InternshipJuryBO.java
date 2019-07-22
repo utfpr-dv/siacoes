@@ -72,7 +72,14 @@ public class InternshipJuryBO {
 		try {
 			InternshipJuryDAO dao = new InternshipJuryDAO();
 			
-			return dao.listByStudent(idUser, semester, year);
+			List<InternshipJury> list = dao.listByStudent(idUser, semester, year);
+			
+			for(InternshipJury jury : list) {
+				jury.getInternship().setFinalReport(null);
+				jury.getInternship().setInternshipPlan(null);
+			}
+			
+			return list;
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

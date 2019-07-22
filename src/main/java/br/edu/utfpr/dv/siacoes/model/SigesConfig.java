@@ -2,7 +2,6 @@
 
 import java.io.Serializable;
 
-import br.edu.utfpr.dv.siacoes.components.ByteSizeField;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 import br.edu.utfpr.dv.siacoes.util.StringUtils;
 
@@ -10,10 +9,10 @@ public class SigesConfig implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public Department department;
-	public double minimumScore;
-	public double supervisorPonderosity;
-	public double companySupervisorPonderosity;
+	private Department department;
+	private double minimumScore;
+	private double supervisorPonderosity;
+	private double companySupervisorPonderosity;
 	private boolean showGradesToStudent;
 	private SupervisorFilter supervisorFilter;
 	private boolean supervisorFillJuryForm;

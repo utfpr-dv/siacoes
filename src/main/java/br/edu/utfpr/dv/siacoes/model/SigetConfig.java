@@ -2,7 +2,6 @@
 
 import java.io.Serializable;
 
-import br.edu.utfpr.dv.siacoes.components.ByteSizeField;
 import br.edu.utfpr.dv.siacoes.util.StringUtils;
 
 public class SigetConfig implements Serializable {
@@ -87,8 +86,8 @@ public class SigetConfig implements Serializable {
 		}
 	}
 	
-	public Department department;
-	public double minimumScore;
+	private Department department;
+	private double minimumScore;
 	private boolean registerProposal;
 	private boolean showGradesToStudent;
 	private SupervisorFilter supervisorFilter;
