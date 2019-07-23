@@ -4,6 +4,7 @@ public class Credential {
 	
 	private String login;
 	private String password;
+	private String device;
 	
 	public Credential() {
 		this.setLogin("");
@@ -21,6 +22,12 @@ public class Credential {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public String getDevice() {
+		return device;
+	}
+	public void setDevice(String device) {
+		this.device = device;
 	}
 
 }

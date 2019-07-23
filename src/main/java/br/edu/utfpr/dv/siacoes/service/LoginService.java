@@ -7,8 +7,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.POST;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -20,6 +22,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
+import br.edu.utfpr.dv.siacoes.log.LoginEvent;
 import br.edu.utfpr.dv.siacoes.model.AppConfig;
 import br.edu.utfpr.dv.siacoes.model.Credential;
 import br.edu.utfpr.dv.siacoes.model.User;
@@ -30,7 +33,7 @@ public class LoginService {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response validateLogin(Credential credentials) {
+	public Response validateLogin(@Context HttpServletRequest requestContext, Credential credentials) {
 		if(!AppConfig.getInstance().isMobileEnabled()) {
 			return Response.status(Status.UNAUTHORIZED).build();
 		}
@@ -40,6 +43,8 @@ public class LoginService {
 			User user = bo.validateLogin(credentials);
 			
 			String token = this.generateToken(user.getLogin());
+			
+			LoginEvent.registerLogin(user.getIdUser(), requestContext.getRemoteAddr(), credentials.getDevice());
 			
 			return Response.ok(token).build();
 		} catch (Exception e) {
