@@ -33,6 +33,14 @@ public class ThesisService {
 			Semester semester = new SemesterBO().findByDate(new CampusBO().findByDepartment(idDepartment).getIdCampus(), DateUtils.getToday().getTime());
 			Thesis thesis = bo.findCurrentThesis(new LoginService().getUser(securityContext).getIdUser(), idDepartment, semester.getSemester(), semester.getYear());
 			
+			if(thesis == null) {
+				thesis = bo.findLastThesis(new LoginService().getUser(securityContext).getIdUser(), idDepartment, semester.getSemester(), semester.getYear());
+			}
+			
+			if(thesis != null) {
+				thesis.setFile(null);
+			}
+			
 			return Response.ok(thesis).build();
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);

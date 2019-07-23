@@ -33,6 +33,14 @@ public class ProjectService {
 			Semester semester = new SemesterBO().findByDate(new CampusBO().findByDepartment(idDepartment).getIdCampus(), DateUtils.getToday().getTime());
 			Project project = bo.findCurrentProject(new LoginService().getUser(securityContext).getIdUser(), idDepartment, semester.getSemester(), semester.getYear());
 			
+			if(project == null) {
+				project = bo.findLastProject(new LoginService().getUser(securityContext).getIdUser(), idDepartment, semester.getSemester(), semester.getYear());
+			}
+			
+			if(project != null) {
+				project.setFile(null);
+			}
+			
 			return Response.ok(project).build();
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
