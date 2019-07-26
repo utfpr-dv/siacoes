@@ -35,7 +35,7 @@ public class LoginService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response validateLogin(@Context HttpServletRequest requestContext, Credential credentials) {
 		if(!AppConfig.getInstance().isMobileEnabled()) {
-			return Response.status(Status.UNAUTHORIZED).build();
+			return Response.status(Status.METHOD_NOT_ALLOWED).build();
 		}
 		
 		try {

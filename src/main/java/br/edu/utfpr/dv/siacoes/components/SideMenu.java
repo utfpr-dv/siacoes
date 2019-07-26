@@ -342,7 +342,7 @@ public class SideMenu extends CustomComponent {
 			v1.setHeight("5px");
 			this.layoutExpanded.addComponent(v1);
 			
-			Link linkPlayStore = new Link(null, new ExternalResource("https://play.google.com/store"));
+			Link linkPlayStore = new Link(null, new ExternalResource("https://play.google.com/store/apps/details?id=br.edu.utfpr.dv.siacoes.mobile"));
 			linkPlayStore.setIcon(new ThemeResource("images/playstore100.png"));
 			linkPlayStore.setWidth("100px");
 			this.layoutExpanded.addComponent(linkPlayStore);
