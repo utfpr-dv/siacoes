@@ -182,7 +182,7 @@ public class InternshipBO {
 		if((config.getMaxFileSize() > 0) && ((internship.getIdInternship() == 0) || !Arrays.equals(internship.getInternshipPlan(), new InternshipDAO().getInternshipPlan(internship.getIdInternship()))) && (internship.getInternshipPlan().length > config.getMaxFileSize())) {
 			throw new Exception("O plano de estágio deve ter um tamanho máximo de " + StringUtils.getFormattedBytes(config.getMaxFileSize()) + ".");
 		}
-		if((config.getMaxFileSize() > 0) && ((internship.getIdInternship() == 0) || !Arrays.equals(internship.getFinalReport(), new InternshipDAO().getFinalReport(internship.getIdInternship()))) && (internship.getFinalReport().length > config.getMaxFileSize())) {
+		if((internship.getFinalReport() != null) && (config.getMaxFileSize() > 0) && ((internship.getIdInternship() == 0) || !Arrays.equals(internship.getFinalReport(), new InternshipDAO().getFinalReport(internship.getIdInternship()))) && (internship.getFinalReport().length > config.getMaxFileSize())) {
 			throw new Exception("O relatório final deve ter um tamanho máximo de " + StringUtils.getFormattedBytes(config.getMaxFileSize()) + ".");
 		}
 		
