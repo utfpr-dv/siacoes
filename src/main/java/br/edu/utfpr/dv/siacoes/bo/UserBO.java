@@ -246,6 +246,9 @@ public class UserBO {
 			if((user.getPhoto() != null) && (user.getPhoto().length > (300 * 1024))) {
 				throw new Exception("A foto de perfil deve ter no máximo 300 KB.");
 			}
+			if(user.isExternal() && (user.getEmail().endsWith("@utfpr.edu.br"))) {
+				throw new Exception("Servidores da UTFPR devem efetuar seu cadastro acessando o sistema via login e senha do LDAP");
+			}
 			
 			UserDAO dao = new UserDAO();
 			

@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,6 +18,7 @@ import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.InternshipByCompany;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.util.StringUtils;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
@@ -39,14 +41,14 @@ public class InternshipBO {
 		}
 	}
 	
-	public List<Internship> list(int idDepartment, int year, int idStudent, int idSupervisor, int idCompany, int type, int status) throws Exception{
+	public List<Internship> list(int idDepartment, int year, int idStudent, int idSupervisor, int idCompany, int type, int status, Date startDate1, Date startDate2, Date endDate1, Date endDate2) throws Exception{
 		try{
 			InternshipDAO dao = new InternshipDAO();
 			
-			if((year == 0) && (idStudent == 0) && (idSupervisor == 0) && (idCompany == 0) && (type == -1) && (status == -1)){
+			if((year == 0) && (idStudent == 0) && (idSupervisor == 0) && (idCompany == 0) && (type == -1) && (status == -1) && ((startDate1 == null) || (DateUtils.getYear(startDate1) <= 1900)) && ((startDate2 == null) || (DateUtils.getYear(startDate2) <= 1900)) && ((endDate1 == null) || (DateUtils.getYear(endDate1) <= 1900)) && ((endDate2 == null) || (DateUtils.getYear(endDate2) <= 1900))){
 				return dao.listByDepartment(idDepartment);
 			}else{
-				return dao.list(idDepartment, year, idStudent, idSupervisor, idCompany, type, status);	
+				return dao.list(idDepartment, year, idStudent, idSupervisor, idCompany, type, status, startDate1, startDate2, endDate1, endDate2);	
 			}
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);

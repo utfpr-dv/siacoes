@@ -93,5 +93,28 @@ public class InternshipJuryAppraiserBO {
 			throw new Exception(e.getMessage());
 		}
 	}
+	
+	public int changeAppraiser(int idUser, InternshipJuryAppraiser member, InternshipJuryAppraiser substitute) throws Exception {
+		if((member == null) || (member.getAppraiser() == null) || (member.getAppraiser().getIdUser() == 0)) {
+			throw new Exception("Selecione o membro titular da banca.");
+		}
+		if((substitute == null) || (substitute.getAppraiser() == null) || (substitute.getAppraiser().getIdUser() == 0)) {
+			throw new Exception("Selecione o suplente da banca.");
+		}
+		if(member.isChair()) {
+			throw new Exception("O presidente da banca não pode ser substituído.");
+		}
+		if(new InternshipJuryAppraiserScoreBO().hasScore(member.getInternshipJury().getIdInternshipJury(), member.getAppraiser().getIdUser())) {
+			throw new Exception("A substituição não pode ser efetuada pois o membro já tem notas lançadas.");
+		}
+		
+		member.setSubstitute(true);
+		this.save(idUser, member);
+		
+		substitute.setSubstitute(false);
+		this.save(idUser, substitute);
+		
+		return 1;
+	}
 
 }

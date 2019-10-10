@@ -12,10 +12,12 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.renderers.DateRenderer;
 
 import br.edu.utfpr.dv.siacoes.Session;
@@ -53,6 +55,10 @@ public class InternshipView extends ListView {
 	private final CompanyComboBox comboCompany;
 	private final NativeSelect comboStatus;
 	private final NativeSelect comboType;
+	private final DateField textStartDate1;
+	private final DateField textStartDate2;
+	private final DateField textEndDate1;
+	private final DateField textEndDate2;
 	private final Button buttonFinalReport;
 	private final Button buttonFinalDocument;
 	private final Button buttonJury;
@@ -90,16 +96,26 @@ public class InternshipView extends ListView {
 		this.comboType.addItem("Todos");
 		this.comboType.select("Todos");
 		
-		VerticalLayout v1 = new VerticalLayout(this.comboStudent, this.comboCompany);
-		v1.setSpacing(true);
+		this.textStartDate1 = new DateField("Início Entre");
+		this.textStartDate1.setDateFormat("dd/MM/yyyy");
+		this.textStartDate2 = new DateField("");
+		this.textStartDate2.setDateFormat("dd/MM/yyyy");
 		
-		HorizontalLayout h1 = new HorizontalLayout(this.comboType, this.comboStatus);
+		this.textEndDate1 = new DateField("Término Entre");
+		this.textEndDate1.setDateFormat("dd/MM/yyyy");
+		this.textEndDate2 = new DateField("");
+		this.textEndDate2.setDateFormat("dd/MM/yyyy");
+		
+		HorizontalLayout h1 = new HorizontalLayout(this.comboStudent, this.comboProfessor, this.comboType, this.comboStatus);
 		h1.setSpacing(true);
 		
-		VerticalLayout v2 = new VerticalLayout(this.comboProfessor, h1);
-		v2.setSpacing(true);
+		HorizontalLayout h2 = new HorizontalLayout(this.comboCompany, this.textYear, this.textStartDate1, this.textStartDate2, this.textEndDate1, this.textEndDate2);
+		h2.setSpacing(true);
 		
-		this.addFilterField(new HorizontalLayout(v1, v2, this.textYear));
+		VerticalLayout v1 = new VerticalLayout(h1, h2);
+		v1.setSpacing(true);
+		
+		this.addFilterField(new HorizontalLayout(v1));
 		
 		this.buttonJury = new Button("Banca", new Button.ClickListener() {
             @Override
@@ -210,7 +226,7 @@ public class InternshipView extends ListView {
 					status = ((InternshipStatus)this.comboStatus.getValue()).getValue();
 				}
 				
-				list = bo.list(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status);
+				list = bo.list(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status, this.textStartDate1.getValue(), this.textStartDate2.getValue(), this.textEndDate1.getValue(), this.textEndDate2.getValue());
 			}else if(this.profile == UserProfile.PROFESSOR){
 				list = bo.listBySupervisor(Session.getUser().getIdUser());
 			}else if(this.profile == UserProfile.COMPANYSUPERVISOR){
