@@ -38,6 +38,18 @@ public class InternshipJuryAppraiserBO {
 		}
 	}
 	
+	public InternshipJuryAppraiser findChair(int idInternshipJury) throws Exception{
+		try {
+			InternshipJuryAppraiserDAO dao = new InternshipJuryAppraiserDAO();
+			
+			return dao.findChair(idInternshipJury);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public List<InternshipJuryAppraiser> listAppraisers(int idInternshipJury) throws Exception{
 		try {
 			InternshipJuryAppraiserDAO dao = new InternshipJuryAppraiserDAO();
@@ -103,6 +115,9 @@ public class InternshipJuryAppraiserBO {
 		}
 		if(member.isChair()) {
 			throw new Exception("O presidente da banca não pode ser substituído.");
+		}
+		if(this.findChair(member.getInternshipJury().getIdInternshipJury()).getAppraiser().getIdUser() != idUser) {
+			throw new Exception("Apenas o presidente da banca pode fazer a substituição de membros.");
 		}
 		if(new InternshipJuryAppraiserScoreBO().hasScore(member.getInternshipJury().getIdInternshipJury(), member.getAppraiser().getIdUser())) {
 			throw new Exception("A substituição não pode ser efetuada pois o membro já tem notas lançadas.");

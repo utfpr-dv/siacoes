@@ -38,6 +38,18 @@ public class JuryAppraiserBO {
 		}
 	}
 	
+	public JuryAppraiser findChair(int idJury) throws Exception{
+		try {
+			JuryAppraiserDAO dao = new JuryAppraiserDAO();
+			
+			return dao.findChair(idJury);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public List<JuryAppraiser> listAppraisers(int idJury) throws Exception{
 		try {
 			JuryAppraiserDAO dao = new JuryAppraiserDAO();
@@ -103,6 +115,9 @@ public class JuryAppraiserBO {
 		}
 		if(member.isChair()) {
 			throw new Exception("O presidente da banca não pode ser substituído.");
+		}
+		if(this.findChair(member.getJury().getIdJury()).getAppraiser().getIdUser() != idUser) {
+			throw new Exception("Apenas o presidente da banca pode fazer a substituição de membros.");
 		}
 		if(new JuryAppraiserScoreBO().hasScore(member.getJury().getIdJury(), member.getAppraiser().getIdUser())) {
 			throw new Exception("A substituição não pode ser efetuada pois o membro já tem notas lançadas.");

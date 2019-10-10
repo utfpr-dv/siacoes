@@ -14,7 +14,6 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.renderers.DateRenderer;
@@ -37,6 +36,7 @@ import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipJuryAppraiserFeedbackWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipJuryWindow;
+import br.edu.utfpr.dv.siacoes.window.InternshipJuryAppraiserChangeWindow;
 
 public class InternshipJuryView extends ListView {
 
@@ -53,6 +53,7 @@ public class InternshipJuryView extends ListView {
 	private final Button buttonParticipants;
 	private final Button buttonParticipantsReport;
 	private final Button buttonGrades;
+	private final Button buttonChangeAppraiser;
 	
 	private boolean listAll = false;
 	
@@ -152,7 +153,16 @@ public class InternshipJuryView extends ListView {
         });
 		this.buttonGrades.setIcon(FontAwesome.FILE_PDF_O);
 		
+		this.buttonChangeAppraiser = new Button("Alterar Membros", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	changeAppraiser();
+            }
+        });
+		this.buttonChangeAppraiser.setIcon(FontAwesome.USERS);
+		
 		this.addActionButton(this.buttonSchedule);
+		this.addActionButton(this.buttonChangeAppraiser);
 		this.addActionButton(this.buttonFile);
 		this.addActionButton(this.buttonForm);
 		this.addActionButton(this.buttonParticipants);
@@ -172,6 +182,7 @@ public class InternshipJuryView extends ListView {
 	private void configureButtons(){
 		if(this.listAll){
 			this.buttonSendFeedback.setVisible(false);
+			this.buttonChangeAppraiser.setVisible(false);
 			this.buttonForm.setVisible(Session.isUserManager(this.getModule()));
 			this.buttonParticipants.setVisible(Session.isUserManager(this.getModule()));
 			this.buttonParticipantsReport.setVisible(Session.isUserManager(this.getModule()));
@@ -179,6 +190,7 @@ public class InternshipJuryView extends ListView {
 			this.buttonFile.setVisible(Session.isUserManager(this.getModule()));
 		}else{
 			this.buttonSendFeedback.setVisible(true);
+			this.buttonChangeAppraiser.setVisible(true);
 			this.buttonFile.setVisible(Session.isUserProfessor());
 			this.buttonForm.setVisible(Session.isUserProfessor());
 			this.buttonParticipants.setVisible(Session.isUserProfessor());
@@ -441,6 +453,26 @@ public class InternshipJuryView extends ListView {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
         	
 			this.showErrorNotification("Relatório de Notas", e.getMessage());
+		}
+	}
+	
+	private void changeAppraiser() {
+		Object value = getIdSelected();
+		
+		if(value == null) {
+			this.showWarningNotification("Alterar Membros", "Selecione uma banca para alterar a sua composição.");
+		} else {
+			try {
+				if(Session.getUser().getIdUser() == new InternshipJuryAppraiserBO().findChair((int)value).getAppraiser().getIdUser()) {
+					UI.getCurrent().addWindow(new InternshipJuryAppraiserChangeWindow(new InternshipJuryBO().findById((int)value)));
+				} else {
+					this.showWarningNotification("Alterar Membros", "Apenas o presidente da banca pode mudar sua composição.");
+				}
+			} catch(Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+	        	
+				this.showErrorNotification("Alterar Membros", e.getMessage());
+			}
 		}
 	}
 	

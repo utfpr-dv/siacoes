@@ -152,6 +152,38 @@ public class InternshipJuryAppraiserDAO {
 		}
 	}
 	
+	public InternshipJuryAppraiser findChair(int idInternshipJury) throws SQLException{
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			stmt = this.conn.prepareStatement(
+					"SELECT internshipjuryappraiser.*, appraiser.name as appraiserName, internshipjury.date, internshipjury.startTime, internshipjury.endTime, " +
+					"internshipjury.idInternship, student.name AS studentName, company.name AS companyName " +
+					"FROM internshipjuryappraiser INNER JOIN \"user\" appraiser ON appraiser.idUser=internshipjuryappraiser.idAppraiser " +
+					"INNER JOIN internshipjury ON internshipjury.idInternshipJury=internshipjuryappraiser.idInternshipJury " +
+					"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " + 
+					"INNER JOIN \"user\" student ON student.idUser=internship.idStudent " +
+					"INNER JOIN company ON company.idCompany=internship.idCompany " +
+					"WHERE internshipjuryappraiser.idInternshipJury=? AND internshipjuryappraiser.chair=1 AND internshipjuryappraiser.substitute=0");
+			
+			stmt.setInt(1, idInternshipJury);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
+	}
+	
 	public List<InternshipJuryAppraiser> listAppraisers(int idInternshipJury) throws SQLException{
 		ResultSet rs = null;
 		Statement stmt = null;

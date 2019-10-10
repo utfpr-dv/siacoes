@@ -155,6 +155,39 @@ public class JuryAppraiserDAO {
 		}
 	}
 	
+	public JuryAppraiser findChair(int idJury) throws SQLException{
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
+		
+		try{
+			stmt = this.conn.prepareStatement(
+					"SELECT juryappraiser.*, appraiser.name as appraiserName, jury.date, jury.startTime, jury.endTime, " +
+					"jury.idThesis, jury.idProject, thesis.title AS thesisTitle, project.title AS projectTitle, tstudent.name AS thesisStudent, pstudent.name AS projectStudent " +
+					"FROM juryappraiser INNER JOIN \"user\" appraiser ON appraiser.idUser=juryappraiser.idAppraiser " +
+					"INNER JOIN jury ON jury.idJury=juryappraiser.idJury " +
+					"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " + 
+					"LEFT JOIN project ON project.idProject=jury.idProject " +
+					"LEFT JOIN \"user\" tstudent ON tstudent.idUser=thesis.idStudent " +
+					"LEFT JOIN \"user\" pstudent ON pstudent.idUser=project.idStudent " +
+					"WHERE juryappraiser.idJury=? AND juryappraiser.chair=1 AND juryappraiser.substitute=0");
+			
+			stmt.setInt(1, idJury);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs);
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
+	}
+	
 	public List<JuryAppraiser> listAppraisers(int idJury) throws SQLException{
 		ResultSet rs = null;
 		Statement stmt = null;
