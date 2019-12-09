@@ -381,6 +381,17 @@ public class InternshipJuryDAO {
 			rs.close();
 			
 			stmt.close();
+			stmt = conn.prepareStatement("SELECT supervisorFillJuryForm, supervisorScore FROM internshipJury WHERE idInternshipJury=?");
+			stmt.setInt(1, idInternshipJury);
+			
+			rs = stmt.executeQuery();
+			rs.next();
+			if((rs.getInt("supervisorFillJuryForm") == 0) && (rs.getDouble("supervisorScore") > 0)) {
+				numAppraisers = numAppraisers - 1;
+			}
+			rs.close();
+			
+			stmt.close();
 			stmt = conn.prepareStatement("SELECT COUNT(DISTINCT internshipjuryappraiser.idInternshipJuryAppraiser) AS total FROM internshipjuryappraiserscore INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJuryAppraiser=internshipjuryappraiserscore.idInternshipJuryAppraiser WHERE idInternshipJury=?");
 			stmt.setInt(1, idInternshipJury);
 			

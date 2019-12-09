@@ -33,11 +33,34 @@ public class InternshipJuryAppraiserScoreDAO {
 		PreparedStatement stmt = null;
 		
 		try{
+			stmt = this.conn.prepareStatement("SELECT chair FROM internshipjuryappraiser WHERE idInternshipJury=? AND idAppraiser=?");
+			stmt.setInt(1, idInternshipJury);
+			stmt.setInt(2, idUser);
+			
+			rs = stmt.executeQuery();
+			rs.next();
+			
+			if((rs.getInt("chair") == 1)) {
+				stmt.close();
+				stmt = this.conn.prepareStatement("SELECT supervisorFillJuryForm, supervisorScore FROM internshipJury WHERE idInternshipJury=?");
+				stmt.setInt(1, idInternshipJury);
+				
+				rs.close();
+				rs = stmt.executeQuery();
+				rs.next();
+				
+				if((rs.getInt("supervisorFillJuryForm") == 0)) {
+					return (rs.getDouble("supervisorScore") > 0);
+				}
+			}
+			
+			stmt.close();
 			stmt = this.conn.prepareStatement("SELECT internshipjuryappraiserscore.idInternshipJuryAppraiserScore FROM internshipjuryappraiserscore INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJuryAppraiser=internshipjuryappraiserscore.idInternshipJuryAppraiser WHERE idInternshipJury=? AND idAppraiser=?");
 			
 			stmt.setInt(1, idInternshipJury);
 			stmt.setInt(2, idUser);
 			
+			rs.close();
 			rs = stmt.executeQuery();
 			
 			return rs.next();
