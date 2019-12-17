@@ -159,7 +159,7 @@ CREATE TABLE company (
   cnpj VARCHAR(20) NOT NULL,
   phone VARCHAR(45) NOT NULL,
   email VARCHAR(100) NOT NULL,
-  company VARCHAR(50) NOT NULL,
+  agreement VARCHAR(50) NOT NULL,
   PRIMARY KEY (idcompany),
   CONSTRAINT fk_company_city FOREIGN KEY (idcity) REFERENCES city (idcity) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
