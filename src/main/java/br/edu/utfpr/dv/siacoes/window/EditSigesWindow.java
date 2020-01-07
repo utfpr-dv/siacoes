@@ -29,6 +29,7 @@ public class EditSigesWindow extends EditWindow {
 	private final CheckBox checkSupervisorFillJuryForm;
 	private final ByteSizeField textMaxFileSize;
 	private final TextField textJuryTime;
+	private final CheckBox checkFillOnlyTotalHours;
 	
 	private final TabSheet tab;
 	
@@ -67,11 +68,13 @@ public class EditSigesWindow extends EditWindow {
 		this.textJuryTime = new TextField("Duração da banca (minutos)");
 		this.textJuryTime.setWidth("100px");
 		
-		VerticalLayout v1 = new VerticalLayout(this.comboSupervisorFilter);
+		this.checkFillOnlyTotalHours = new CheckBox("Informar apenas o total de horas do estágio");
+		
+		VerticalLayout v1 = new VerticalLayout(this.comboSupervisorFilter, this.checkFillOnlyTotalHours);
 		v1.setSpacing(true);
 		v1.setMargin(true);
 		
-		this.tab.addTab(v1, "Orientação");
+		this.tab.addTab(v1, "Registro de Estágio");
 		
 		HorizontalLayout h1 = new HorizontalLayout(this.textMinimumScore, this.textSupervisorPonderosity, this.textCompanySupervisorPonderosity);
 		h1.setSpacing(true);
@@ -101,6 +104,7 @@ public class EditSigesWindow extends EditWindow {
 		this.checkSupervisorFillJuryForm.setValue(this.config.isSupervisorFillJuryForm());
 		this.textMaxFileSize.setValue(this.config.getMaxFileSize());
 		this.textJuryTime.setValue(String.valueOf(this.config.getJuryTime()));
+		this.checkFillOnlyTotalHours.setValue(this.config.isFillOnlyTotalHours());
 	}
 
 	@Override
@@ -116,6 +120,7 @@ public class EditSigesWindow extends EditWindow {
 			this.config.setSupervisorFillJuryForm(this.checkSupervisorFillJuryForm.getValue());
 			this.config.setMaxFileSize((int)this.textMaxFileSize.getValue());
 			this.config.setJuryTime(Integer.parseInt(this.textJuryTime.getValue()));
+			this.config.setFillOnlyTotalHours(this.checkFillOnlyTotalHours.getValue());
 			
 			bo.save(Session.getIdUserLog(), this.config);
 			

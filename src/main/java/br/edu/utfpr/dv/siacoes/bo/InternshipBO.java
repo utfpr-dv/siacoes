@@ -160,8 +160,17 @@ public class InternshipBO {
 		if(internship.getStartDate() == null){
 			throw new Exception("Informe a data de início do estágio.");
 		}
-		if(internship.getTotalHours() <= 0){
-			throw new Exception("Informe o total de horas do estágio.");
+		if(internship.isFillOnlyTotalHours()) {
+			if(internship.getTotalHours() <= 0) {
+				throw new Exception("Informe o total de horas do estágio.");
+			}
+		} else {
+			if((internship.getWeekDays() < 1) || (internship.getWeekDays() > 7)) {
+				throw new Exception("O número de dias da semana deve estar entre 1 e 7");
+			}
+			if(internship.getWeekHours() <= 0) {
+				throw new Exception("Informe a carga horária semanal.");
+			}
 		}
 		if(internship.getInternshipPlan() == null){
 			throw new Exception("Faça upload do plano de estágio.");

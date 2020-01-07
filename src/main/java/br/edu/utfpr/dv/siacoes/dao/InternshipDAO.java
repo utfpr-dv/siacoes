@@ -16,6 +16,7 @@ import br.edu.utfpr.dv.siacoes.model.InternshipByCompany;
 import br.edu.utfpr.dv.siacoes.model.InternshipMissingDocumentsReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
+import br.edu.utfpr.dv.siacoes.model.Internship.InternshipRequiredType;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipStatus;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
 
@@ -396,9 +397,9 @@ public class InternshipDAO {
 		
 		try{
 			if(insert){
-				stmt = this.conn.prepareStatement("INSERT INTO internship(iddepartment, idcompany, idcompanysupervisor, idsupervisor, idstudent, type, comments, startDate, endDate, totalHours, internshipPlan, finalReport, reportTitle) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = this.conn.prepareStatement("INSERT INTO internship(iddepartment, idcompany, idcompanysupervisor, idsupervisor, idstudent, type, comments, startDate, endDate, totalHours, internshipPlan, finalReport, reportTitle, requiredType, term, weekHours, weekDays, fillOnlyTotalHours) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = this.conn.prepareStatement("UPDATE internship SET iddepartment=?, idcompany=?, idcompanysupervisor=?, idsupervisor=?, idstudent=?, type=?, comments=?, startDate=?, endDate=?, totalHours=?, internshipPlan=?, finalReport=?, reportTitle=? WHERE idinternship=?");
+				stmt = this.conn.prepareStatement("UPDATE internship SET iddepartment=?, idcompany=?, idcompanysupervisor=?, idsupervisor=?, idstudent=?, type=?, comments=?, startDate=?, endDate=?, totalHours=?, internshipPlan=?, finalReport=?, reportTitle=?, requiredType=?, term=?, weekHours=?, weekDays=?, fillOnlyTotalHours=? WHERE idinternship=?");
 			}
 			
 			stmt.setInt(1, internship.getDepartment().getIdDepartment());
@@ -422,9 +423,14 @@ public class InternshipDAO {
 				stmt.setBytes(12, internship.getFinalReport());
 			}
 			stmt.setString(13, internship.getReportTitle());
+			stmt.setInt(14, internship.getRequiredType().getValue());
+			stmt.setString(15, internship.getTerm());
+			stmt.setDouble(16, internship.getWeekHours());
+			stmt.setInt(17, internship.getWeekDays());
+			stmt.setInt(18, (internship.isFillOnlyTotalHours() ? 1 : 0));
 			
 			if(!insert){
-				stmt.setInt(14, internship.getIdInternship());
+				stmt.setInt(19, internship.getIdInternship());
 			}
 			
 			stmt.execute();
@@ -463,11 +469,16 @@ public class InternshipDAO {
 		internship.getStudent().setIdUser(rs.getInt("idstudent"));
 		internship.getStudent().setName(rs.getString("studentName"));
 		internship.setType(InternshipType.valueOf(rs.getInt("type")));
+		internship.setRequiredType(InternshipRequiredType.valueOf(rs.getInt("requiredType")));
 		internship.setComments(rs.getString("comments"));
 		internship.setStartDate(rs.getDate("startDate"));
 		internship.setEndDate(rs.getDate("endDate"));
+		internship.setTerm(rs.getString("term"));
+		internship.setWeekHours(rs.getDouble("weekHours"));
+		internship.setWeekDays(rs.getInt("weekDays"));
 		internship.setTotalHours(rs.getInt("totalHours"));
 		internship.setReportTitle(rs.getString("reportTitle"));
+		internship.setFillOnlyTotalHours(rs.getInt("fillOnlyTotalHours") == 1);
 		
 		if(loadFiles) {
 			internship.setInternshipPlan(rs.getBytes("internshipPlan"));

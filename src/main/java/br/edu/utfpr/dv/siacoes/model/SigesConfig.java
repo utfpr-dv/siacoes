@@ -18,6 +18,7 @@ public class SigesConfig implements Serializable {
 	private boolean supervisorFillJuryForm;
 	private int maxFileSize;
 	private int juryTime;
+	private boolean fillOnlyTotalHours;
 	
 	public SigesConfig(){
 		this.setDepartment(new Department());
@@ -29,6 +30,7 @@ public class SigesConfig implements Serializable {
 		this.setSupervisorFillJuryForm(false);
 		this.setMaxFileSize(0);
 		this.setJuryTime(0);
+		this.setFillOnlyTotalHours(false);
 	}
 	
 	public Department getDepartment() {
@@ -91,6 +93,12 @@ public class SigesConfig implements Serializable {
 	}
 	public void setJuryTime(int juryTime) {
 		this.juryTime = juryTime;
+	}
+	public boolean isFillOnlyTotalHours() {
+		return fillOnlyTotalHours;
+	}
+	public void setFillOnlyTotalHours(boolean fillOnlyTotalHours) {
+		this.fillOnlyTotalHours = fillOnlyTotalHours;
 	}
 	
 }

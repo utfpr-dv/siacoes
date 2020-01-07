@@ -51,6 +51,7 @@ import br.edu.utfpr.dv.siacoes.components.StudentComboBox;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.model.Internship.InternshipRequiredType;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryFormReport;
@@ -74,10 +75,14 @@ public class EditInternshipWindow extends EditWindow {
 	private final CompanyComboBox comboCompany;
 	private final CompanySupervisorComboBox comboCompanySupervisor;
 	private final NativeSelect comboType;
+	private final NativeSelect comboRequiredType;
 	private final TextArea textComments;
 	private final DateField startDate;
 	private final DateField endDate;
 	private final TextField textTotalHours;
+	private final TextField textWeekHours;
+	private final TextField textWeekDays;
+	private final TextField textTerm;
 	private final TextField textReportTitle;
 	private final FileUploader uploadInternshipPlan;
 	private final Button buttonDownloadInternshipPlan;
@@ -154,6 +159,17 @@ public class EditInternshipWindow extends EditWindow {
 		this.comboType.setNullSelectionAllowed(false);
 		this.comboType.setRequired(true);
 		
+		this.comboRequiredType = new NativeSelect("Categorização do Estágio");
+		this.comboRequiredType.setWidth("200px");
+		this.comboRequiredType.addItem(InternshipRequiredType.UNIVERSITY);
+		this.comboRequiredType.addItem(InternshipRequiredType.EXTERNAL);
+		this.comboRequiredType.addItem(InternshipRequiredType.SCHOLARSHIP);
+		this.comboRequiredType.addItem(InternshipRequiredType.PROFESSIONAL);
+		this.comboRequiredType.addItem(InternshipRequiredType.VALIDATION);
+		this.comboRequiredType.select(InternshipRequiredType.UNIVERSITY);
+		this.comboRequiredType.setNullSelectionAllowed(false);
+		this.comboRequiredType.setRequired(true);
+		
 		this.startDate = new DateField("Data de Início");
 		this.startDate.setDateFormat("dd/MM/yyyy");
 		this.startDate.setRequired(true);
@@ -164,6 +180,17 @@ public class EditInternshipWindow extends EditWindow {
 		this.textTotalHours = new TextField("Horas");
 		this.textTotalHours.setWidth("100px");
 		this.textTotalHours.setRequired(true);
+		
+		this.textWeekHours = new TextField("C.H. Sem.");
+		this.textWeekHours.setWidth("100px");
+		this.textWeekHours.setRequired(true);
+		
+		this.textWeekDays = new TextField("Dias/Sem.");
+		this.textWeekDays.setWidth("100px");
+		this.textWeekDays.setRequired(true);
+		
+		this.textTerm = new TextField("Termo");
+		this.textTerm.setWidth("200px");
 		
 		this.textReportTitle = new TextField("Título do Relatório Final");
 		this.textReportTitle.setWidth("810px");
@@ -213,8 +240,7 @@ public class EditInternshipWindow extends EditWindow {
         });
 		
 		this.textComments = new TextArea();
-		this.textComments.setWidth("810px");
-		this.textComments.setHeight("350px");
+		this.textComments.setSizeFull();
 		
 		HorizontalLayout h1 = new HorizontalLayout(this.comboCampus, this.comboDepartment);
 		h1.setSpacing(true);
@@ -225,13 +251,16 @@ public class EditInternshipWindow extends EditWindow {
 		HorizontalLayout h3 = new HorizontalLayout(this.comboCompany, this.comboCompanySupervisor);
 		h3.setSpacing(true);
 		
-		HorizontalLayout h4 = new HorizontalLayout(this.comboType, this.startDate, this.endDate, this.textTotalHours);
+		HorizontalLayout h4 = new HorizontalLayout(this.comboType, this.comboRequiredType, this.textTerm);
 		h4.setSpacing(true);
+		
+		HorizontalLayout h9 = new HorizontalLayout(this.startDate, this.endDate, this.textWeekHours, this.textWeekDays, this.textTotalHours);
+		h9.setSpacing(true);
 		
 		HorizontalLayout h5 = new HorizontalLayout(this.uploadInternshipPlan, this.uploadFinalReport);
 		h5.setSpacing(true);
 		
-		VerticalLayout tab1 = new VerticalLayout(h1, h2, h3, h4, this.textReportTitle);
+		VerticalLayout tab1 = new VerticalLayout(h1, h2, h3, h4, h9, this.textReportTitle);
 		if(Session.isUserManager(SystemModule.SIGES)){
 			tab1.addComponent(h5);
 		}
@@ -341,6 +370,7 @@ public class EditInternshipWindow extends EditWindow {
 		
 		this.tabContainer = new TabSheet();
 		this.tabContainer.setWidth("820px");
+		this.tabContainer.setHeight("465px");
 		this.tabContainer.addStyleName(ValoTheme.TABSHEET_FRAMED);
 		this.tabContainer.addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
 		this.tabContainer.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
@@ -399,11 +429,15 @@ public class EditInternshipWindow extends EditWindow {
 		this.comboCompany.setCompany(this.internship.getCompany());
 		this.comboCompanySupervisor.setSupervisor(this.internship.getCompanySupervisor());
 		this.comboType.setValue(this.internship.getType());
+		this.comboRequiredType.setValue(this.internship.getRequiredType());
 		this.startDate.setValue(this.internship.getStartDate());
 		this.endDate.setValue(this.internship.getEndDate());
 		this.textTotalHours.setValue(String.valueOf(this.internship.getTotalHours()));
 		this.textComments.setValue(this.internship.getComments());
 		this.textReportTitle.setValue(this.internship.getReportTitle());
+		this.textTerm.setValue(this.internship.getTerm());
+		this.textWeekHours.setValue(String.valueOf(this.internship.getWeekHours()));
+		this.textWeekDays.setValue(String.valueOf(this.internship.getWeekDays()));
 		
 		this.internship.setReports(null);
 		
@@ -418,6 +452,15 @@ public class EditInternshipWindow extends EditWindow {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 				this.showErrorNotification("Carregar Notas", "Não foi possível carregar as notas atribuídas pela banca.");
 			}
+		} else {
+			this.internship.setFillOnlyTotalHours(this.config.isFillOnlyTotalHours());
+		}
+		
+		if(this.internship.isFillOnlyTotalHours()) {
+			this.textWeekHours.setVisible(false);
+			this.textWeekDays.setVisible(false);
+		} else {
+			this.textTotalHours.setVisible(false);
 		}
 	}
 	
@@ -426,19 +469,19 @@ public class EditInternshipWindow extends EditWindow {
 		this.gridStudentReport.addColumn("Relatório", Integer.class);
 		this.gridStudentReport.addColumn("Data de Upload", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
 		this.gridStudentReport.setWidth("810px");
-		this.gridStudentReport.setHeight("300px");
+		this.gridStudentReport.setHeight("360px");
 		
 		this.gridSupervisorReport = new Grid();
 		this.gridSupervisorReport.addColumn("Relatório", Integer.class);
 		this.gridSupervisorReport.addColumn("Data de Upload", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
 		this.gridSupervisorReport.setWidth("810px");
-		this.gridSupervisorReport.setHeight("300px");
+		this.gridSupervisorReport.setHeight("360px");
 		
 		this.gridCompanySupervisorReport = new Grid();
 		this.gridCompanySupervisorReport.addColumn("Relatório", Integer.class);
 		this.gridCompanySupervisorReport.addColumn("Data de Upload", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
 		this.gridCompanySupervisorReport.setWidth("810px");
-		this.gridCompanySupervisorReport.setHeight("300px");
+		this.gridCompanySupervisorReport.setHeight("360px");
 		
 		if(this.internship.getReports() == null){
 			try {
@@ -604,9 +647,13 @@ public class EditInternshipWindow extends EditWindow {
 			this.internship.setCompany(this.comboCompany.getCompany());
 			this.internship.setCompanySupervisor(this.comboCompanySupervisor.getSupervisor());
 			this.internship.setType((InternshipType)this.comboType.getValue());
+			this.internship.setRequiredType((InternshipRequiredType)this.comboRequiredType.getValue());
 			this.internship.setStartDate(this.startDate.getValue());
 			this.internship.setEndDate(this.endDate.getValue());
+			this.internship.setTerm(this.textTerm.getValue());
 			this.internship.setTotalHours(Integer.parseInt(this.textTotalHours.getValue()));
+			this.internship.setWeekHours(Double.parseDouble(this.textWeekHours.getValue().replace(",", ".")));
+			this.internship.setWeekDays(Integer.parseInt(this.textWeekDays.getValue()));
 			this.internship.setComments(this.textComments.getValue());
 			this.internship.setReportTitle(this.textReportTitle.getValue());
 			

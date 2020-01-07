@@ -87,6 +87,50 @@ public class Internship implements Serializable {
 		}
 	}
 	
+	public enum InternshipRequiredType{
+		UNIVERSITY(0), EXTERNAL(1), SCHOLARSHIP(2), PROFESSIONAL(3), VALIDATION(4);
+		
+		private final int value; 
+		InternshipRequiredType(int value){ 
+			this.value = value; 
+		}
+		
+		public int getValue(){ 
+			return value;
+		}
+		
+		public static InternshipRequiredType valueOf(int value){
+			for(InternshipRequiredType d : InternshipRequiredType.values()){
+				if(d.getValue() == value){
+					return d;
+				}
+			}
+			
+			return null;
+		}
+		
+		public String toString(){
+			return this.getDescription();
+		}
+		
+		public String getDescription(){
+			switch(this){
+				case UNIVERSITY:
+					return "UTFPR como UCE";
+				case EXTERNAL:
+					return "UCE Externa";
+				case SCHOLARSHIP:
+					return "Bolsista";
+				case PROFESSIONAL:
+					return "Atividade Profissional";
+				case VALIDATION:
+					return "Validação";
+				default:
+					return "UTFPR como UCE";
+			}
+		}
+	}
+	
 	private int idInternship;
 	private Department department;
 	private Company company;
@@ -94,14 +138,19 @@ public class Internship implements Serializable {
 	private User supervisor;
 	private User student;
 	private InternshipType type;
+	private InternshipRequiredType requiredType;
 	private String comments;
 	private Date startDate;
 	private Date endDate;
 	private String reportTitle;
+	private String term;
+	private double weekHours;
+	private int weekDays;
 	private int totalHours;
 	private transient byte[] internshipPlan;
 	private transient byte[] finalReport;
 	private List<InternshipReport> reports;
+	private boolean fillOnlyTotalHours;
 	
 	public Internship(){
 		this.setIdInternship(0);
@@ -111,13 +160,18 @@ public class Internship implements Serializable {
 		this.setSupervisor(new User());
 		this.setStudent(new User());
 		this.setType(InternshipType.NONREQUIRED);
+		this.setRequiredType(InternshipRequiredType.UNIVERSITY);
 		this.setComments("");
 		this.setReportTitle("");
 		this.setStartDate(DateUtils.getToday().getTime());
 		this.setEndDate(null);
+		this.setTerm("");
+		this.setWeekHours(0);
+		this.setWeekDays(0);
 		this.setTotalHours(0);
 		this.setInternshipPlan(null);
 		this.setFinalReport(null);
+		this.setFillOnlyTotalHours(false);
 		this.setReports(new ArrayList<InternshipReport>());
 	}
 	
@@ -163,6 +217,12 @@ public class Internship implements Serializable {
 	public void setType(InternshipType type) {
 		this.type = type;
 	}
+	public InternshipRequiredType getRequiredType() {
+		return requiredType;
+	}
+	public void setRequiredType(InternshipRequiredType requiredType) {
+		this.requiredType = requiredType;
+	}
 	public String getComments() {
 		return comments;
 	}
@@ -180,6 +240,24 @@ public class Internship implements Serializable {
 	}
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	public String getTerm() {
+		return term;
+	}
+	public void setTerm(String term) {
+		this.term = term;
+	}
+	public double getWeekHours() {
+		return weekHours;
+	}
+	public void setWeekHours(double weekHours) {
+		this.weekHours = weekHours;
+	}
+	public int getWeekDays() {
+		return weekDays;
+	}
+	public void setWeekDays(int weekDays) {
+		this.weekDays = weekDays;
 	}
 	public int getTotalHours() {
 		return totalHours;
@@ -210,6 +288,12 @@ public class Internship implements Serializable {
 	}
 	public void setReports(List<InternshipReport> reports) {
 		this.reports = reports;
+	}
+	public boolean isFillOnlyTotalHours() {
+		return fillOnlyTotalHours;
+	}
+	public void setFillOnlyTotalHours(boolean fillOnlyTotalHours) {
+		this.fillOnlyTotalHours = fillOnlyTotalHours;
 	}
 	public InternshipStatus getStatus(){
 		if((this.getEndDate() == null) || (this.getEndDate().after(DateUtils.getToday().getTime()))){
