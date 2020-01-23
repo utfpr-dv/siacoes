@@ -2,16 +2,22 @@
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.InternshipReportDAO;
+import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
+import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
+import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportFeedback;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportType;
+import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.StringUtils;
 
@@ -99,6 +105,9 @@ public class InternshipReportBO {
 	}
 	
 	public int save(int idUser, InternshipReport report) throws Exception{
+		int ret = 0;
+		boolean isInsert = (report.getIdInternshipReport() == 0);
+		
 		if((report.getInternship() == null) || (report.getInternship().getIdInternship() == 0)){
 			throw new Exception("Informe o estágio do relatório.");
 		}
@@ -117,12 +126,37 @@ public class InternshipReportBO {
 		}
 		
 		try{
-			return dao.save(idUser, report);
+			ret = dao.save(idUser, report);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			throw new Exception(e);
 		}
+		
+		try {
+			if(isInsert && (report.getFeedback() == ReportFeedback.NONE)) {
+				EmailMessageBO bo = new EmailMessageBO();
+				List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+				Internship internship = new InternshipBO().findById(report.getInternship().getIdInternship());
+				User manager = new UserBO().findManager(internship.getDepartment().getIdDepartment(), SystemModule.SIGES);
+				
+				keys.add(new EmailMessageEntry<String, String>("student", internship.getStudent().getName()));
+				keys.add(new EmailMessageEntry<String, String>("supervisor", internship.getSupervisor().getName()));
+				keys.add(new EmailMessageEntry<String, String>("manager", manager.getName()));
+				keys.add(new EmailMessageEntry<String, String>("company", internship.getCompany().getName()));
+				keys.add(new EmailMessageEntry<String, String>("type", (report.isFinalReport() ? "final" : "parcial")));
+				
+				if(report.getType() == ReportType.STUDENT) {
+					bo.sendEmail(internship.getSupervisor().getIdUser(), MessageType.INTERNSHIPSTUDENTREPORTSUBMITTED, keys);
+				} else if(report.getType() == ReportType.SUPERVISOR) {
+					bo.sendEmail(manager.getIdUser(), MessageType.INTERNSHIPSUPERVISORREPORTSUBMITTED, keys);
+				}
+			}
+		} catch(Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+		}
+		
+		return ret;
 	}
 
 }

@@ -48,7 +48,9 @@ public class EmailMessage implements Serializable {
 		INTERNSHIPFINALDOCUMENTSUBMITTEDSTUDENT(37),
 		INTERNSHIPFINALDOCUMENTVALIDATEDSTUDENT(38),
 		BUGREPORTED(39),
-		BUGUPDATED(40);
+		BUGUPDATED(40),
+		INTERNSHIPSTUDENTREPORTSUBMITTED(41),
+		INTERNSHIPSUPERVISORREPORTSUBMITTED(42);
 		
 		private final int value; 
 		MessageType(int value){ 
@@ -151,6 +153,10 @@ public class EmailMessage implements Serializable {
 					return "Nova Sugestão/Problema Cadastrado";
 				case BUGUPDATED:
 					return "Sugestão/Problema Atualizado";
+				case INTERNSHIPSTUDENTREPORTSUBMITTED:
+					return "Relatório de Estágio Enviado (Estudante)";
+				case INTERNSHIPSUPERVISORREPORTSUBMITTED:
+					return "Relatório de Estágio Enviado (Orientador)";
 				default:
 					return "";
 			}
