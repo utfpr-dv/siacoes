@@ -29,6 +29,7 @@ import br.edu.utfpr.dv.siacoes.model.Internship.InternshipStatus;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryStudent;
+import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportFeedback;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportType;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryStudent;
@@ -209,7 +210,10 @@ public class CertificateBO {
 		if(internship.getStatus() == InternshipStatus.FINISHED){
 			InternshipReportBO bo = new InternshipReportBO();
 			
-			if(!bo.hasReport(internship.getIdInternship(), ReportType.SUPERVISOR)){
+			if((internship.getType() == InternshipType.REQUIRED) && (internship.getFinalReport() == null)){
+				throw new Exception("O acadêmico precisa entregar o relatório final de estágio para gerar a declaração.");	
+			}
+			if(!bo.hasReport(internship.getIdInternship(), ReportType.SUPERVISOR, ReportFeedback.APPROVED)){
 				throw new Exception("O professor precisa entregar o relatório de orientação para gerar a declaração.");
 			}
 		}
@@ -250,7 +254,7 @@ public class CertificateBO {
 			}else{
 				InternshipReportBO bo = new InternshipReportBO();
 				
-				if(!bo.hasReport(internship.getIdInternship(), ReportType.STUDENT)){
+				if(!bo.hasReport(internship.getIdInternship(), ReportType.STUDENT, ReportFeedback.APPROVED)){
 					throw new Exception("O acadêmico precisa entregar o relatório de estágio para gerar a declaração.");
 				}
 			}

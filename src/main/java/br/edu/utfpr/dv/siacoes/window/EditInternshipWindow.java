@@ -1,9 +1,5 @@
 ﻿package br.edu.utfpr.dv.siacoes.window;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -25,12 +21,8 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Upload.Receiver;
-import com.vaadin.ui.Upload.SucceededEvent;
-import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -59,6 +51,7 @@ import br.edu.utfpr.dv.siacoes.model.InternshipReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserDetailReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
+import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportFeedback;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
@@ -95,15 +88,17 @@ public class EditInternshipWindow extends EditWindow {
 	private final VerticalLayout layoutStudentReport;
 	private final VerticalLayout layoutSupervisorReport;
 	private final VerticalLayout layoutCompanySupervisorReport;
-	private final Upload uploadStudentReport;
-	private final Upload uploadSupervisorReport;
-	private final Upload uploadCompanySupervisorReport;
+	private final Button buttonUploadStudentReport;
+	private final Button buttonUploadSupervisorReport;
+	private final Button buttonUploadCompanySupervisorReport;
 	private final Button buttonDownloadStudentReport;
 	private final Button buttonDownloadSupervisorReport;
 	private final Button buttonDownloadCompanySupervisorReport;
 	private final Button buttonDeleteStudentReport;
 	private final Button buttonDeleteSupervisorReport;
 	private final Button buttonDeleteCompanySupervisorReport;
+	private final Button buttonValidateStudentReport;
+	private final Button buttonValidateSupervisorReport;
 	
 	private SigesConfig config;
 	
@@ -268,12 +263,14 @@ public class EditInternshipWindow extends EditWindow {
 		
 		this.layoutStudentReport = new VerticalLayout();
 		
-		ReportUploader studentReportUploader = new ReportUploader(ReportType.STUDENT);
-		this.uploadStudentReport = new Upload(null, studentReportUploader);
-		this.uploadStudentReport.addSucceededListener(studentReportUploader);
-		this.uploadStudentReport.setButtonCaption("Upload");
-		this.uploadStudentReport.setWidth("150px");
-		this.uploadStudentReport.setImmediate(true);
+		this.buttonUploadStudentReport = new Button("Enviar", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	addReport(ReportType.STUDENT);
+            }
+        });
+		this.buttonUploadStudentReport.setIcon(FontAwesome.UPLOAD);
+		this.buttonUploadStudentReport.setWidth("150px");
 		
 		this.buttonDownloadStudentReport = new Button("Download", new Button.ClickListener() {
             @Override
@@ -283,6 +280,16 @@ public class EditInternshipWindow extends EditWindow {
         });
 		this.buttonDownloadStudentReport.setIcon(FontAwesome.DOWNLOAD);
 		this.buttonDownloadStudentReport.setWidth("150px");
+		
+		this.buttonValidateStudentReport = new Button("Validar", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	validateStudentReport();
+            }
+        });
+		this.buttonValidateStudentReport.setIcon(FontAwesome.CHECK);
+		this.buttonValidateStudentReport.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+		this.buttonValidateStudentReport.setWidth("150px");
 		
 		this.buttonDeleteStudentReport = new Button("Excluir", new Button.ClickListener() {
             @Override
@@ -294,7 +301,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.buttonDeleteStudentReport.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonDeleteStudentReport.setWidth("150px");
 		
-		HorizontalLayout h6 = new HorizontalLayout(this.uploadStudentReport, this.buttonDownloadStudentReport, this.buttonDeleteStudentReport);
+		HorizontalLayout h6 = new HorizontalLayout(this.buttonUploadStudentReport, this.buttonDownloadStudentReport, this.buttonValidateStudentReport, this.buttonDeleteStudentReport);
 		h6.setSpacing(true);
 		
 		VerticalLayout tab2 = new VerticalLayout(this.layoutStudentReport, h6);
@@ -302,12 +309,14 @@ public class EditInternshipWindow extends EditWindow {
 		
 		this.layoutSupervisorReport = new VerticalLayout();
 		
-		ReportUploader supervisorReportUploader = new ReportUploader(ReportType.SUPERVISOR);
-		this.uploadSupervisorReport = new Upload(null, supervisorReportUploader);
-		this.uploadSupervisorReport.addSucceededListener(supervisorReportUploader);
-		this.uploadSupervisorReport.setButtonCaption("Upload");
-		this.uploadSupervisorReport.setWidth("150px");
-		this.uploadSupervisorReport.setImmediate(true);
+		this.buttonUploadSupervisorReport = new Button("Enviar", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	addReport(ReportType.SUPERVISOR);
+            }
+        });
+		this.buttonUploadSupervisorReport.setIcon(FontAwesome.UPLOAD);
+		this.buttonUploadSupervisorReport.setWidth("150px");
 		
 		this.buttonDownloadSupervisorReport = new Button("Download", new Button.ClickListener() {
             @Override
@@ -317,6 +326,16 @@ public class EditInternshipWindow extends EditWindow {
         });
 		this.buttonDownloadSupervisorReport.setIcon(FontAwesome.DOWNLOAD);
 		this.buttonDownloadSupervisorReport.setWidth("150px");
+		
+		this.buttonValidateSupervisorReport = new Button("Validar", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	validateSupervisorReport();
+            }
+        });
+		this.buttonValidateSupervisorReport.setIcon(FontAwesome.CHECK);
+		this.buttonValidateSupervisorReport.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+		this.buttonValidateSupervisorReport.setWidth("150px");
 		
 		this.buttonDeleteSupervisorReport = new Button("Excluir", new Button.ClickListener() {
             @Override
@@ -328,7 +347,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.buttonDeleteSupervisorReport.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonDeleteSupervisorReport.setWidth("150px");
 		
-		HorizontalLayout h7 = new HorizontalLayout(this.uploadSupervisorReport, this.buttonDownloadSupervisorReport, this.buttonDeleteSupervisorReport);
+		HorizontalLayout h7 = new HorizontalLayout(this.buttonUploadSupervisorReport, this.buttonDownloadSupervisorReport, this.buttonValidateSupervisorReport, this.buttonDeleteSupervisorReport);
 		h7.setSpacing(true);
 		
 		VerticalLayout tab3 = new VerticalLayout(this.layoutSupervisorReport, h7);
@@ -336,12 +355,14 @@ public class EditInternshipWindow extends EditWindow {
 		
 		this.layoutCompanySupervisorReport = new VerticalLayout();
 		
-		ReportUploader companySupervisorReportUploader = new ReportUploader(ReportType.COMPANY);
-		this.uploadCompanySupervisorReport = new Upload(null, companySupervisorReportUploader);
-		this.uploadCompanySupervisorReport.addSucceededListener(companySupervisorReportUploader);
-		this.uploadCompanySupervisorReport.setButtonCaption("Upload");
-		this.uploadCompanySupervisorReport.setWidth("150px");
-		this.uploadCompanySupervisorReport.setImmediate(true);
+		this.buttonUploadCompanySupervisorReport = new Button("Enviar", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	addReport(ReportType.COMPANY);
+            }
+        });
+		this.buttonUploadCompanySupervisorReport.setIcon(FontAwesome.UPLOAD);
+		this.buttonUploadCompanySupervisorReport.setWidth("150px");
 		
 		this.buttonDownloadCompanySupervisorReport = new Button("Download", new Button.ClickListener() {
             @Override
@@ -362,7 +383,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.buttonDeleteCompanySupervisorReport.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonDeleteCompanySupervisorReport.setWidth("150px");
 		
-		HorizontalLayout h8 = new HorizontalLayout(this.uploadCompanySupervisorReport, this.buttonDownloadCompanySupervisorReport, this.buttonDeleteCompanySupervisorReport);
+		HorizontalLayout h8 = new HorizontalLayout(this.buttonUploadCompanySupervisorReport, this.buttonDownloadCompanySupervisorReport, this.buttonDeleteCompanySupervisorReport);
 		h8.setSpacing(true);
 		
 		VerticalLayout tab4 = new VerticalLayout(this.layoutCompanySupervisorReport, h8);
@@ -390,12 +411,22 @@ public class EditInternshipWindow extends EditWindow {
 		
 		if(!Session.isUserManager(SystemModule.SIGES)){
 			this.setSaveButtonEnabled(false);
-			this.uploadStudentReport.setVisible(false);
-			this.uploadSupervisorReport.setVisible(false);
-			this.uploadCompanySupervisorReport.setVisible(false);
+			this.buttonUploadStudentReport.setVisible(false);
+			this.buttonUploadSupervisorReport.setVisible(false);
+			this.buttonUploadCompanySupervisorReport.setVisible(false);
+			this.buttonValidateStudentReport.setVisible(false);
+			this.buttonValidateSupervisorReport.setVisible(false);
 			this.buttonDeleteStudentReport.setVisible(false);
 			this.buttonDeleteSupervisorReport.setVisible(false);
 			this.buttonDeleteCompanySupervisorReport.setVisible(false);
+			
+			if(Session.getUser().getIdUser() == this.internship.getStudent().getIdUser()) {
+				this.buttonUploadStudentReport.setVisible(true);
+			}
+			if(Session.getUser().getIdUser() == this.internship.getSupervisor().getIdUser()) {
+				this.buttonUploadSupervisorReport.setVisible(true);
+				this.buttonValidateStudentReport.setVisible(true);
+			}
 		}
 		
 		this.loadInternship();
@@ -466,22 +497,31 @@ public class EditInternshipWindow extends EditWindow {
 	
 	private void loadReports(){
 		this.gridStudentReport = new Grid();
-		this.gridStudentReport.addColumn("Relatório", Integer.class);
+		this.gridStudentReport.addColumn("Relatório", String.class);
 		this.gridStudentReport.addColumn("Data de Upload", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
+		this.gridStudentReport.addColumn("Feedback", String.class);
 		this.gridStudentReport.setWidth("810px");
 		this.gridStudentReport.setHeight("360px");
+		this.gridStudentReport.getColumns().get(0).setWidth(150);
+		this.gridStudentReport.getColumns().get(1).setWidth(150);
 		
 		this.gridSupervisorReport = new Grid();
-		this.gridSupervisorReport.addColumn("Relatório", Integer.class);
+		this.gridSupervisorReport.addColumn("Relatório", String.class);
 		this.gridSupervisorReport.addColumn("Data de Upload", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
+		this.gridSupervisorReport.addColumn("Feedback", String.class);
 		this.gridSupervisorReport.setWidth("810px");
 		this.gridSupervisorReport.setHeight("360px");
+		this.gridSupervisorReport.getColumns().get(0).setWidth(150);
+		this.gridSupervisorReport.getColumns().get(1).setWidth(150);
 		
 		this.gridCompanySupervisorReport = new Grid();
-		this.gridCompanySupervisorReport.addColumn("Relatório", Integer.class);
+		this.gridCompanySupervisorReport.addColumn("Relatório", String.class);
 		this.gridCompanySupervisorReport.addColumn("Data de Upload", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
+		this.gridCompanySupervisorReport.addColumn("Feedback", String.class);
 		this.gridCompanySupervisorReport.setWidth("810px");
 		this.gridCompanySupervisorReport.setHeight("360px");
+		this.gridCompanySupervisorReport.getColumns().get(0).setWidth(150);
+		this.gridCompanySupervisorReport.getColumns().get(1).setWidth(150);
 		
 		if(this.internship.getReports() == null){
 			try {
@@ -501,14 +541,11 @@ public class EditInternshipWindow extends EditWindow {
 			
 			for(InternshipReport report : this.internship.getReports()){
 				if(report.getType() == ReportType.STUDENT){
-					this.gridStudentReport.addRow(student, report.getDate());
-					student++;
+					this.gridStudentReport.addRow((report.isFinalReport() ? "Final" : "Parcial " + String.valueOf(student++)), report.getDate(), report.getFeedback().toString());
 				}else if(report.getType() == ReportType.SUPERVISOR){
-					this.gridSupervisorReport.addRow(supervisor, report.getDate());
-					supervisor++;
+					this.gridSupervisorReport.addRow((report.isFinalReport() ? "Final" : "Parcial " + String.valueOf(supervisor++)), report.getDate(), report.getFeedback().toString());
 				}else if(report.getType() == ReportType.COMPANY){
-					this.gridCompanySupervisorReport.addRow(company, report.getDate());
-					company++;
+					this.gridCompanySupervisorReport.addRow((report.isFinalReport() ? "Final" : "Parcial " + String.valueOf(company++)), report.getDate(), report.getFeedback().toString());
 				}
 			}
 		}
@@ -543,6 +580,58 @@ public class EditInternshipWindow extends EditWindow {
 		}
 	}
 	
+	private void addReport(ReportType type) {
+		UI.getCurrent().addWindow(new EditInternshipReportWindow(this, this.internship, type));
+	}
+	
+	public void addReport(InternshipReport report) throws Exception {
+		report.setDate(DateUtils.getToday().getTime());
+		
+		if(Session.isUserManager(SystemModule.SIGES) || report.getType() == ReportType.COMPANY) {
+			report.setFeedback(ReportFeedback.APPROVED);
+			report.setFeedbackDate(DateUtils.getNow().getTime());
+			report.setFeedbackUser(Session.getUser());
+		}
+		
+        this.internship.getReports().add(report);
+        
+        this.loadReports();
+	}
+	
+	public void editReport(InternshipReport report) throws Exception {
+		for(InternshipReport r : this.internship.getReports()) {
+			if(r.getIdInternshipReport() == report.getIdInternshipReport()) {
+				r.setFeedback(report.getFeedback());
+				r.setFeedbackDate(report.getFeedbackDate());
+				r.setFeedbackUser(report.getFeedbackUser());
+				
+				this.loadReports();
+			}
+		}
+	}
+	
+	private void validateStudentReport(){
+		this.validateReport(this.getStudentReportSelectedIndex());
+	}
+	
+	private void validateSupervisorReport(){
+		this.validateReport(this.getSupervisorReportSelectedIndex());
+	}
+	
+	private void validateCompanySupervisorReport(){
+		this.validateReport(this.getCompanySupervisorReportSelectedIndex());
+	}
+	
+	private void validateReport(int index) {
+		if(index == -1) {
+			this.showWarningNotification("Selecionar Relatório", "Selecione o relatório para validar.");
+		} else if(this.internship.getReports().get(index).getIdInternshipReport() == 0) {
+			this.showWarningNotification("Validar Relatório", "O relatório precisa ser salvo para ser validado.");
+		} else {
+			UI.getCurrent().addWindow(new ValidateInternshipReportWindow(this.internship.getReports().get(index), this));
+		}
+	}
+	
 	private int getStudentReportSelectedIndex(){
 		return getReportSelectedIndex(this.gridStudentReport.getSelectedRow(), ReportType.STUDENT);
     }
@@ -559,7 +648,7 @@ public class EditInternshipWindow extends EditWindow {
     	if(itemId == null){
     		return -1;
     	}else{
-    		int selected = ((int)itemId) - 1, index = 0;;
+    		int selected = ((int)itemId) - 1, index = 0;
     		
     		for(int i = 0; i < this.internship.getReports().size(); i++){
     			if(this.internship.getReports().get(i).getType() == type){
@@ -793,66 +882,6 @@ public class EditInternshipWindow extends EditWindow {
 					this.tabContainer.addTab(tab, "Avaliação");
 				}
 			}
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	class ReportUploader implements Receiver, SucceededListener {
-		
-		private File tempFile;
-		private ReportType type;
-		
-		public ReportUploader(ReportType type){
-			this.type = type;
-		}
-		
-		@Override
-		public OutputStream receiveUpload(String filename, String mimeType) {
-			try {
-				if(DocumentType.fromMimeType(mimeType) != DocumentType.PDF){
-					throw new Exception("O arquivo precisa estar no formato PDF.");
-				}
-				
-	            tempFile = File.createTempFile(filename, "tmp");
-	            tempFile.deleteOnExit();
-	            return new FileOutputStream(tempFile);
-	        } catch (Exception e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	        	showErrorNotification("Carregamento do Arquivo", e.getMessage());
-	        }
-
-	        return null;
-		}
-		
-		@Override
-		public void uploadSucceeded(SucceededEvent event) {
-			try {
-	            FileInputStream input = new FileInputStream(tempFile);
-	            
-	            if(input.available() > (10 * 1024 * 1024)){
-					throw new Exception("O arquivo precisa ter um tamanho máximo de 5 MB.");
-	            }
-	            
-	            byte[] buffer = new byte[input.available()];
-	            
-	            input.read(buffer);
-	            
-	            InternshipReport report = new InternshipReport();
-	            report.setDate(DateUtils.getToday().getTime());
-	            report.setType(this.type);
-	            report.setReport(buffer);
-	            
-	            internship.getReports().add(report);
-	            
-	            loadReports();
-	            
-	            showSuccessNotification("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\\n\\nClique em SALVAR para concluir a submissão.");
-	        } catch (Exception e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	            
-	        	showErrorNotification("Carregamento do Arquivo", e.getMessage());
-	        }
 		}
 	}
 

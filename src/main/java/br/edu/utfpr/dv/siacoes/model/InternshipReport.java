@@ -47,7 +47,46 @@ public class InternshipReport implements Serializable {
 					return "Acadêmico";
 			}
 		}
+	}
+	
+	public enum ReportFeedback{
+		NONE(0), APPROVED(1), DISAPPROVED(2);
 		
+		private final int value; 
+		ReportFeedback(int value){ 
+			this.value = value; 
+		}
+		
+		public int getValue(){ 
+			return value;
+		}
+		
+		public static ReportFeedback valueOf(int value){
+			for(ReportFeedback d : ReportFeedback.values()){
+				if(d.getValue() == value){
+					return d;
+				}
+			}
+			
+			return null;
+		}
+		
+		public String toString(){
+			return this.getDescription();
+		}
+		
+		public String getDescription(){
+			switch(this){
+				case NONE:
+					return "Nenhum";
+				case APPROVED:
+					return "Aprovado";
+				case DISAPPROVED:
+					return "Reprovado";
+				default:
+					return "Nenhum";
+			}
+		}
 	}
 	
 	private int idInternshipReport;
@@ -55,6 +94,10 @@ public class InternshipReport implements Serializable {
 	private ReportType type;
 	private transient byte[] report;
 	private Date date;
+	private ReportFeedback feedback;
+	private Date feedbackDate;
+	private User feedbackUser;
+	private boolean finalReport;
 	
 	public InternshipReport(){
 		this.setIdInternshipReport(0);
@@ -62,6 +105,10 @@ public class InternshipReport implements Serializable {
 		this.setType(ReportType.STUDENT);
 		this.setReport(null);
 		this.setDate(DateUtils.getToday().getTime());
+		this.setFinalReport(false);
+		this.setFeedback(ReportFeedback.NONE);
+		this.setFeedbackDate(null);
+		this.setFeedbackUser(new User());
 	}
 	
 	public int getIdInternshipReport() {
@@ -93,6 +140,30 @@ public class InternshipReport implements Serializable {
 	}
 	public void setDate(Date date) {
 		this.date = date;
+	}
+	public ReportFeedback getFeedback() {
+		return feedback;
+	}
+	public void setFeedback(ReportFeedback feedback) {
+		this.feedback = feedback;
+	}
+	public Date getFeedbackDate() {
+		return feedbackDate;
+	}
+	public void setFeedbackDate(Date feedbackDate) {
+		this.feedbackDate = feedbackDate;
+	}
+	public User getFeedbackUser() {
+		return feedbackUser;
+	}
+	public void setFeedbackUser(User feedbackUser) {
+		this.feedbackUser = feedbackUser;
+	}
+	public boolean isFinalReport() {
+		return finalReport;
+	}
+	public void setFinalReport(boolean finalReport) {
+		this.finalReport = finalReport;
 	}
 
 }

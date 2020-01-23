@@ -288,8 +288,13 @@ CREATE TABLE internshipreport (
   report BYTEA NOT NULL,
   type SMALLINT NOT NULL,
   date date NOT NULL,
+  finalreport SMALLINT NOT NULL,
+  feedback SMALLINT NOT NULL,
+  feedbackdate TIMESTAMP,
+  idfeedbackuser INT,
   PRIMARY KEY (idinternshipreport),
-  CONSTRAINT fk_internshipreport_internship FOREIGN KEY (idinternship) REFERENCES internship (idinternship) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT fk_internshipreport_internship FOREIGN KEY (idinternship) REFERENCES internship (idinternship) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT fk_internshipreport_feedbackuser FOREIGN KEY (idfeedbackuser) REFERENCES "user" (iduser) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 CREATE INDEX fk_internshipreport_internship_idx ON internshipreport (idinternship);
 

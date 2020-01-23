@@ -12,7 +12,6 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -34,6 +33,7 @@ import br.edu.utfpr.dv.siacoes.model.Internship.InternshipStatus;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
 import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
+import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
@@ -41,6 +41,7 @@ import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.window.DownloadInternshipFeedbackWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipFinalDocumentWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipJuryWindow;
+import br.edu.utfpr.dv.siacoes.window.EditInternshipReportWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipWindow;
 import br.edu.utfpr.dv.siacoes.window.InternshipUploadFinalReportWindow;
 
@@ -59,6 +60,7 @@ public class InternshipView extends ListView {
 	private final DateField textStartDate2;
 	private final DateField textEndDate1;
 	private final DateField textEndDate2;
+	private final Button buttonParcialReport;
 	private final Button buttonFinalReport;
 	private final Button buttonFinalDocument;
 	private final Button buttonJury;
@@ -144,7 +146,16 @@ public class InternshipView extends ListView {
 		this.buttonStudentStatement.setIcon(FontAwesome.FILE_PDF_O);
 		this.addActionButton(this.buttonStudentStatement);
 		
-		this.buttonFinalReport = new Button("Enviar Relatório", new Button.ClickListener() {
+		this.buttonParcialReport = new Button("Relatório Parcial", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	parcialReportClick();
+            }
+        });
+		this.buttonParcialReport.setIcon(FontAwesome.UPLOAD);
+		this.addActionButton(this.buttonParcialReport);
+		
+		this.buttonFinalReport = new Button("Relatório Final", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
             	finalReportClick();
@@ -184,6 +195,7 @@ public class InternshipView extends ListView {
 			this.buttonJury.setVisible(false);
 			this.buttonProfessorStatement.setVisible(this.profile == UserProfile.PROFESSOR);
 			this.buttonStudentStatement.setVisible(this.profile == UserProfile.STUDENT);
+			this.buttonParcialReport.setVisible(this.profile == UserProfile.STUDENT || this.profile == UserProfile.PROFESSOR);
 			this.buttonFinalReport.setVisible(this.profile == UserProfile.STUDENT);
 			this.buttonJuryFeedback.setVisible(this.profile == UserProfile.STUDENT || this.profile == UserProfile.PROFESSOR);
 			this.buttonFinalDocument.setVisible(this.profile == UserProfile.STUDENT || this.profile == UserProfile.PROFESSOR);
@@ -266,6 +278,24 @@ public class InternshipView extends ListView {
 			
 			this.showErrorNotification("Editar Estágio", e.getMessage());
 		}
+	}
+	
+	private void parcialReportClick() {
+		Object id = getIdSelected();
+		
+		if(id == null) {
+    		this.showWarningNotification("Selecionar Registro", "Selecione o registro para enviar o relatório parcial.");
+    	} else {
+    		try {
+				Internship internship = new InternshipBO().findById((int)id);
+				
+				UI.getCurrent().addWindow(new EditInternshipReportWindow(null, internship, ((this.profile == UserProfile.PROFESSOR) ? ReportType.SUPERVISOR : ReportType.STUDENT)));
+			} catch (Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+    			
+    			this.showErrorNotification("Enviar Relatório", e.getMessage());
+			}
+    	}
 	}
 	
 	private void finalReportClick(){

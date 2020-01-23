@@ -288,9 +288,15 @@ CREATE TABLE `internshipreport` (
   `report` mediumblob NOT NULL,
   `type` tinyint(4) NOT NULL,
   `date` date NOT NULL,
+  `finalreport` TINYINT NOT NULL,
+  `feedback` SMALLINT NOT NULL,
+  `feedbackdate` DATETIME,
+  `idfeedbackuser` INT,
   PRIMARY KEY (`idinternshipreport`),
   KEY `fk_internshipreport_internship_idx` (`idinternship`),
-  CONSTRAINT `fk_internshipreport_internship` FOREIGN KEY (`idinternship`) REFERENCES `internship` (`idinternship`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_internshipreport_feedbackuser_idx` (`idfeedbackuser`),
+  CONSTRAINT `fk_internshipreport_internship` FOREIGN KEY (`idinternship`) REFERENCES `internship` (`idinternship`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_internshipreport_feedbackuser` FOREIGN KEY (`idfeedbackuser`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
 CREATE  TABLE `internshipevaluationitem` (
