@@ -97,6 +97,7 @@ CREATE  TABLE `sigesconfig` (
   `maxfilesize` INT NOT NULL ,
   `jurytime` INT NOT NULL ,
   `fillonlytotalhours` TINYINT NOT NULL ,
+  `juryformat` SMALLINT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigesconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -328,6 +329,7 @@ CREATE  TABLE `internshipjury` (
   `supervisorAbsenceReason` TEXT NOT NULL ,
   `supervisorScore` DOUBLE NOT NULL ,
   `supervisorFillJuryForm` TINYINT NOT NULL ,
+  `juryformat` SMALLINT NOT NULL ,
   PRIMARY KEY (`idinternshipjury`) ,
   INDEX `fk_internshipjury_idinternship_idx` (`idinternship` ASC) ,
   CONSTRAINT `fk_internshipjury_idinternship` FOREIGN KEY (`idinternship` ) REFERENCES `internship` (`idinternship` ) ON DELETE NO ACTION ON UPDATE NO ACTION

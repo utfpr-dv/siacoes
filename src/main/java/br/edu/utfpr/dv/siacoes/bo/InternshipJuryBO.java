@@ -36,6 +36,7 @@ import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.JuryGrade;
 import br.edu.utfpr.dv.siacoes.model.JuryStudentReport;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig.JuryFormat;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
@@ -114,6 +115,7 @@ public class InternshipJuryBO {
 				SigesConfig config = new SigesConfigBO().findByDepartment(idDepartment);
 				
 				jury.setSupervisorFillJuryForm(config.isSupervisorFillJuryForm());
+				jury.setJuryFormat(config.getJuryFormat());
 				
 				InternshipJuryAppraiser appraiser = new InternshipJuryAppraiser();
 				appraiser.setChair(true);
@@ -170,19 +172,21 @@ public class InternshipJuryBO {
 				InternshipJuryAppraiserBO bo = new InternshipJuryAppraiserBO();
 				
 				User supervisor = jury.getSupervisor();
-				boolean findSupervisor = false;
 				int countChair = 0;
+				boolean findSupervisor = (jury.getJuryFormat() == JuryFormat.SESSION);
 				
 				for(InternshipJuryAppraiser appraiser : jury.getAppraisers()){
-					if(bo.appraiserHasJury(jury.getIdInternshipJury(), appraiser.getAppraiser().getIdUser(), jury.getDate())){
-						throw new Exception("O membro " + appraiser.getAppraiser().getName() + " já tem uma banca marcada que conflita com este horário.");
+					if(jury.getJuryFormat() == JuryFormat.INDIVIDUAL) {
+						if(bo.appraiserHasJury(jury.getIdInternshipJury(), appraiser.getAppraiser().getIdUser(), jury.getDate())){
+							throw new Exception("O membro " + appraiser.getAppraiser().getName() + " já tem uma banca marcada que conflita com este horário.");
+						}
 					}
 					
 					if(appraiser.getAppraiser().getIdUser() == supervisor.getIdUser()) {
 						findSupervisor = true;
 					}
 					
-					if(appraiser.isSubstitute()) {
+					if(appraiser.isSubstitute() || (jury.getJuryFormat() == JuryFormat.SESSION)) {
 						appraiser.setChair(false);
 					}
 					
@@ -196,10 +200,12 @@ public class InternshipJuryBO {
 				} else if(jury.getSupervisorAbsenceReason().trim().isEmpty()) {
 					throw new Exception("Informe o motivo do Professor Orientador não estar presidindo a banca.");
 				}
-				if(countChair == 0) {
-					throw new Exception("É preciso indicar o presidente da banca.");
-				} else if(countChair > 1) {
-					throw new Exception("Apenas um membro pode ser presidente da banca.");
+				if(jury.getJuryFormat() == JuryFormat.INDIVIDUAL) {
+					if(countChair == 0) {
+						throw new Exception("É preciso indicar o presidente da banca.");
+					} else if(countChair > 1) {
+						throw new Exception("Apenas um membro pode ser presidente da banca.");
+					}
 				}
 			}
 			

@@ -45,6 +45,8 @@ public class ValidateInternshipReportWindow extends EditWindow {
 		
 		this.addField(this.buttonDownload);
 		this.addField(this.comboFeedback);
+		
+		this.comboFeedback.setValue(this.report.getFeedback());
 	}
 
 	@Override

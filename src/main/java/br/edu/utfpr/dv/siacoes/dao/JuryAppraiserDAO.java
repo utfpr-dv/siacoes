@@ -356,7 +356,7 @@ public class JuryAppraiserDAO {
 					"WHERE project.idproject=thesis.idproject) " +
 					" UNION ALL " +
 					"SELECT COUNT(*) AS total FROM internshipjury INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJury=internshipjury.idInternshipJury " +
-					"WHERE internshipjuryappraiser.idAppraiser = ? AND internshipjury.date BETWEEN ?::TIMESTAMP - INTERVAL '1 minute' * (" +
+					"WHERE internshipjury.juryformat=0 AND internshipjuryappraiser.idAppraiser = ? AND internshipjury.date BETWEEN ?::TIMESTAMP - INTERVAL '1 minute' * (" +
 					"SELECT sigesconfig.jurytime - 1 FROM sigesconfig INNER JOIN internship ON internship.iddepartment=sigesconfig.iddepartment " +
 					"WHERE internship.idinternship=internshipjury.idinternship) AND ?::TIMESTAMP + INTERVAL '1 minute' * (" +
 					"SELECT sigesconfig.jurytime - 1 FROM sigesconfig INNER JOIN internship ON internship.iddepartment=sigesconfig.iddepartment " + 

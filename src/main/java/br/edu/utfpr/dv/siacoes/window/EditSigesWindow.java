@@ -14,6 +14,7 @@ import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.components.ByteSizeField;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig.JuryFormat;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
@@ -30,6 +31,7 @@ public class EditSigesWindow extends EditWindow {
 	private final ByteSizeField textMaxFileSize;
 	private final TextField textJuryTime;
 	private final CheckBox checkFillOnlyTotalHours;
+	private final NativeSelect comboJuryFormat;
 	
 	private final TabSheet tab;
 	
@@ -65,6 +67,13 @@ public class EditSigesWindow extends EditWindow {
 		
 		this.textMaxFileSize = new ByteSizeField("Tamanho máximo para submissão de arquivos");
 		
+		this.comboJuryFormat = new NativeSelect("Formato da Banca");
+		this.comboJuryFormat.setWidth("300px");
+		this.comboJuryFormat.setNullSelectionAllowed(false);
+		this.comboJuryFormat.addItem(JuryFormat.INDIVIDUAL);
+		this.comboJuryFormat.addItem(JuryFormat.SESSION);
+		this.comboJuryFormat.select(JuryFormat.INDIVIDUAL);
+		
 		this.textJuryTime = new TextField("Duração da banca (minutos)");
 		this.textJuryTime.setWidth("100px");
 		
@@ -78,7 +87,9 @@ public class EditSigesWindow extends EditWindow {
 		
 		HorizontalLayout h1 = new HorizontalLayout(this.textMinimumScore, this.textSupervisorPonderosity, this.textCompanySupervisorPonderosity);
 		h1.setSpacing(true);
-		VerticalLayout v2 = new VerticalLayout(h1, this.textJuryTime, this.checkSupervisorFillJuryForm, this.checkShowGradesToStudent);
+		HorizontalLayout h2 = new HorizontalLayout(this.comboJuryFormat, this.textJuryTime);
+		h2.setSpacing(true);
+		VerticalLayout v2 = new VerticalLayout(h1, h2, this.checkSupervisorFillJuryForm, this.checkShowGradesToStudent);
 		v2.setSpacing(true);
 		v2.setMargin(true);
 		
@@ -105,6 +116,7 @@ public class EditSigesWindow extends EditWindow {
 		this.textMaxFileSize.setValue(this.config.getMaxFileSize());
 		this.textJuryTime.setValue(String.valueOf(this.config.getJuryTime()));
 		this.checkFillOnlyTotalHours.setValue(this.config.isFillOnlyTotalHours());
+		this.comboJuryFormat.setValue(this.config.getJuryFormat());
 	}
 
 	@Override
@@ -121,6 +133,7 @@ public class EditSigesWindow extends EditWindow {
 			this.config.setMaxFileSize((int)this.textMaxFileSize.getValue());
 			this.config.setJuryTime(Integer.parseInt(this.textJuryTime.getValue()));
 			this.config.setFillOnlyTotalHours(this.checkFillOnlyTotalHours.getValue());
+			this.config.setJuryFormat((JuryFormat)this.comboJuryFormat.getValue());
 			
 			bo.save(Session.getIdUserLog(), this.config);
 			

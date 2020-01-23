@@ -9,6 +9,40 @@ public class SigesConfig implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
+	public enum JuryFormat {
+		INDIVIDUAL(0), SESSION(1);
+		
+		private final int value; 
+		JuryFormat(int value){ 
+			this.value = value; 
+		}
+		
+		public int getValue(){ 
+			return value;
+		}
+		
+		public static JuryFormat valueOf(int value){
+			for(JuryFormat u : JuryFormat.values()){
+				if(u.getValue() == value){
+					return u;
+				}
+			}
+			
+			return null;
+		}
+		
+		public String toString(){
+			switch(this){
+				case INDIVIDUAL:
+					return "Banca Individual";
+				case SESSION:
+					return "Apresentação de Pôster/Seminário";
+				default:
+					return "";
+			}
+		}
+	}
+	
 	private Department department;
 	private double minimumScore;
 	private double supervisorPonderosity;
@@ -19,6 +53,7 @@ public class SigesConfig implements Serializable {
 	private int maxFileSize;
 	private int juryTime;
 	private boolean fillOnlyTotalHours;
+	private JuryFormat juryFormat;
 	
 	public SigesConfig(){
 		this.setDepartment(new Department());
@@ -31,6 +66,7 @@ public class SigesConfig implements Serializable {
 		this.setMaxFileSize(0);
 		this.setJuryTime(0);
 		this.setFillOnlyTotalHours(false);
+		this.setJuryFormat(JuryFormat.INDIVIDUAL);
 	}
 	
 	public Department getDepartment() {
@@ -99,6 +135,12 @@ public class SigesConfig implements Serializable {
 	}
 	public void setFillOnlyTotalHours(boolean fillOnlyTotalHours) {
 		this.fillOnlyTotalHours = fillOnlyTotalHours;
+	}
+	public JuryFormat getJuryFormat() {
+		return juryFormat;
+	}
+	public void setJuryFormat(JuryFormat juryFormat) {
+		this.juryFormat = juryFormat;
 	}
 	
 }

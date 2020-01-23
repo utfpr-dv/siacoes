@@ -6,6 +6,7 @@ import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig.JuryFormat;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class InternshipJury implements Serializable {
@@ -29,6 +30,7 @@ public class InternshipJury implements Serializable {
 	private String supervisorAbsenceReason;
 	private double supervisorScore;
 	private boolean supervisorFillJuryForm;
+	private JuryFormat juryFormat;
 
 	public InternshipJury(){
 		this.setIdInternshipJury(0);
@@ -47,6 +49,7 @@ public class InternshipJury implements Serializable {
 		this.setSupervisorAbsenceReason("");
 		this.setSupervisorScore(0);
 		this.setSupervisorFillJuryForm(false);
+		this.setJuryFormat(JuryFormat.INDIVIDUAL);
 	}
 	
 	public int getIdInternshipJury() {
@@ -150,6 +153,12 @@ public class InternshipJury implements Serializable {
 	}
 	public void setSupervisorFillJuryForm(boolean supervisorFillJuryForm) {
 		this.supervisorFillJuryForm = supervisorFillJuryForm;
+	}
+	public JuryFormat getJuryFormat() {
+		return juryFormat;
+	}
+	public void setJuryFormat(JuryFormat juryFormat) {
+		this.juryFormat = juryFormat;
 	}
 	public User getSupervisor(){
 		if((this.getInternship().getSupervisor() == null) || (this.getInternship().getSupervisor().getIdUser() == 0)){

@@ -97,6 +97,7 @@ CREATE  TABLE sigesconfig (
   maxfilesize INT NOT NULL ,
   jurytime INT NOT NULL ,
   fillonlytotalhours SMALLINT NOT NULL ,
+  juryformat SMALLINT NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigesconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -327,6 +328,7 @@ CREATE  TABLE internshipjury (
   supervisorAbsenceReason TEXT NOT NULL ,
   supervisorScore REAL NOT NULL ,
   supervisorFillJuryForm SMALLINT NOT NULL ,
+  juryformat SMALLINT NOT NULL ,
   PRIMARY KEY (idinternshipjury) ,
   CONSTRAINT fk_internshipjury_idinternship FOREIGN KEY (idinternship) REFERENCES internship (idinternship) ON DELETE NO ACTION ON UPDATE NO ACTION
 );

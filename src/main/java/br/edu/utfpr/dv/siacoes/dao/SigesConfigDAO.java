@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig.JuryFormat;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 
 public class SigesConfigDAO {
@@ -48,9 +49,9 @@ public class SigesConfigDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO sigesconfig(minimumScore, supervisorPonderosity, companySupervisorPonderosity, showgradestostudent, supervisorfilter, supervisorFillJuryForm, maxfilesize, jurytime, fillOnlyTotalHours, idDepartment) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+				stmt = conn.prepareStatement("INSERT INTO sigesconfig(minimumScore, supervisorPonderosity, companySupervisorPonderosity, showgradestostudent, supervisorfilter, supervisorFillJuryForm, maxfilesize, jurytime, fillOnlyTotalHours, juryformat, idDepartment) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}else{
-				stmt = conn.prepareStatement("UPDATE sigesconfig SET minimumScore=?, supervisorPonderosity=?, companySupervisorPonderosity=?, showgradestostudent=?, supervisorfilter=?, supervisorFillJuryForm=?, maxfilesize=?, jurytime=?, fillOnlyTotalHours=? WHERE idDepartment=?");
+				stmt = conn.prepareStatement("UPDATE sigesconfig SET minimumScore=?, supervisorPonderosity=?, companySupervisorPonderosity=?, showgradestostudent=?, supervisorfilter=?, supervisorFillJuryForm=?, maxfilesize=?, jurytime=?, fillOnlyTotalHours=?, juryformat=? WHERE idDepartment=?");
 			}
 			
 			stmt.setDouble(1, config.getMinimumScore());
@@ -62,7 +63,8 @@ public class SigesConfigDAO {
 			stmt.setInt(7, config.getMaxFileSize());
 			stmt.setInt(8, config.getJuryTime());
 			stmt.setInt(9, (config.isFillOnlyTotalHours() ? 1 : 0));
-			stmt.setInt(10, config.getDepartment().getIdDepartment());
+			stmt.setInt(10, config.getJuryFormat().getValue());
+			stmt.setInt(11, config.getDepartment().getIdDepartment());
 			
 			stmt.execute();
 			
@@ -90,6 +92,7 @@ public class SigesConfigDAO {
 		config.setMaxFileSize(rs.getInt("maxfilesize"));
 		config.setJuryTime(rs.getInt("jurytime"));
 		config.setFillOnlyTotalHours(rs.getInt("fillOnlyTotalHours") == 1);
+		config.setJuryFormat(JuryFormat.valueOf(rs.getInt("juryformat")));
 		
 		return config;
 	}
