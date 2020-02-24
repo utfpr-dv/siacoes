@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SupervisorFeedback" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="4d8936ee-60c3-42f5-ba3a-2f1519f0deb6">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -18,26 +18,41 @@
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="allowEditing" class="java.lang.Boolean">
-		<fieldDescription><![CDATA[allowEditing]]></fieldDescription>
+	<field name="date" class="java.util.Date">
+		<fieldDescription><![CDATA[date]]></fieldDescription>
+	</field>
+	<field name="title" class="java.lang.String">
+		<fieldDescription><![CDATA[title]]></fieldDescription>
+	</field>
+	<field name="student" class="java.lang.String">
+		<fieldDescription><![CDATA[student]]></fieldDescription>
+	</field>
+	<field name="supervisor" class="java.lang.String">
+		<fieldDescription><![CDATA[supervisor]]></fieldDescription>
 	</field>
 	<field name="feedback" class="br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback">
 		<fieldDescription><![CDATA[feedback]]></fieldDescription>
 	</field>
-	<field name="proposal" class="br.edu.utfpr.dv.siacoes.model.Proposal">
-		<fieldDescription><![CDATA[proposal]]></fieldDescription>
-	</field>
 	<field name="comments" class="java.lang.String">
 		<fieldDescription><![CDATA[comments]]></fieldDescription>
 	</field>
-	<field name="supervisorIndication" class="java.lang.Boolean">
-		<fieldDescription><![CDATA[supervisorIndication]]></fieldDescription>
+	<field name="useDigitalSignature" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[useDigitalSignature]]></fieldDescription>
 	</field>
-	<field name="idProposalAppraiser" class="java.lang.Integer">
-		<fieldDescription><![CDATA[idProposalAppraiser]]></fieldDescription>
+	<field name="guid" class="java.lang.String">
+		<fieldDescription><![CDATA[guid]]></fieldDescription>
 	</field>
-	<field name="appraiser" class="br.edu.utfpr.dv.siacoes.model.User">
-		<fieldDescription><![CDATA[appraiser]]></fieldDescription>
+	<field name="validateUrl" class="java.lang.String">
+		<fieldDescription><![CDATA[validateUrl]]></fieldDescription>
+	</field>
+	<field name="legalText" class="java.lang.String">
+		<fieldDescription><![CDATA[legalText]]></fieldDescription>
+	</field>
+	<field name="qrCode" class="java.io.InputStream">
+		<fieldDescription><![CDATA[qrCode]]></fieldDescription>
+	</field>
+	<field name="supervisorSignature" class="java.io.InputStream">
+		<fieldDescription><![CDATA[supervisorSignature]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -97,7 +112,7 @@
 					<font fontName="Arial" size="10"/>
 					<paragraph leftIndent="2" rightIndent="2" spacingBefore="2" spacingAfter="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{proposal}.getTitle()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="9" width="480" height="15" uuid="d4632b34-32a2-479b-be23-4a8934219d73"/>
@@ -132,10 +147,10 @@
 					<font fontName="Arial" size="10"/>
 					<paragraph leftIndent="2" rightIndent="2" spacingBefore="2" spacingAfter="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[DATEFORMAT(new java.util.Date(), "dd/MM/yyyy")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DATEFORMAT($F{date}, "dd/MM/yyyy")]]></textFieldExpression>
 			</textField>
 		</band>
-		<band height="488">
+		<band height="544">
 			<staticText>
 				<reportElement x="0" y="0" width="110" height="20" uuid="45586366-ea62-4c6e-9d6c-3645be85e8cb"/>
 				<box padding="1">
@@ -176,7 +191,7 @@
 					<font fontName="Arial" size="10"/>
 					<paragraph leftIndent="2" rightIndent="2" spacingBefore="2" spacingAfter="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{proposal}.getStudent().getName()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{student}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="110" y="20" width="370" height="20" uuid="6f5b1315-ae13-4c3f-8171-df647b9700c4"/>
@@ -190,7 +205,7 @@
 					<font fontName="Arial" size="10"/>
 					<paragraph leftIndent="2" rightIndent="2" spacingBefore="2" spacingAfter="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{proposal}.getSupervisor().getName()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{supervisor}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="52" width="480" height="30" uuid="4da5ca79-1130-4acd-9faf-3c763bb740c4"/>
@@ -220,26 +235,26 @@
 				<text><![CDATA[Observações]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="446" width="480" height="21" uuid="0e2e3a45-773b-42b9-b155-11cfe33f6b6a"/>
+				<reportElement x="0" y="429" width="480" height="21" uuid="0e2e3a45-773b-42b9-b155-11cfe33f6b6a"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{proposal}.getSupervisor().getName()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{supervisor}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="467" width="480" height="20" uuid="b33b27fc-e724-496e-9a60-8cc2b630e8dc"/>
+				<reportElement x="0" y="450" width="480" height="20" uuid="b33b27fc-e724-496e-9a60-8cc2b630e8dc"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<text><![CDATA[Professor(a) Orientador(a)]]></text>
 			</staticText>
 			<line>
-				<reportElement x="119" y="439" width="241" height="1" uuid="dc490897-b328-4bd1-a4e3-f976479c9e2e">
+				<reportElement x="119" y="422" width="241" height="1" uuid="dc490897-b328-4bd1-a4e3-f976479c9e2e">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 			</line>
 			<textField>
-				<reportElement x="0" y="190" width="480" height="182" uuid="3cdf959d-f98f-4c6f-bf52-661a18c074c9"/>
+				<reportElement x="0" y="190" width="480" height="190" uuid="3cdf959d-f98f-4c6f-bf52-661a18c074c9"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -265,6 +280,32 @@
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[IF($F{feedback} == br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback.DISAPPROVED, " ( X )", " (    )") + " DESFAVORÁVEL"]]></textFieldExpression>
+			</textField>
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+				<reportElement x="0" y="390" width="480" height="30" uuid="6bf9fcb2-d48e-43a9-bbff-70762055bcd9">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$F{supervisorSignature}]]></imageExpression>
+			</image>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="1" y="475" width="66" height="66" uuid="12a47d91-77ab-40af-b422-7303af159cae">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$F{qrCode}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="70" y="475" width="410" height="66" uuid="c80f3ffb-2244-4cd4-a3a1-d7e8e1d37750">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{legalText}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

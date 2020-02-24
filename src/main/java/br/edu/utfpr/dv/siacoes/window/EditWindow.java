@@ -15,6 +15,7 @@ public abstract class EditWindow extends BasicWindow {
 
 	private final ListView parentView;
 	private final Button buttonSave;
+	private final Button buttonSign;
 	private final VerticalLayout layoutFields;
 	private final HorizontalLayout layoutButtons;
 	
@@ -35,10 +36,22 @@ public abstract class EditWindow extends BasicWindow {
 		this.buttonSave.setIcon(FontAwesome.SAVE);
 		this.buttonSave.setDisableOnClick(true);
 		
+		this.buttonSign = new Button("Assinar", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	clickSign();
+            }
+        });
+		this.buttonSign.setWidth("150px");
+		this.buttonSign.setIcon(FontAwesome.PENCIL);
+		this.buttonSign.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+		this.buttonSign.setVisible(false);
+		this.buttonSign.setDisableOnClick(true);
+		
 		this.layoutFields = new VerticalLayout();
 		this.layoutFields.setSpacing(true);
 		
-		this.layoutButtons = new HorizontalLayout(buttonSave);
+		this.layoutButtons = new HorizontalLayout(this.buttonSave, this.buttonSign);
 		this.layoutButtons.setSpacing(true);
 		
 		VerticalLayout vl = new VerticalLayout(this.layoutFields, this.layoutButtons);
@@ -52,6 +65,11 @@ public abstract class EditWindow extends BasicWindow {
         this.setResizable(false);
 	}
 	
+	public void disableButtons() {
+		this.setSaveButtonEnabled(false);
+		this.setSignButtonEnabled(false);
+	}
+	
 	public void setSaveButtonEnabled(boolean enabled){
 		this.buttonSave.setEnabled(enabled);
 	}
@@ -60,12 +78,28 @@ public abstract class EditWindow extends BasicWindow {
 		return this.buttonSave.isEnabled();
 	}
 	
+	public void setSignButtonEnabled(boolean enabled){
+		this.buttonSign.setEnabled(enabled);
+	}
+	
+	public boolean isSignButtonEnabled(){
+		return this.buttonSign.isEnabled();
+	}
+	
 	public void setSaveButtonVisible(boolean visible){
 		this.buttonSave.setVisible(visible);
 	}
 	
 	public boolean isSaveButtonVisible(){
 		return this.buttonSave.isVisible();
+	}
+	
+	public void setSignButtonVisible(boolean visible){
+		this.buttonSign.setVisible(visible);
+	}
+	
+	public boolean isSignButtonVisible(){
+		return this.buttonSign.isVisible();
 	}
 	
 	public void parentViewRefreshGrid(){
@@ -94,5 +128,11 @@ public abstract class EditWindow extends BasicWindow {
 	}
 	
 	public abstract void save();
+	
+	private void clickSign() {
+		this.sign();
+	}
+	
+	public void sign() { }
 	
 }

@@ -44,6 +44,7 @@ public class EditSigetWindow extends EditWindow {
 	private final TextField textJuryTimeStage1;
 	private final TextField textJuryTimeStage2;
 	private final CheckBox checkSupervisorAssignsGrades;
+	private final CheckBox checkUseDigitalSignature;
 	
 	private final TabSheet tab;
 	
@@ -127,6 +128,8 @@ public class EditSigetWindow extends EditWindow {
 		
 		this.checkSupervisorAssignsGrades = new CheckBox("Presidente da banca atribui nota");
 		
+		this.checkUseDigitalSignature = new CheckBox("Usar assinatura digital");
+		
 		GridLayout g1 = new GridLayout(2, 2);
 		g1.setSpacing(true);
 		g1.addComponent(this.comboSupervisorFilter, 0, 0);
@@ -170,6 +173,12 @@ public class EditSigetWindow extends EditWindow {
 		
 		this.tab.addTab(v3, "Biblioteca");
 		
+		VerticalLayout v6 = new VerticalLayout(this.checkUseDigitalSignature);
+		v6.setSpacing(true);
+		v6.setMargin(true);
+		
+		this.tab.addTab(v6, "Documentos");
+		
 		this.addField(this.tab);
 		
 		this.loadConfigurations();
@@ -197,6 +206,7 @@ public class EditSigetWindow extends EditWindow {
 		this.textJuryTimeStage1.setValue(String.valueOf(this.config.getJuryTimeStage1()));
 		this.textJuryTimeStage2.setValue(String.valueOf(this.config.getJuryTimeStage2()));
 		this.checkSupervisorAssignsGrades.setValue(this.config.isSupervisorAssignsGrades());
+		this.checkUseDigitalSignature.setValue(this.config.isUseDigitalSignature());
 	}
 
 	@Override
@@ -225,6 +235,7 @@ public class EditSigetWindow extends EditWindow {
 			this.config.setJuryTimeStage1(Integer.parseInt(this.textJuryTimeStage1.getValue()));
 			this.config.setJuryTimeStage2(Integer.parseInt(this.textJuryTimeStage2.getValue()));
 			this.config.setSupervisorAssignsGrades(this.checkSupervisorAssignsGrades.getValue());
+			this.config.setUseDigitalSignature(this.checkUseDigitalSignature.getValue());
 			
 			bo.save(Session.getIdUserLog(), this.config);
 			

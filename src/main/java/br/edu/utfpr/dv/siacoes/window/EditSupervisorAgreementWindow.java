@@ -1,18 +1,30 @@
 package br.edu.utfpr.dv.siacoes.window;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.server.FontAwesome;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
+import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
+import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
@@ -25,6 +37,8 @@ public class EditSupervisorAgreementWindow extends EditWindow {
 	private final NativeSelect comboFeedback;
 	private final DateField textFeedbackDate;
 	private final TextArea textComments;
+	
+	private SigetConfig config;
 	
 	private static final String APPROVED = "Favorável";
 	private static final String DISAPPROVED = "Desfavorável";
@@ -66,6 +80,17 @@ public class EditSupervisorAgreementWindow extends EditWindow {
 		this.textComments.setHeight("200px");
 		this.textComments.addStyleName("textscroll");
 		
+		try {
+			this.config = new SigetConfigBO().findByDepartment(this.proposal.getDepartment().getIdDepartment());
+			
+			if(config.isUseDigitalSignature()) {
+				this.setSignButtonVisible(true);
+			}
+		} catch(Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			this.config = new SigetConfig();
+		}
+		
 		this.addField(this.textStudent);
 		this.addField(this.textTitle);
 		this.addField(new HorizontalLayout(this.comboFeedback, this.textFeedbackDate));
@@ -86,6 +111,31 @@ public class EditSupervisorAgreementWindow extends EditWindow {
 			this.comboFeedback.setValue(DISAPPROVED);
 		} else {
 			this.comboFeedback.setValue(ProposalFeedback.NONE);
+		}
+		
+		try {
+			if(Document.hasSignature(DocumentType.SUPERVISORAGREEMENT, this.proposal.getIdProposal())) {
+				this.disableButtons();
+			}
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			this.disableButtons();
+		}
+	}
+	
+	@Override
+	public void sign() {
+		try {
+			List<User> users = new ArrayList<User>();
+			
+			users.add(this.proposal.getSupervisor());
+			
+			UI.getCurrent().addWindow(new SignatureWindow(DocumentType.SUPERVISORAGREEMENT, this.proposal.getIdProposal(), SignDatasetBuilder.build(this.proposal), users, this));
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			this.showErrorNotification("Assinar Parecer", e.getMessage());
 		}
 	}
 	
@@ -112,7 +162,12 @@ public class EditSupervisorAgreementWindow extends EditWindow {
 			this.showSuccessNotification("Salvar Parecer", "Parecer salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
-			this.close();
+			
+			if(this.config.isUseDigitalSignature()) {
+				this.sign();
+			} else {
+				this.close();	
+			}
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

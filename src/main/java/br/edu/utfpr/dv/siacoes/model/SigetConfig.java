@@ -108,6 +108,7 @@ public class SigetConfig implements Serializable {
 	private int juryTimeStage1;
 	private int juryTimeStage2;
 	private boolean supervisorAssignsGrades;
+	private boolean useDigitalSignature;
 	
 	public SigetConfig(){
 		this.setDepartment(new Department());
@@ -132,6 +133,7 @@ public class SigetConfig implements Serializable {
 		this.setJuryTimeStage1(0);
 		this.setJuryTimeStage2(0);
 		this.setSupervisorAssignsGrades(false);
+		this.setUseDigitalSignature(false);
 	}
 	
 	public Department getDepartment() {
@@ -272,6 +274,12 @@ public class SigetConfig implements Serializable {
 	}
 	public void setSupervisorAssignsGrades(boolean supervisorAssignsGrades) {
 		this.supervisorAssignsGrades = supervisorAssignsGrades;
+	}
+	public boolean isUseDigitalSignature() {
+		return useDigitalSignature;
+	}
+	public void setUseDigitalSignature(boolean useDigitalSignature) {
+		this.useDigitalSignature = useDigitalSignature;
 	}
 
 }

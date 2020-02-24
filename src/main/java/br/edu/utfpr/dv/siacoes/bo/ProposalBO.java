@@ -13,6 +13,9 @@ import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.report.dataset.v1.SupervisorAgreement;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Project;
@@ -300,17 +303,24 @@ public class ProposalBO {
 	}
 	
 	public byte[] getSupervisorFeedbackReport(int idProposal) throws Exception {
-		Proposal proposal = this.findById(idProposal);
-		
-		ProposalAppraiser appraiser = new ProposalAppraiser();
-		appraiser.setProposal(proposal);
-		appraiser.setFeedback(proposal.getSupervisorFeedback());
-		appraiser.setComments(proposal.getSupervisorComments());
-		
-		List<ProposalAppraiser> list = new ArrayList<ProposalAppraiser>();
-		list.add(appraiser);
-		
-		return new ReportUtils().createPdfStream(list, "SupervisorAgreement", proposal.getDepartment().getIdDepartment()).toByteArray();
+		if(Document.hasSignature(DocumentType.SUPERVISORAGREEMENT, idProposal)) {
+			return Document.getSignedDocument(DocumentType.SUPERVISORAGREEMENT, idProposal);
+		} else {
+			Proposal proposal = this.findById(idProposal);
+			SupervisorAgreement dataset = new SupervisorAgreement();
+			
+			dataset.setDate(DateUtils.getNow().getTime());
+			dataset.setTitle(proposal.getTitle());
+			dataset.setStudent(proposal.getStudent().getName());
+			dataset.setSupervisor(proposal.getSupervisor().getName());
+			dataset.setFeedback(proposal.getSupervisorFeedback());
+			dataset.setComments(proposal.getSupervisorComments());
+			
+			List<SupervisorAgreement> list = new ArrayList<SupervisorAgreement>();
+			list.add(dataset);
+			
+			return new ReportUtils().createPdfStream(list, "SupervisorAgreement", proposal.getDepartment().getIdDepartment()).toByteArray();
+		}
 	}
 	
 	public String getStudentName(int id) throws Exception{

@@ -101,6 +101,20 @@ public class ReportUtils {
             throw e;
         }
     }
+    
+    public ByteArrayOutputStream createPdfStream(final List beanCollection, final JasperReport jasperReport, int idDepartment) throws Exception {
+    	ByteArrayOutputStream pdfBuffer = new ByteArrayOutputStream();
+
+        try {
+            executeReport(jasperReport, beanCollection, pdfBuffer, idDepartment);
+            
+            return pdfBuffer;
+        } catch (JRException e) {
+            e.printStackTrace();
+            
+            throw e;
+        }
+    }
 
     /**
      * Convert a date to String
@@ -115,12 +129,16 @@ public class ReportUtils {
                 String.valueOf(Calendar.getInstance().get(Calendar.SECOND)));
     }
     
+    public JasperReport getJasperData(String templatePath) throws JRException {
+    	setTempDirectory(templatePath);
+        return (JasperReport)JRLoader.loadObject(this.getClass().getClassLoader().getResource("br/edu/utfpr/dv/siacoes/report/" + templatePath + ".jasper"));
+    }
+    
     private void executeReport(String templatePath, List beanCollection, OutputStream outputStream, int idDepartment) throws JRException {
-        //JasperDesign jasperDesign = this.loadTemplate(this.baseReportsPath + templatePath + ".jrxml");
-        setTempDirectory(templatePath);
-        JasperReport jasperReport = (JasperReport)JRLoader.loadObject(this.getClass().getClassLoader().getResource("br/edu/utfpr/dv/siacoes/report/" + templatePath + ".jasper"));
-        //JasperReport jasperReport = (JasperReport)JRLoader.loadObjectFromFile(this.baseReportsPath + templatePath + ".jasper");
-        //JasperReport jasperReport = this.compileReport(jasperDesign);
+    	this.executeReport(this.getJasperData(templatePath), beanCollection, outputStream, idDepartment);
+    }
+    
+    private void executeReport(JasperReport jasperReport, List beanCollection, OutputStream outputStream, int idDepartment) throws JRException {
         JasperPrint jasperPrint = fillReport(jasperReport, beanCollection, idDepartment);
         exportReportToPdf(jasperPrint, outputStream);
     }
