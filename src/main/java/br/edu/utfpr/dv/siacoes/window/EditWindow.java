@@ -40,6 +40,7 @@ public abstract class EditWindow extends BasicWindow {
             @Override
             public void buttonClick(ClickEvent event) {
             	clickSign();
+            	buttonSign.setEnabled(true);
             }
         });
 		this.buttonSign.setWidth("150px");

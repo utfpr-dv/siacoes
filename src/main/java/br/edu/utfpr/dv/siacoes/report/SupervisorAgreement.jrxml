@@ -150,7 +150,7 @@
 				<textFieldExpression><![CDATA[DATEFORMAT($F{date}, "dd/MM/yyyy")]]></textFieldExpression>
 			</textField>
 		</band>
-		<band height="544">
+		<band height="474">
 			<staticText>
 				<reportElement x="0" y="0" width="110" height="20" uuid="45586366-ea62-4c6e-9d6c-3645be85e8cb"/>
 				<box padding="1">
@@ -288,18 +288,24 @@
 				</reportElement>
 				<imageExpression><![CDATA[$F{supervisorSignature}]]></imageExpression>
 			</image>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="67">
 			<image hAlign="Center" vAlign="Middle">
-				<reportElement x="1" y="475" width="66" height="66" uuid="12a47d91-77ab-40af-b422-7303af159cae">
+				<reportElement x="0" y="0" width="66" height="66" uuid="13652573-60eb-41f7-b0f3-7fc23d6444d0">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
 				</reportElement>
 				<imageExpression><![CDATA[$F{qrCode}]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="70" y="475" width="410" height="66" uuid="c80f3ffb-2244-4cd4-a3a1-d7e8e1d37750">
+				<reportElement x="70" y="0" width="410" height="66" uuid="2f5a0a45-a727-485e-b7e1-5bcd4065f42f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -308,5 +314,5 @@
 				<textFieldExpression><![CDATA[$F{legalText}]]></textFieldExpression>
 			</textField>
 		</band>
-	</detail>
+	</pageFooter>
 </jasperReport>

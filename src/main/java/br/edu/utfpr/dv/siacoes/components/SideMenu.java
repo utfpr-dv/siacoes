@@ -58,6 +58,7 @@ import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.model.UserDepartment;
+import br.edu.utfpr.dv.siacoes.sign.Document;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.view.ActivityGroupStatusChartView;
 import br.edu.utfpr.dv.siacoes.view.ActivityGroupView;
@@ -532,8 +533,16 @@ public class SideMenu extends CustomComponent {
 		return layoutMessages;
 	}
 	
+	private int getUnsignedDocuments() {
+		try {
+			return Document.getPendingDocuments(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
+		} catch (Exception e) {
+			return 0;
+		}
+	}
+	
 	private Component getSignaturesIcon() {
-		int unsignedDocs = 0; //this.getUnreadMessages();
+		int unsignedDocs = this.getUnsignedDocuments();
 		
 		Link linkMessages = new Link(null, null);
 		linkMessages.setIcon(new ThemeResource("images/signature.png"));

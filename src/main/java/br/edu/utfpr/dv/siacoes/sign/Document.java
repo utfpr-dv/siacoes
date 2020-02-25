@@ -467,7 +467,7 @@ public class Document {
 		}
 	}
 	
-	public static List<Document> listSigned(int idUser) throws SQLException {
+	public static List<Document> listSigned(int idUser, int idDepartment) throws SQLException {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -479,7 +479,7 @@ public class Document {
 			rs = stmt.executeQuery("SELECT signdocument.*, (SELECT COUNT(signature.*) FROM signature WHERE signature.signature IS NULL AND signature.iddocument=signdocument.iddocument) AS published, " +
 					"(SELECT MAX(signaturedate) FROM signature WHERE signature.iddocument=signdocument.iddocument) AS publisheddate " +
 					"FROM signdocument INNER JOIN signature sign ON sign.iddocument=signdocument.iddocument " +
-					"WHERE sign.signature IS NOT NULL AND sign.iduser=" + String.valueOf(idUser));
+					"WHERE sign.signature IS NOT NULL AND sign.iduser=" + String.valueOf(idUser) + " AND signdocument.iddepartment=" + String.valueOf(idDepartment));
 			
 			List<Document> list = new ArrayList<Document>();
 			
@@ -498,7 +498,7 @@ public class Document {
 		}
 	}
 	
-	public static List<Document> listPending(int idUser) throws SQLException {
+	public static List<Document> listPending(int idUser, int idDepartment) throws SQLException {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -510,7 +510,7 @@ public class Document {
 			rs = stmt.executeQuery("SELECT signdocument.*, (SELECT COUNT(signature.*) FROM signature WHERE signature.signature IS NULL AND signature.iddocument=signdocument.iddocument) AS published, " +
 					"(SELECT MAX(signaturedate) FROM signature WHERE signature.iddocument=signdocument.iddocument) AS publisheddate " +
 					"FROM signdocument INNER JOIN signature sign ON sign.iddocument=signdocument.iddocument " +
-					"WHERE sign.signature IS NULL AND sign.revoked=0 AND sign.iduser=" + String.valueOf(idUser));
+					"WHERE sign.signature IS NULL AND sign.revoked=0 AND sign.iduser=" + String.valueOf(idUser) + " AND signdocument.iddepartment=" + String.valueOf(idDepartment));
 			
 			List<Document> list = new ArrayList<Document>();
 			
@@ -519,6 +519,34 @@ public class Document {
 			}
 			
 			return list;
+		} finally {
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public static int getPendingDocuments(int idUser, int idDepartment) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT COUNT(DISTINCT signdocument.iddocument) AS total " +
+					"FROM signdocument INNER JOIN signature sign ON sign.iddocument=signdocument.iddocument " +
+					"WHERE sign.signature IS NULL AND sign.revoked=0 AND sign.iduser=" + String.valueOf(idUser) + " AND signdocument.iddepartment=" + String.valueOf(idDepartment));
+			
+			if(rs.next()) {
+				return rs.getInt("total");
+			} else {
+				return 0;
+			}
 		} finally {
 			if((rs != null) && !rs.isClosed())
 				rs.close();

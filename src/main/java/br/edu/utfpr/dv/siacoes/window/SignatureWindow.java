@@ -18,6 +18,7 @@ import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.sign.Document;
 import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.view.SignatureView;
 
 public class SignatureWindow extends BasicWindow {
 	
@@ -28,6 +29,7 @@ public class SignatureWindow extends BasicWindow {
 	
 	private Document document;
 	private EditWindow parentWindow;
+	private SignatureView parentView;
 	
 	private SignatureWindow() {
 		super("Assinar Documento");
@@ -51,6 +53,7 @@ public class SignatureWindow extends BasicWindow {
             @Override
             public void buttonClick(ClickEvent event) {
             	sign();
+            	buttonSign.setEnabled(true);
             }
         });
     	this.buttonSign.setWidth("150px");
@@ -68,20 +71,22 @@ public class SignatureWindow extends BasicWindow {
 		this.textPassword.focus();
 	}
 	
-	public SignatureWindow(int idDocument, EditWindow parentWindow) throws SQLException {
+	public SignatureWindow(int idDocument, EditWindow parentWindow, SignatureView parentView) throws SQLException {
 		this();
 		
 		this.document = Document.find(idDocument);
 		this.parentWindow = parentWindow;
+		this.parentView = parentView;
 		
 		this.loadInfo();
 	}
 	
-	public SignatureWindow(DocumentType type, int idRegister, Object dataset, List<User> users, EditWindow parentWindow) throws Exception {
+	public SignatureWindow(DocumentType type, int idRegister, Object dataset, List<User> users, EditWindow parentWindow, SignatureView parentView) throws Exception {
 		this();
 		
 		this.document = Document.build(Session.getSelectedDepartment().getDepartment().getIdDepartment(), type, idRegister, dataset, users);
 		this.parentWindow = parentWindow;
+		this.parentView = parentView;
 		
 		this.loadInfo();
 	}
@@ -113,7 +118,9 @@ public class SignatureWindow extends BasicWindow {
 	}
 	
 	private void parentViewRefreshGrid() {
-		
+		if(this.parentView != null) {
+			this.parentView.loadGrids();
+		}
 	}
 	
 	private void parentDisableButtons() {

@@ -5,16 +5,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vaadin.server.FontAwesome;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
@@ -131,7 +127,7 @@ public class EditSupervisorAgreementWindow extends EditWindow {
 			
 			users.add(this.proposal.getSupervisor());
 			
-			UI.getCurrent().addWindow(new SignatureWindow(DocumentType.SUPERVISORAGREEMENT, this.proposal.getIdProposal(), SignDatasetBuilder.build(this.proposal), users, this));
+			UI.getCurrent().addWindow(new SignatureWindow(DocumentType.SUPERVISORAGREEMENT, this.proposal.getIdProposal(), SignDatasetBuilder.build(this.proposal), users, this, null));
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
