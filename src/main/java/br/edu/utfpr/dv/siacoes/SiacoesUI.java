@@ -70,6 +70,7 @@ import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackStudentView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackView;
 import br.edu.utfpr.dv.siacoes.view.ProposalView;
 import br.edu.utfpr.dv.siacoes.view.SemesterView;
+import br.edu.utfpr.dv.siacoes.view.SignatureView;
 import br.edu.utfpr.dv.siacoes.view.StateView;
 import br.edu.utfpr.dv.siacoes.view.StudentActivityStatusReportView;
 import br.edu.utfpr.dv.siacoes.view.StudentView;
@@ -169,6 +170,7 @@ public class SiacoesUI extends UI {
         getNavigator().addView(EventLogView.NAME, EventLogView.class);
         getNavigator().addView(SystemInfoView.NAME, SystemInfoView.class);
         getNavigator().addView(AuthDocumentView.NAME, AuthDocumentView.class);
+        getNavigator().addView(SignatureView.NAME, SignatureView.class);
         
         getNavigator().setErrorView(Error404View.class);
         

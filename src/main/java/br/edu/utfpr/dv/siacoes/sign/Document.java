@@ -237,6 +237,12 @@ public class Document {
 		return Document.getSignedDocument(doc);
 	}
 	
+	public static byte[] getSignedDocument(String guid) throws Exception {
+		Document doc = Document.find(guid);
+		
+		return Document.getSignedDocument(doc);
+	}
+	
 	private static byte[] getSignedDocument(Document doc) throws Exception {
 		ByteArrayInputStream bis = new ByteArrayInputStream(doc.getReport());
 		ObjectInput in = new ObjectInputStream(bis);

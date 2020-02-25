@@ -108,6 +108,7 @@ import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackReportView;
 import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackView;
 import br.edu.utfpr.dv.siacoes.view.ProposalView;
 import br.edu.utfpr.dv.siacoes.view.SemesterView;
+import br.edu.utfpr.dv.siacoes.view.SignatureView;
 import br.edu.utfpr.dv.siacoes.view.StateView;
 import br.edu.utfpr.dv.siacoes.view.StudentActivityStatusReportView;
 import br.edu.utfpr.dv.siacoes.view.StudentView;
@@ -531,6 +532,40 @@ public class SideMenu extends CustomComponent {
 		return layoutMessages;
 	}
 	
+	private Component getSignaturesIcon() {
+		int unsignedDocs = 0; //this.getUnreadMessages();
+		
+		Link linkMessages = new Link(null, null);
+		linkMessages.setIcon(new ThemeResource("images/signature.png"));
+		linkMessages.setDescription("Central de Assinaturas");
+		
+		AbsoluteLayout layoutMessages = new AbsoluteLayout();
+		layoutMessages.setHeight("50px");
+		layoutMessages.setWidth("50px");
+		layoutMessages.addComponent(linkMessages, "left: 7px; top: 7px;");
+		if(unsignedDocs > 0) {
+			Image imageMessages = new Image();
+			imageMessages.setSource(new ThemeResource("images/circle.png"));
+			imageMessages.setHeight("20px");
+			imageMessages.setWidth("20px");
+			layoutMessages.addComponent(imageMessages, "right: 0px; top: 3px;");
+			
+			Label labelMessages = new Label((unsignedDocs > 9 ? "9+" : String.valueOf(unsignedDocs)));
+			labelMessages.setHeight("15px");
+			labelMessages.setWidth("15px");
+			labelMessages.addStyleName(ValoTheme.LABEL_BOLD);
+			layoutMessages.addComponent(labelMessages, "right: 0px; top: 0px;");
+		}
+		layoutMessages.addLayoutClickListener(new LayoutClickListener() {
+			@Override
+        	public void layoutClick(LayoutClickEvent event) {
+				UI.getCurrent().getNavigator().navigateTo(SignatureView.NAME);
+            }
+		});
+		
+		return layoutMessages;
+	}
+	
 	private Component getCalendarIcon() {
 		Link linkCalendar = new Link(null, null);
 		linkCalendar.setIcon(new ThemeResource("images/calendar.png"));
@@ -655,6 +690,12 @@ public class SideMenu extends CustomComponent {
 		layout1.addComponent(iconMessages);
 		layout1.setComponentAlignment(iconMessages, Alignment.MIDDLE_CENTER);
 		
+		if(AppConfig.getInstance().isSigetEnabled() && sigetConfig.isUseDigitalSignature()) {
+			Component iconSignatures = this.getSignaturesIcon();
+			layout1.addComponent(iconSignatures);
+			layout1.setComponentAlignment(iconSignatures, Alignment.MIDDLE_CENTER);
+		}
+		
 		if(AppConfig.getInstance().isSigesEnabled() || AppConfig.getInstance().isSigetEnabled()){
 			Component iconCalendar = this.getCalendarIcon();
 			layout1.addComponent(iconCalendar);
@@ -702,6 +743,12 @@ public class SideMenu extends CustomComponent {
 		Component iconMessages = this.getMessageIcon();
 		layout.addComponent(iconMessages);
 		layout.setComponentAlignment(iconMessages, Alignment.MIDDLE_CENTER);
+		
+		if(AppConfig.getInstance().isSigetEnabled() && sigetConfig.isUseDigitalSignature()) {
+			Component iconSignatures = this.getSignaturesIcon();
+			layout.addComponent(iconSignatures);
+			layout.setComponentAlignment(iconSignatures, Alignment.MIDDLE_CENTER);
+		}
 		
 		if(AppConfig.getInstance().isSigesEnabled() || AppConfig.getInstance().isSigetEnabled()){
 			Component iconCalendar = this.getCalendarIcon();
