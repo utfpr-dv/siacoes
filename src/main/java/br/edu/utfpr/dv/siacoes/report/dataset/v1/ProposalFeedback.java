@@ -3,18 +3,20 @@ package br.edu.utfpr.dv.siacoes.report.dataset.v1;
 import java.io.InputStream;
 import java.util.Date;
 
-import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.sign.SignDataset;
 
-public class SupervisorAgreement extends SignDataset {
+public class ProposalFeedback extends SignDataset {
 	
 	private static final long serialVersionUID = 1L;
-
+	
 	private Date date;
 	private String title;
 	private String student;
 	private String supervisor;
-	private ProposalFeedback feedback;
+	private String appraiser;
+	private String institution;
+	private String area;
+	private br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback feedback;
 	private String comments;
 	
 	public Date getDate() {
@@ -41,10 +43,28 @@ public class SupervisorAgreement extends SignDataset {
 	public void setSupervisor(String supervisor) {
 		this.supervisor = supervisor;
 	}
-	public ProposalFeedback getFeedback() {
+	public String getAppraiser() {
+		return appraiser;
+	}
+	public void setAppraiser(String appraiser) {
+		this.appraiser = appraiser;
+	}
+	public String getInstitution() {
+		return institution;
+	}
+	public void setInstitution(String institution) {
+		this.institution = institution;
+	}
+	public String getArea() {
+		return area;
+	}
+	public void setArea(String area) {
+		this.area = area;
+	}
+	public br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback getFeedback() {
 		return feedback;
 	}
-	public void setFeedback(ProposalFeedback feedback) {
+	public void setFeedback(br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback feedback) {
 		this.feedback = feedback;
 	}
 	public String getComments() {
@@ -61,13 +81,16 @@ public class SupervisorAgreement extends SignDataset {
 		}
 	}
 	
-	public SupervisorAgreement() {
+	public ProposalFeedback() {
 		this.setDate(null);
 		this.setTitle("");
 		this.setStudent("");
 		this.setSupervisor("");
-		this.setFeedback(ProposalFeedback.NONE);
+		this.setAppraiser("");
+		this.setInstitution("");
+		this.setArea("");
+		this.setFeedback(br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback.NONE);
 		this.setComments("");
 	}
-	
+
 }

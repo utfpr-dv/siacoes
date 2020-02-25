@@ -78,10 +78,6 @@ public class EditSupervisorAgreementWindow extends EditWindow {
 		
 		try {
 			this.config = new SigetConfigBO().findByDepartment(this.proposal.getDepartment().getIdDepartment());
-			
-			if(config.isUseDigitalSignature()) {
-				this.setSignButtonVisible(true);
-			}
 		} catch(Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			this.config = new SigetConfig();
@@ -91,6 +87,10 @@ public class EditSupervisorAgreementWindow extends EditWindow {
 		this.addField(this.textTitle);
 		this.addField(new HorizontalLayout(this.comboFeedback, this.textFeedbackDate));
 		this.addField(this.textComments);
+		
+		if(config.isUseDigitalSignature()) {
+			this.setSignButtonVisible(true);
+		}
 		
 		this.loadProposal();
 	}

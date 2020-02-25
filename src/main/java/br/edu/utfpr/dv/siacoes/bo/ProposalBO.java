@@ -16,6 +16,7 @@ import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.SupervisorAgreement;
 import br.edu.utfpr.dv.siacoes.sign.Document;
 import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Project;
@@ -307,14 +308,7 @@ public class ProposalBO {
 			return Document.getSignedDocument(DocumentType.SUPERVISORAGREEMENT, idProposal);
 		} else {
 			Proposal proposal = this.findById(idProposal);
-			SupervisorAgreement dataset = new SupervisorAgreement();
-			
-			dataset.setDate(DateUtils.getNow().getTime());
-			dataset.setTitle(proposal.getTitle());
-			dataset.setStudent(proposal.getStudent().getName());
-			dataset.setSupervisor(proposal.getSupervisor().getName());
-			dataset.setFeedback(proposal.getSupervisorFeedback());
-			dataset.setComments(proposal.getSupervisorComments());
+			SupervisorAgreement dataset = SignDatasetBuilder.build(proposal);
 			
 			List<SupervisorAgreement> list = new ArrayList<SupervisorAgreement>();
 			list.add(dataset);

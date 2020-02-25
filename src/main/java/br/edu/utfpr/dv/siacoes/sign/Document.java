@@ -39,7 +39,7 @@ import net.sf.jasperreports.engine.JasperReport;
 public class Document {
 	
 	public enum DocumentType{
-		NONE(0), SUPERVISORAGREEMENT(1);
+		NONE(0), SUPERVISORAGREEMENT(1), APPRAISERFEEDBACK(2);
 		
 		private final int value; 
 		DocumentType(int value){ 
@@ -66,6 +66,8 @@ public class Document {
 					return "Nenhum";
 				case SUPERVISORAGREEMENT:
 					return "Concordância do Professor Orientador para Proposta de TCC 1";
+				case APPRAISERFEEDBACK:
+					return "Parecer da Proposta de TCC 1";
 				default:
 					return "Nenhum";
 			}
@@ -296,6 +298,8 @@ public class Document {
 		switch(type) {
 			case SUPERVISORAGREEMENT:
 				return new ReportUtils().getJasperData("SupervisorAgreement");
+			case APPRAISERFEEDBACK:
+				return new ReportUtils().getJasperData("ProposalFeedback");
 			default:
 				return null;
 		}

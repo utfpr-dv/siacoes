@@ -17,6 +17,9 @@ import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.util.StringUtils;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 
@@ -187,16 +190,19 @@ public class ProposalAppraiserBO {
 	}
 	
 	public byte[] getFeedbackReport(ProposalAppraiser appraiser) throws Exception {
-		UserBO userBo = new UserBO();
-		appraiser.setAppraiser(userBo.findById(appraiser.getAppraiser().getIdUser()));
-		
-		ProposalBO proposalBo = new ProposalBO();
-		appraiser.setProposal(proposalBo.findById(appraiser.getProposal().getIdProposal()));
-		
-		List<ProposalAppraiser> list = new ArrayList<ProposalAppraiser>();
-		list.add(appraiser);
-		
-		return new ReportUtils().createPdfStream(list, "ProposalFeedback", appraiser.getProposal().getDepartment().getIdDepartment()).toByteArray();
+		if(Document.hasSignature(DocumentType.APPRAISERFEEDBACK, appraiser.getIdProposalAppraiser())) {
+			return Document.getSignedDocument(DocumentType.APPRAISERFEEDBACK, appraiser.getIdProposalAppraiser());
+		} else {
+			appraiser.setAppraiser(new UserBO().findById(appraiser.getAppraiser().getIdUser()));
+			appraiser.setProposal(new ProposalBO().findById(appraiser.getProposal().getIdProposal()));
+			
+			br.edu.utfpr.dv.siacoes.report.dataset.v1.ProposalFeedback dataset = SignDatasetBuilder.build(appraiser);
+			
+			List<br.edu.utfpr.dv.siacoes.report.dataset.v1.ProposalFeedback> list = new ArrayList<br.edu.utfpr.dv.siacoes.report.dataset.v1.ProposalFeedback>();
+			list.add(dataset);
+			
+			return new ReportUtils().createPdfStream(list, "ProposalFeedback", appraiser.getProposal().getDepartment().getIdDepartment()).toByteArray();
+		}
 	}
 	
 	public byte[] getFeedbackReport(int idProposal, int idAppraiser) throws Exception {

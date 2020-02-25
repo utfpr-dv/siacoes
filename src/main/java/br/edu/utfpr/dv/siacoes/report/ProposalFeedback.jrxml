@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ProposalFeedback" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="095a3e9f-14f9-49ee-ba4d-497e747740ad">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -16,17 +16,50 @@
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
+	<field name="date" class="java.util.Date">
+		<fieldDescription><![CDATA[date]]></fieldDescription>
+	</field>
+	<field name="title" class="java.lang.String">
+		<fieldDescription><![CDATA[title]]></fieldDescription>
+	</field>
+	<field name="student" class="java.lang.String">
+		<fieldDescription><![CDATA[student]]></fieldDescription>
+	</field>
+	<field name="supervisor" class="java.lang.String">
+		<fieldDescription><![CDATA[supervisor]]></fieldDescription>
+	</field>
+	<field name="appraiser" class="java.lang.String">
+		<fieldDescription><![CDATA[appraiser]]></fieldDescription>
+	</field>
+	<field name="institution" class="java.lang.String">
+		<fieldDescription><![CDATA[institution]]></fieldDescription>
+	</field>
+	<field name="area" class="java.lang.String">
+		<fieldDescription><![CDATA[area]]></fieldDescription>
+	</field>
 	<field name="feedback" class="br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback">
 		<fieldDescription><![CDATA[feedback]]></fieldDescription>
-	</field>
-	<field name="proposal" class="br.edu.utfpr.dv.siacoes.model.Proposal">
-		<fieldDescription><![CDATA[proposal]]></fieldDescription>
 	</field>
 	<field name="comments" class="java.lang.String">
 		<fieldDescription><![CDATA[comments]]></fieldDescription>
 	</field>
-	<field name="appraiser" class="br.edu.utfpr.dv.siacoes.model.User">
-		<fieldDescription><![CDATA[appraiser]]></fieldDescription>
+	<field name="useDigitalSignature" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[useDigitalSignature]]></fieldDescription>
+	</field>
+	<field name="guid" class="java.lang.String">
+		<fieldDescription><![CDATA[guid]]></fieldDescription>
+	</field>
+	<field name="validateUrl" class="java.lang.String">
+		<fieldDescription><![CDATA[validateUrl]]></fieldDescription>
+	</field>
+	<field name="legalText" class="java.lang.String">
+		<fieldDescription><![CDATA[legalText]]></fieldDescription>
+	</field>
+	<field name="qrCode" class="java.io.InputStream">
+		<fieldDescription><![CDATA[qrCode]]></fieldDescription>
+	</field>
+	<field name="supervisorSignature" class="java.io.InputStream">
+		<fieldDescription><![CDATA[supervisorSignature]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -107,7 +140,7 @@
 					<font fontName="Arial" size="10"/>
 					<paragraph leftIndent="2" rightIndent="2" spacingBefore="2" spacingAfter="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{proposal}.getTitle()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
 			</textField>
 			<textField pattern="MMMMM dd, yyyy">
 				<reportElement x="110" y="50" width="370" height="20" uuid="0ec46589-0982-4656-8a13-2dd8f9251b7f"/>
@@ -121,10 +154,10 @@
 					<font fontName="Arial" size="10"/>
 					<paragraph leftIndent="2" rightIndent="2" spacingBefore="2" spacingAfter="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[DATEFORMAT(new java.util.Date(), "dd/MM/yyyy")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DATEFORMAT($F{date}, "dd/MM/yyyy")]]></textFieldExpression>
 			</textField>
 		</band>
-		<band height="522">
+		<band height="494">
 			<staticText>
 				<reportElement x="0" y="0" width="110" height="20" uuid="134735ef-77b9-40e1-ad97-2b6242be057d"/>
 				<box padding="1">
@@ -165,7 +198,7 @@
 					<font fontName="Arial" size="10"/>
 					<paragraph leftIndent="2" rightIndent="2" spacingBefore="2" spacingAfter="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{proposal}.getStudent().getName()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{student}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="110" y="20" width="370" height="20" uuid="8841ecef-0fd0-40ad-b7d1-58300d2e7669"/>
@@ -179,7 +212,7 @@
 					<font fontName="Arial" size="10"/>
 					<paragraph leftIndent="2" rightIndent="2" spacingBefore="2" spacingAfter="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{proposal}.getSupervisor().getName()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{supervisor}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="50" width="480" height="20" uuid="5fb5b57f-4ef8-4fb1-b0af-a363df5cbe8d"/>
@@ -248,7 +281,7 @@
 					<font fontName="Arial" size="10"/>
 					<paragraph leftIndent="2" rightIndent="2" spacingBefore="2" spacingAfter="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{appraiser}.getName()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{appraiser}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="100" y="90" width="380" height="20" uuid="2a396c8c-a327-43e4-a59d-184be678a95d"/>
@@ -262,7 +295,7 @@
 					<font fontName="Arial" size="10"/>
 					<paragraph leftIndent="2" rightIndent="2" spacingBefore="2" spacingAfter="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{appraiser}.getInstitution()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{institution}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="100" y="110" width="380" height="20" uuid="394bc9e0-ce8e-4cc8-b08e-d0ab4bb6727e"/>
@@ -276,7 +309,7 @@
 					<font fontName="Arial" size="10"/>
 					<paragraph leftIndent="2" rightIndent="2" spacingBefore="2" spacingAfter="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{appraiser}.getArea()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{area}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="230" width="480" height="20" uuid="1dcd6385-eaee-4edf-a5ae-da4d493c6770"/>
@@ -292,7 +325,9 @@
 				<text><![CDATA[Observações]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="250" width="480" height="182" uuid="43a856de-fe80-43cb-8335-ad150194de09"/>
+				<reportElement x="0" y="250" width="480" height="155" uuid="43a856de-fe80-43cb-8335-ad150194de09">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -400,24 +435,56 @@
 				<textFieldExpression><![CDATA[IF($F{feedback} == br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback.DISAPPROVED, " ( X )", " (    )")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="478" width="480" height="21" uuid="efa1aca0-7331-4142-b4e8-2bf83a009615"/>
+				<reportElement x="0" y="450" width="480" height="21" uuid="efa1aca0-7331-4142-b4e8-2bf83a009615"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{appraiser}.getName()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{appraiser}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="499" width="480" height="20" uuid="9be35c60-fe05-4dc4-802f-68cd31964640"/>
+				<reportElement x="0" y="471" width="480" height="20" uuid="9be35c60-fe05-4dc4-802f-68cd31964640"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<text><![CDATA[Avaliador(a)]]></text>
 			</staticText>
 			<line>
-				<reportElement x="119" y="474" width="241" height="1" uuid="2065fbd7-7437-4e7f-9799-2b3683701a74">
+				<reportElement x="119" y="446" width="241" height="1" uuid="2065fbd7-7437-4e7f-9799-2b3683701a74">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 			</line>
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+				<reportElement x="0" y="413" width="480" height="30" uuid="8b60347c-d1bb-40c9-8fcc-f09af8be18a2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$F{supervisorSignature}]]></imageExpression>
+			</image>
 		</band>
 	</detail>
+	<pageFooter>
+		<band height="66">
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="0" y="0" width="66" height="66" uuid="0f9ccda2-a2c0-457c-b5f2-be2849d47495">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$F{qrCode}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="70" y="0" width="410" height="66" uuid="409d86a4-ea78-4c8b-a4a1-a7602dc1b68d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{legalText}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
 </jasperReport>

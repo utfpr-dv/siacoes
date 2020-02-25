@@ -1,5 +1,7 @@
 ﻿package br.edu.utfpr.dv.siacoes.window;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -8,21 +10,26 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.TextArea;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ProposalAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
+import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.components.FileUploaderListener;
 import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
+import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditProposalAppraiserWindow extends EditWindow {
@@ -115,6 +122,11 @@ public class EditProposalAppraiserWindow extends EditWindow {
 		this.addButton(this.buttonDownloadFile);
 		this.buttonDownloadFile.setWidth("250px");
 		
+		if(config.isUseDigitalSignature()) {
+			this.setSignButtonVisible(true);
+			this.checkAllowEditing.setVisible(false);
+		}
+		
 		this.loadAppraiser();
 	}
 	
@@ -140,6 +152,37 @@ public class EditProposalAppraiserWindow extends EditWindow {
 		if((this.appraiser.getIdProposalAppraiser() != 0) || (this.appraiser.getAppraiser().getIdUser() != 0)){
 			this.comboAppraiser.setEnabled(false);
 		}
+		
+		try {
+			if(Document.hasSignature(br.edu.utfpr.dv.siacoes.sign.Document.DocumentType.APPRAISERFEEDBACK, this.appraiser.getIdProposalAppraiser())) {
+				this.disableButtons();
+				this.setSaveButtonEnabled(true);
+				this.comboFeedback.setEnabled(false);
+				this.textComments.setEnabled(false);
+			}
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			this.disableButtons();
+		}
+	}
+	
+	@Override
+	public void sign() {
+		try {
+			List<User> users = new ArrayList<User>();
+			
+			users.add(this.appraiser.getAppraiser());
+			
+			this.appraiser.setProposal(new ProposalBO().findById(this.appraiser.getProposal().getIdProposal()));
+			this.appraiser.setAppraiser(new UserBO().findById(this.appraiser.getAppraiser().getIdUser()));
+			
+			UI.getCurrent().addWindow(new SignatureWindow(br.edu.utfpr.dv.siacoes.sign.Document.DocumentType.APPRAISERFEEDBACK, this.appraiser.getIdProposalAppraiser(), SignDatasetBuilder.build(this.appraiser), users, this, null));
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			this.showErrorNotification("Assinar Parecer", e.getMessage());
+		}
 	}
 	
 	@Override
@@ -153,7 +196,7 @@ public class EditProposalAppraiserWindow extends EditWindow {
 				}
 			}
 			
-			if(this.appraiser.isAllowEditing() && (this.appraiser.getAppraiser().getIdUser() == Session.getUser().getIdUser())){
+			if(this.appraiser.isAllowEditing() && (this.appraiser.getAppraiser().getIdUser() == Session.getUser().getIdUser()) && (!this.config.isUseDigitalSignature() || !Document.hasSignature(br.edu.utfpr.dv.siacoes.sign.Document.DocumentType.APPRAISERFEEDBACK, this.appraiser.getIdProposalAppraiser()))){
 				this.appraiser.setFeedback((ProposalFeedback)this.comboFeedback.getValue());
 				this.appraiser.setComments(this.textComments.getValue());
 			}
@@ -171,7 +214,12 @@ public class EditProposalAppraiserWindow extends EditWindow {
 			this.showSuccessNotification("Salvar Avaliador", "Avaliador salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
-			this.close();
+			
+			if((this.appraiser.getAppraiser().getIdUser() == Session.getUser().getIdUser()) && this.config.isUseDigitalSignature()) {
+				this.sign();
+			} else {
+				this.close();	
+			}
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
