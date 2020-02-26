@@ -142,7 +142,7 @@ public class SupervisorChangeDAO {
 			Date finalDate = sem.getEndDate();
 			
 			stmt = conn.prepareStatement(
-					"SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
+					"SELECT supervisorchange.*, proposal.title, proposal.iddepartment, proposal.idstudent, student.name AS studentName, student.studentCode, " +
 					"oldsupervisor.name AS oldSupervisorName, oldcosupervisor.name AS oldCosupervisorName, newsupervisor.name AS newSupervisorName " +
 					"FROM supervisorchange INNER JOIN proposal ON proposal.idProposal=supervisorchange.idProposal " +
 					"INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
@@ -183,7 +183,7 @@ public class SupervisorChangeDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			stmt = conn.prepareStatement(
-					"SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
+					"SELECT supervisorchange.*, proposal.title, proposal.iddepartment, proposal.idstudent, student.name AS studentName, student.studentCode, " +
 					"oldsupervisor.name AS oldSupervisorName, oldcosupervisor.name AS oldCosupervisorName, newsupervisor.name AS newSupervisorName " +
 					"FROM supervisorchange INNER JOIN proposal ON proposal.idProposal=supervisorchange.idProposal " +
 					"INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
@@ -224,7 +224,7 @@ public class SupervisorChangeDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			rs = stmt.executeQuery("SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
+			rs = stmt.executeQuery("SELECT supervisorchange.*, proposal.title, proposal.iddepartment, proposal.idstudent, student.name AS studentName, student.studentCode, " +
 					"oldSupervisor.name AS oldSupervisorName, oldcosupervisor.name AS oldCosupervisorName, newsupervisor.name AS newSupervisorName " +
 					"FROM supervisorchange INNER JOIN proposal ON proposal.idProposal=supervisorchange.idProposal " +
 					"INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
@@ -257,7 +257,7 @@ public class SupervisorChangeDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			rs = stmt.executeQuery("SELECT supervisorchange.*, proposal.title, student.name AS studentName, student.studentCode, " +
+			rs = stmt.executeQuery("SELECT supervisorchange.*, proposal.title, proposal.iddepartment, proposal.idstudent, student.name AS studentName, student.studentCode, " +
 					"oldSupervisor.name AS oldSupervisorName, oldcosupervisor.name AS oldCosupervisorName, newsupervisor.name AS newSupervisorName " +
 					"FROM supervisorchange INNER JOIN proposal ON proposal.idProposal=supervisorchange.idProposal " +
 					"INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
@@ -381,7 +381,9 @@ public class SupervisorChangeDAO {
 		change.setIdSupervisorChange(rs.getInt("idSupervisorChange"));
 		change.setProposal(new Proposal());
 		change.getProposal().setIdProposal(rs.getInt("idProposal"));
+		change.getProposal().getDepartment().setIdDepartment(rs.getInt("idDepartment"));
 		change.getProposal().setTitle(rs.getString("title"));
+		change.getProposal().getStudent().setIdUser(rs.getInt("idStudent"));
 		change.getProposal().getStudent().setName(rs.getString("studentName"));
 		change.getProposal().getStudent().setStudentCode(rs.getString("studentCode"));
 		change.setOldSupervisor(new User());

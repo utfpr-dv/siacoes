@@ -39,7 +39,7 @@ import net.sf.jasperreports.engine.JasperReport;
 public class Document {
 	
 	public enum DocumentType{
-		NONE(0), SUPERVISORAGREEMENT(1), APPRAISERFEEDBACK(2), JURYREQUEST(3);
+		NONE(0), SUPERVISORAGREEMENT(1), APPRAISERFEEDBACK(2), JURYREQUEST(3), SUPERVISORCHANGE(4);
 		
 		private final int value; 
 		DocumentType(int value){ 
@@ -70,6 +70,8 @@ public class Document {
 					return "Parecer da Proposta de TCC 1";
 				case JURYREQUEST:
 					return "Formulário de Agendamento de Banca de TCC";
+				case SUPERVISORCHANGE:
+					return "Requisição para Troca de Orientador";
 				default:
 					return "Nenhum";
 			}
@@ -304,6 +306,8 @@ public class Document {
 				return new ReportUtils().getJasperData("ProposalFeedback");
 			case JURYREQUEST:
 				return new ReportUtils().getJasperData("JuryFormRequest");
+			case SUPERVISORCHANGE:
+				return new ReportUtils().getJasperData("SupervisorChangeStatement");
 			default:
 				return null;
 		}
@@ -706,7 +710,8 @@ public class Document {
 			
 			rs2 = stmt.executeQuery("SELECT signature.*, \"user\".name AS username " +
 					"FROM signature INNER JOIN \"user\" ON \"user\".iduser=signature.iduser " +
-					"WHERE iddocument=" + String.valueOf(doc.getIdDocument()));
+					"WHERE iddocument=" + String.valueOf(doc.getIdDocument()) +
+					" ORDER BY \"user\".name");
 			
 			while(rs2.next()) {
 				Signature sign = new Signature();

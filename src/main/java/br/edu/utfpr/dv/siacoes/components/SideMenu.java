@@ -1185,10 +1185,21 @@ public class SideMenu extends CustomComponent {
 						try {
 	        	        	Proposal proposal = new ProposalBO().findLastProposal(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 							
-							if(proposal == null){
+							if((proposal == null) || (proposal.getIdProposal() == 0)) {
 								Notification.showErrorNotification("Alterar Orientador", "É necessário efetuar a submissão da proposta.");
-							}else{
-								UI.getCurrent().addWindow(new EditSupervisorChangeWindow(proposal, null, false));
+							} else {
+								Thesis thesis = new ThesisBO().findByProposal(proposal.getIdProposal());
+								Jury jury = null;
+								
+								if((thesis != null) && (thesis.getIdThesis() != 0)) {
+									jury = new JuryBO().findByThesis(0);
+								}
+								
+								if((jury != null) && (jury.getIdJury() != 0)) {
+									Notification.showErrorNotification("Alterar Orientador", "Não é possível efetuar a alteração de orientador pois a banca de TCC 2 já foi agendada.");
+								} else {
+									UI.getCurrent().addWindow(new EditSupervisorChangeWindow(proposal, null, false));	
+								}
 							}
 						} catch (Exception e) {
 							Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);

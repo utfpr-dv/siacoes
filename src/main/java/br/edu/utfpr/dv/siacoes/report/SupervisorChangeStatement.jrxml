@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SupervisorChangeStatement" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="ccea14cf-463c-4c70-9507-f7e19895ac17">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -18,44 +18,53 @@
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="date" class="java.util.Date">
-		<fieldDescription><![CDATA[date]]></fieldDescription>
+	<field name="supervisorRequest" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[supervisorRequest]]></fieldDescription>
 	</field>
-	<field name="oldSupervisor" class="br.edu.utfpr.dv.siacoes.model.User">
+	<field name="oldSupervisor" class="java.lang.String">
 		<fieldDescription><![CDATA[oldSupervisor]]></fieldDescription>
 	</field>
-	<field name="proposal" class="br.edu.utfpr.dv.siacoes.model.Proposal">
-		<fieldDescription><![CDATA[proposal]]></fieldDescription>
+	<field name="student" class="java.lang.String">
+		<fieldDescription><![CDATA[student]]></fieldDescription>
 	</field>
-	<field name="approved" class="br.edu.utfpr.dv.siacoes.model.SupervisorChange.ChangeFeedback">
-		<fieldDescription><![CDATA[approved]]></fieldDescription>
-	</field>
-	<field name="newSupervisor" class="br.edu.utfpr.dv.siacoes.model.User">
-		<fieldDescription><![CDATA[newSupervisor]]></fieldDescription>
-	</field>
-	<field name="approvalDate" class="java.util.Date">
-		<fieldDescription><![CDATA[approvalDate]]></fieldDescription>
-	</field>
-	<field name="comments" class="java.lang.String">
-		<fieldDescription><![CDATA[comments]]></fieldDescription>
-	</field>
-	<field name="idSupervisorChange" class="java.lang.Integer">
-		<fieldDescription><![CDATA[idSupervisorChange]]></fieldDescription>
-	</field>
-	<field name="newCosupervisor" class="br.edu.utfpr.dv.siacoes.model.User">
-		<fieldDescription><![CDATA[newCosupervisor]]></fieldDescription>
-	</field>
-	<field name="oldCosupervisor" class="br.edu.utfpr.dv.siacoes.model.User">
-		<fieldDescription><![CDATA[oldCosupervisor]]></fieldDescription>
-	</field>
-	<field name="approvalComments" class="java.lang.String">
-		<fieldDescription><![CDATA[approvalComments]]></fieldDescription>
+	<field name="studentCode" class="java.lang.String">
+		<fieldDescription><![CDATA[studentCode]]></fieldDescription>
 	</field>
 	<field name="stage" class="java.lang.Integer">
 		<fieldDescription><![CDATA[stage]]></fieldDescription>
 	</field>
-	<field name="supervisorRequest" class="java.lang.Boolean">
-		<fieldDescription><![CDATA[supervisorRequest]]></fieldDescription>
+	<field name="title" class="java.lang.String">
+		<fieldDescription><![CDATA[title]]></fieldDescription>
+	</field>
+	<field name="newSupervisor" class="java.lang.String">
+		<fieldDescription><![CDATA[newSupervisor]]></fieldDescription>
+	</field>
+	<field name="comments" class="java.lang.String">
+		<fieldDescription><![CDATA[comments]]></fieldDescription>
+	</field>
+	<field name="date" class="java.util.Date">
+		<fieldDescription><![CDATA[date]]></fieldDescription>
+	</field>
+	<field name="useDigitalSignature" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[useDigitalSignature]]></fieldDescription>
+	</field>
+	<field name="guid" class="java.lang.String">
+		<fieldDescription><![CDATA[guid]]></fieldDescription>
+	</field>
+	<field name="validateUrl" class="java.lang.String">
+		<fieldDescription><![CDATA[validateUrl]]></fieldDescription>
+	</field>
+	<field name="legalText" class="java.lang.String">
+		<fieldDescription><![CDATA[legalText]]></fieldDescription>
+	</field>
+	<field name="qrCode" class="java.io.InputStream">
+		<fieldDescription><![CDATA[qrCode]]></fieldDescription>
+	</field>
+	<field name="signature" class="java.io.InputStream">
+		<fieldDescription><![CDATA[signature]]></fieldDescription>
+	</field>
+	<field name="signatureName" class="java.lang.String">
+		<fieldDescription><![CDATA[signatureName]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -88,7 +97,7 @@
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="670" splitType="Stretch">
+		<band height="601" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="64" width="480" height="36" uuid="391effd8-6105-4ed2-9fce-a5cf52539571"/>
 				<box>
@@ -108,14 +117,14 @@
 					<font size="12"/>
 					<paragraph lineSpacing="1_1_2"/>
 				</textElement>
-				<textFieldExpression><![CDATA["                                              Eu, " + IF($F{supervisorRequest}, "Professor(a) " + $F{oldSupervisor}.getName(), "acadêmico(a) " + $F{proposal}.getStudent().getName() + ", portador(a) do RA " + $F{proposal}.getStudent().getStudentCode())  + ", venho, por meio desta, requerer a substituição do orientador(a) para " + IF($F{stage} == 1, "o Projeto de TCC 1", "a Monografia de TCC 2") +  IF($F{supervisorRequest}, " do(a) acadêmico(a) " + $F{proposal}.getStudent().getName(), "") + ", sendo que a partir deste momento o(a) Professor(a) Orientador(a) do trabalho intitulado \"" + $F{proposal}.getTitle() + "\" passa a ser o(a) Professor(a) " + $F{newSupervisor}.getName() + IF($F{supervisorRequest}, "", ", e não mais o(a) Professor(a) " + $F{oldSupervisor}.getName()) + ", pelo seguinte motivo: " + $F{comments} + "."]]></textFieldExpression>
+				<textFieldExpression><![CDATA["                                              Eu, " + IF($F{supervisorRequest}, "Professor(a) " + $F{oldSupervisor}, "acadêmico(a) " + $F{student} + ", portador(a) do RA " + $F{studentCode})  + ", venho, por meio desta, requerer a substituição do orientador(a) para " + IF($F{stage} == 1, "o Projeto de TCC 1", "a Monografia de TCC 2") +  IF($F{supervisorRequest}, " do(a) acadêmico(a) " + $F{student}, "") + ", sendo que a partir deste momento o(a) Professor(a) Orientador(a) do trabalho intitulado \"" + $F{title} + "\" passa a ser o(a) Professor(a) " + $F{newSupervisor} + IF($F{supervisorRequest}, "", ", e não mais o(a) Professor(a) " + $F{oldSupervisor}) + ", pelo seguinte motivo: " + $F{comments} + "."]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="554" width="480" height="21" uuid="fb203a57-869e-4c40-8e20-284c8e5f9fc1"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[IF($F{supervisorRequest}, $F{oldSupervisor}.getName(), $F{proposal}.getStudent().getName())]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{signatureName}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="119" y="544" width="241" height="1" uuid="52046419-a233-43b4-b6ba-24195bc81392">
@@ -129,6 +138,38 @@
 				</textElement>
 				<textFieldExpression><![CDATA[DATEFORMAT($F{date}, "dd/MM/yyyy")]]></textFieldExpression>
 			</textField>
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+				<reportElement x="0" y="511" width="480" height="30" uuid="d2c58253-3bd3-4860-b4b6-6247cd898149">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$F{signature}]]></imageExpression>
+			</image>
 		</band>
 	</detail>
+	<pageFooter>
+		<band height="66">
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="0" y="0" width="66" height="66" uuid="cf075c93-a6d6-4686-9a72-54050ac13cac">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$F{qrCode}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="70" y="0" width="410" height="66" uuid="ed57af0d-2796-431c-b801-71c381d2d72f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{legalText}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
 </jasperReport>

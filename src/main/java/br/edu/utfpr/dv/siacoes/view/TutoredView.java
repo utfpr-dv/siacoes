@@ -12,20 +12,25 @@ import com.vaadin.ui.Button.ClickEvent;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
+import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.bo.SupervisorChangeBO;
+import br.edu.utfpr.dv.siacoes.bo.ThesisBO;
 import br.edu.utfpr.dv.siacoes.bo.TutoredBO;
+import br.edu.utfpr.dv.siacoes.components.Notification;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryRequest;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
+import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.Tutored;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
@@ -352,8 +357,18 @@ public class TutoredView extends ListView {
 			try {
 				if(new SupervisorChangeBO().findCurrentSupervisor((int)value).getIdUser() == Session.getUser().getIdUser()) {
 					Proposal proposal = new ProposalBO().findById((int)value);
+					Thesis thesis = new ThesisBO().findByProposal(proposal.getIdProposal());
+					Jury jury = null;
 					
-					UI.getCurrent().addWindow(new EditSupervisorChangeWindow(proposal, this, true));
+					if((thesis != null) && (thesis.getIdThesis() != 0)) {
+						jury = new JuryBO().findByThesis(0);
+					}
+					
+					if((jury != null) && (jury.getIdJury() != 0)) {
+						Notification.showWarningNotification("Alterar Orientador", "Não é possível efetuar a alteração de orientador pois a banca de TCC 2 já foi agendada.");
+					} else {
+						UI.getCurrent().addWindow(new EditSupervisorChangeWindow(proposal, this, true));	
+					}
 				} else {
 					this.showWarningNotification("Alteração de Orientador", "Apenas o Professor Orientador pode solicitar a alteração de orientador.");
 				}

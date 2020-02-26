@@ -11,6 +11,7 @@ import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.JuryRequest;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.SupervisorAgreement;
+import br.edu.utfpr.dv.siacoes.report.dataset.v1.SupervisorChange;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class SignDatasetBuilder {
@@ -111,6 +112,28 @@ public class SignDatasetBuilder {
 		users.add(student);
 		
 		return users;
+	}
+	
+	public static SupervisorChange build(br.edu.utfpr.dv.siacoes.model.SupervisorChange supervisorChange) {
+		SupervisorChange dataset = new SupervisorChange();
+		
+		dataset.setSupervisorRequest(supervisorChange.isSupervisorRequest());
+		dataset.setOldSupervisor(supervisorChange.getOldSupervisor().getName());
+		dataset.setStudent(supervisorChange.getProposal().getStudent().getName());
+		dataset.setStudentCode(supervisorChange.getProposal().getStudent().getStudentCode());
+		dataset.setStage(supervisorChange.getStage());
+		dataset.setTitle(supervisorChange.getProposal().getTitle());
+		dataset.setNewSupervisor(supervisorChange.getNewSupervisor().getName());
+		dataset.setComments(supervisorChange.getComments());
+		dataset.setDate(supervisorChange.getDate());
+		
+		if(supervisorChange.isSupervisorRequest()) {
+			dataset.addSignature(supervisorChange.getOldSupervisor().getIdUser(), supervisorChange.getOldSupervisor().getName());
+		} else {
+			dataset.addSignature(supervisorChange.getProposal().getStudent().getIdUser(), supervisorChange.getProposal().getStudent().getName());
+		}
+		
+		return dataset;
 	}
 
 }

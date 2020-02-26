@@ -1,6 +1,7 @@
 ﻿package br.edu.utfpr.dv.siacoes.bo;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,7 +10,11 @@ import br.edu.utfpr.dv.siacoes.dao.SupervisorChangeDAO;
 import br.edu.utfpr.dv.siacoes.model.SupervisorChange;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
+import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.model.SupervisorChange.ChangeFeedback;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
 
 public class SupervisorChangeBO {
 	
@@ -114,6 +119,25 @@ public class SupervisorChangeBO {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public byte[] getSupervisorChangeReport(int idSupervisorChange) throws Exception {
+		if(Document.hasSignature(DocumentType.SUPERVISORCHANGE, idSupervisorChange)) {
+			return Document.getSignedDocument(DocumentType.SUPERVISORCHANGE, idSupervisorChange);
+		} else {
+			SupervisorChange change = this.findById(idSupervisorChange);
+			
+			if(change.getOldSupervisor().getIdUser() == change.getNewSupervisor().getIdUser()) {
+				throw new Exception("A requisição não pode ser impressa pois não houve troca de orientador.");
+			}
+			
+			br.edu.utfpr.dv.siacoes.report.dataset.v1.SupervisorChange dataset = SignDatasetBuilder.build(change);
+			
+			List<br.edu.utfpr.dv.siacoes.report.dataset.v1.SupervisorChange> list = new ArrayList<br.edu.utfpr.dv.siacoes.report.dataset.v1.SupervisorChange>();
+			list.add(dataset);
+			
+			return new ReportUtils().createPdfStream(list, "SupervisorChangeStatement", change.getProposal().getDepartment().getIdDepartment()).toByteArray();
 		}
 	}
 
