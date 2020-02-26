@@ -12,6 +12,7 @@ public class JuryFormReport implements Serializable {
 	private int stage;
 	private String title;
 	private Date date;
+	private int idStudent;
 	private String student;
 	private String comments;
 	private double score;
@@ -20,6 +21,7 @@ public class JuryFormReport implements Serializable {
 	private List<JuryFormAppraiserReport> appraisersName;
 	private List<JuryFormAppraiserScoreReport> scores;
 	private String local;
+	private int idSupervisor;
 	private String supervisor;
 	private boolean requestFinalDocumentStage1;
 	
@@ -37,6 +39,8 @@ public class JuryFormReport implements Serializable {
 		this.setLocal("");
 		this.setSupervisor("");
 		this.setRequestFinalDocumentStage1(false);
+		this.setIdStudent(0);
+		this.setIdSupervisor(0);
 	}
 	
 	public int getStage() {
@@ -116,6 +120,18 @@ public class JuryFormReport implements Serializable {
 	}
 	public void setRequestFinalDocumentStage1(boolean requestFinalDocumentStage1) {
 		this.requestFinalDocumentStage1 = requestFinalDocumentStage1;
+	}
+	public int getIdStudent() {
+		return idStudent;
+	}
+	public void setIdStudent(int idStudent) {
+		this.idStudent = idStudent;
+	}
+	public int getIdSupervisor() {
+		return idSupervisor;
+	}
+	public void setIdSupervisor(int idSupervisor) {
+		this.idSupervisor = idSupervisor;
 	}
 	
 }

@@ -19,6 +19,9 @@ import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
@@ -355,12 +358,16 @@ public class JuryRequestBO {
 	}
 	
 	public byte[] getJuryRequestForm(int idJuryRequest) throws Exception {
-		JuryFormReport report = this.getJuryRequestFormReport(idJuryRequest);
-		
-		List<JuryFormReport> list = new ArrayList<JuryFormReport>();
-		list.add(report);
-		
-		return new ReportUtils().createPdfStream(list, "JuryFormRequest", this.findIdDepartment(idJuryRequest)).toByteArray();
+		if(Document.hasSignature(DocumentType.JURYREQUEST, idJuryRequest)) {
+			return Document.getSignedDocument(DocumentType.JURYREQUEST, idJuryRequest);
+		} else {
+			br.edu.utfpr.dv.siacoes.report.dataset.v1.JuryRequest dataset = SignDatasetBuilder.build(this.getJuryRequestFormReport(idJuryRequest));
+			
+			List<br.edu.utfpr.dv.siacoes.report.dataset.v1.JuryRequest> list = new ArrayList<br.edu.utfpr.dv.siacoes.report.dataset.v1.JuryRequest>();
+			list.add(dataset);
+			
+			return new ReportUtils().createPdfStream(list, "JuryFormRequest", this.findIdDepartment(idJuryRequest)).toByteArray();
+		}
 	}
 	
 	public JuryFormReport getJuryRequestFormReport(int idJuryRequest) throws Exception {
@@ -376,6 +383,7 @@ public class JuryRequestBO {
 			report.setStage(jury.getStage());
 			report.setLocal(jury.getLocal());
 			report.setSupervisor(jury.getSupervisor().getName());
+			report.setIdSupervisor(jury.getSupervisor().getIdUser());
 			
 			if(jury.getSupervisorAbsenceReason().trim().isEmpty()) {
 				report.setComments(jury.getComments());	
@@ -389,11 +397,13 @@ public class JuryRequestBO {
 				if((thesis != null) && (thesis.getIdThesis() != 0)) {
 					report.setTitle(thesis.getTitle());
 					report.setStudent(thesis.getStudent().getName());
+					report.setIdStudent(thesis.getStudent().getIdUser());
 				} else {
 					Project project = new ProjectBO().findByProposal(jury.getProposal().getIdProposal());
 					
 					report.setTitle(project.getTitle());
 					report.setStudent(project.getStudent().getName());
+					report.setIdStudent(project.getStudent().getIdUser());
 				}
 			} else {
 				Project project = new ProjectBO().findByProposal(jury.getProposal().getIdProposal());
@@ -401,11 +411,13 @@ public class JuryRequestBO {
 				if((project != null) && (project.getIdProject() != 0)) {
 					report.setTitle(project.getTitle());
 					report.setStudent(project.getStudent().getName());
+					report.setIdStudent(project.getStudent().getIdUser());
 				} else {
 					Proposal proposal = new ProposalBO().findById(jury.getProposal().getIdProposal());
 					
 					report.setTitle(proposal.getTitle());
 					report.setStudent(proposal.getStudent().getName());
+					report.setIdStudent(proposal.getStudent().getIdUser());
 				}
 			}
 			
@@ -415,6 +427,7 @@ public class JuryRequestBO {
 			for(JuryAppraiserRequest appraiser : jury.getAppraisers()) {
 				JuryFormAppraiserReport appraiserReport = new JuryFormAppraiserReport();
 				
+				appraiserReport.setIdUser(appraiser.getAppraiser().getIdUser());
 				appraiserReport.setName(appraiser.getAppraiser().getName());
 				appraiserReport.setDate(report.getDate());
 				appraiserReport.setStage(report.getStage());

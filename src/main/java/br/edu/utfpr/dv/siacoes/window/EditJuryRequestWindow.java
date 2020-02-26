@@ -29,7 +29,12 @@ import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.components.StageComboBox;
 import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.model.JuryRequest;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
+import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditJuryRequestWindow extends EditWindow {
@@ -37,6 +42,7 @@ public class EditJuryRequestWindow extends EditWindow {
 	private final JuryRequest jury;
 	private final List<JuryAppraiserRequest> members;
 	private final List<JuryAppraiserRequest> substitutes;
+	private SigetConfig config;
 	
 	private final TabSheet tabContainer;
 	private final TextField textStudent;
@@ -72,6 +78,16 @@ public class EditJuryRequestWindow extends EditWindow {
 		}
 		this.members = new ArrayList<JuryAppraiserRequest>();
 		this.substitutes = new ArrayList<JuryAppraiserRequest>();
+		try {
+			if(this.jury.getIdJuryRequest() == 0) {
+				this.config = new SigetConfigBO().findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
+			} else {
+				this.config = new SigetConfigBO().findByDepartment(new JuryRequestBO().findIdDepartment(this.jury.getIdJuryRequest()));
+			}
+		} catch(Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			this.config = new SigetConfig();
+		}
 		
 		this.tabContainer = new TabSheet();
 		this.tabContainer.setWidth("810px");
@@ -120,7 +136,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		tab1.setSpacing(true);
 		this.tabContainer.addTab(tab1, "Informações da Banca");
 		
-		this.comboChair = new SupervisorComboBox("Presidente da Banca", Session.getSelectedDepartment().getDepartment().getIdDepartment(), new SigetConfigBO().getSupervisorFilter(Session.getSelectedDepartment().getDepartment().getIdDepartment()));
+		this.comboChair = new SupervisorComboBox("Presidente da Banca", Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.config.getSupervisorFilter());
 		this.comboChair.setWidth("800px");
 		this.comboChair.setRequired(true);
 		
@@ -220,7 +236,12 @@ public class EditJuryRequestWindow extends EditWindow {
 		
 		this.addField(this.tabContainer);
 		
-		this.setSaveButtonVisible(allowEdit);
+		if(allowEdit && config.isUseDigitalSignature()) {
+			this.setSignButtonVisible(true);
+		}
+		if(!allowEdit) {
+			this.disableButtons();
+		}
 		
 		this.loadJury();
 	}
@@ -261,8 +282,44 @@ public class EditJuryRequestWindow extends EditWindow {
 		this.loadGridAppraisers();
 		this.loadGridSubstitutes();
 		
+		try {
+			if(Document.hasSignature(DocumentType.JURYREQUEST, this.jury.getIdJuryRequest())) {
+				this.disableButtons();
+			}
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			this.disableButtons();
+		}
+		
 		if(this.jury.isConfirmed()) {
-			this.setSaveButtonEnabled(false);
+			this.disableButtons();
+		}
+	}
+	
+	@Override
+	public void disableButtons() {
+		super.disableButtons();
+		this.buttonAddAppraiser.setEnabled(false);
+		this.buttonRemoveAppraiser.setEnabled(false);
+		this.buttonAddSubstitute.setEnabled(false);
+		this.buttonRemoveSubstitute.setEnabled(false);
+	}
+	
+	@Override
+	public void sign() {
+		if(this.jury.getIdJuryRequest() == 0) {
+			this.showWarningNotification("Assinar Requisição", "É necessário salvar a requisição antes de assinar.");
+		} else {
+			try {
+				JuryFormReport report = new JuryRequestBO().getJuryRequestFormReport(this.jury.getIdJuryRequest());
+				
+				UI.getCurrent().addWindow(new SignatureWindow(DocumentType.JURYREQUEST, this.jury.getIdJuryRequest(), SignDatasetBuilder.build(report), SignDatasetBuilder.getSignaturesList(report), this, null));
+			} catch (Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				
+				this.showErrorNotification("Assinar Requisição", e.getMessage());
+			}
 		}
 	}
 
@@ -302,7 +359,12 @@ public class EditJuryRequestWindow extends EditWindow {
 			this.showSuccessNotification("Salvar Agendamento de Banca", "Agendamento de banca salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
-			this.close();
+			
+			if(this.config.isUseDigitalSignature()) {
+				this.sign();
+			} else {
+				this.close();	
+			}
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

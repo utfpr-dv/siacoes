@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="JuryFormAppraiserList" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e8ce5460-e620-401d-9ff9-24f389789177">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -18,6 +18,9 @@
 	</field>
 	<field name="description" class="java.lang.String">
 		<fieldDescription><![CDATA[description]]></fieldDescription>
+	</field>
+	<field name="rubric" class="java.io.InputStream">
+		<fieldDescription><![CDATA[rubric]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -76,6 +79,14 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{description} + ":"]]></textFieldExpression>
 			</textField>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="372" y="1" width="105" height="18" uuid="617805fb-8c52-44ab-ac52-ae1fea39f282">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{rubric}]]></imageExpression>
+			</image>
 		</band>
 	</detail>
 </jasperReport>

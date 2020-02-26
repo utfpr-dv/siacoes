@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="JuryForm2" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="aaaa9f03-6de2-4449-a217-db75b3350ee7">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -30,17 +30,38 @@
 	<field name="student" class="java.lang.String">
 		<fieldDescription><![CDATA[student]]></fieldDescription>
 	</field>
+	<field name="studentRubric" class="java.io.InputStream">
+		<fieldDescription><![CDATA[studentRubric]]></fieldDescription>
+	</field>
 	<field name="local" class="java.lang.String">
 		<fieldDescription><![CDATA[local]]></fieldDescription>
 	</field>
 	<field name="supervisor" class="java.lang.String">
 		<fieldDescription><![CDATA[supervisor]]></fieldDescription>
 	</field>
+	<field name="supervisorSignature" class="java.io.InputStream">
+		<fieldDescription><![CDATA[supervisorSignature]]></fieldDescription>
+	</field>
 	<field name="title" class="java.lang.String">
 		<fieldDescription><![CDATA[title]]></fieldDescription>
 	</field>
 	<field name="appraisers" class="java.util.List">
 		<fieldDescription><![CDATA[appraisers]]></fieldDescription>
+	</field>
+	<field name="useDigitalSignature" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[useDigitalSignature]]></fieldDescription>
+	</field>
+	<field name="guid" class="java.lang.String">
+		<fieldDescription><![CDATA[guid]]></fieldDescription>
+	</field>
+	<field name="validateUrl" class="java.lang.String">
+		<fieldDescription><![CDATA[validateUrl]]></fieldDescription>
+	</field>
+	<field name="legalText" class="java.lang.String">
+		<fieldDescription><![CDATA[legalText]]></fieldDescription>
+	</field>
+	<field name="qrCode" class="java.io.InputStream">
+		<fieldDescription><![CDATA[qrCode]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -174,9 +195,9 @@
 				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
 			</textField>
 		</band>
-		<band height="472" splitType="Stretch">
+		<band height="439" splitType="Stretch">
 			<staticText>
-				<reportElement positionType="Float" x="0" y="287" width="481" height="20" uuid="2f0bb051-c983-44e9-97ee-f6807a02c91e"/>
+				<reportElement positionType="Float" x="0" y="254" width="481" height="20" uuid="2f0bb051-c983-44e9-97ee-f6807a02c91e"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -189,7 +210,7 @@
 				<text><![CDATA[Observações]]></text>
 			</staticText>
 			<textField>
-				<reportElement positionType="Float" x="0" y="307" width="481" height="70" uuid="b4b5321c-a903-4c03-8dbd-78bdbeaddbcc"/>
+				<reportElement positionType="Float" x="0" y="274" width="481" height="70" uuid="b4b5321c-a903-4c03-8dbd-78bdbeaddbcc"/>
 				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -350,28 +371,28 @@
 				<textFieldExpression><![CDATA[$F{local}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="0" y="428" width="480" height="21" uuid="5049c5ea-87e7-4cff-b0b3-e915e4396bb3"/>
+				<reportElement positionType="Float" x="0" y="395" width="480" height="21" uuid="5049c5ea-87e7-4cff-b0b3-e915e4396bb3"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{supervisor}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="449" width="480" height="20" uuid="06cf37b9-995d-44a2-9224-ef43255d8def"/>
+				<reportElement positionType="Float" x="0" y="416" width="480" height="20" uuid="06cf37b9-995d-44a2-9224-ef43255d8def"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<text><![CDATA[Professor(a) Orientador(a)]]></text>
 			</staticText>
 			<line>
-				<reportElement positionType="Float" x="119" y="424" width="241" height="1" uuid="3a253cff-f1b6-423e-ab74-6c0cbabde829">
+				<reportElement positionType="Float" x="119" y="391" width="241" height="1" uuid="3a253cff-f1b6-423e-ab74-6c0cbabde829">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 			</line>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="122" width="480" height="157" uuid="7826d600-024f-4ea9-9ee6-e6a834f04d77"/>
+				<reportElement positionType="Float" x="0" y="122" width="480" height="128" uuid="7826d600-024f-4ea9-9ee6-e6a834f04d77"/>
 				<textElement textAlignment="Justified">
-					<font fontName="Arial" size="10"/>
+					<font fontName="Arial" size="9"/>
 				</textElement>
 				<text><![CDATA[- O(a) acadêmico(a) acima nominado(a) está de acordo com a execução da banca na data e horário estipulados neste documento.
 
@@ -381,6 +402,46 @@
 
 - Caso ocorra qualquer alteração de data, horário ou nos membros da banca em até 48 horas antes da execução da mesma, este documento deverá ser atualizado e entregue novamente ao Professor Responsável pelo TCC.]]></text>
 			</staticText>
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+				<reportElement positionType="Float" x="0" y="358" width="480" height="30" uuid="d6786200-690d-4946-bd54-1c1a58a97748">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$F{supervisorSignature}]]></imageExpression>
+			</image>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="372" y="41" width="105" height="18" uuid="c8739907-1942-4367-81e7-86b176899236">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{studentRubric}]]></imageExpression>
+			</image>
 		</band>
 	</detail>
+	<pageFooter>
+		<band height="66">
+			<textField>
+				<reportElement x="70" y="0" width="410" height="66" uuid="08316f9b-8704-4468-9c03-dff589658193">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{legalText}]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="0" y="0" width="66" height="66" uuid="db8f783c-95b0-4dcd-abd5-e5c0be452837">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$F{qrCode}]]></imageExpression>
+			</image>
+		</band>
+	</pageFooter>
 </jasperReport>

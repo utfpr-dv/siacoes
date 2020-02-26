@@ -9,6 +9,7 @@ public class JuryFormAppraiserReport implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
+	private int idUser;
 	private int stage;
 	private String title;
 	private String company;
@@ -22,6 +23,7 @@ public class JuryFormAppraiserReport implements Serializable {
 	private List<JuryFormAppraiserDetailReport> detail;
 	
 	public JuryFormAppraiserReport(){
+		this.setIdUser(0);
 		this.setStage(0);
 		this.setTitle("");
 		this.setCompany("");
@@ -35,6 +37,12 @@ public class JuryFormAppraiserReport implements Serializable {
 		this.setDetail(new ArrayList<JuryFormAppraiserDetailReport>());
 	}
 	
+	public int getIdUser() {
+		return idUser;
+	}
+	public void setIdUser(int idUser) {
+		this.idUser = idUser;
+	}
 	public int getStage() {
 		return stage;
 	}
