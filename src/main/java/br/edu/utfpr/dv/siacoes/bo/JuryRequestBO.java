@@ -125,6 +125,9 @@ public class JuryRequestBO {
 			if((jury.getJury() != null) && (jury.getJury().getIdJury() != 0)) {
 				throw new Exception("A banca já foi confirmada e a solicitação não pode ser alterada.");
 			}
+			if(Document.hasSignature(DocumentType.JURYREQUEST, jury.getIdJuryRequest())) {
+				throw new Exception("A solicitação não pode ser alterada pois ela já foi assinada.");
+			}
 			if(jury.getAppraisers() != null){
 				User supervisor = jury.getSupervisor();
 				User cosupervisor = jury.getCosupervisor();
@@ -199,6 +202,9 @@ public class JuryRequestBO {
 	public boolean delete(int idUser, JuryRequest request) throws Exception {
 		if((request.getJury() != null) && (request.getJury().getIdJury() != 0)) {
 			throw new Exception("A solicitação não pode ser excluída pois a banca já foi confirmada.");
+		}
+		if(Document.hasSignature(DocumentType.JURYREQUEST, request.getIdJuryRequest())) {
+			throw new Exception("A solicitação não pode ser excluída pois ela já foi assinada.");
 		}
 		
 		try {

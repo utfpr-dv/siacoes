@@ -3,11 +3,13 @@ package br.edu.utfpr.dv.siacoes.sign;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.report.dataset.v1.Attendance;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.JuryRequest;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.SupervisorAgreement;
@@ -132,6 +134,25 @@ public class SignDatasetBuilder {
 		} else {
 			dataset.addSignature(supervisorChange.getProposal().getStudent().getIdUser(), supervisorChange.getProposal().getStudent().getName());
 		}
+		
+		return dataset;
+	}
+	
+	public static Attendance build(AttendanceReport attendance) {
+		Attendance dataset = new Attendance();
+		
+		dataset.setIdGroup(attendance.getIdGroup());
+		dataset.setStage(attendance.getStage());
+		dataset.setTitle(attendance.getTitle());
+		dataset.setIdStudent(attendance.getIdStudent());
+		dataset.setIdSupervisor(attendance.getIdSupervisor());
+		
+		for(br.edu.utfpr.dv.siacoes.model.Attendance a : attendance.getAttendances()) {
+			dataset.getAttendances().add(a);
+		}
+		
+		dataset.addSignature(attendance.getIdStudent(), attendance.getStudent());
+		dataset.addSignature(attendance.getIdSupervisor(), attendance.getSupervisor());
 		
 		return dataset;
 	}

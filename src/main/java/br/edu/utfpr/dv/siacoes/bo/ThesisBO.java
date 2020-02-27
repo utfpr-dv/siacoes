@@ -8,7 +8,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.ThesisDAO;
-import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Project;
@@ -266,6 +265,7 @@ public class ThesisBO {
 		List<byte[]> ret = new ArrayList<byte[]>();
 		Thesis thesis = this.findCurrentThesis(idUser, idDepartment, semester, year);
 		int idProposal = 0, idSupervisor = 0;
+		String title = "";
 		
 		if(thesis == null){
 			thesis = this.findLastThesis(idUser, idDepartment, semester, year);
@@ -278,6 +278,7 @@ public class ThesisBO {
 				} else {
 					idProposal = project.getProposal().getIdProposal();
 					idSupervisor = new SupervisorChangeBO().findCurrentSupervisor(idProposal).getIdUser();
+					title = project.getTitle();
 				}
 			}
 		}
@@ -285,20 +286,19 @@ public class ThesisBO {
 		if(thesis != null) {
 			idProposal = new ThesisDAO().findIdProposal(thesis.getIdThesis());
 			idSupervisor = thesis.getSupervisor().getIdUser();
+			title = thesis.getTitle();
 		}
 		
-		List<AttendanceReport> list = new AttendanceBO().getReportList(idUser, idProposal, idSupervisor, 2);
-		
-		ret.add(new ReportUtils().createPdfStream(list, "Attendances", idDepartment).toByteArray());
+		ret.add(new AttendanceBO().getReport(idUser, idProposal, idSupervisor, 2));
 		
 		if(new SigetConfigBO().findByDepartment(idDepartment).isSupervisorJuryAgreement()) {
 			if(thesis == null) {
 				thesis = new Thesis();
-				thesis.setTitle(list.get(0).getTitle());
+				thesis.setTitle(title);
 				thesis.getStudent().setIdUser(idUser);
-				thesis.getStudent().setName(list.get(0).getStudent());
+				thesis.getStudent().setName(new UserBO().findById(idUser).getName());
 				thesis.getSupervisor().setIdUser(idSupervisor);
-				thesis.getSupervisor().setName(list.get(0).getSupervisor());
+				thesis.getSupervisor().setName(new UserBO().findById(idSupervisor).getName());
 			}
 			
 			List<SupervisorFeedbackReport> list2 = new ArrayList<SupervisorFeedbackReport>();

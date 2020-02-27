@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.vaadin.dialogs.ConfirmDialog;
+
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.FontAwesome;
@@ -15,18 +17,23 @@ import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.renderers.DateRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.AttendanceBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
+import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.bo.SupervisorChangeBO;
 import br.edu.utfpr.dv.siacoes.components.StageComboBox;
 import br.edu.utfpr.dv.siacoes.components.StudentComboBox;
 import br.edu.utfpr.dv.siacoes.model.Attendance;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.window.EditAttendanceWindow;
+import br.edu.utfpr.dv.siacoes.window.SignatureWindow;
 
 public class AttendanceView extends ListView {
 	
@@ -36,7 +43,10 @@ public class AttendanceView extends ListView {
 	private final NativeSelect comboProposal;
 	private final NativeSelect comboSupervisor;
 	private final StageComboBox comboStage;
+	private final Button buttonSign;
 	private final Button buttonPrint;
+	
+	private SigetConfig config;
 	
 	public AttendanceView(){
 		super(SystemModule.SIGET);
@@ -62,7 +72,7 @@ public class AttendanceView extends ListView {
 		this.comboStage = new StageComboBox();
 		this.comboStage.setShowBoth(true);
 		
-		if(Session.isUserProfessor()){
+		if(Session.isUserProfessor()) {
 			this.comboStudent = new StudentComboBox("Acadêmico", Session.getUser().getIdUser());
 			this.comboStudent.addValueChangeListener(new ValueChangeListener() {
 				@Override
@@ -76,7 +86,7 @@ public class AttendanceView extends ListView {
 			this.comboSupervisor.addItem(Session.getUser());
 			this.comboSupervisor.select(Session.getUser());
 			this.comboSupervisor.setVisible(false);
-		}else{
+		} else {
 			this.comboStudent = new StudentComboBox("Acadêmico");
 			this.comboStudent.addItem(Session.getUser());
 			this.comboStudent.setStudent(Session.getUser());
@@ -100,6 +110,18 @@ public class AttendanceView extends ListView {
 			}
 		});
 		
+		this.buttonSign = new Button("Assinar", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	clickSign();
+            	buttonSign.setEnabled(true);
+            }
+        });
+		this.buttonSign.setWidth("150px");
+		this.buttonSign.setIcon(FontAwesome.PENCIL);
+		this.buttonSign.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+		this.buttonSign.setDisableOnClick(true);
+		
 		this.buttonPrint = new Button("Imprimir", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
@@ -109,6 +131,16 @@ public class AttendanceView extends ListView {
 		this.buttonPrint.setWidth("150px");
 		this.buttonPrint.setIcon(FontAwesome.PRINT);
 		
+		try {
+			this.config = new SigetConfigBO().findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
+		} catch(Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			this.config = new SigetConfig();
+		}
+		
+		if(this.config.isUseDigitalSignature()) {
+			this.addActionButton(this.buttonSign);
+		}
 		this.addActionButton(this.buttonPrint);
 	}
 
@@ -135,6 +167,14 @@ public class AttendanceView extends ListView {
 				Object itemId = this.getGrid().addRow(a.getDate(), a.getStartTime(), a.getEndTime(), (a.getComments().length() > 100 ? a.getComments().substring(0, 99) + "..." : a.getComments()));
 				this.addRowId(itemId, a.getIdAttendance());
 			}
+	    	
+	    	this.buttonSign.setEnabled(true);
+	    	
+	    	if((this.comboStudent.getStudent() == null) || (this.comboProposal.getValue() == null) || (this.comboSupervisor.getValue() == null)) {
+	    		this.buttonSign.setEnabled(false);
+	    	} else if(this.comboStage.isBothSelected() || new AttendanceBO().hasSignature(((Proposal)this.comboProposal.getValue()).getIdProposal(), this.comboStage.getStage(), ((User)this.comboSupervisor.getValue()).getIdUser())) {
+	    		this.buttonSign.setEnabled(false);
+	    	}
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -206,13 +246,13 @@ public class AttendanceView extends ListView {
 
 	@Override
 	public void addClick() {
-		if(this.comboStudent.getStudent() == null){
+		if(this.comboStudent.getStudent() == null) {
 			this.showErrorNotification("Incluir Reunião", "Selecione o acadêmico.");
-		}else if(this.comboProposal.getValue() == null){
+		} else if(this.comboProposal.getValue() == null) {
 			this.showErrorNotification("Incluir Reunião", "Selecione o projeto.");
-		}else if(this.comboSupervisor.getValue() == null){
+		} else if(this.comboSupervisor.getValue() == null) {
 			this.showErrorNotification("Incluir Reunião", "Selecione o orientador.");
-		}else{
+		} else {
 			Attendance attendance = new Attendance();
 	    	
 	    	attendance.setProposal((Proposal)this.comboProposal.getValue());
@@ -255,27 +295,73 @@ public class AttendanceView extends ListView {
 
 	@Override
 	public void filterClick() throws Exception {
-		if(this.comboStudent.getStudent() == null){
+		if(this.comboStudent.getStudent() == null) {
 			throw new Exception("Selecione o acadêmico.");
 		}
 		
-		if(this.comboProposal.getValue() == null){
+		if(this.comboProposal.getValue() == null) {
 			throw new Exception("Selecione a proposta.");
 		}
 	}
 	
+	private void clickSign() {
+		if(this.comboStage.isBothSelected()) {
+			this.showWarningNotification("Assinar Documento", "Selecione TCC 1 ou 2 para assinar o documento.");
+		} else if((this.comboStudent.getStudent() != null) && (this.comboProposal.getValue() != null)) {
+			try {
+				if(new AttendanceBO().hasSignature(((Proposal)this.comboProposal.getValue()).getIdProposal(), this.comboStage.getStage(), ((User)this.comboSupervisor.getValue()).getIdUser(), Session.getUser().getIdUser())) {
+					this.showWarningNotification("Assinar Documento", "Este documento já foi assinado.");
+				} else {
+					ConfirmDialog.show(UI.getCurrent(), "Confirma a assinatura do documento?\n\nApós assinar o documento, não será possível efetuar alterações, inclusões e exclusões de reuniões para o TCC " + String.valueOf(this.comboStage.getStage()) + ".", new ConfirmDialog.Listener() {
+			            public void onClose(ConfirmDialog dialog) {
+			                if (dialog.isConfirmed()) {
+			                	sign();
+			                }
+			            }
+			        });
+				}
+			} catch (Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				
+				this.showErrorNotification("Assinar Documento", e.getMessage());
+			}
+		} else {
+        	if(Session.isUserStudent()) {
+        		this.showWarningNotification("Assinar Documento", "É necessário selecionar o orientador e a proposta para assinar o documento.");
+        	} else {
+        		this.showWarningNotification("Assinar Documento", "É necessário selecionar o acadêmico e a proposta para assinar o documento.");
+        	}
+		}
+	}
+	
+	private void sign() {
+		try {
+			br.edu.utfpr.dv.siacoes.report.dataset.v1.Attendance dataset = new AttendanceBO().buildDataset(this.comboStudent.getStudent().getIdUser(), ((Proposal)this.comboProposal.getValue()).getIdProposal(), ((User)this.comboSupervisor.getValue()).getIdUser(), this.comboStage.getStage());
+			List<User> users = new ArrayList<User>();
+			
+			users.add(this.comboStudent.getStudent());
+			users.add((User)this.comboSupervisor.getValue());
+			
+			UI.getCurrent().addWindow(new SignatureWindow(DocumentType.ATTENDANCE, dataset.getIdGroup(), dataset, users, null, null));
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			this.showErrorNotification("Assinar Documento", e.getMessage());
+		}
+	}
+	
 	private void printReport() {
-		if((this.comboStudent.getStudent() != null) && (this.comboProposal.getValue() != null)){
+		if((this.comboStudent.getStudent() != null) && (this.comboProposal.getValue() != null)) {
 			try {
 				this.showReport(new AttendanceBO().getReport(this.comboStudent.getStudent().getIdUser(), ((Proposal)this.comboProposal.getValue()).getIdProposal(), ((User)this.comboSupervisor.getValue()).getIdUser(), this.comboStage.getStage()));
 			} catch (Exception e) {
-				showErrorNotification("Imprimir Acompanhamentos", e.getMessage());
+				this.showErrorNotification("Imprimir Acompanhamentos", e.getMessage());
 			}
-		}else{
+		} else {
         	if(Session.isUserStudent()) {
-        		showWarningNotification("Imprimir Acompanhamentos", "É necessário selecionar o orientador e a proposta para imprimir os acompanhamentos.");
+        		this.showWarningNotification("Imprimir Acompanhamentos", "É necessário selecionar o orientador e a proposta para imprimir os acompanhamentos.");
         	} else {
-        		showWarningNotification("Imprimir Acompanhamentos", "É necessário selecionar o acadêmico e a proposta para imprimir os acompanhamentos.");
+        		this.showWarningNotification("Imprimir Acompanhamentos", "É necessário selecionar o acadêmico e a proposta para imprimir os acompanhamentos.");
         	}
 		}
 	}

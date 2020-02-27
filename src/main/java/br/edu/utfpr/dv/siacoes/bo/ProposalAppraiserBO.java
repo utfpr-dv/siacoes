@@ -97,6 +97,12 @@ public class ProposalAppraiserBO {
 			if((config.getMaxFileSize() > 0) && (appraiser.getFile() != null) && ((appraiser.getIdProposalAppraiser() == 0) || !Arrays.equals(appraiser.getFile(), new ProposalAppraiserDAO().getFile(appraiser.getIdProposalAppraiser()))) && (appraiser.getFile().length > config.getMaxFileSize())) {
 				throw new Exception("O arquivo deve ter um tamanho máximo de " + StringUtils.getFormattedBytes(config.getMaxFileSize()) + ".");
 			}
+			if(!isInsert) {
+				a = dao.findById(appraiser.getIdProposalAppraiser());
+				if(((appraiser.getFeedback() != a.getFeedback()) || !appraiser.getComments().equals(a.getComments())) && Document.hasSignature(DocumentType.APPRAISERFEEDBACK, appraiser.getIdProposalAppraiser())) {
+					throw new Exception("Não é possível efetuar alterações no parecer pois ele já foi assinado.");
+				}
+			}
 			
 			ret = dao.save(idUser, appraiser);
 		} catch (SQLException e) {

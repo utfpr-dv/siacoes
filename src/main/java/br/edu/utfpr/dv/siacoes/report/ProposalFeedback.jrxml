@@ -453,7 +453,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 			</line>
-			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" onErrorType="Blank">
 				<reportElement x="0" y="413" width="480" height="30" uuid="8b60347c-d1bb-40c9-8fcc-f09af8be18a2">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
@@ -464,7 +464,7 @@
 	</detail>
 	<pageFooter>
 		<band height="66">
-			<image hAlign="Center" vAlign="Middle">
+			<image hAlign="Center" vAlign="Middle" isUsingCache="true" onErrorType="Blank">
 				<reportElement x="0" y="0" width="66" height="66" uuid="0f9ccda2-a2c0-457c-b5f2-be2849d47495">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>

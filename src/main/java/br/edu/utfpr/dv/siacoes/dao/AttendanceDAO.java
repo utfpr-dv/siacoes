@@ -16,6 +16,8 @@ import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 
 public class AttendanceDAO {
 	
@@ -222,40 +224,121 @@ public class AttendanceDAO {
 		}
 	}
 	
-	public AttendanceReport getReport(int idStudent, int idProposal, int idSupervisor, int stage) throws SQLException{
+	public int createGroup(int idStudent, int idProposal, int idSupervisor, int stage) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			int idGroup = 0;
+			
+			conn = ConnectionDAO.getInstance().getConnection();
+			conn.setAutoCommit(false);
+			stmt = conn.prepareStatement("INSERT INTO attendancegroup(idProposal, idSupervisor, stage) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			
+			stmt.setInt(1, idProposal);
+			stmt.setInt(2, idSupervisor);
+			stmt.setInt(3, stage);
+			
+			stmt.execute();
+			
+			rs = stmt.getGeneratedKeys();
+			
+			if(rs.next()){
+				idGroup = rs.getInt(1);
+			}
+			
+			rs.close();
+			stmt.close();
+			
+			stmt = conn.prepareStatement("UPDATE attendance SET idGroup=? WHERE idProposal=? AND idSupervisor=? AND stage=?");
+			
+			stmt.setInt(1, idGroup);
+			stmt.setInt(2, idProposal);
+			stmt.setInt(3, idSupervisor);
+			stmt.setInt(4, stage);
+			
+			stmt.execute();
+			
+			stmt.close();
+			
+			stmt = conn.prepareStatement("DELETE FROM attendancegroup WHERE idGroup <> ? AND idProposal=? AND idSupervisor=? AND stage=?");
+			
+			stmt.setInt(1, idGroup);
+			stmt.setInt(2, idProposal);
+			stmt.setInt(3, idSupervisor);
+			stmt.setInt(4, stage);
+			
+			stmt.execute();
+			
+			conn.commit();
+			
+			return idGroup;
+		} catch (SQLException e) {
+			conn.rollback();
+			
+			throw e;
+		} finally {
+			conn.setAutoCommit(true);
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public AttendanceReport getReport(int idGroup) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
 		
 		try{
 			AttendanceReport report = new AttendanceReport();
+			int idProposal = 0;
 			
-			report.setStage(stage);
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM attendancegroup WHERE idgroup=" + String.valueOf(idGroup));
+			
+			if(rs.next()) {
+				report.setStage(rs.getInt("stage"));
+				idProposal = rs.getInt("idProposal");
+				report.setIdSupervisor(rs.getInt("idSupervisor"));
+			}
 			
 			Thesis thesis = new ThesisDAO().findByProposal(idProposal);
 			
 			if(thesis != null) {
 				report.setTitle(thesis.getTitle());
+				report.setIdStudent(thesis.getStudent().getIdUser());
 			} else {
 				Project project = new ProjectDAO().findByProposal(idProposal);
 				
 				if(project != null) {
 					report.setTitle(project.getTitle());
+					report.setIdStudent(project.getStudent().getIdUser());
 				} else {
 					Proposal proposal = new ProposalDAO().findById(idProposal);
 					
 					if(proposal != null) {
 						report.setTitle(proposal.getTitle());
+						report.setIdStudent(proposal.getStudent().getIdUser());
 					} else {
 						report.setTitle("");
+						report.setIdStudent(0);
+						report.setStudent("");
 					}
 				}
 			}
 			
-			report.setStudent(new UserDAO().findById(idStudent).getName());
-			report.setSupervisor(new UserDAO().findById(idSupervisor).getName());
+			report.setIdGroup(idGroup);
+			report.setStudent(new UserDAO().findById(report.getIdStudent()).getName());
+			report.setSupervisor(new UserDAO().findById(report.getIdSupervisor()).getName());
 			
-			conn = ConnectionDAO.getInstance().getConnection();
+			rs.close();
+			stmt.close();
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT attendance.*, student.name AS studentName, supervisor.name AS supervisorName, " +
 					"COALESCE(thesis.title, project.title, proposal.title) AS proposalTitle " +
@@ -264,7 +347,7 @@ public class AttendanceDAO {
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=attendance.idSupervisor " +
 					"LEFT JOIN project ON project.idproposal=proposal.idproposal " +
 					"LEFT JOIN thesis ON thesis.idproject=project.idproject " +
-					"WHERE attendance.idStudent = " + String.valueOf(idStudent) + " AND attendance.idProposal = " + String.valueOf(idProposal) + " AND attendance.idSupervisor = " + String.valueOf(idSupervisor) + " AND attendance.stage = " + String.valueOf(stage) + 
+					"WHERE attendance.idgroup = " + String.valueOf(idGroup) +  
 					" ORDER BY attendance.date, attendance.startTime");
 			
 			while(rs.next()){
@@ -318,7 +401,15 @@ public class AttendanceDAO {
 							report.setSupervisor(s.getName());
 							report.setStage(i);
 							
-							AttendanceReport rep = this.getReport(rs.getInt("idstudent"), rs.getInt("idproposal"), s.getIdUser(), i);
+							AttendanceReport rep = null;
+							int idGroup = new AttendanceDAO().findIdGroup(rs.getInt("idproposal"), i, s.getIdUser());
+							if((idGroup != 0) && Document.hasSignature(DocumentType.ATTENDANCE, idGroup)) {
+								rep = this.getReport(idGroup);
+							} else {
+								idGroup = new AttendanceDAO().createGroup(rs.getInt("idstudent"), rs.getInt("idproposal"), s.getIdUser(), i);
+								
+								rep = this.getReport(idGroup);
+							}
 							
 							for(Attendance attendance : rep.getAttendances()){
 								if((attendance.getDate().after(sem.getStartDate()) || attendance.getDate().equals(sem.getStartDate())) && (attendance.getDate().before(sem.getEndDate()) || attendance.getDate().equals(sem.getEndDate()))){
@@ -333,6 +424,58 @@ public class AttendanceDAO {
 			}
 			
 			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public int findIdGroup(int idAttendance) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT idgroup FROM attendance WHERE idAttendance=" + String.valueOf(idAttendance));
+			
+			if(rs.next()) {
+				return rs.getInt("idgroup");
+			} else {
+				return 0;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public int findIdGroup(int idProposal, int stage, int idSupervisor) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT idgroup FROM attendancegroup WHERE idProposal=" + String.valueOf(idProposal) + " AND idSupervisor=" + String.valueOf(idSupervisor) + " AND stage=" + String.valueOf(stage));
+			
+			if(rs.next()) {
+				return rs.getInt("idgroup");
+			} else {
+				return 0;
+			}
 		}finally{
 			if((rs != null) && !rs.isClosed())
 				rs.close();

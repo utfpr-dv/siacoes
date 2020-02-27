@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.dao.ProjectDAO;
-import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.Deadline;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Project;
@@ -299,6 +298,7 @@ public class ProjectBO {
 		List<byte[]> ret = new ArrayList<byte[]>();
 		Project p = this.findCurrentProject(idUser, idDepartment, semester, year);
 		int idProposal = 0, idSupervisor = 0;
+		String title = "";
 		
 		if(p == null){
 			p = this.findLastProject(idUser, idDepartment, semester, year);
@@ -315,6 +315,7 @@ public class ProjectBO {
 				} else {
 					idProposal = proposal.getIdProposal();
 					idSupervisor = new SupervisorChangeBO().findCurrentSupervisor(idProposal).getIdUser();
+					title = proposal.getTitle();
 				}
 			}
 		}
@@ -322,20 +323,19 @@ public class ProjectBO {
 		if(p != null) {
 			idProposal = p.getProposal().getIdProposal();
 			idSupervisor = p.getSupervisor().getIdUser();
+			title = p.getTitle();
 		}
 		
-		List<AttendanceReport> list = new AttendanceBO().getReportList(idUser, idProposal, idSupervisor, 1);
-		
-		ret.add(new ReportUtils().createPdfStream(list, "Attendances", idDepartment).toByteArray());
+		ret.add(new AttendanceBO().getReport(idUser, idProposal, idSupervisor, 1));
 		
 		if(new SigetConfigBO().findByDepartment(idDepartment).isSupervisorJuryAgreement()) {
 			if(p == null) {
 				p = new Project();
-				p.setTitle(list.get(0).getTitle());
+				p.setTitle(title);
 				p.getStudent().setIdUser(idUser);
-				p.getStudent().setName(list.get(0).getStudent());
+				p.getStudent().setName(new UserBO().findById(idUser).getName());
 				p.getSupervisor().setIdUser(idSupervisor);
-				p.getSupervisor().setName(list.get(0).getSupervisor());
+				p.getSupervisor().setName(new UserBO().findById(idSupervisor).getName());
 			}
 			
 			List<SupervisorFeedbackReport> list2 = new ArrayList<SupervisorFeedbackReport>();

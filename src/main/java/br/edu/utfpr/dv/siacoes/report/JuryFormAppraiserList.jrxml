@@ -79,7 +79,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{description} + ":"]]></textFieldExpression>
 			</textField>
-			<image hAlign="Center" vAlign="Middle">
+			<image hAlign="Center" vAlign="Middle" onErrorType="Blank">
 				<reportElement x="372" y="1" width="105" height="18" uuid="617805fb-8c52-44ab-ac52-ae1fea39f282">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>

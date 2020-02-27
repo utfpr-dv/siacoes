@@ -15,6 +15,7 @@ import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.Semester;
@@ -669,7 +670,10 @@ public class ProposalDAO {
 				
 				Statement st = conn.createStatement();
 				st.execute("DELETE FROM proposalappraiser WHERE idProposal=" + String.valueOf(proposal.getIdProposal()) + 
-						(!ids.isEmpty() ? " AND idProposalAppraiser NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")" : ""));
+						(!ids.isEmpty() ? " AND idProposalAppraiser NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")" : "") +
+						" AND idProposalAppraiser NOT IN(SELECT signdocument.idRegister FROM signdocument " +
+							"INNER JOIN signature ON signature.iddocument=signdocument.iddocument " +
+							"WHERE signature.signature IS NOT NULL AND signature.revoked=0 AND signdocument.type=" + String.valueOf(DocumentType.APPRAISERFEEDBACK.getValue()) + ")");
 				st.close();
 			}
 			

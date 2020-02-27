@@ -2,7 +2,6 @@ package br.edu.utfpr.dv.siacoes.sign;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
@@ -39,7 +38,7 @@ import net.sf.jasperreports.engine.JasperReport;
 public class Document {
 	
 	public enum DocumentType{
-		NONE(0), SUPERVISORAGREEMENT(1), APPRAISERFEEDBACK(2), JURYREQUEST(3), SUPERVISORCHANGE(4);
+		NONE(0), SUPERVISORAGREEMENT(1), APPRAISERFEEDBACK(2), JURYREQUEST(3), SUPERVISORCHANGE(4), ATTENDANCE(5);
 		
 		private final int value; 
 		DocumentType(int value){ 
@@ -72,6 +71,8 @@ public class Document {
 					return "Formulário de Agendamento de Banca de TCC";
 				case SUPERVISORCHANGE:
 					return "Requisição para Troca de Orientador";
+				case ATTENDANCE:
+					return "Registro de Reuniões de TCC";
 				default:
 					return "Nenhum";
 			}
@@ -308,6 +309,8 @@ public class Document {
 				return new ReportUtils().getJasperData("JuryFormRequest");
 			case SUPERVISORCHANGE:
 				return new ReportUtils().getJasperData("SupervisorChangeStatement");
+			case ATTENDANCE:
+				return new ReportUtils().getJasperData("Attendances");
 			default:
 				return null;
 		}
@@ -669,6 +672,31 @@ public class Document {
 					"FROM signdocument INNER JOIN signature ON signature.iddocument=signdocument.iddocument " +
 					"WHERE signature.signature IS NOT NULL AND signature.revoked=0 AND signdocument.idregister=" + 
 					String.valueOf(idRegister) + " AND signdocument.type=" + String.valueOf(type.getValue()));
+			
+			return rs.next();
+		} finally {
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public static boolean hasSignature(DocumentType type, int idRegister, int idUser) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT DISTINCT signdocument.iddocument " +
+					"FROM signdocument INNER JOIN signature ON signature.iddocument=signdocument.iddocument " +
+					"WHERE signature.signature IS NOT NULL AND signature.revoked=0 AND signdocument.idregister=" + 
+					String.valueOf(idRegister) + " AND signdocument.type=" + String.valueOf(type.getValue()) + " AND signature.iduser=" + String.valueOf(idUser));
 			
 			return rs.next();
 		} finally {

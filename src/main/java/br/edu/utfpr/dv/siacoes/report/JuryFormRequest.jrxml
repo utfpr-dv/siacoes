@@ -402,14 +402,14 @@
 
 - Caso ocorra qualquer alteração de data, horário ou nos membros da banca em até 48 horas antes da execução da mesma, este documento deverá ser atualizado e entregue novamente ao Professor Responsável pelo TCC.]]></text>
 			</staticText>
-			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" onErrorType="Blank">
 				<reportElement positionType="Float" x="0" y="358" width="480" height="30" uuid="d6786200-690d-4946-bd54-1c1a58a97748">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
 				</reportElement>
 				<imageExpression><![CDATA[$F{supervisorSignature}]]></imageExpression>
 			</image>
-			<image hAlign="Center" vAlign="Middle">
+			<image hAlign="Center" vAlign="Middle" onErrorType="Blank">
 				<reportElement x="372" y="41" width="105" height="18" uuid="c8739907-1942-4367-81e7-86b176899236">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -433,7 +433,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{legalText}]]></textFieldExpression>
 			</textField>
-			<image hAlign="Center" vAlign="Middle">
+			<image hAlign="Center" vAlign="Middle" isUsingCache="true" onErrorType="Blank">
 				<reportElement x="0" y="0" width="66" height="66" uuid="db8f783c-95b0-4dcd-abd5-e5c0be452837">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>

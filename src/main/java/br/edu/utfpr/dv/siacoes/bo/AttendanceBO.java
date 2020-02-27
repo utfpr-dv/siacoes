@@ -12,6 +12,9 @@ import br.edu.utfpr.dv.siacoes.dao.AttendanceDAO;
 import br.edu.utfpr.dv.siacoes.model.Attendance;
 import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.AttendanceFrequency;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
@@ -59,7 +62,19 @@ public class AttendanceBO {
 				throw new Exception("Informe as observações/orientações.");
 			}
 			if((attendance.getProposal() == null) || (attendance.getProposal().getIdProposal() == 0)) {
-				throw new Exception("Informe o Projeto de TCC 1");
+				throw new Exception("Informe o Projeto de TCC 1.");
+			}
+			if((attendance.getSupervisor() == null) || (attendance.getSupervisor().getIdUser() == 0)) {
+				throw new Exception("Informe o orientador.");
+			}
+			if(attendance.getIdAttendance() != 0) {
+				if(this.hasSignature(attendance.getIdAttendance())) {
+					throw new Exception("O registro não pode ser alterado pois já foi assinado.");
+				}
+			} else {
+				if(this.hasSignature(attendance.getProposal().getIdProposal(), attendance.getStage(), attendance.getSupervisor().getIdUser())) {
+					throw new Exception("Não é possível incluir uma nova reunião de TCC " + String.valueOf(attendance.getStage()) + " pois o documento de reuniões já foi assinado.");
+				}
 			}
 			
 			AttendanceDAO dao = new AttendanceDAO();
@@ -84,30 +99,54 @@ public class AttendanceBO {
 		}
 	}
 	
-	public List<AttendanceReport> getReportList(int idStudent, int idProposal, int idSupervisor, int stage) throws Exception{
-		try {
-			AttendanceDAO dao = new AttendanceDAO();
-			List<AttendanceReport> list = new ArrayList<AttendanceReport>();
+	public boolean hasSignature(int idAttendance) throws SQLException {
+		int idGroup = new AttendanceDAO().findIdGroup(idAttendance);
+		
+		return Document.hasSignature(DocumentType.ATTENDANCE, idGroup);
+	}
+	
+	public boolean hasSignature(int idAttendance, int idUser) throws SQLException {
+		int idGroup = new AttendanceDAO().findIdGroup(idAttendance);
+		
+		return Document.hasSignature(DocumentType.ATTENDANCE, idGroup, idUser);
+	}
+	
+	public boolean hasSignature(int idProposal, int stage, int idSupervisor) throws SQLException {
+		int idGroup = new AttendanceDAO().findIdGroup(idProposal, stage, idSupervisor);
+		
+		return Document.hasSignature(DocumentType.ATTENDANCE, idGroup);
+	}
+	
+	public boolean hasSignature(int idProposal, int stage, int idSupervisor, int idUser) throws SQLException {
+		int idGroup = new AttendanceDAO().findIdGroup(idProposal, stage, idSupervisor);
+		
+		return Document.hasSignature(DocumentType.ATTENDANCE, idGroup, idUser);
+	}
+	
+	public br.edu.utfpr.dv.siacoes.report.dataset.v1.Attendance buildDataset(int idStudent, int idProposal, int idSupervisor, int stage) throws SQLException {
+		int idGroup = new AttendanceDAO().findIdGroup(idProposal, stage, idSupervisor);
+		
+		if((idGroup != 0) && Document.hasSignature(DocumentType.ATTENDANCE, idGroup)) {
+			return SignDatasetBuilder.build(new AttendanceDAO().getReport(idGroup));
+		} else {
+			idGroup = new AttendanceDAO().createGroup(idStudent, idProposal, idSupervisor, stage);
 			
-			list.add(dao.getReport(idStudent, idProposal, idSupervisor, stage));
-			
-			return list;
-		} catch (SQLException e) {
-			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-			
-			throw new Exception(e.getMessage());
+			return SignDatasetBuilder.build(new AttendanceDAO().getReport(idGroup));
 		}
 	}
 	
-	public byte[] getReport(int idStudent, int idProposal, int idSupervisor, int stage) throws Exception{
-		try {
-			ByteArrayOutputStream report = new ReportUtils().createPdfStream(getReportList(idStudent, idProposal, idSupervisor, stage), "Attendances", new ProposalBO().findIdDepartment(idProposal));
+	public byte[] getReport(int idStudent, int idProposal, int idSupervisor, int stage) throws Exception {
+		if(this.hasSignature(idProposal, stage, idSupervisor)) {
+			int idGroup = new AttendanceDAO().findIdGroup(idProposal, stage, idSupervisor);
 			
-			return report.toByteArray();
-		} catch (SQLException e) {
-			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			return Document.getSignedDocument(DocumentType.ATTENDANCE, idGroup);
+		} else {
+			br.edu.utfpr.dv.siacoes.report.dataset.v1.Attendance dataset = this.buildDataset(idStudent, idProposal, idSupervisor, stage);
 			
-			throw new Exception(e.getMessage());
+			List<br.edu.utfpr.dv.siacoes.report.dataset.v1.Attendance> list = new ArrayList<br.edu.utfpr.dv.siacoes.report.dataset.v1.Attendance>();
+			list.add(dataset);
+			
+			return new ReportUtils().createPdfStream(list, "Attendances", new ProposalBO().findIdDepartment(idProposal)).toByteArray();
 		}
 	}
 	
@@ -135,6 +174,10 @@ public class AttendanceBO {
 	
 	public boolean delete(int idUser, int id) throws Exception{
 		try {
+			if(this.hasSignature(id)) {
+				throw new Exception("O registro não pode ser excluído pois já foi assinado.");
+			}
+			
 			AttendanceDAO dao = new AttendanceDAO();
 			
 			return dao.delete(idUser, id);

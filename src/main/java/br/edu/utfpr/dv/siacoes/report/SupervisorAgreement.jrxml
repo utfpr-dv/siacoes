@@ -281,7 +281,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[IF($F{feedback} == br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback.DISAPPROVED, " ( X )", " (    )") + " DESFAVORÁVEL"]]></textFieldExpression>
 			</textField>
-			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" onErrorType="Blank">
 				<reportElement x="0" y="390" width="480" height="30" uuid="6bf9fcb2-d48e-43a9-bbff-70762055bcd9">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
@@ -292,7 +292,7 @@
 	</detail>
 	<pageFooter>
 		<band height="67">
-			<image hAlign="Center" vAlign="Middle">
+			<image hAlign="Center" vAlign="Middle" isUsingCache="true" onErrorType="Blank">
 				<reportElement x="0" y="0" width="66" height="66" uuid="13652573-60eb-41f7-b0f3-7fc23d6444d0">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>

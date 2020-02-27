@@ -292,6 +292,9 @@ public class ProposalBO {
 			if(proposal.getSupervisorFeedback() == ProposalFeedback.NONE) {
 				throw new Exception("Informe o parecer sobre a orientação de TCC.");
 			}
+			if(Document.hasSignature(DocumentType.SUPERVISORAGREEMENT, proposal.getIdProposal())) {
+				throw new Exception("Não é possível efetuar alterações no parecer pois ele já foi assinado.");
+			}
 			
 			ProposalDAO dao = new ProposalDAO();
 			

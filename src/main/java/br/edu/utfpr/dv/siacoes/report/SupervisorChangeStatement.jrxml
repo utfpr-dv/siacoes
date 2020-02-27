@@ -138,7 +138,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[DATEFORMAT($F{date}, "dd/MM/yyyy")]]></textFieldExpression>
 			</textField>
-			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" onErrorType="Blank">
 				<reportElement x="0" y="511" width="480" height="30" uuid="d2c58253-3bd3-4860-b4b6-6247cd898149">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
@@ -149,7 +149,7 @@
 	</detail>
 	<pageFooter>
 		<band height="66">
-			<image hAlign="Center" vAlign="Middle">
+			<image hAlign="Center" vAlign="Middle" isUsingCache="true" onErrorType="Blank">
 				<reportElement x="0" y="0" width="66" height="66" uuid="cf075c93-a6d6-4686-9a72-54050ac13cac">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -160,7 +160,6 @@
 			</image>
 			<textField>
 				<reportElement x="70" y="0" width="410" height="66" uuid="ed57af0d-2796-431c-b801-71c381d2d72f">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>

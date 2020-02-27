@@ -39,6 +39,10 @@ public class SupervisorChangeBO {
 			}
 		}
 		
+		if((change.getIdSupervisorChange() != 0) && Document.hasSignature(DocumentType.SUPERVISORCHANGE, change.getIdSupervisorChange())) {
+			throw new Exception("Não é possível alterar a solicitação pois ela já foi assinada.");
+		}
+		
 		try {
 			SupervisorChangeDAO dao = new SupervisorChangeDAO();
 			
