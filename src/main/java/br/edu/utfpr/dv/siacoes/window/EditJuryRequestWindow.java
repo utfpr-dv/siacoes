@@ -354,8 +354,6 @@ public class EditJuryRequestWindow extends EditWindow {
 			
 			bo.save(Session.getIdUserLog(), this.jury);
 			
-			this.showReport(bo.getJuryRequestForm(this.jury.getIdJuryRequest()));
-			
 			this.showSuccessNotification("Salvar Agendamento de Banca", "Agendamento de banca salvo com sucesso.");
 			
 			this.parentViewRefreshGrid();
@@ -363,6 +361,8 @@ public class EditJuryRequestWindow extends EditWindow {
 			if(this.config.isUseDigitalSignature()) {
 				this.sign();
 			} else {
+				this.showReport(bo.getJuryRequestForm(this.jury.getIdJuryRequest()));
+				
 				this.close();	
 			}
 		}catch(Exception e){

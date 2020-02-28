@@ -59,7 +59,7 @@ public class SignatureWindow extends BasicWindow {
     	this.buttonSign.setWidth("150px");
 		this.buttonSign.setIcon(FontAwesome.PENCIL);
 		this.buttonSign.addStyleName(ValoTheme.BUTTON_FRIENDLY);
-		this.buttonSign.setClickShortcut(KeyCode.ENTER);
+		//this.buttonSign.setClickShortcut(KeyCode.ENTER);
 		this.buttonSign.setDisableOnClick(true);
 		
 		VerticalLayout layout = new VerticalLayout(this.textReport, this.textUser, this.textPassword, this.buttonSign);

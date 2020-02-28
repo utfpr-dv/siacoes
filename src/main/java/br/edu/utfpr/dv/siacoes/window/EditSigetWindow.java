@@ -55,7 +55,7 @@ public class EditSigetWindow extends EditWindow {
 		this.config = config;
 		
 		this.tab = new TabSheet();
-		this.tab.setHeight("300px");
+		this.tab.setHeight("315px");
 		this.tab.setWidth("900px");
 		
 		this.textMinimumScore = new TextField("Nota mínima para aprovação");

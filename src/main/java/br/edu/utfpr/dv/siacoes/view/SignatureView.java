@@ -29,9 +29,7 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.sign.Document;
-import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
 import br.edu.utfpr.dv.siacoes.sign.Signature;
-import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.window.SignatureWindow;
 
 public class SignatureView extends BasicView {
@@ -116,6 +114,8 @@ public class SignatureView extends BasicView {
 	
 	private void loadGridPending() {
 		try {
+			this.layoutFramePending.removeAllComponents();
+			
 			this.listPending = Document.listPending(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			
 			this.gridPending = new Grid();
@@ -148,6 +148,8 @@ public class SignatureView extends BasicView {
 	
 	private void loadGridSigned() {
 		try {
+			this.layoutFrameSigned.removeAllComponents();
+			
 			this.listSigned = Document.listSigned(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			
 			this.gridSigned = new Grid();
@@ -172,7 +174,7 @@ public class SignatureView extends BasicView {
 	    	for(Document doc : this.listSigned) {
 	    		for(Signature sign : doc.getSignatures()) {
 	    			if(sign.getUser().getIdUser() == Session.getUser().getIdUser()) {
-	    				this.gridSigned.addRow(doc.getType().toString(), doc.getGeneratedDate(), sign.getSignatureDate(), (sign.isRevoked() ? "Revogada" : "Autenticada"));
+	    				this.gridSigned.addRow(doc.getType().toString(), doc.getGeneratedDate(), sign.getSignatureDate(), sign.getStatus().toString());
 	    			}
 	    		}
 	    	}

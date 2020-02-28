@@ -314,7 +314,9 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="88" width="480" height="26" uuid="8b0721bb-44da-4103-8bc1-0413b509f427"/>
+				<reportElement positionType="Float" x="0" y="87" width="480" height="26" uuid="8b0721bb-44da-4103-8bc1-0413b509f427">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{appraisers})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["br/edu/utfpr/dv/siacoes/report/JuryFormAppraiserList.jasper"]]></subreportExpression>
 			</subreport>
