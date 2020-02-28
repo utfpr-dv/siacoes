@@ -82,6 +82,7 @@ CREATE  TABLE `sigacconfig` (
   `iddepartment` INT NOT NULL ,
   `minimumScore` DOUBLE NOT NULL ,
   `maxfilesize` INT NOT NULL ,
+  `usedigitalsignature` TINYINT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigacconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -98,6 +99,7 @@ CREATE  TABLE `sigesconfig` (
   `jurytime` INT NOT NULL ,
   `fillonlytotalhours` TINYINT NOT NULL ,
   `juryformat` SMALLINT NOT NULL ,
+  `usedigitalsignature` TINYINT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigesconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -125,6 +127,8 @@ CREATE  TABLE `sigetconfig` (
   `jurytimestage1` INT NOT NULL ,
   `jurytimestage2` INT NOT NULL ,
   `supervisorAssignsGrades` TINYINT NOT NULL ,
+  `appraiserfillsgrades` TINYINT NOT NULL ,
+  `usedigitalsignature` TINYINT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigetconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -539,11 +543,24 @@ CREATE TABLE `proposalappraiser` (
   CONSTRAINT `fk_proposalappraiser_proposal` FOREIGN KEY (`idProposal`) REFERENCES `proposal` (`idproposal`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
+CREATE TABLE `attendancegroup` (
+    `idgroup` int(11) NOT NULL AUTO_INCREMENT,
+    `idproposal` int(11) NOT NULL,
+    `idsupervisor` int(11) NOT NULL,
+    `stage` tinyint(4) NOT NULL,
+    PRIMARY KEY (`idgroup`),
+    KEY `fk_attendancegroup_proposal_idx` (`idproposal`),
+    KEY `fk_attendancegroup_supervisor_idx` (`idsupervisor`),
+    CONSTRAINT `fk_attendancegroup_proposal` FOREIGN KEY (`idproposal`) REFERENCES `proposal` (`idproposal`) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT `fk_attendancegroup_supervisor` FOREIGN KEY (`idsupervisor`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
 CREATE TABLE `attendance` (
   `idattendance` int(11) NOT NULL AUTO_INCREMENT,
   `idproposal` int(11) NOT NULL,
   `idstudent` int(11) NOT NULL,
   `idsupervisor` int(11) NOT NULL,
+  `idgroup` integer DEFAULT NULL,
   `date` date NOT NULL,
   `startTime` time NOT NULL,
   `endTime` time NOT NULL,
@@ -554,9 +571,11 @@ CREATE TABLE `attendance` (
   KEY `fk_attendance_proposal_idx` (`idproposal`),
   KEY `fk_attendance_student_idx` (`idstudent`),
   KEY `fk_attendance_supervisor_idx` (`idsupervisor`),
+  KEY `fk_attendance_group_idx` (`idgroup`),
   CONSTRAINT `fk_attendance_proposal` FOREIGN KEY (`idproposal`) REFERENCES `proposal` (`idproposal`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_attendance_student` FOREIGN KEY (`idstudent`) REFERENCES `user` (`iduser`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_attendance_supervisor` FOREIGN KEY (`idsupervisor`) REFERENCES `user` (`iduser`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_attendance_supervisor` FOREIGN KEY (`idsupervisor`) REFERENCES `user` (`iduser`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_attendance_group` FOREIGN KEY (`idgroup`) REFERENCES `attendancegroup` (`idgroup`) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
 CREATE TABLE `supervisorchange` (
@@ -808,6 +827,39 @@ CREATE TABLE `eventlog` (
     PRIMARY KEY (`ideventlog`),
     INDEX `fk_eventlog_user_idx` (`iduser` ASC),
     CONSTRAINT `fk_eventlog_user` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE `signdocument` (
+    `iddocument` integer NOT NULL AUTO_INCREMENT,
+    `guid` character varying(255) NOT NULL UNIQUE,
+    `type` smallint NOT NULL,
+    `version` smallint NOT NULL,
+    `idregister` integer NOT NULL,
+    `report` mediumblob NOT NULL,
+    `dataset` mediumblob NOT NULL,
+    `generateddate` DATETIME NOT NULL,
+    `iddepartment` integer NOT NULL,
+    PRIMARY KEY (`iddocument`),
+    INDEX `fk_signdocument_department_idx` (`iddepartment` ASC),
+    CONSTRAINT `fk_signdocument_department` FOREIGN KEY (`iddepartment`) REFERENCES `department` (`iddepartment`) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE `signature` (
+    `idsignature` integer NOT NULL AUTO_INCREMENT,
+    `iddocument` integer NOT NULL,
+    `iduser` integer NOT NULL,
+    `signature` mediumblob,
+    `signaturedate` DATETIME,
+    `revoked` smallint NOT NULL,
+    `revokeddate` DATETIME,
+    `idrevokeduser` integer,
+    PRIMARY KEY (`idsignature`),
+    INDEX `fk_signature_signdocument_idx` (`iddocument` ASC),
+    INDEX `fk_signature_user_idx` (`iduser` ASC),
+    INDEX `fk_signature_revokeduser_idx` (`idrevokeduser` ASC),
+    CONSTRAINT `fk_signature_signdocument` FOREIGN KEY (`iddocument`) REFERENCES `signdocument` (`iddocument`) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT `fk_signature_user` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT `fk_signature_revokeduser` FOREIGN KEY (`idrevokeduser`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(1, 2, '', '', '{student};{group};{activity};{semester};{year};{comments}');

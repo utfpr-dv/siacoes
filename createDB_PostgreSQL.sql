@@ -82,6 +82,7 @@ CREATE  TABLE sigacconfig (
   iddepartment INT NOT NULL ,
   minimumScore REAL NOT NULL ,
   maxfilesize INT NOT NULL ,
+  usedigitalsignature smallint NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigacconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -98,6 +99,7 @@ CREATE  TABLE sigesconfig (
   jurytime INT NOT NULL ,
   fillonlytotalhours SMALLINT NOT NULL ,
   juryformat SMALLINT NOT NULL ,
+  usedigitalsignature smallint NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigesconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -125,6 +127,8 @@ CREATE  TABLE sigetconfig (
   jurytimestage1 INT NOT NULL ,
   jurytimestage2 INT NOT NULL ,
   supervisorassignsgrades SMALLINT NOT NULL ,
+  appraiserfillsgrades smallint NOT NULL ,
+  usedigitalsignature smallint NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigetconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -538,11 +542,24 @@ CREATE TABLE proposalappraiser (
 CREATE INDEX fk_proposalappraiser_proposal_idx ON proposalappraiser (idProposal);
 CREATE INDEX fk_proposalappraiser_appraiser_idx ON proposalappraiser (idAppraiser);
 
+CREATE TABLE attendancegroup (
+    idgroup serial NOT NULL,
+    idproposal integer NOT NULL,
+    idsupervisor integer NOT NULL,
+    stage smallint NOT NULL,
+    PRIMARY KEY (idgroup),
+    CONSTRAINT fk_attendancegroup_proposal FOREIGN KEY (idproposal) REFERENCES proposal (idproposal) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT fk_attendancegroup_supervisor FOREIGN KEY (idsupervisor) REFERENCES "user" (iduser) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+CREATE INDEX fk_attendancegroup_proposal_idx ON attendancegroup (idproposal);
+CREATE INDEX fk_attendancegroup_supervisor_idx ON attendancegroup (idsupervisor);
+
 CREATE TABLE attendance (
   idattendance SERIAL NOT NULL,
   idproposal INT NOT NULL,
   idstudent INT NOT NULL,
   idsupervisor INT NOT NULL,
+  idgroup INT,
   date date NOT NULL,
   startTime time NOT NULL,
   endTime time NOT NULL,
@@ -557,6 +574,7 @@ CREATE TABLE attendance (
 CREATE INDEX fk_attendance_proposal_idx ON attendance (idProposal);
 CREATE INDEX fk_attendance_student_idx ON attendance (idstudent);
 CREATE INDEX fk_attendance_supervisor_idx ON attendance (idsupervisor);
+CREATE INDEX fk_attendance_group_idx ON attendance (idgroup);
 
 CREATE TABLE supervisorchange (
   idsupervisorchange SERIAL NOT NULL,
@@ -808,6 +826,40 @@ CREATE TABLE eventlog (
     CONSTRAINT fk_eventlog_user FOREIGN KEY (iduser) REFERENCES "user" (iduser) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 CREATE INDEX fk_eventlog_user_idx ON eventlog (iduser);
+
+CREATE TABLE signdocument (
+    iddocument serial NOT NULL,
+    guid character varying(255) NOT NULL,
+    type smallint NOT NULL,
+    version smallint NOT NULL,
+    idregister integer NOT NULL,
+    report bytea NOT NULL,
+    dataset bytea NOT NULL,
+    generateddate timestamp NOT NULL,
+    iddepartment integer NOT NULL,
+    PRIMARY KEY (iddocument),
+    CONSTRAINT fk_signdocument_department FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+CREATE INDEX fk_signdocument_department_idx ON signdocument (iddepartment);
+ALTER TABLE signdocument ADD UNIQUE (guid);
+
+CREATE TABLE signature (
+    idsignature serial NOT NULL,
+    iddocument integer NOT NULL,
+    iduser integer NOT NULL,
+    signature bytea,
+    signaturedate timestamp,
+    revoked smallint NOT NULL,
+    revokeddate timestamp,
+    idrevokeduser integer,
+    PRIMARY KEY (idsignature),
+    CONSTRAINT fk_signature_signdocument FOREIGN KEY (iddocument) REFERENCES signdocument (iddocument) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT fk_signature_user FOREIGN KEY (iduser) REFERENCES "user" (iduser) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT fk_signature_revokeduser FOREIGN KEY (idrevokeduser) REFERENCES "user" (iduser) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+CREATE INDEX fk_signature_signdocument_idx ON signature (iddocument);
+CREATE INDEX fk_signature_user_idx ON signature (iduser);
+CREATE INDEX fk_signature_revokeduser_idx ON signature (idrevokeduser);
 
 CREATE OR REPLACE FUNCTION year(timestamp) RETURNS integer AS $$
 DECLARE

@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.JuryAppraiserScoreDAO;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserScore;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 
 public class JuryAppraiserScoreBO {
 	
@@ -56,6 +58,9 @@ public class JuryAppraiserScoreBO {
 		}
 		if((score.getJuryAppraiser() == null) || (score.getJuryAppraiser().getIdJuryAppraiser() == 0)){
 			throw new Exception("Informe o membro da banca.");
+		}
+		if(Document.hasSignature(DocumentType.JURY, new JuryAppraiserBO().findById(score.getJuryAppraiser().getIdJuryAppraiser()).getJury().getIdJury())) {
+			throw new Exception("As notas não podem ser alteradas pois a ficha de avaliação já foi assinada.");
 		}
 		
 		BigDecimal bd = new BigDecimal(score.getScore());

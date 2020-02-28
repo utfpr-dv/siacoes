@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 import br.edu.utfpr.dv.siacoes.dao.JuryAppraiserDAO;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.StringUtils;
 
 public class JuryAppraiserBO {
@@ -73,6 +75,9 @@ public class JuryAppraiserBO {
 			if((config.getMaxFileSize() > 0) && (appraiser.getAdditionalFile() != null) && ((appraiser.getIdJuryAppraiser() == 0) || !Arrays.equals(appraiser.getAdditionalFile(), dao.getAdditionalFile(appraiser.getIdJuryAppraiser()))) && (appraiser.getAdditionalFile().length > config.getMaxFileSize())) {
 				throw new Exception("O arquivo complementar deve ter um tamanho máximo de " + StringUtils.getFormattedBytes(config.getMaxFileSize()) + ".");
 			}
+			if(Document.hasSignature(DocumentType.JURY, appraiser.getJury().getIdJury())) {
+				throw new Exception("A banca não pode ser alterada pois a ficha de avaliação já foi assinada.");
+			}
 			
 			return dao.save(idUser, appraiser);
 		} catch (SQLException e) {
@@ -121,6 +126,9 @@ public class JuryAppraiserBO {
 		}
 		if(new JuryAppraiserScoreBO().hasScore(member.getJury().getIdJury(), member.getAppraiser().getIdUser())) {
 			throw new Exception("A substituição não pode ser efetuada pois o membro já tem notas lançadas.");
+		}
+		if(Document.hasSignature(DocumentType.JURY, member.getJury().getIdJury())) {
+			throw new Exception("A banca não pode ser alterada pois a ficha de avaliação já foi assinada.");
 		}
 		
 		member.setSubstitute(true);

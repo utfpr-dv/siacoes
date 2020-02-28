@@ -330,6 +330,9 @@ public class JuryBO {
 			if(jury.getLocal().isEmpty()){
 				throw new Exception("Informe o local da banca.");
 			}
+			if(Document.hasSignature(DocumentType.JURY, jury.getIdJury())) {
+				throw new Exception("A banca não pode ser alterada pois a ficha de avaliação já foi assinada.");
+			}
 			if(jury.getIdJury() == 0) {
 				jury.setStartTime(jury.getDate());
 				
