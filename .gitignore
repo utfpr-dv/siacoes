@@ -28,3 +28,5 @@ https2.txt
 https renew\.txt
 
 src/main/java/secret\.key
+
+src/main/java/br/edu/utfpr/dv/siacoes/sign/SignatureKey\.java
