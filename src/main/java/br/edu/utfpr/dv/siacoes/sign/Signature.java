@@ -6,6 +6,44 @@ import br.edu.utfpr.dv.siacoes.model.User;
 
 public class Signature {
 	
+	public enum SignatureStatus{
+		NONE(0), VALID(1), INVALID(2), REVOKED(3);
+		
+		private final int value; 
+		SignatureStatus(int value){ 
+			this.value = value; 
+		}
+		
+		public int getValue(){ 
+			return value;
+		}
+		
+		public static SignatureStatus valueOf(int value){
+			for(SignatureStatus p : SignatureStatus.values()){
+				if(p.getValue() == value){
+					return p;
+				}
+			}
+			
+			return null;
+		}
+		
+		public String toString(){
+			switch(this){
+				case NONE:
+					return "Nenhum";
+				case VALID:
+					return "Autenticada";
+				case INVALID:
+					return "Inválida";
+				case REVOKED:
+					return "Revogada";
+				default:
+					return "Nenhum";
+			}
+		}
+	}
+	
 	private int idSignature;
 	private Document document;
 	private User user;
@@ -62,6 +100,23 @@ public class Signature {
 	}
 	public void setRevokedUser(User revokedUser) {
 		this.revokedUser = revokedUser;
+	}
+	public SignatureStatus getStatus() {
+		if (this.isRevoked()) {
+			return SignatureStatus.REVOKED;
+		} else if((this.getDocument() == null) || (this.getDocument().getIdDocument() == 0) || (this.getSignature() == null)) {
+			return SignatureStatus.NONE;
+		} else {
+			try {
+				if(SignatureKey.verify(this.getUser().getLogin(), this.getDocument().getDataset(), this.getSignature())) {
+					return SignatureStatus.VALID;
+				} else {
+					return SignatureStatus.INVALID;
+				}
+			} catch(Exception e) {
+				return SignatureStatus.INVALID;
+			}
+		}
 	}
 	
 	public Signature() {

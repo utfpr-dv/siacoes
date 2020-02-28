@@ -740,7 +740,7 @@ public class Document {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 			
-			rs2 = stmt.executeQuery("SELECT signature.*, \"user\".name AS username " +
+			rs2 = stmt.executeQuery("SELECT signature.*, \"user\".name AS username, \"user\".login " +
 					"FROM signature INNER JOIN \"user\" ON \"user\".iduser=signature.iduser " +
 					"WHERE iddocument=" + String.valueOf(doc.getIdDocument()) +
 					" ORDER BY \"user\".name");
@@ -752,6 +752,7 @@ public class Document {
 				sign.setIdSignature(rs2.getInt("idsignature"));
 				sign.getUser().setIdUser(rs2.getInt("iduser"));
 				sign.getUser().setName(rs2.getString("username"));
+				sign.getUser().setLogin(rs2.getString("login"));
 				sign.setSignature(rs2.getBytes("signature"));
 				sign.setSignatureDate(rs2.getTimestamp("signaturedate"));
 				sign.setRevoked(rs2.getInt("revoked") == 1);

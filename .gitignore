@@ -26,3 +26,5 @@ https2.txt
 *.jasper
 
 https renew\.txt
+
+src/main/java/secret\.key

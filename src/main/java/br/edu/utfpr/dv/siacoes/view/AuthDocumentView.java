@@ -124,7 +124,7 @@ public class AuthDocumentView extends CustomComponent implements View {
 				
 				for(Signature sign : doc.getSignatures()) {
 					if(sign.getSignature() != null) {
-						this.gridSignatures.addRow(sign.getUser().getName(), sign.getSignatureDate(), (sign.isRevoked() ? "Revogada" : "Autenticada"));
+						this.gridSignatures.addRow(sign.getUser().getName(), sign.getSignatureDate(), sign.getStatus().toString());
 					}
 				}
 				
