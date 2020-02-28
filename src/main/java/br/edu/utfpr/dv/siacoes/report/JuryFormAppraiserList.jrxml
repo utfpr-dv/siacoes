@@ -26,7 +26,8 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="21" splitType="Stretch">
+		<band height="20" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
 				<reportElement x="340" y="0" width="30" height="20" uuid="613e02bf-cd4d-4073-af72-f900f5bf48b2"/>
 				<box leftPadding="2">

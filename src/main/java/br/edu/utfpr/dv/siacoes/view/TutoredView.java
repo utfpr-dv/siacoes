@@ -34,6 +34,8 @@ import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.Tutored;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.window.EditJuryRequestWindow;
 import br.edu.utfpr.dv.siacoes.window.EditSupervisorAgreementWindow;
@@ -241,8 +243,10 @@ public class TutoredView extends ListView {
 
 				if(proposal.getSupervisor().getIdUser() != Session.getUser().getIdUser()) {
 					this.showWarningNotification("Indicação de Avaliadores", "Apenas o Professor Orientador pode fazer a indicação de avaliadores.");
-				} else if (this.config.isSupervisorAgreement() && (proposal.getSupervisorFeedback() != ProposalFeedback.APPROVED)) {
+				} else if(this.config.isSupervisorAgreement() && (proposal.getSupervisorFeedback() != ProposalFeedback.APPROVED)) {
 					this.showWarningNotification("Indicação de Avaliadores", "É necessário preencher o Termo de Concordância de Orientação antes de indicar os avaliadores.");
+				} else if(this.config.isUseDigitalSignature() && !Document.hasSignature(DocumentType.SUPERVISORAGREEMENT, proposal.getIdProposal(), proposal.getSupervisor().getIdUser())) {
+					this.showWarningNotification("Indicação de Avaliadores", "É necessário assinar o Termo de Condordância de Orientação antes de indicar os avaliadores.");
 				} else {
 					UI.getCurrent().addWindow(new EditSupervisorIndicationWindow(proposal, this));	
 				}

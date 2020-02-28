@@ -43,6 +43,9 @@ import br.edu.utfpr.dv.siacoes.model.EvaluationItem.EvaluationItemType;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
@@ -523,12 +526,16 @@ public class JuryBO {
 	}
 	
 	public byte[] getJuryForm(int idJury) throws Exception {
-		JuryFormReport report = this.getJuryFormReport(idJury);
-		
-		List<JuryFormReport> list = new ArrayList<JuryFormReport>();
-		list.add(report);
-		
-		return new ReportUtils().createPdfStream(list, "JuryForm", this.findIdDepartment(idJury)).toByteArray();
+		if(Document.hasSignature(DocumentType.JURY, idJury)) {
+			return Document.getSignedDocument(DocumentType.JURY, idJury);
+		} else {
+			br.edu.utfpr.dv.siacoes.report.dataset.v1.Jury dataset = SignDatasetBuilder.buildJury(this.getJuryFormReport(idJury));
+			
+			List<br.edu.utfpr.dv.siacoes.report.dataset.v1.Jury> list = new ArrayList<br.edu.utfpr.dv.siacoes.report.dataset.v1.Jury>();
+			list.add(dataset);
+			
+			return new ReportUtils().createPdfStream(list, "JuryForm", this.findIdDepartment(idJury)).toByteArray();
+		}
 	}
 	
 	public JuryFormReport getJuryFormReport(int idJury) throws Exception{
@@ -551,6 +558,7 @@ public class JuryBO {
 				Thesis thesis = bo.findById(jury.getThesis().getIdThesis());
 				
 				report.setTitle(thesis.getTitle());
+				report.setIdStudent(thesis.getStudent().getIdUser());
 				report.setStudent(thesis.getStudent().getName());
 				report.setStage(2);
 				
@@ -560,6 +568,7 @@ public class JuryBO {
 				Project project = bo.findById(jury.getProject().getIdProject());
 				
 				report.setTitle(project.getTitle());
+				report.setIdStudent(project.getStudent().getIdUser());
 				report.setStudent(project.getStudent().getName());
 				report.setStage(1);
 				
@@ -581,6 +590,7 @@ public class JuryBO {
 					JuryFormAppraiserScoreReport scoreReport = new JuryFormAppraiserScoreReport();
 					double scoreSum = 0, writingPonderosity = 0, oralPonderosity = 0, argumentationPonderosity = 0;
 					
+					appraiserReport.setIdUser(appraiser.getAppraiser().getIdUser());
 					appraiserReport.setName(appraiser.getAppraiser().getName());
 					appraiserReport.setComments(appraiser.getComments());
 					appraiserReport.setDate(report.getDate());
@@ -644,7 +654,8 @@ public class JuryBO {
 						appraiserReport.setDescription("Membro " + String.valueOf(member));
 						member = member + 1;
 					}
-						
+					
+					scoreReport.setIdUser(appraiserReport.getIdUser());
 					scoreReport.setName(appraiserReport.getName());
 					scoreReport.setDescription(appraiserReport.getDescription());
 					
@@ -675,6 +686,8 @@ public class JuryBO {
 				report.setScore(this.round(report.getScore() / report.getScores().size()));
 			}
 			
+			report.setIdSupervisor(0);
+			
 			return report;
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
@@ -698,6 +711,20 @@ public class JuryBO {
 		return new ReportUtils().createPdfStream(list, "TermOfApproval", this.findIdDepartment(idJury)).toByteArray();
 	}
 	
+	public boolean hasAllScores(int idJury) throws Exception {
+		try {
+			return new JuryDAO().hasAllScores(idJury);
+		} catch(SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public boolean isApproved(int idJury) throws Exception {
+		return new JuryDAO().isApproved(idJury);
+	}
+	
 	public TermOfApprovalReport getTermOfApprovalReport(int idJury, boolean hideSignatures, boolean isManager) throws Exception{
 		try{
 			Jury jury = this.findById(idJury);
@@ -707,12 +734,11 @@ public class JuryBO {
 			}
 			
 			if(!isManager) {
-				JuryDAO dao = new JuryDAO();
-				if(!dao.hasAllScores(idJury)){
+				if(!this.hasAllScores(idJury)){
 					throw new Exception("Para gerar o Termo de Aprovação é necessário que todas as notas sejam lançadas.");
 				}
 				
-				if(!dao.isApproved(idJury)){
+				if(!this.isApproved(idJury)){
 					throw new Exception("Não é possível gerar o Termo de Aprovação pois o acadêmico não obteve a aprovação.");
 				}
 			}

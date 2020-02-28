@@ -1,23 +1,37 @@
 package br.edu.utfpr.dv.siacoes.window;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.ValoTheme;
 
+import br.edu.utfpr.dv.siacoes.Session;
+import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserDetailReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserScoreReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
+import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 
 public class JuryGradesWindow extends BasicWindow {
+	
+	private final Button buttonSign;
 	
 	private final Jury jury;
 
@@ -29,6 +43,17 @@ public class JuryGradesWindow extends BasicWindow {
 		} else {
 			this.jury = jury;
 		}
+		
+		this.buttonSign = new Button("Assinar", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	sign();
+            }
+        });
+		this.buttonSign.setWidth("150px");
+		this.buttonSign.setIcon(FontAwesome.PENCIL);
+		this.buttonSign.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+		this.buttonSign.setDisableOnClick(true);
 		
 		this.setWidth("800px");
 		this.setHeight("530px");
@@ -119,7 +144,40 @@ public class JuryGradesWindow extends BasicWindow {
 				tab.addTab(tabAppraiser, appraiser.getDescription());
 			}
 			
+			if(Session.getUser().getIdUser() == new JuryAppraiserBO().findChair(this.jury.getIdJury()).getAppraiser().getIdUser()) {
+				HorizontalLayout buttons = new HorizontalLayout(this.buttonSign);
+				buttons.setSpacing(true);
+				layoutMain.addComponent(buttons);
+				this.setHeight("560px");
+				
+				if(Document.hasSignature(DocumentType.JURY, this.jury.getIdJury(), Session.getUser().getIdUser())) {
+					this.buttonSign.setEnabled(false);
+				}
+			}
+			
 			this.setContent(layoutMain);
+		} else {
+			this.close();
+		}
+	}
+	
+	private void sign() {
+		if(this.jury.getIdJury() == 0) {
+			this.showWarningNotification("Assinar Ficha", "É necessário salvar a banca antes de assinar.");
+		} else {
+			try {
+				if(!new JuryBO().hasAllScores(this.jury.getIdJury())) {
+					this.showWarningNotification("Assinar Ficha", "Todas as notas devem ser lançadas para que a ficha de avaliação possa ser assinada.");
+				} else {
+					JuryFormReport report = new JuryBO().getJuryFormReport(this.jury.getIdJury());
+					
+					UI.getCurrent().addWindow(new SignatureWindow(DocumentType.JURY, this.jury.getIdJury(), SignDatasetBuilder.buildJury(report), SignDatasetBuilder.getSignaturesList(report), null, null));
+				}
+			} catch (Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				
+				this.showErrorNotification("Assinar Ficha", e.getMessage());
+			}
 		}
 	}
 	

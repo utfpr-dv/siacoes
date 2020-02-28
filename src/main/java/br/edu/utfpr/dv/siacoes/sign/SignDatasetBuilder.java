@@ -5,11 +5,13 @@ import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
+import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserScoreReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.Attendance;
+import br.edu.utfpr.dv.siacoes.report.dataset.v1.Jury;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.JuryRequest;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.SupervisorAgreement;
@@ -97,7 +99,7 @@ public class SignDatasetBuilder {
 			}
 		}
 		
-		if(!findSupervisor) {
+		if(!findSupervisor && (jury.getIdSupervisor() != 0)) {
 			User supervisor = new User();
 			
 			supervisor.setIdUser(jury.getIdSupervisor());
@@ -153,6 +155,39 @@ public class SignDatasetBuilder {
 		
 		dataset.addSignature(attendance.getIdStudent(), attendance.getStudent());
 		dataset.addSignature(attendance.getIdSupervisor(), attendance.getSupervisor());
+		
+		return dataset;
+	}
+	
+	public static Jury buildJury(JuryFormReport jury) {
+		Jury dataset = new Jury();
+		
+		dataset.setStage(jury.getStage());
+		dataset.setTitle(jury.getTitle());
+		dataset.setDate(jury.getDate());
+		dataset.setLocal(jury.getLocal());
+		dataset.setIdStudent(jury.getIdStudent());
+		dataset.setComments(jury.getComments());
+		dataset.setScore(jury.getScore());
+		dataset.setEvaluationText(jury.getEvaluationText());
+		dataset.setRequestFinalDocumentStage1(jury.isRequestFinalDocumentStage1());
+		
+		for(JuryFormAppraiserReport appraiser : jury.getAppraisers()) {
+			double scoreWriting = 0, scoreOral = 0, scoreArgumentation = 0;
+			
+			for(JuryFormAppraiserScoreReport score : jury.getScores()) {
+				if(score.getIdUser() == appraiser.getIdUser()) {
+					scoreWriting = score.getScoreWriting();
+					scoreOral = score.getScoreOral();
+					scoreArgumentation = score.getScoreArgumentation();
+				}
+			}
+			
+			dataset.addAppraiser(appraiser.getIdUser(), appraiser.getDescription(), scoreWriting, scoreOral, scoreArgumentation, appraiser.getScore(), appraiser.getComments(), appraiser.getDetail());
+			dataset.addSignature(appraiser.getIdUser(), appraiser.getName());
+		}
+		
+		dataset.addSignature(jury.getIdStudent(), jury.getStudent());
 		
 		return dataset;
 	}

@@ -6,6 +6,7 @@ public class JuryFormAppraiserScoreReport implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
+	private int idUser;
 	private String description;
 	private String name;
 	private double scoreWriting;
@@ -14,6 +15,7 @@ public class JuryFormAppraiserScoreReport implements Serializable {
 	private double score;
 
 	public JuryFormAppraiserScoreReport(){
+		this.setIdUser(0);
 		this.setDescription("");
 		this.setName("");
 		this.setScoreWriting(0);
@@ -22,6 +24,12 @@ public class JuryFormAppraiserScoreReport implements Serializable {
 		this.setScore(0);
 	}
 	
+	public int getIdUser() {
+		return idUser;
+	}
+	public void setIdUser(int idUser) {
+		this.idUser = idUser;
+	}
 	public String getDescription() {
 		return description;
 	}

@@ -1,5 +1,6 @@
 ﻿package br.edu.utfpr.dv.siacoes.window;
 
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,6 +34,8 @@ import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryStudent;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditJuryWindow extends EditWindow {
@@ -288,6 +291,16 @@ public class EditJuryWindow extends EditWindow {
 				
 				this.showErrorNotification("Agendamento de Banca", e.getMessage());
 			}
+		} else {
+			try {
+				if(Document.hasSignature(DocumentType.JURY, this.jury.getIdJury())) {
+					this.disableButtons();
+				}
+			} catch (SQLException e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				
+				this.disableButtons();
+			}
 		}
 	}
 	
@@ -335,6 +348,15 @@ public class EditJuryWindow extends EditWindow {
 		
 		this.layoutParticipants.removeAllComponents();
 		this.layoutParticipants.addComponent(this.gridParticipants);
+	}
+	
+	@Override
+	public void disableButtons() {
+		super.disableButtons();
+		this.buttonAddAppraiser.setEnabled(false);
+		this.buttonEditAppraiser.setEnabled(false);
+		this.buttonRemoveAppraiser.setEnabled(false);
+		this.buttonAppraiserScore.setEnabled(false);
 	}
 	
 	@Override

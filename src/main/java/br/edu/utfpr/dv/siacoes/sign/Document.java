@@ -38,7 +38,7 @@ import net.sf.jasperreports.engine.JasperReport;
 public class Document {
 	
 	public enum DocumentType{
-		NONE(0), SUPERVISORAGREEMENT(1), APPRAISERFEEDBACK(2), JURYREQUEST(3), SUPERVISORCHANGE(4), ATTENDANCE(5);
+		NONE(0), SUPERVISORAGREEMENT(1), APPRAISERFEEDBACK(2), JURYREQUEST(3), SUPERVISORCHANGE(4), ATTENDANCE(5), JURY(6);
 		
 		private final int value; 
 		DocumentType(int value){ 
@@ -73,6 +73,8 @@ public class Document {
 					return "Requisição para Troca de Orientador";
 				case ATTENDANCE:
 					return "Registro de Reuniões de TCC";
+				case JURY:
+					return "Banca de TCC";
 				default:
 					return "Nenhum";
 			}
@@ -311,6 +313,8 @@ public class Document {
 				return new ReportUtils().getJasperData("SupervisorChangeStatement");
 			case ATTENDANCE:
 				return new ReportUtils().getJasperData("Attendances");
+			case JURY:
+				return new ReportUtils().getJasperData("JuryForm");
 			default:
 				return null;
 		}

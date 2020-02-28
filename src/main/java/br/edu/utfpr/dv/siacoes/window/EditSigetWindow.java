@@ -45,6 +45,7 @@ public class EditSigetWindow extends EditWindow {
 	private final TextField textJuryTimeStage2;
 	private final CheckBox checkSupervisorAssignsGrades;
 	private final CheckBox checkUseDigitalSignature;
+	private final CheckBox checkAppraiserFillsGrades;
 	
 	private final TabSheet tab;
 	
@@ -126,6 +127,8 @@ public class EditSigetWindow extends EditWindow {
 		this.textJuryTimeStage2 = new TextField("Duração da banca de TCC 2 (minutos)");
 		this.textJuryTimeStage2.setWidth("100px");
 		
+		this.checkAppraiserFillsGrades = new CheckBox("Permitir que os membros da banca cadastrem as notas no sistema");
+		
 		this.checkSupervisorAssignsGrades = new CheckBox("Presidente da banca atribui nota");
 		
 		this.checkUseDigitalSignature = new CheckBox("Usar assinatura digital");
@@ -161,7 +164,7 @@ public class EditSigetWindow extends EditWindow {
 		h1.setSpacing(true);
 		HorizontalLayout h4 = new HorizontalLayout(this.textMinimumJuryMembers, this.textMinimumJurySubstitutes);
 		h4.setSpacing(true);
-		VerticalLayout v1 = new VerticalLayout(h1, h4, this.checkShowGradesToStudent, this.checkSupervisorJuryAgreement, this.checkSupervisorJuryRequest, this.checkSupervisorAssignsGrades);
+		VerticalLayout v1 = new VerticalLayout(h1, h4, this.checkShowGradesToStudent, this.checkSupervisorJuryAgreement, this.checkSupervisorJuryRequest, this.checkAppraiserFillsGrades, this.checkSupervisorAssignsGrades);
 		v1.setSpacing(true);
 		v1.setMargin(true);
 		
@@ -207,6 +210,7 @@ public class EditSigetWindow extends EditWindow {
 		this.textJuryTimeStage2.setValue(String.valueOf(this.config.getJuryTimeStage2()));
 		this.checkSupervisorAssignsGrades.setValue(this.config.isSupervisorAssignsGrades());
 		this.checkUseDigitalSignature.setValue(this.config.isUseDigitalSignature());
+		this.checkAppraiserFillsGrades.setValue(this.config.isAppraiserFillsGrades());
 	}
 
 	@Override
@@ -236,6 +240,7 @@ public class EditSigetWindow extends EditWindow {
 			this.config.setJuryTimeStage2(Integer.parseInt(this.textJuryTimeStage2.getValue()));
 			this.config.setSupervisorAssignsGrades(this.checkSupervisorAssignsGrades.getValue());
 			this.config.setUseDigitalSignature(this.checkUseDigitalSignature.getValue());
+			this.config.setAppraiserFillsGrades(this.checkAppraiserFillsGrades.getValue());
 			
 			bo.save(Session.getIdUserLog(), this.config);
 			

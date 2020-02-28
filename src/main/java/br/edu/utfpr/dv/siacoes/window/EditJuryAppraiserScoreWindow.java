@@ -18,6 +18,8 @@ import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserScoreBO;
 import br.edu.utfpr.dv.siacoes.dao.ConnectionDAO;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserScore;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 
 public class EditJuryAppraiserScoreWindow extends EditWindow {
 	
@@ -96,9 +98,14 @@ public class EditJuryAppraiserScoreWindow extends EditWindow {
 				
 				this.layoutEvaluationItems.addComponent(new HorizontalLayout(labelDescription, labelPonderosity, textScore));
 			}
+			
+			if((this.appraiser.getJury().getIdJury() != 0) && Document.hasSignature(DocumentType.JURY, this.appraiser.getJury().getIdJury())) {
+				this.disableButtons();
+			}
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
+			this.disableButtons();
 			this.showErrorNotification("Carregar Notas", e.getMessage());
 		}
 	}
