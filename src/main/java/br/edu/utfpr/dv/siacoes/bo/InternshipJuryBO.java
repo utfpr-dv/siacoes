@@ -29,6 +29,8 @@ import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiserScore;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryStudent;
+import br.edu.utfpr.dv.siacoes.model.InternshipPosterAppraiserRequest;
+import br.edu.utfpr.dv.siacoes.model.InternshipPosterRequest;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserDetailReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserScoreReport;
@@ -107,24 +109,58 @@ public class InternshipJuryBO {
 			InternshipJury jury = dao.findByInternship(idInternship);
 			
 			if(jury == null) {
-				jury = new InternshipJury();
+				SigesConfig config = new SigesConfigBO().findByDepartment(new InternshipBO().findIdDepartment(idInternship));
 				
-				jury.setInternship(new InternshipBO().findById(idInternship));
+				if(config.getJuryFormat() == JuryFormat.SESSION) {
+					InternshipPosterRequest request = new InternshipPosterRequestBO().findByInternship(idInternship);
+					
+					if((request != null) && (request.getIdInternshipPosterRequest() != 0)) {
+						request.setAppraisers(new InternshipPosterAppraiserRequestBO().listAppraisers(request.getIdInternshipPosterRequest()));
+						
+						jury = new InternshipJury();
+						
+						jury.setInternship(new InternshipBO().findById(idInternship));
+						
+						jury.setSupervisorFillJuryForm(config.isSupervisorFillJuryForm());
+						jury.setJuryFormat(config.getJuryFormat());
+						jury.setPosterRequest(request);
+						
+						InternshipJuryAppraiser appraiser = new InternshipJuryAppraiser();
+						appraiser.setChair(true);
+						appraiser.setAppraiser(jury.getInternship().getSupervisor());
+						
+						jury.setAppraisers(new ArrayList<InternshipJuryAppraiser>());
+						jury.getAppraisers().add(appraiser);
+						
+						for(InternshipPosterAppraiserRequest a : request.getAppraisers()) {
+							InternshipJuryAppraiser app = new InternshipJuryAppraiser();
+							app.setChair(false);
+							app.setSubstitute(a.isSubstitute());
+							app.setAppraiser(a.getAppraiser());
+							jury.getAppraisers().add(app);
+						}
+						
+						jury.setParticipants(new ArrayList<InternshipJuryStudent>());
+					}
+				}
 				
-				int idDepartment = new InternshipBO().findIdDepartment(idInternship);
-				SigesConfig config = new SigesConfigBO().findByDepartment(idDepartment);
-				
-				jury.setSupervisorFillJuryForm(config.isSupervisorFillJuryForm());
-				jury.setJuryFormat(config.getJuryFormat());
-				
-				InternshipJuryAppraiser appraiser = new InternshipJuryAppraiser();
-				appraiser.setChair(true);
-				appraiser.setAppraiser(jury.getInternship().getSupervisor());
-				
-				jury.setAppraisers(new ArrayList<InternshipJuryAppraiser>());
-				jury.getAppraisers().add(appraiser);
-				
-				jury.setParticipants(new ArrayList<InternshipJuryStudent>());
+				if(jury == null) {
+					jury = new InternshipJury();
+					
+					jury.setInternship(new InternshipBO().findById(idInternship));
+					
+					jury.setSupervisorFillJuryForm(config.isSupervisorFillJuryForm());
+					jury.setJuryFormat(config.getJuryFormat());
+					
+					InternshipJuryAppraiser appraiser = new InternshipJuryAppraiser();
+					appraiser.setChair(true);
+					appraiser.setAppraiser(jury.getInternship().getSupervisor());
+					
+					jury.setAppraisers(new ArrayList<InternshipJuryAppraiser>());
+					jury.getAppraisers().add(appraiser);
+					
+					jury.setParticipants(new ArrayList<InternshipJuryStudent>());
+				}
 			}
 			
 			return jury;

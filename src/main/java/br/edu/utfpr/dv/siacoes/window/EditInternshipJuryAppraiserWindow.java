@@ -4,17 +4,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.OptionGroup;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
+import br.edu.utfpr.dv.siacoes.model.InternshipPosterAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 
 public class EditInternshipJuryAppraiserWindow extends EditWindow {
 	
-	private final EditInternshipJuryWindow parentWindow;
+	private final EditWindow parentWindow;
 	
 	private final SupervisorComboBox comboProfessor;
 	private final OptionGroup optionAppraiserType;
@@ -65,6 +65,25 @@ public class EditInternshipJuryAppraiserWindow extends EditWindow {
 		this.addField(this.checkChair);
 	}
 	
+	public EditInternshipJuryAppraiserWindow(EditInternshipPosterRequestWindow parentWindow, boolean substitute) {
+		super("Editar Membro", null);
+		
+		this.parentWindow = parentWindow;
+		this.edit = false;
+		
+		this.comboProfessor = new SupervisorComboBox("Membro", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
+		this.comboProfessor.setRequired(true);
+		
+		this.optionAppraiserType = new OptionGroup();
+		
+		this.checkChair = new CheckBox("Presidente da Banca");
+		this.optionAppraiserType.addItem("Titular");
+		this.optionAppraiserType.addItem("Suplente");
+		this.optionAppraiserType.select(substitute ? "Suplente" : "Titular");
+		
+		this.addField(this.comboProfessor);
+	}
+	
 	@Override
 	public void save() {
 		try{
@@ -80,10 +99,19 @@ public class EditInternshipJuryAppraiserWindow extends EditWindow {
 				appraiser.setSubstitute(true);
 			}
 			
-			if(this.edit) {
-				this.parentWindow.editAppraiser(appraiser);
-			} else {
-				this.parentWindow.addAppraiser(appraiser);
+			if(this.parentWindow instanceof EditInternshipJuryWindow) {
+				if(this.edit) {
+					((EditInternshipJuryWindow)this.parentWindow).editAppraiser(appraiser);
+				} else {
+					((EditInternshipJuryWindow)this.parentWindow).addAppraiser(appraiser);
+				}
+			} else if(this.parentWindow instanceof EditInternshipPosterRequestWindow) {
+				InternshipPosterAppraiserRequest a = new InternshipPosterAppraiserRequest();
+				
+				a.setAppraiser(appraiser.getAppraiser());
+				a.setSubstitute(appraiser.isSubstitute());
+				
+				((EditInternshipPosterRequestWindow)this.parentWindow).addAppraiser(a);
 			}
 			
 			this.close();

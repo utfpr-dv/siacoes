@@ -283,7 +283,6 @@ public class EditJuryWindow extends EditWindow {
 				if(config.isSupervisorJuryRequest()) {
 					if((this.jury.getJuryRequest() == null) || (this.jury.getJuryRequest().getIdJuryRequest() == 0)) {
 						this.showWarningNotification("Agendamento de Banca", "O Professor Orientador não efetuou a solicitação de agendamento de banca.");
-					
 					}
 				}
 			} catch (Exception e) {

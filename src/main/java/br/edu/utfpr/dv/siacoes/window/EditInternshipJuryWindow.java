@@ -31,6 +31,7 @@ import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryStudent;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig.JuryFormat;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditInternshipJuryWindow extends EditWindow {
@@ -255,6 +256,12 @@ public class EditInternshipJuryWindow extends EditWindow {
 		if(this.jury.getIdInternshipJury() == 0){
 			this.textStartTime.setVisible(false);
 			this.textEndTime.setVisible(false);
+			
+			if(this.jury.getJuryFormat() == JuryFormat.SESSION) {
+				if((this.jury.getPosterRequest() == null) || (this.jury.getPosterRequest().getIdInternshipPosterRequest() == 0)) {
+					this.showWarningNotification("Agendamento de Banca", "O Acadêmico não efetuou a solicitação de agendamento de banca.");
+				}
+			}
 		}else {
 			if(this.jury.getAppraisers() == null){
 				try {

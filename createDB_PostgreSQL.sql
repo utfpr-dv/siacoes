@@ -99,7 +99,10 @@ CREATE  TABLE sigesconfig (
   jurytime INT NOT NULL ,
   fillonlytotalhours SMALLINT NOT NULL ,
   juryformat SMALLINT NOT NULL ,
+  appraiserfillsgrades smallint NOT NULL ,
   usedigitalsignature smallint NOT NULL ,
+  minimumjurymembers SMALLINT NOT NULL ,
+  minimumjurysubstitutes SMALLINT NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigesconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -860,6 +863,30 @@ CREATE TABLE signature (
 CREATE INDEX fk_signature_signdocument_idx ON signature (iddocument);
 CREATE INDEX fk_signature_user_idx ON signature (iduser);
 CREATE INDEX fk_signature_revokeduser_idx ON signature (idrevokeduser);
+
+CREATE TABLE internshipposterrequest (
+    idinternshipposterrequest SERIAL NOT NULL,
+    idinternship INT NOT NULL,
+    idinternshipjury INT,
+    requestdate timestamp NOT NULL,
+    PRIMARY KEY (idinternshipposterrequest),
+    CONSTRAINT fk_internshipposterrequest_internship FOREIGN KEY (idinternship) REFERENCES internship (idinternship) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT fk_internshipposterrequest_internshipjury FOREIGN KEY (idinternshipjury) REFERENCES internshipjury (idinternshipjury) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+CREATE INDEX fk_internshipposterrequest_internship_idx ON internshipposterrequest (idinternship);
+CREATE INDEX fk_internshipposterrequest_internshipjury_idx ON internshipposterrequest (idinternshipjury);
+
+CREATE TABLE internshipposterappraiserrequest (
+    idinternshipposterappraiserrequest SERIAL NOT NULL,
+    idinternshipposterrequest INT NOT NULL,
+    idappraiser INT NOT NULL,
+    substitute smallint NOT NULL,
+    PRIMARY KEY (idinternshipposterappraiserrequest),
+    CONSTRAINT fk_internshipposterappraiserrequest_internshipposterrequest FOREIGN KEY (idinternshipposterrequest) REFERENCES internshipposterrequest (idinternshipposterrequest) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT fk_internshipposterappraiserrequest_appraiser FOREIGN KEY (idappraiser) REFERENCES "user" (iduser) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+CREATE INDEX fk_internshipposterappraiserrequest_internshipposterrequest_idx ON internshipposterappraiserrequest (idinternshipposterrequest);
+CREATE INDEX fk_internshipposterappraiserrequest_appraiser_idx ON internshipposterappraiserrequest (idappraiser);
 
 CREATE OR REPLACE FUNCTION year(timestamp) RETURNS integer AS $$
 DECLARE

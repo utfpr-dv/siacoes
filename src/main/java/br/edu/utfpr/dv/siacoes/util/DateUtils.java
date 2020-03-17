@@ -70,6 +70,57 @@ public class DateUtils {
 		return cal.get(Calendar.MONTH);
 	}
 	
+	public static int getDay(){
+		Calendar today = DateUtils.getToday();
+		
+		return today.get(Calendar.DAY_OF_MONTH);
+	}
+	
+	public static int getDay(Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		return cal.get(Calendar.DAY_OF_MONTH);
+	}
+	
+	public static String getMonthName() {
+		return DateUtils.getMonthName(DateUtils.getMonth());
+	}
+	
+	public static String getMonthName(Date date) {
+		return DateUtils.getMonthName(DateUtils.getMonth(date));
+	}
+
+	private static String getMonthName(int month) {
+		switch(month) {
+			case Calendar.JANUARY:
+				return "Janeiro";
+			case Calendar.FEBRUARY:
+				return "Fevereiro";
+			case Calendar.MARCH:
+				return "Março";
+			case Calendar.APRIL:
+				return "Abril";
+			case Calendar.MAY:
+				return "Maio";
+			case Calendar.JUNE:
+				return "Junho";
+			case Calendar.JULY:
+				return "Julho";
+			case Calendar.AUGUST:
+				return "Agosto";
+			case Calendar.SEPTEMBER:
+				return "Setembro";
+			case Calendar.OCTOBER:
+				return "Outubro";
+			case Calendar.NOVEMBER:
+				return "Novembro";
+			case Calendar.DECEMBER:
+				return "Dezembro";
+			default:
+				return "";
+		}
+	}
+	
 	public static int getDaysInMonth(int month, int year) {
 		Calendar cal = new GregorianCalendar(year, month, 1);
 		

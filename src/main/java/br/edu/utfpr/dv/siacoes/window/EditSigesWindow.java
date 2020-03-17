@@ -32,6 +32,10 @@ public class EditSigesWindow extends EditWindow {
 	private final TextField textJuryTime;
 	private final CheckBox checkFillOnlyTotalHours;
 	private final NativeSelect comboJuryFormat;
+	private final CheckBox checkUseDigitalSignature;
+	private final CheckBox checkAppraiserFillsGrades;
+	private final TextField textMinimumJuryMembers;
+	private final TextField textMinimumJurySubstitutes;
 	
 	private final TabSheet tab;
 	
@@ -41,7 +45,7 @@ public class EditSigesWindow extends EditWindow {
 		this.config = config;
 		
 		this.tab = new TabSheet();
-		this.tab.setHeight("250px");
+		this.tab.setHeight("320px");
 		this.tab.setWidth("900px");
 		
 		this.textMinimumScore = new TextField("Pontuação Mínima");
@@ -79,6 +83,16 @@ public class EditSigesWindow extends EditWindow {
 		
 		this.checkFillOnlyTotalHours = new CheckBox("Informar apenas o total de horas do estágio");
 		
+		this.checkAppraiserFillsGrades = new CheckBox("Permitir que os membros da banca cadastrem as notas no sistema");
+		
+		this.checkUseDigitalSignature = new CheckBox("Usar assinatura digital");
+		
+		this.textMinimumJuryMembers = new TextField("Número mínimo de membros titulares na banca (exceto o presidente)");
+		this.textMinimumJuryMembers.setWidth("100px");
+		
+		this.textMinimumJurySubstitutes = new TextField("Número mínimo de suplentes na banca");
+		this.textMinimumJurySubstitutes.setWidth("100px");
+		
 		VerticalLayout v1 = new VerticalLayout(this.comboSupervisorFilter, this.checkFillOnlyTotalHours);
 		v1.setSpacing(true);
 		v1.setMargin(true);
@@ -89,7 +103,9 @@ public class EditSigesWindow extends EditWindow {
 		h1.setSpacing(true);
 		HorizontalLayout h2 = new HorizontalLayout(this.comboJuryFormat, this.textJuryTime);
 		h2.setSpacing(true);
-		VerticalLayout v2 = new VerticalLayout(h1, h2, this.checkSupervisorFillJuryForm, this.checkShowGradesToStudent);
+		HorizontalLayout h3 = new HorizontalLayout(this.textMinimumJuryMembers, this.textMinimumJurySubstitutes);
+		h3.setSpacing(true);
+		VerticalLayout v2 = new VerticalLayout(h1, h2, h3, this.checkSupervisorFillJuryForm, this.checkShowGradesToStudent, this.checkAppraiserFillsGrades);
 		v2.setSpacing(true);
 		v2.setMargin(true);
 		
@@ -100,6 +116,12 @@ public class EditSigesWindow extends EditWindow {
 		v3.setMargin(true);
 		
 		this.tab.addTab(v3, "Submissão de Arquivos");
+		
+		VerticalLayout v4 = new VerticalLayout(this.checkUseDigitalSignature);
+		v4.setSpacing(true);
+		v4.setMargin(true);
+		
+		this.tab.addTab(v4, "Documentos");
 		
 		this.addField(this.tab);
 		
@@ -117,6 +139,10 @@ public class EditSigesWindow extends EditWindow {
 		this.textJuryTime.setValue(String.valueOf(this.config.getJuryTime()));
 		this.checkFillOnlyTotalHours.setValue(this.config.isFillOnlyTotalHours());
 		this.comboJuryFormat.setValue(this.config.getJuryFormat());
+		this.checkUseDigitalSignature.setValue(this.config.isUseDigitalSignature());
+		this.checkAppraiserFillsGrades.setValue(this.config.isAppraiserFillsGrades());
+		this.textMinimumJuryMembers.setValue(String.valueOf(this.config.getMinimumJuryMembers()));
+		this.textMinimumJurySubstitutes.setValue(String.valueOf(this.config.getMinimumJurySubstitutes()));
 	}
 
 	@Override
@@ -134,6 +160,10 @@ public class EditSigesWindow extends EditWindow {
 			this.config.setJuryTime(Integer.parseInt(this.textJuryTime.getValue()));
 			this.config.setFillOnlyTotalHours(this.checkFillOnlyTotalHours.getValue());
 			this.config.setJuryFormat((JuryFormat)this.comboJuryFormat.getValue());
+			this.config.setUseDigitalSignature(this.checkUseDigitalSignature.getValue());
+			this.config.setAppraiserFillsGrades(this.checkAppraiserFillsGrades.getValue());
+			this.config.setMinimumJuryMembers(Integer.parseInt(this.textMinimumJuryMembers.getValue()));
+			this.config.setMinimumJurySubstitutes(Integer.parseInt(this.textMinimumJurySubstitutes.getValue()));
 			
 			bo.save(Session.getIdUserLog(), this.config);
 			

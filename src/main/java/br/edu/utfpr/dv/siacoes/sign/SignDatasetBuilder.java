@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
+import br.edu.utfpr.dv.siacoes.model.InternshipPosterAppraiserRequest;
+import br.edu.utfpr.dv.siacoes.model.InternshipPosterRequestForm;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserScoreReport;
 import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
@@ -11,6 +13,7 @@ import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.Attendance;
+import br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipPosterRequest;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.Jury;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.JuryRequest;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.ProposalFeedback;
@@ -190,6 +193,60 @@ public class SignDatasetBuilder {
 		dataset.addSignature(jury.getIdStudent(), jury.getStudent());
 		
 		return dataset;
+	}
+	
+	public static InternshipPosterRequest build(InternshipPosterRequestForm request) {
+		InternshipPosterRequest dataset = new InternshipPosterRequest();
+		
+		dataset.setDate(request.getDate());
+		dataset.setCity(request.getDepartment().getCampus().getName());
+		dataset.setDepartment(request.getDepartment().getName());
+		dataset.setManager(request.getManager().getName());
+		dataset.setArticles(request.getArticles());
+		dataset.setIdStudent(request.getStudent().getIdUser());
+		dataset.setIdSupervisor(request.getSupervisor().getIdUser());
+		
+		int member = 1, substitute = 1;
+		
+		for(InternshipPosterAppraiserRequest appraiser : request.getAppraisers()) {
+			dataset.addAppraiser(appraiser.getAppraiser().getIdUser(), (appraiser.isSubstitute() ? "Suplente " + String.valueOf(substitute++) : "Membro " + String.valueOf(member++)));
+			
+			dataset.addSignature(appraiser.getAppraiser().getIdUser(), appraiser.getAppraiser().getName());
+		}
+		
+		dataset.addSignature(request.getStudent().getIdUser(), request.getStudent().getName());
+		dataset.addSignature(request.getSupervisor().getIdUser(), request.getSupervisor().getName());
+		
+		return dataset;
+	}
+	
+	public static List<User> getSignaturesList(InternshipPosterRequestForm request) {
+		List<User> users = new ArrayList<User>();
+		
+		for(InternshipPosterAppraiserRequest appraiser : request.getAppraisers()) {
+			User u = new User();
+			
+			u.setIdUser(appraiser.getAppraiser().getIdUser());
+			u.setName(appraiser.getAppraiser().getName());
+			
+			users.add(u);
+		}
+		
+		User student = new User();
+		
+		student.setIdUser(request.getStudent().getIdUser());
+		student.setName(request.getStudent().getName());
+		
+		users.add(student);
+		
+		User supervisor = new User();
+		
+		supervisor.setIdUser(request.getSupervisor().getIdUser());
+		supervisor.setName(request.getSupervisor().getName());
+		
+		users.add(supervisor);
+		
+		return users;
 	}
 
 }

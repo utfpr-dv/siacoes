@@ -24,6 +24,8 @@ import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipFinalDocumentBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
+import br.edu.utfpr.dv.siacoes.bo.InternshipPosterRequestBO;
+import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.components.CompanyComboBox;
 import br.edu.utfpr.dv.siacoes.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.components.StudentComboBox;
@@ -33,14 +35,18 @@ import br.edu.utfpr.dv.siacoes.model.Internship.InternshipStatus;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
 import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
+import br.edu.utfpr.dv.siacoes.model.InternshipPosterRequest;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig.JuryFormat;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.window.DownloadInternshipFeedbackWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipFinalDocumentWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipJuryWindow;
+import br.edu.utfpr.dv.siacoes.window.EditInternshipPosterRequestWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipReportWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipWindow;
 import br.edu.utfpr.dv.siacoes.window.InternshipUploadFinalReportWindow;
@@ -67,11 +73,22 @@ public class InternshipView extends ListView {
 	private final Button buttonProfessorStatement;
 	private final Button buttonStudentStatement;
 	private final Button buttonJuryFeedback;
+	private final Button buttonPosterRequest;
+	private final Button buttonPrintPosterRequest;
+	
+	private SigesConfig config;
 	
 	public InternshipView(){
 		super(SystemModule.SIGES);
 		
 		this.setCaption("Estágios");
+		
+		try {
+			this.config = new SigesConfigBO().findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
+		} catch(Exception e) {
+			this.config = new SigesConfig();
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+		}
 		
 		this.textYear = new YearField();
 		this.textYear.setYear(0);
@@ -164,6 +181,23 @@ public class InternshipView extends ListView {
 		this.buttonFinalReport.setIcon(FontAwesome.UPLOAD);
 		this.addActionButton(this.buttonFinalReport);
 		
+		this.buttonPosterRequest = new Button("Solicitar Banca", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	posterRequestClick();
+            }
+        });
+		this.buttonPosterRequest.setIcon(FontAwesome.CALENDAR_PLUS_O);
+		this.addActionButton(this.buttonPosterRequest);
+		
+		this.buttonPrintPosterRequest = new Button("Imp. Solic. de Banca", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	downloadPosterRequest();
+            }
+        });
+		this.addActionButton(this.buttonPrintPosterRequest);
+		
 		this.buttonJuryFeedback = new Button("Feedback da Banca", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
@@ -180,7 +214,6 @@ public class InternshipView extends ListView {
             }
         });
 		this.buttonFinalDocument.setIcon(FontAwesome.UPLOAD);
-		
 		this.addActionButton(this.buttonFinalDocument);
 	}
 	
@@ -199,6 +232,8 @@ public class InternshipView extends ListView {
 			this.buttonFinalReport.setVisible(this.profile == UserProfile.STUDENT);
 			this.buttonJuryFeedback.setVisible(this.profile == UserProfile.STUDENT || this.profile == UserProfile.PROFESSOR);
 			this.buttonFinalDocument.setVisible(this.profile == UserProfile.STUDENT || this.profile == UserProfile.PROFESSOR);
+			this.buttonPosterRequest.setVisible((this.profile == UserProfile.STUDENT) && (this.config.getJuryFormat() == JuryFormat.SESSION));
+			this.buttonPrintPosterRequest.setVisible((this.profile == UserProfile.STUDENT) && (this.config.getJuryFormat() == JuryFormat.SESSION));
 			
 			if(this.profile == UserProfile.PROFESSOR){
 				this.buttonFinalDocument.setCaption("Val. Relat. Final");
@@ -207,6 +242,12 @@ public class InternshipView extends ListView {
 		} else {
 			this.buttonProfessorStatement.setCaption("Declaração Prof.");
 			this.buttonStudentStatement.setCaption("Declaração Acad.");
+			this.buttonParcialReport.setVisible(false);
+			this.buttonFinalReport.setVisible(false);
+			this.buttonPosterRequest.setVisible(false);
+			this.buttonPrintPosterRequest.setVisible(false);
+			this.buttonJuryFeedback.setVisible(false);
+			this.buttonFinalDocument.setVisible(false);
 		}
 	}
 
@@ -479,6 +520,52 @@ public class InternshipView extends ListView {
 	        	
 				this.showErrorNotification("Gerar Declaração", e.getMessage());
 			}
+		}
+	}
+	
+	private void posterRequestClick() {
+		Object id = getIdSelected();
+    	
+    	if(id == null) {
+    		this.showWarningNotification("Selecionar Registro", "Selecione o registro para efetuar a solicitação de banca.");
+    	} else {
+    		try {
+				InternshipJury jury = new InternshipJuryBO().findByInternship((int)id);
+				
+				if((jury != null) && (jury.getIdInternshipJury() != 0)) {
+					this.showWarningNotification("Solicitar Banca", "Não é possível efetuar a solicitação pois a banca já foi agendada.");
+				} else {
+					Internship internship = new InternshipBO().findById((int)id);
+	    			
+	    			if(internship.getType() == InternshipType.REQUIRED){
+	    				InternshipPosterRequest request = new InternshipPosterRequestBO().preparePosterRequest((int)id);
+	    				
+	    				UI.getCurrent().addWindow(new EditInternshipPosterRequestWindow(request, this));
+	    			}else{
+	    				this.showWarningNotification("Solicitar Banca", "A solicitação de banca só pode ser efetuada para o estágio obrigatório");
+	    			}
+				}
+    		} catch(Exception e) {
+    			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+    			
+    			this.showErrorNotification("Solicitar Banca", e.getMessage());
+    		}
+    	}
+	}
+	
+	private void downloadPosterRequest() {
+		Object value = getIdSelected();
+		
+		if(value != null) {
+			try {
+				this.showReport(new InternshipPosterRequestBO().getPosterRequestForm(new InternshipPosterRequestBO().preparePosterRequest((int)value).getIdInternshipPosterRequest()));
+			} catch (Exception e) {
+            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+            	
+            	this.showErrorNotification("Imprimir Solicitação de Banca", e.getMessage());
+			}
+		} else {
+			this.showWarningNotification("Imprimir Solicitação de Banca", "Selecione um registro para imprimir a Solicitação de Banca.");
 		}
 	}
 	

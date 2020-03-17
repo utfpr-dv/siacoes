@@ -99,7 +99,10 @@ CREATE  TABLE `sigesconfig` (
   `jurytime` INT NOT NULL ,
   `fillonlytotalhours` TINYINT NOT NULL ,
   `juryformat` SMALLINT NOT NULL ,
+  `appraiserfillsgrades` TINYINT NOT NULL ,
   `usedigitalsignature` TINYINT NOT NULL ,
+  `minimumjurymembers` SMALLINT NOT NULL ,
+  `minimumjurysubstitutes` SMALLINT NOT NULL ,
   PRIMARY KEY (`iddepartment`) ,
   CONSTRAINT `fk_sigesconfig_iddepartment` FOREIGN KEY (`iddepartment` ) REFERENCES `department` (`iddepartment` ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -860,6 +863,30 @@ CREATE TABLE `signature` (
     CONSTRAINT `fk_signature_signdocument` FOREIGN KEY (`iddocument`) REFERENCES `signdocument` (`iddocument`) ON UPDATE NO ACTION ON DELETE NO ACTION,
     CONSTRAINT `fk_signature_user` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION,
     CONSTRAINT `fk_signature_revokeduser` FOREIGN KEY (`idrevokeduser`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE `internshipposterrequest` (
+    `idinternshipposterrequest` INTEGER NOT NULL AUTO_INCREMENT,
+    `idinternship` INT NOT NULL,
+    `idinternshipjury` INT,
+    `requestdate` DATETIME NOT NULL,
+    PRIMARY KEY (`idinternshipposterrequest`),
+    INDEX `fk_internshipposterrequest_internship_idx` (`idinternship` ASC),
+    INDEX `fk_internshipposterrequest_internshipjury_idx` (`idinternshipjury` ASC),
+    CONSTRAINT `fk_internshipposterrequest_internship` FOREIGN KEY (`idinternship`) REFERENCES `internship` (`idinternship`) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT `fk_internshipposterrequest_internshipjury` FOREIGN KEY (`idinternshipjury`) REFERENCES `internshipjury` (`idinternshipjury`) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE `internshipposterappraiserrequest` (
+    `idinternshipposterappraiserrequest` INTEGER NOT NULL AUTO_INCREMENT,
+    `idinternshipposterrequest` INT NOT NULL,
+    `idappraiser` INT NOT NULL,
+    `substitute` TINYINT NOT NULL,
+    PRIMARY KEY (`idinternshipposterappraiserrequest`),
+    INDEX `fk_internshipposterappraiserrequest_internshipposterrequest_idx` (`idinternshipposterrequest` ASC),
+    INDEX `fk_internshipposterappraiserrequest_appraiser_idx` (`idappraiser` ASC),
+    CONSTRAINT `fk_internshipposterappraiserrequest_internshipposterrequest` FOREIGN KEY (`idinternshipposterrequest`) REFERENCES `internshipposterrequest` (`idinternshipposterrequest`) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT `fk_internshipposterappraiserrequest_appraiser` FOREIGN KEY (`idappraiser`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(1, 2, '', '', '{student};{group};{activity};{semester};{year};{comments}');

@@ -48,6 +48,12 @@ public class SigesConfigBO {
 		if(config.getJuryTime() < 0) {
 			throw new Exception("O tempo previsto de duração da banca de estágio não pode ser inferior à zero.");
 		}
+		if(config.getMinimumJuryMembers() < 0) {
+			config.setMinimumJuryMembers(0);
+		}
+		if(config.getMinimumJurySubstitutes() < 0) {
+			config.setMinimumJurySubstitutes(0);
+		}
 		
 		try{
 			SigesConfigDAO dao = new SigesConfigDAO();

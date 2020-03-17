@@ -31,6 +31,7 @@ public class InternshipJury implements Serializable {
 	private double supervisorScore;
 	private boolean supervisorFillJuryForm;
 	private JuryFormat juryFormat;
+	private InternshipPosterRequest posterRequest;
 
 	public InternshipJury(){
 		this.setIdInternshipJury(0);
@@ -50,6 +51,7 @@ public class InternshipJury implements Serializable {
 		this.setSupervisorScore(0);
 		this.setSupervisorFillJuryForm(false);
 		this.setJuryFormat(JuryFormat.INDIVIDUAL);
+		this.setPosterRequest(null);
 	}
 	
 	public int getIdInternshipJury() {
@@ -159,6 +161,12 @@ public class InternshipJury implements Serializable {
 	}
 	public void setJuryFormat(JuryFormat juryFormat) {
 		this.juryFormat = juryFormat;
+	}
+	public InternshipPosterRequest getPosterRequest() {
+		return posterRequest;
+	}
+	public void setPosterRequest(InternshipPosterRequest posterRequest) {
+		this.posterRequest = posterRequest;
 	}
 	public User getSupervisor(){
 		if((this.getInternship().getSupervisor() == null) || (this.getInternship().getSupervisor().getIdUser() == 0)){

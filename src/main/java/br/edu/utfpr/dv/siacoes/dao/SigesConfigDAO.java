@@ -49,9 +49,9 @@ public class SigesConfigDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO sigesconfig(minimumScore, supervisorPonderosity, companySupervisorPonderosity, showgradestostudent, supervisorfilter, supervisorFillJuryForm, maxfilesize, jurytime, fillOnlyTotalHours, juryformat, idDepartment) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+				stmt = conn.prepareStatement("INSERT INTO sigesconfig(minimumScore, supervisorPonderosity, companySupervisorPonderosity, showgradestostudent, supervisorfilter, supervisorFillJuryForm, maxfilesize, jurytime, fillOnlyTotalHours, juryformat, useDigitalSignature, appraiserFillsGrades, minimumJuryMembers, minimumJurySubstitutes, idDepartment) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}else{
-				stmt = conn.prepareStatement("UPDATE sigesconfig SET minimumScore=?, supervisorPonderosity=?, companySupervisorPonderosity=?, showgradestostudent=?, supervisorfilter=?, supervisorFillJuryForm=?, maxfilesize=?, jurytime=?, fillOnlyTotalHours=?, juryformat=? WHERE idDepartment=?");
+				stmt = conn.prepareStatement("UPDATE sigesconfig SET minimumScore=?, supervisorPonderosity=?, companySupervisorPonderosity=?, showgradestostudent=?, supervisorfilter=?, supervisorFillJuryForm=?, maxfilesize=?, jurytime=?, fillOnlyTotalHours=?, juryformat=?, useDigitalSignature=?, appraiserFillsGrades=?, minimumJuryMembers=?, minimumJurySubstitutes=? WHERE idDepartment=?");
 			}
 			
 			stmt.setDouble(1, config.getMinimumScore());
@@ -64,7 +64,11 @@ public class SigesConfigDAO {
 			stmt.setInt(8, config.getJuryTime());
 			stmt.setInt(9, (config.isFillOnlyTotalHours() ? 1 : 0));
 			stmt.setInt(10, config.getJuryFormat().getValue());
-			stmt.setInt(11, config.getDepartment().getIdDepartment());
+			stmt.setInt(11, config.isUseDigitalSignature() ? 1 : 0);
+			stmt.setInt(12, config.isAppraiserFillsGrades() ? 1 : 0);
+			stmt.setInt(13, config.getMinimumJuryMembers());
+			stmt.setInt(14, config.getMinimumJurySubstitutes());
+			stmt.setInt(15, config.getDepartment().getIdDepartment());
 			
 			stmt.execute();
 			
@@ -93,6 +97,10 @@ public class SigesConfigDAO {
 		config.setJuryTime(rs.getInt("jurytime"));
 		config.setFillOnlyTotalHours(rs.getInt("fillOnlyTotalHours") == 1);
 		config.setJuryFormat(JuryFormat.valueOf(rs.getInt("juryformat")));
+		config.setUseDigitalSignature(rs.getInt("useDigitalSignature") == 1);
+		config.setAppraiserFillsGrades(rs.getInt("appraiserFillsGrades") == 1);
+		config.setMinimumJuryMembers(rs.getInt("minimumJuryMembers"));
+		config.setMinimumJurySubstitutes(rs.getInt("minimumJurySubstitutes"));
 		
 		return config;
 	}

@@ -54,6 +54,10 @@ public class SigesConfig implements Serializable {
 	private int juryTime;
 	private boolean fillOnlyTotalHours;
 	private JuryFormat juryFormat;
+	private boolean appraiserFillsGrades;
+	private boolean useDigitalSignature;
+	private int minimumJuryMembers;
+	private int minimumJurySubstitutes;
 	
 	public SigesConfig(){
 		this.setDepartment(new Department());
@@ -67,6 +71,10 @@ public class SigesConfig implements Serializable {
 		this.setJuryTime(0);
 		this.setFillOnlyTotalHours(false);
 		this.setJuryFormat(JuryFormat.INDIVIDUAL);
+		this.setUseDigitalSignature(false);
+		this.setAppraiserFillsGrades(false);
+		this.setMinimumJuryMembers(0);
+		this.setMinimumJurySubstitutes(0);
 	}
 	
 	public Department getDepartment() {
@@ -141,6 +149,30 @@ public class SigesConfig implements Serializable {
 	}
 	public void setJuryFormat(JuryFormat juryFormat) {
 		this.juryFormat = juryFormat;
+	}
+	public boolean isUseDigitalSignature() {
+		return useDigitalSignature;
+	}
+	public void setUseDigitalSignature(boolean useDigitalSignature) {
+		this.useDigitalSignature = useDigitalSignature;
+	}
+	public boolean isAppraiserFillsGrades() {
+		return appraiserFillsGrades;
+	}
+	public void setAppraiserFillsGrades(boolean appraiserFillsGrades) {
+		this.appraiserFillsGrades = appraiserFillsGrades;
+	}
+	public int getMinimumJuryMembers() {
+		return minimumJuryMembers;
+	}
+	public void setMinimumJuryMembers(int minimumJuryMembers) {
+		this.minimumJuryMembers = minimumJuryMembers;
+	}
+	public int getMinimumJurySubstitutes() {
+		return minimumJurySubstitutes;
+	}
+	public void setMinimumJurySubstitutes(int minimumJurySubstitutes) {
+		this.minimumJurySubstitutes = minimumJurySubstitutes;
 	}
 	
 }

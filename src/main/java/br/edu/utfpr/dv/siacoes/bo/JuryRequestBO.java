@@ -199,7 +199,7 @@ public class JuryRequestBO {
 		return this.delete(idUser, request);
 	}
 	
-	public boolean delete(int idUser, JuryRequest request) throws Exception {
+	private boolean delete(int idUser, JuryRequest request) throws Exception {
 		if((request.getJury() != null) && (request.getJury().getIdJury() != 0)) {
 			throw new Exception("A solicitação não pode ser excluída pois a banca já foi confirmada.");
 		}

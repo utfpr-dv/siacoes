@@ -52,6 +52,7 @@ import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.SigacConfig;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig.JuryFormat;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
@@ -95,6 +96,7 @@ import br.edu.utfpr.dv.siacoes.view.InternshipJuryGradesReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipJuryParticipantsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
 import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
+import br.edu.utfpr.dv.siacoes.view.InternshipPosterRequestView;
 import br.edu.utfpr.dv.siacoes.view.InternshipView;
 import br.edu.utfpr.dv.siacoes.view.JuryGradesReportView;
 import br.edu.utfpr.dv.siacoes.view.JuryParticipantsReportView;
@@ -863,6 +865,11 @@ public class SideMenu extends CustomComponent {
 		}
 		
 		layout.addComponent(new MenuEntry("Bancas", 0));
+		if(this.sigesConfig.getJuryFormat() == JuryFormat.SESSION) {
+			layout.addComponent(new MenuEntry("Solicitações de Bancas", 1, InternshipPosterRequestView.NAME));
+		} else if(this.sigesConfig.getJuryFormat() == JuryFormat.INDIVIDUAL) {
+			
+		}
 		layout.addComponent(new MenuEntry("Agenda de Bancas", 1, InternshipJuryView.NAME + "/1"));
 		if(Session.isUserStudent()) {
 			layout.addComponent(new MenuEntry("Bancas que Assisti", 1, InternshipJuryView.NAME));

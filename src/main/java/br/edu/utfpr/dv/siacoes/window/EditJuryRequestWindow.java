@@ -332,7 +332,6 @@ public class EditJuryRequestWindow extends EditWindow {
 			this.jury.setLocal(this.textLocal.getValue());
 			this.jury.setComments(this.textComments.getValue());
 			this.jury.setDate(this.textDate.getValue());
-			this.jury.setComments(this.textComments.getValue());
 			this.jury.setSupervisorAbsenceReason(this.textSupervisorAbsenceReason.getValue());
 			
 			for(int i = 0; i < this.jury.getAppraisers().size(); i++) {
