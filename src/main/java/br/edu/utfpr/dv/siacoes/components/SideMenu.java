@@ -206,23 +206,20 @@ public class SideMenu extends CustomComponent {
         this.sigesConfig = new SigesConfig();
         
         if((Session.getSelectedDepartment() != null) && (Session.getSelectedDepartment().getDepartment() != null)) {
-			SigetConfigBO bo = new SigetConfigBO();
 			try {
-				this.sigetConfig = bo.findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
+				this.sigetConfig = new SigetConfigBO().findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			} catch (Exception e1) {
 				Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
 			}
 			
-	        SigacConfigBO bo2 = new SigacConfigBO();
-			try {
-				this.sigacConfig = bo2.findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
+	        try {
+				this.sigacConfig = new SigacConfigBO().findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			} catch (Exception e1) {
 				Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
 			}
 			
-			SigesConfigBO bo3 = new SigesConfigBO();
 			try {
-				this.sigesConfig = bo3.findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
+				this.sigesConfig = new SigesConfigBO().findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			} catch (Exception e1) {
 				Logger.getGlobal().log(Level.SEVERE, e1.getMessage(), e1);
 			}
@@ -701,7 +698,7 @@ public class SideMenu extends CustomComponent {
 		layout1.addComponent(iconMessages);
 		layout1.setComponentAlignment(iconMessages, Alignment.MIDDLE_CENTER);
 		
-		if(AppConfig.getInstance().isSigetEnabled() && sigetConfig.isUseDigitalSignature()) {
+		if((AppConfig.getInstance().isSigetEnabled() && sigetConfig.isUseDigitalSignature()) || (AppConfig.getInstance().isSigesEnabled() && sigesConfig.isUseDigitalSignature())) {
 			Component iconSignatures = this.getSignaturesIcon();
 			layout1.addComponent(iconSignatures);
 			layout1.setComponentAlignment(iconSignatures, Alignment.MIDDLE_CENTER);
@@ -755,7 +752,7 @@ public class SideMenu extends CustomComponent {
 		layout.addComponent(iconMessages);
 		layout.setComponentAlignment(iconMessages, Alignment.MIDDLE_CENTER);
 		
-		if(AppConfig.getInstance().isSigetEnabled() && sigetConfig.isUseDigitalSignature()) {
+		if((AppConfig.getInstance().isSigetEnabled() && sigetConfig.isUseDigitalSignature()) || (AppConfig.getInstance().isSigesEnabled() && sigesConfig.isUseDigitalSignature())) {
 			Component iconSignatures = this.getSignaturesIcon();
 			layout.addComponent(iconSignatures);
 			layout.setComponentAlignment(iconSignatures, Alignment.MIDDLE_CENTER);
