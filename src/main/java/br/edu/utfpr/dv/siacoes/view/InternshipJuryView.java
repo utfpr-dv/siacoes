@@ -542,9 +542,9 @@ public class InternshipJuryView extends ListView {
 			this.showWarningNotification("Lançar Notas", "Selecione uma banca para lançar as notas.");
 		} else {
 			try {
-				if(!this.config.isAppraiserFillsGrades() && (Session.getUser().getIdUser() == new InternshipJuryAppraiserBO().findChair((int)value).getAppraiser().getIdUser())) {
-					InternshipJury jury = new InternshipJuryBO().findById((int)value);
-					
+				InternshipJury jury = new InternshipJuryBO().findById((int)value);
+				
+				if(!jury.isSupervisorFillJuryForm() && (Session.getUser().getIdUser() == new InternshipJuryAppraiserBO().findChair((int)value).getAppraiser().getIdUser())) {
 					UI.getCurrent().addWindow(new EditInternshipJurySupervisorScoreWindow(jury));
 				} else {
 					InternshipJuryAppraiser appraiser = new InternshipJuryAppraiserBO().findByAppraiser((int)value, Session.getUser().getIdUser());
