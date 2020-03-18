@@ -306,6 +306,19 @@ public class ProposalBO {
 		}
 	}
 	
+	public void sendSupervisorFeedbackSignedMessage(int idProposal) throws Exception {
+		Proposal proposal = this.findById(idProposal);
+		User manager = new UserBO().findManager(proposal.getDepartment().getIdDepartment(), SystemModule.SIGET);
+		List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+		
+		keys.add(new EmailMessageEntry<String, String>("manager", manager.getName()));
+		keys.add(new EmailMessageEntry<String, String>("student", proposal.getStudent().getName()));
+		keys.add(new EmailMessageEntry<String, String>("supervisor", proposal.getSupervisor().getName()));
+		keys.add(new EmailMessageEntry<String, String>("title", proposal.getTitle()));
+		
+		new EmailMessageBO().sendEmail(manager.getIdUser(), MessageType.SIGNEDSUPERVISORAGREEMENT, keys);
+	}
+	
 	public byte[] getSupervisorFeedbackReport(int idProposal) throws Exception {
 		if(Document.hasSignature(DocumentType.SUPERVISORAGREEMENT, idProposal)) {
 			return Document.getSignedDocument(DocumentType.SUPERVISORAGREEMENT, idProposal);

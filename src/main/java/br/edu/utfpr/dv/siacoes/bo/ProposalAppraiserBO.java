@@ -172,6 +172,21 @@ public class ProposalAppraiserBO {
 		return ret;
 	}
 	
+	public void sendAppraiserFeedbackSignedMessage(int idProposalAppraiser) throws Exception {
+		ProposalAppraiser appraiser = this.findById(idProposalAppraiser);
+		appraiser.setProposal(new ProposalBO().findById(appraiser.getProposal().getIdProposal()));
+		User manager = new UserBO().findManager(appraiser.getProposal().getDepartment().getIdDepartment(), SystemModule.SIGET);
+		List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+		
+		keys.add(new EmailMessageEntry<String, String>("manager", manager.getName()));
+		keys.add(new EmailMessageEntry<String, String>("appraiser", appraiser.getAppraiser().getName()));
+		keys.add(new EmailMessageEntry<String, String>("student", appraiser.getProposal().getStudent().getName()));
+		keys.add(new EmailMessageEntry<String, String>("supervisor", appraiser.getProposal().getSupervisor().getName()));
+		keys.add(new EmailMessageEntry<String, String>("title", appraiser.getProposal().getTitle()));
+		
+		new EmailMessageBO().sendEmail(manager.getIdUser(), MessageType.SIGNEDAPPRAISERFEEDBACK, keys);
+	}
+	
 	public void closeFeedback(int idDepartment, int semester, int year) throws Exception {
 		try {
 			ProposalAppraiserDAO dao = new ProposalAppraiserDAO();

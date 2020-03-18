@@ -50,7 +50,22 @@ public class EmailMessage implements Serializable {
 		BUGREPORTED(39),
 		BUGUPDATED(40),
 		INTERNSHIPSTUDENTREPORTSUBMITTED(41),
-		INTERNSHIPSUPERVISORREPORTSUBMITTED(42);
+		INTERNSHIPSUPERVISORREPORTSUBMITTED(42),
+		SIGNEDSUPERVISORAGREEMENT(43),
+		SIGNEDAPPRAISERFEEDBACK(44),
+		SIGNEDJURYREQUEST(45),
+		SIGNEDSUPERVISORCHANGE(46),
+		SIGNEDATTENDANCE(47),
+		SIGNEDJURYFORM(48),
+		SIGNEDINTERNSHIPPOSTERREQUEST(49),
+		SIGNEDINTERNSHIPJURYFORM(50),
+		REQUESTSIGNJURYREQUEST(51),
+		REQUESTSIGNATTENDANCE(52),
+		REQUESTSIGNJURYFORM(53),
+		REQUESTSIGNINTERNSHIPPOSTERREQUEST(54),
+		REQUESTSIGNINTERNSHIPJURYFORM(55),
+		REQUESTSUPERVISORSIGNJURYFORM(56),
+		REQUESTSUPERVISORSIGNINTERNSHIPJURYFORM(57);
 		
 		private final int value; 
 		MessageType(int value){ 
@@ -96,7 +111,7 @@ public class EmailMessage implements Serializable {
 				case PROPOSALAPPRAISERREGISTER:
 					return "Indicação de Avaliador da Proposta de TCC 1 (Responsável TCC)";
 				case PROPOSALAPPRAISERFEEDBACK:
-					return "Feedback da Proposta de TCC 1";
+					return "Parecer da Proposta de TCC 1";
 				case JURYINCLUDEDSTUDENT:
 					return "Banca de TCC Marcada (Estudante)";
 				case JURYINCLUDEDAPPRAISER:
@@ -128,9 +143,9 @@ public class EmailMessage implements Serializable {
 				case PROPOSALAPPRAISERSUPERVISORINDICATION:
 					return "Indicação de Avaliador da Proposta de TCC 1 (Orientador)";
 				case PROPOSALAPPRAISERFEEDBACKSUPERVISOR:
-					return "Feedback da Proposta de TCC 1 (Orientador)";
+					return "Parecer da Proposta de TCC 1 (Orientador)";
 				case PROPOSALAPPRAISERFEEDBACKSTUDENT:
-					return "Feedback da Proposta de TCC 1 (Estudante)";
+					return "Parecer da Proposta de TCC 1 (Estudante)";
 				case USERREGISTRED:
 					return "Usuário Cadastrado";
 				case PROJECTORTHESISSUBMITEDSTUDENT:
@@ -157,6 +172,36 @@ public class EmailMessage implements Serializable {
 					return "Relatório de Estágio Enviado (Estudante)";
 				case INTERNSHIPSUPERVISORREPORTSUBMITTED:
 					return "Relatório de Estágio Enviado (Orientador)";
+				case SIGNEDSUPERVISORAGREEMENT:
+					return "Termo de Concordância de Orientação de TCC Assinado";
+				case SIGNEDAPPRAISERFEEDBACK:
+					return "Parecer da Proposta de TCC 1 Assinado";
+				case SIGNEDJURYREQUEST:
+					return "Formulário de Solicitação de Banca de TCC Assinado";
+				case SIGNEDSUPERVISORCHANGE:
+					return "Solicitação de Alteração de Orientador de TCC Assinada";
+				case SIGNEDATTENDANCE:
+					return "Formulário de Reuniões de TCC Assinado";
+				case SIGNEDJURYFORM:
+					return "Formulário de Avaliação de Banca de TCC Assinado";
+				case SIGNEDINTERNSHIPPOSTERREQUEST:
+					return "Formulário de Solicitação de Banca de Estágio Assinado";
+				case SIGNEDINTERNSHIPJURYFORM:
+					return "Formulário de Avaliação de Banca de Estágio Assinado";
+				case REQUESTSIGNJURYREQUEST:
+					return "Assinatura Requisitada no Formulário de Solicitação de Banca de TCC";
+				case REQUESTSIGNATTENDANCE:
+					return "Assinatura Requisitada no Formulário de Reuniões de TCC";
+				case REQUESTSIGNJURYFORM:
+					return "Assinatura Requisitada no Formulário de Avaliação de Banca de TCC";
+				case REQUESTSIGNINTERNSHIPPOSTERREQUEST:
+					return "Assinatura Requisitada no Formulário de Solicitação de Banca de Estágio";
+				case REQUESTSIGNINTERNSHIPJURYFORM:
+					return "Assinatura Requisitada no Formulário de Avaliação de Banca de Estágio";
+				case REQUESTSUPERVISORSIGNJURYFORM:
+					return "Formulário de Avaliação de Banca de TCC Pronto para Assinatura";
+				case REQUESTSUPERVISORSIGNINTERNSHIPJURYFORM:
+					return "Formulário de Avaliação de Banca de Estágio Pronto para Assinatura";
 				default:
 					return "";
 			}

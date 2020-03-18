@@ -201,6 +201,26 @@ public class InternshipJuryDAO {
 		}
 	}
 	
+	public boolean saveSupervisorScore(int idUser, int idInternshipJury, double score) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try {
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("UPDATE internshipjury SET supervisorscore=? WHERE idinternshipjury=?");
+			
+			stmt.setDouble(1, score);
+			stmt.setInt(2, idInternshipJury);
+			
+			return stmt.execute();
+		} finally {
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public int save(int idUser, InternshipJury jury) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;

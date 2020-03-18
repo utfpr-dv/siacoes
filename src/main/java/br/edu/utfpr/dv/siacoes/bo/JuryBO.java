@@ -19,6 +19,7 @@ import br.edu.utfpr.dv.siacoes.model.CalendarReport;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
+import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserScore;
@@ -497,6 +498,49 @@ public class JuryBO {
 			throw new Exception(e.getMessage());
 		}
 	}
+	
+	public void sendJuryFormSignedMessage(int idJury) throws Exception {
+		Jury jury = this.findById(idJury);
+		User manager = new UserBO().findManager(this.findIdDepartment(idJury), SystemModule.SIGET);
+		List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+		
+		keys.add(new EmailMessageEntry<String, String>("manager", manager.getName()));
+		keys.add(new EmailMessageEntry<String, String>("student", jury.getStudent().getName()));
+		keys.add(new EmailMessageEntry<String, String>("supervisor", jury.getSupervisor().getName()));
+		keys.add(new EmailMessageEntry<String, String>("title", jury.getTitle()));
+		keys.add(new EmailMessageEntry<String, String>("stage", String.valueOf(jury.getStage())));
+		
+		new EmailMessageBO().sendEmail(manager.getIdUser(), MessageType.SIGNEDJURYREQUEST, keys);
+	}
+	
+	public void sendRequestSignJuryFormMessage(int idJury, List<User> users) throws Exception {
+		Jury jury = this.findById(idJury);
+		
+		for(User user : users) {
+			List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+			
+			keys.add(new EmailMessageEntry<String, String>("name", user.getName()));
+			keys.add(new EmailMessageEntry<String, String>("student", jury.getStudent().getName()));
+			keys.add(new EmailMessageEntry<String, String>("supervisor", jury.getSupervisor().getName()));
+			keys.add(new EmailMessageEntry<String, String>("title", jury.getTitle()));
+			keys.add(new EmailMessageEntry<String, String>("stage", String.valueOf(jury.getStage())));
+			
+			new EmailMessageBO().sendEmail(user.getIdUser(), MessageType.REQUESTSIGNJURYFORM, keys, false);
+		}
+	}
+	
+	public void sendRequestSupervisorSignJuryForm(int idJury) throws Exception {
+		Jury jury = this.findById(idJury);
+		List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+		
+		keys.add(new EmailMessageEntry<String, String>("student", jury.getStudent().getName()));
+		keys.add(new EmailMessageEntry<String, String>("supervisor", jury.getSupervisor().getName()));
+		keys.add(new EmailMessageEntry<String, String>("title", jury.getTitle()));
+		keys.add(new EmailMessageEntry<String, String>("stage", String.valueOf(jury.getStage())));
+		
+		new EmailMessageBO().sendEmail(jury.getSupervisor().getIdUser(), MessageType.REQUESTSUPERVISORSIGNJURYFORM, keys);
+	}
+
 	
 	public boolean canAddAppraiser(Jury jury, User appraiser) throws Exception{
 		if(jury.getAppraisers() != null){

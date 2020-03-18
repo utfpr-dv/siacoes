@@ -66,11 +66,31 @@ public class InternshipJuryAppraiserScoreBO {
 		BigDecimal bd = new BigDecimal(score.getScore());
 	    bd = bd.setScale(2, RoundingMode.HALF_UP);
 	    score.setScore(bd.doubleValue());
+	    
+	    boolean hasAllScores;
+	    int idInternshipJury = 0;
+		try {
+			idInternshipJury = new InternshipJuryAppraiserScoreDAO().findIdInternshipJury(score.getIdInternshipJuryAppraiserScore());
+			hasAllScores = new InternshipJuryBO().hasAllScores(idInternshipJury);
+		} catch(Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			hasAllScores = false;
+		}
 		
 		try {
 			InternshipJuryAppraiserScoreDAO dao = new InternshipJuryAppraiserScoreDAO(this.conn);
 			
-			return dao.save(idUser, score);
+			int ret = dao.save(idUser, score);
+			
+			try {
+				if((idInternshipJury > 0) && !hasAllScores && new InternshipJuryBO().hasAllScores(idInternshipJury)) {
+					new InternshipJuryBO().sendRequestSupervisorSignJuryForm(idInternshipJury);
+				}
+			} catch(Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			}
+			
+			return ret;
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

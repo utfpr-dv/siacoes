@@ -22,6 +22,7 @@ import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.EvaluationItem.EvaluationItemType;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
 import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
+import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
@@ -186,10 +187,46 @@ public class InternshipJuryBO {
 		}
 	}
 	
+	public boolean saveSupervisorScore(int idUser, int idInternshipJury, double score) throws Exception {
+		try {
+			if(score < 0) {
+				throw new Exception("A nota deve ser maior ou igual a zero.");
+			}
+			if(Document.hasSignature(DocumentType.INTERNSHIPJURY, idInternshipJury)) {
+				throw new Exception("A banca não pode ser alterada pois a ficha de avaliação já foi assinada.");
+			}
+			
+			boolean hasAllScores;
+			try {
+				hasAllScores = this.hasAllScores(idInternshipJury);
+			} catch(Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				hasAllScores = false;
+			}
+			
+			boolean ret = new InternshipJuryDAO().saveSupervisorScore(idUser, idInternshipJury, score);
+			
+			try {
+				if(!hasAllScores && this.hasAllScores(idInternshipJury)) {
+					this.sendRequestSupervisorSignJuryForm(idInternshipJury);
+				}
+			} catch(Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			}
+			
+			return ret;
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public int save(int idUser, InternshipJury jury) throws Exception{
 		try {
 			boolean insert = (jury.getIdInternshipJury() == 0);
 			InternshipJury oldJury = null;
+			boolean hasAllScores;
 			
 			if((jury.getInternship() == null) || (jury.getInternship().getIdInternship() == 0)){
 				throw new Exception("Informe o estágio a que a banca pertence.");
@@ -249,6 +286,13 @@ public class InternshipJuryBO {
 			}
 			if(Document.hasSignature(DocumentType.INTERNSHIPJURY, jury.getIdInternshipJury())) {
 				throw new Exception("A banca não pode ser alterada pois a ficha de avaliação já foi assinada.");
+			}
+			
+			try {
+				hasAllScores = this.hasAllScores(jury.getIdInternshipJury());
+			} catch(Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				hasAllScores = false;
 			}
 			
 			InternshipJuryDAO dao = new InternshipJuryDAO();
@@ -330,12 +374,59 @@ public class InternshipJuryBO {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			}
 			
+			try {
+				if(!hasAllScores && this.hasAllScores(jury.getIdInternshipJury())) {
+					this.sendRequestSupervisorSignJuryForm(jury.getIdInternshipJury());
+				}
+			} catch(Exception e) { 
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			}
+			
 			return id;
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			throw new Exception(e.getMessage());
 		}
+	}
+	
+	public void sendJuryFormSignedMessage(int idInternshipJury) throws Exception {
+		InternshipJury jury = this.findById(idInternshipJury);
+		User manager = new UserBO().findManager(jury.getInternship().getDepartment().getIdDepartment(), SystemModule.SIGES);
+		List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+		
+		keys.add(new EmailMessageEntry<String, String>("manager", manager.getName()));
+		keys.add(new EmailMessageEntry<String, String>("student", jury.getInternship().getStudent().getName()));
+		keys.add(new EmailMessageEntry<String, String>("supervisor", jury.getInternship().getSupervisor().getName()));
+		keys.add(new EmailMessageEntry<String, String>("company", jury.getInternship().getCompany().getName()));
+		
+		new EmailMessageBO().sendEmail(manager.getIdUser(), MessageType.SIGNEDINTERNSHIPPOSTERREQUEST, keys);
+	}
+	
+	public void sendRequestSignJuryFormMessage(int idInternshipJury, List<User> users) throws Exception {
+		InternshipJury jury = this.findById(idInternshipJury);
+		
+		for(User user : users) {
+			List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+			
+			keys.add(new EmailMessageEntry<String, String>("name", user.getName()));
+			keys.add(new EmailMessageEntry<String, String>("student", jury.getInternship().getStudent().getName()));
+			keys.add(new EmailMessageEntry<String, String>("supervisor", jury.getInternship().getSupervisor().getName()));
+			keys.add(new EmailMessageEntry<String, String>("company", jury.getInternship().getCompany().getName()));
+			
+			new EmailMessageBO().sendEmail(user.getIdUser(), MessageType.REQUESTSIGNINTERNSHIPJURYFORM, keys, false);
+		}
+	}
+	
+	public void sendRequestSupervisorSignJuryForm(int idInternshipJury) throws Exception {
+		InternshipJury jury = this.findById(idInternshipJury);
+		List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+		
+		keys.add(new EmailMessageEntry<String, String>("student", jury.getInternship().getStudent().getName()));
+		keys.add(new EmailMessageEntry<String, String>("supervisor", jury.getInternship().getSupervisor().getName()));
+		keys.add(new EmailMessageEntry<String, String>("company", jury.getInternship().getCompany().getName()));
+		
+		new EmailMessageBO().sendEmail(jury.getInternship().getSupervisor().getIdUser(), MessageType.REQUESTSUPERVISORSIGNINTERNSHIPJURYFORM, keys);
 	}
 	
 	public boolean canAddAppraiser(InternshipJury jury, User appraiser) throws Exception{

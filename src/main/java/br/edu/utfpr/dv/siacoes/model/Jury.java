@@ -221,6 +221,21 @@ public class Jury implements Serializable {
 			return this.getProject().getStudent();
 		}
 	}
+	public String getTitle(){
+		if((this.getThesis() != null) && (this.getThesis().getIdThesis() != 0)){
+			if((this.getThesis().getStudent() == null) || (this.getThesis().getStudent().getIdUser() == 0)){
+				this.loadThesis();
+			}
+			
+			return this.getThesis().getTitle();
+		}else{
+			if((this.getProject().getStudent() == null) || (this.getProject().getStudent().getIdUser() == 0)){
+				this.loadProject();
+			}
+			
+			return this.getProject().getTitle();
+		}
+	}
 	
 	private void loadThesis(){
 		try {

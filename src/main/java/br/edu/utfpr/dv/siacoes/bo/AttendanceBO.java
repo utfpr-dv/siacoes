@@ -11,6 +11,10 @@ import java.util.logging.Logger;
 import br.edu.utfpr.dv.siacoes.dao.AttendanceDAO;
 import br.edu.utfpr.dv.siacoes.model.Attendance;
 import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
+import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
+import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
+import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.AttendanceFrequency;
 import br.edu.utfpr.dv.siacoes.sign.Document;
 import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
@@ -84,6 +88,38 @@ public class AttendanceBO {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public void sendAttendanceSignedMessage(int idGroup) throws Exception {
+		Attendance attendance = new AttendanceDAO().listByGroup(idGroup).get(0);
+		attendance.setProposal(new ProposalBO().findById(attendance.getProposal().getIdProposal()));
+		User manager = new UserBO().findManager(attendance.getProposal().getDepartment().getIdDepartment(), SystemModule.SIGET);
+		List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+		
+		keys.add(new EmailMessageEntry<String, String>("manager", manager.getName()));
+		keys.add(new EmailMessageEntry<String, String>("student", attendance.getStudent().getName()));
+		keys.add(new EmailMessageEntry<String, String>("supervisor", attendance.getSupervisor().getName()));
+		keys.add(new EmailMessageEntry<String, String>("title", attendance.getProposal().getTitle()));
+		keys.add(new EmailMessageEntry<String, String>("stage", String.valueOf(attendance.getStage())));
+		
+		new EmailMessageBO().sendEmail(manager.getIdUser(), MessageType.SIGNEDATTENDANCE, keys);
+	}
+	
+	public void sendRequestSignAttendanceMessage(int idGroup, List<User> users) throws Exception {
+		Attendance attendance = new AttendanceDAO().listByGroup(idGroup).get(0);
+		attendance.setProposal(new ProposalBO().findById(attendance.getProposal().getIdProposal()));
+		
+		for(User user : users) {
+			List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+			
+			keys.add(new EmailMessageEntry<String, String>("name", user.getName()));
+			keys.add(new EmailMessageEntry<String, String>("student", attendance.getStudent().getName()));
+			keys.add(new EmailMessageEntry<String, String>("supervisor", attendance.getSupervisor().getName()));
+			keys.add(new EmailMessageEntry<String, String>("title", attendance.getProposal().getTitle()));
+			keys.add(new EmailMessageEntry<String, String>("stage", String.valueOf(attendance.getStage())));
+			
+			new EmailMessageBO().sendEmail(user.getIdUser(), MessageType.SIGNEDATTENDANCE, keys, false);
 		}
 	}
 	

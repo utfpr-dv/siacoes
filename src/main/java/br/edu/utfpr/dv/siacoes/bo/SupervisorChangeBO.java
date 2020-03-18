@@ -7,8 +7,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.SupervisorChangeDAO;
+import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.SupervisorChange;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
+import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.model.SupervisorChange.ChangeFeedback;
@@ -52,6 +55,20 @@ public class SupervisorChangeBO {
 			
 			throw new Exception(e.getMessage());
 		}
+	}
+	
+	public void sendSupervisorChangeMessage(int idSupervisorChange) throws Exception {
+		SupervisorChange change = this.findById(idSupervisorChange);
+		change.setProposal(new ProposalBO().findById(change.getProposal().getIdProposal()));
+		User manager = new UserBO().findManager(change.getProposal().getDepartment().getIdDepartment(), SystemModule.SIGET);
+		List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+		
+		keys.add(new EmailMessageEntry<String, String>("manager", manager.getName()));
+		keys.add(new EmailMessageEntry<String, String>("type", change.isSupervisorRequest() ? "Professor(a) Orientador(a)" : "acadêmico(a)"));
+		keys.add(new EmailMessageEntry<String, String>("name", change.isSupervisorRequest() ? change.getOldSupervisor().getName() : change.getProposal().getStudent().getName()));
+		keys.add(new EmailMessageEntry<String, String>("title", change.getProposal().getTitle()));
+		
+		new EmailMessageBO().sendEmail(manager.getIdUser(), MessageType.SIGNEDSUPERVISORCHANGE, keys);
 	}
 	
 	public SupervisorChange findPendingChange(int idProposal) throws Exception{

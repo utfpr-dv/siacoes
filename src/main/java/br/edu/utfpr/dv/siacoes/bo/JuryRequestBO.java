@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.JuryRequestDAO;
+import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
@@ -19,6 +20,8 @@ import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
+import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.sign.Document;
 import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
@@ -190,6 +193,38 @@ public class JuryRequestBO {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public void sendRequestSignedMessage(int idJuryRequest) throws Exception {
+		JuryRequest request = this.findById(idJuryRequest);
+		request.setProposal(new ProposalBO().findById(request.getProposal().getIdProposal()));
+		User manager = new UserBO().findManager(request.getProposal().getDepartment().getIdDepartment(), SystemModule.SIGET);
+		List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+		
+		keys.add(new EmailMessageEntry<String, String>("manager", manager.getName()));
+		keys.add(new EmailMessageEntry<String, String>("student", request.getProposal().getStudent().getName()));
+		keys.add(new EmailMessageEntry<String, String>("supervisor", request.getProposal().getSupervisor().getName()));
+		keys.add(new EmailMessageEntry<String, String>("title", request.getProposal().getTitle()));
+		keys.add(new EmailMessageEntry<String, String>("stage", String.valueOf(request.getStage())));
+		
+		new EmailMessageBO().sendEmail(manager.getIdUser(), MessageType.SIGNEDJURYREQUEST, keys);
+	}
+	
+	public void sendRequestSignJuryRequestMessage(int idJuryRequest, List<User> users) throws Exception {
+		JuryRequest request = this.findById(idJuryRequest);
+		request.setProposal(new ProposalBO().findById(request.getProposal().getIdProposal()));
+		
+		for(User user : users) {
+			List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+			
+			keys.add(new EmailMessageEntry<String, String>("name", user.getName()));
+			keys.add(new EmailMessageEntry<String, String>("student", request.getProposal().getStudent().getName()));
+			keys.add(new EmailMessageEntry<String, String>("supervisor", request.getProposal().getSupervisor().getName()));
+			keys.add(new EmailMessageEntry<String, String>("title", request.getProposal().getTitle()));
+			keys.add(new EmailMessageEntry<String, String>("stage", String.valueOf(request.getStage())));
+			
+			new EmailMessageBO().sendEmail(user.getIdUser(), MessageType.REQUESTSIGNJURYREQUEST, keys, false);
 		}
 	}
 	

@@ -39,8 +39,8 @@ import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipJuryAppraiserFeedbackWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipJuryAppraiserScoreWindow;
+import br.edu.utfpr.dv.siacoes.window.EditInternshipJurySupervisorScoreWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipJuryWindow;
-import br.edu.utfpr.dv.siacoes.window.EditInternshipWindow;
 import br.edu.utfpr.dv.siacoes.window.InternshipJuryAppraiserChangeWindow;
 import br.edu.utfpr.dv.siacoes.window.InternshipJuryGradesWindow;
 
@@ -543,9 +543,9 @@ public class InternshipJuryView extends ListView {
 		} else {
 			try {
 				if(!this.config.isAppraiserFillsGrades() && (Session.getUser().getIdUser() == new InternshipJuryAppraiserBO().findChair((int)value).getAppraiser().getIdUser())) {
-					Internship internship = new InternshipBO().findById(new InternshipJuryBO().findById((int)value).getInternship().getIdInternship());
+					InternshipJury jury = new InternshipJuryBO().findById((int)value);
 					
-					UI.getCurrent().addWindow(new EditInternshipWindow(internship, this));
+					UI.getCurrent().addWindow(new EditInternshipJurySupervisorScoreWindow(jury));
 				} else {
 					InternshipJuryAppraiser appraiser = new InternshipJuryAppraiserBO().findByAppraiser((int)value, Session.getUser().getIdUser());
 					

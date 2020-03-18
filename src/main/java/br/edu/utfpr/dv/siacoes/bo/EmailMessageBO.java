@@ -86,16 +86,22 @@ public class EmailMessageBO {
 	public void sendEmail(int idUser, EmailMessage.MessageType type, List<EmailMessageEntry<String, String>> keys) throws Exception {
 		UserBO bo = new UserBO();
 		
-		this.sendEmail(new int[] { idUser }, new String[] { bo.findEmail(idUser) }, type, keys);
+		this.sendEmail(new int[] { idUser }, new String[] { bo.findEmail(idUser) }, type, keys, true);
+	}
+	
+	public void sendEmail(int idUser, EmailMessage.MessageType type, List<EmailMessageEntry<String, String>> keys, boolean writeMessage) throws Exception {
+		UserBO bo = new UserBO();
+		
+		this.sendEmail(new int[] { idUser }, new String[] { bo.findEmail(idUser) }, type, keys, writeMessage);
 	}
 	
 	public void sendEmail(int[] users, EmailMessage.MessageType type, List<EmailMessageEntry<String, String>> keys) throws Exception {
 		UserBO bo = new UserBO();
 		
-		this.sendEmail(users, bo.findEmails(users), type, keys);
+		this.sendEmail(users, bo.findEmails(users), type, keys, true);
 	}
 	
-	public void sendEmail(int users[], String[] to, EmailMessage.MessageType type, List<EmailMessageEntry<String, String>> keys) throws Exception {
+	public void sendEmail(int users[], String[] to, EmailMessage.MessageType type, List<EmailMessageEntry<String, String>> keys, boolean writeMessage) throws Exception {
 		EmailMessage message = this.findByMessageType(type);
 		
 		this.sendEmail(users, to, message, keys, true);

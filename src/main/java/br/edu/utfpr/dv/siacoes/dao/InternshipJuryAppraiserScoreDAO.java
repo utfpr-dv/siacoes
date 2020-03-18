@@ -28,6 +28,32 @@ public class InternshipJuryAppraiserScoreDAO {
 		}
 	}
 	
+	public int findIdInternshipJury(int idInternshipJuryAppraiserScore) throws SQLException {
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
+		
+		try {
+			stmt = this.conn.prepareStatement("SELECT internshipjuryappraiser.idinternshipjury FROM juryappraiser " +
+					"INNER JOIN internshipjuryappraiserscore ON internshipjuryappraiserscore.idinternshipjuryappraiser=internshipjuryappraiser.idinternshipjuryappraiser " +
+					"WHERE internshipjuryappraiserscore.idinternshipjuryappraiserscore=?");
+			
+			stmt.setInt(1, idInternshipJuryAppraiserScore);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				return rs.getInt("idinternshipjury");
+			} else {
+				return 0;
+			}
+		} finally {
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
+	}
+	
 	public boolean hasScore(int idInternshipJury, int idUser) throws SQLException{
 		ResultSet rs = null;
 		PreparedStatement stmt = null;

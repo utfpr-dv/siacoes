@@ -25,6 +25,14 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
+import br.edu.utfpr.dv.siacoes.bo.AttendanceBO;
+import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
+import br.edu.utfpr.dv.siacoes.bo.InternshipPosterRequestBO;
+import br.edu.utfpr.dv.siacoes.bo.JuryBO;
+import br.edu.utfpr.dv.siacoes.bo.JuryRequestBO;
+import br.edu.utfpr.dv.siacoes.bo.ProposalAppraiserBO;
+import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
+import br.edu.utfpr.dv.siacoes.bo.SupervisorChangeBO;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.dao.ConnectionDAO;
 import br.edu.utfpr.dv.siacoes.model.AppConfig;
@@ -364,7 +372,7 @@ public class Document {
 		return Document.insert(Document.build(idDepartment, type, idRegister, dataset, users));
 	}
 	
-	public static int insert(Document document) throws SQLException {
+	private static int insert(Document document) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -430,7 +438,7 @@ public class Document {
 		}
 	}
 	
-	public static boolean revoke(Document document, User user) throws SQLException {
+	public static boolean revoke(int idDocument, int idUser) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		
@@ -439,8 +447,8 @@ public class Document {
 			stmt = conn.prepareStatement("UPDATE signature SET revoked=1, revokedDate=?, revokedUser=? WHERE idDocument=?");
 			
 			stmt.setTimestamp(1, new java.sql.Timestamp(DateUtils.getNow().getTime().getTime()));
-			stmt.setInt(2, user.getIdUser());
-			stmt.setInt(3, document.getIdDocument());
+			stmt.setInt(2, idUser);
+			stmt.setInt(3, idDocument);
 			
 			return stmt.execute();
 		} finally {
@@ -455,7 +463,7 @@ public class Document {
 		Document.sign(Document.find(idDocument), login, password);
 	}
 	
-	public static void sign(Document document, String login, String password) throws Exception {
+	private static void sign(Document document, String login, String password) throws Exception {
 		User user = new UserBO().findByLogin(login);
 		
 		for(Signature sign : document.getSignatures()) {
@@ -465,6 +473,20 @@ public class Document {
 				}
 				if(sign.isRevoked()) {
 					throw new Exception("A assinatura já foi revogada e não é possível assinar o documento novamente.");
+				}
+				
+				boolean hasAllSignatures, hasNoneSignature;
+				
+				try {
+					hasAllSignatures = Document.hasAllSignatures(document.getType(), document.getIdRegister());
+				} catch(Exception e) {
+					hasAllSignatures = false;
+				}
+				
+				try {
+					hasNoneSignature = Document.hasNoneSignature(document.getType(), document.getIdRegister());
+				} catch(Exception e) {
+					hasNoneSignature = true;
 				}
 				
 				sign.setSignature(SignatureKey.sign(login, password, document.getDataset()));
@@ -488,6 +510,14 @@ public class Document {
 					if((conn != null) && !conn.isClosed())
 						conn.close();
 				}
+				
+				try {
+					if(!hasAllSignatures && Document.hasAllSignatures(document.getType(), document.getIdRegister())) {
+						Document.sendNotificationToManager(document.getType(), document.getIdRegister());
+					} else if(hasNoneSignature && Document.hasSignature(document.getType(), document.getIdRegister())) {
+						Document.sendRequestSignatureNotification(document.getType(), document.getIdRegister(), Document.listPending(document.getIdDocument()));
+					}
+				} finally { }
 				
 				return;
 			}
@@ -543,6 +573,42 @@ public class Document {
 			
 			while(rs.next()) {
 				list.add(Document.loadObject(rs));
+			}
+			
+			return list;
+		} finally {
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	private static List<User> listPending(int idDocument) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT \"user\".iduser, \"user\".name " +
+					"FROM signdocument INNER JOIN signature sign ON sign.iddocument=signdocument.iddocument " +
+					"INNER JOIN \"user\" ON \"user\".iduser=sign.iduser " +
+					"WHERE sign.signature IS NULL AND sign.revoked=0 AND signdocument.iddocument=" + String.valueOf(idDocument));
+			
+			List<User> list = new ArrayList<User>();
+			
+			while(rs.next()) {
+				User user = new User();
+				
+				user.setIdUser(rs.getInt("iduser"));
+				user.setName(rs.getString("name"));
+				
+				list.add(user);
 			}
 			
 			return list;
@@ -721,7 +787,79 @@ public class Document {
 		}
 	}
 	
-	public static Document loadObject(ResultSet rs) throws SQLException {
+	public static boolean hasAllSignatures(DocumentType type, int idRegister) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT signdocument.iddocument, signature.signature " +
+					"FROM signdocument INNER JOIN signature ON signature.iddocument=signdocument.iddocument " +
+					"WHERE signature.revoked=0 AND signdocument.idregister=" + 
+					String.valueOf(idRegister) + " AND signdocument.type=" + String.valueOf(type.getValue()));
+			
+			if(!rs.next()) {
+				return false;
+			}
+			
+			rs.beforeFirst();
+			while(rs.next()) {
+				if(rs.getBytes("signature") == null) {
+					return false;
+				}
+			}
+			
+			return true;
+		} finally {
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public static boolean hasNoneSignature(DocumentType type, int idRegister) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT signdocument.iddocument, signature.signature " +
+					"FROM signdocument INNER JOIN signature ON signature.iddocument=signdocument.iddocument " +
+					"WHERE signature.revoked=0 AND signdocument.idregister=" + 
+					String.valueOf(idRegister) + " AND signdocument.type=" + String.valueOf(type.getValue()));
+			
+			if(!rs.next()) {
+				return true;
+			}
+			
+			rs.beforeFirst();
+			while(rs.next()) {
+				if(rs.getBytes("signature") != null) {
+					return false;
+				}
+			}
+			
+			return true;
+		} finally {
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	private static Document loadObject(ResultSet rs) throws SQLException {
 		Document doc = new Document();
 		
 		doc.setIdDocument(rs.getInt("iddocument"));
@@ -779,6 +917,57 @@ public class Document {
 		}
 		
 		return doc;
+	}
+	
+	@SuppressWarnings("incomplete-switch")
+	private static void sendNotificationToManager(DocumentType type, int idRegister) throws Exception {
+		switch(type) {
+			case SUPERVISORAGREEMENT:
+				new ProposalBO().sendSupervisorFeedbackSignedMessage(idRegister);
+				return;
+			case APPRAISERFEEDBACK:
+				new ProposalAppraiserBO().sendAppraiserFeedbackSignedMessage(idRegister);
+				return;
+			case JURYREQUEST:
+				new JuryRequestBO().sendRequestSignedMessage(idRegister);
+				return;
+			case SUPERVISORCHANGE:
+				new SupervisorChangeBO().sendSupervisorChangeMessage(idRegister);
+				return;
+			case ATTENDANCE:
+				new AttendanceBO().sendAttendanceSignedMessage(idRegister);
+				return;
+			case JURY:
+				new JuryBO().sendJuryFormSignedMessage(idRegister);
+				return;
+			case INTERNSHIPPOSTERREQUEST:
+				new InternshipPosterRequestBO().sendRequestSignedMessage(idRegister);
+				return;
+			case INTERNSHIPJURY:
+				new InternshipJuryBO().sendJuryFormSignedMessage(idRegister);
+				return;
+		}
+	}
+	
+	@SuppressWarnings("incomplete-switch")
+	private static void sendRequestSignatureNotification(DocumentType type, int idRegister, List<User> users) throws Exception {
+		switch(type) {
+			case JURYREQUEST:
+				new JuryRequestBO().sendRequestSignJuryRequestMessage(idRegister, users);
+				return;
+			case ATTENDANCE:
+				new AttendanceBO().sendRequestSignAttendanceMessage(idRegister, users);
+				return;
+			case JURY:
+				new JuryBO().sendRequestSignJuryFormMessage(idRegister, users);
+				return;
+			case INTERNSHIPPOSTERREQUEST:
+				new InternshipPosterRequestBO().sendRequestSignInternshipPosterRequestMessage(idRegister, users);
+				return;
+			case INTERNSHIPJURY:
+				new InternshipJuryBO().sendRequestSignJuryFormMessage(idRegister, users);
+				return;
+		}
 	}
 
 }

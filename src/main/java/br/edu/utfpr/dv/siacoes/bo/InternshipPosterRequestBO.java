@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.InternshipPosterRequestDAO;
+import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
 import br.edu.utfpr.dv.siacoes.model.InternshipPosterAppraiserRequest;
@@ -16,6 +17,7 @@ import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.sign.Document;
 import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
@@ -121,6 +123,36 @@ public class InternshipPosterRequestBO {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			throw new Exception(e);
+		}
+	}
+	
+	public void sendRequestSignedMessage(int idInternshipPosterRequest) throws Exception {
+		InternshipPosterRequest request = new InternshipPosterRequestBO().findById(idInternshipPosterRequest);
+		request.setInternship(new InternshipBO().findById(request.getInternship().getIdInternship()));
+		User manager = new UserBO().findManager(request.getInternship().getDepartment().getIdDepartment(), SystemModule.SIGES);
+		List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+		
+		keys.add(new EmailMessageEntry<String, String>("manager", manager.getName()));
+		keys.add(new EmailMessageEntry<String, String>("student", request.getInternship().getStudent().getName()));
+		keys.add(new EmailMessageEntry<String, String>("supervisor", request.getInternship().getSupervisor().getName()));
+		keys.add(new EmailMessageEntry<String, String>("company", request.getInternship().getCompany().getName()));
+		
+		new EmailMessageBO().sendEmail(manager.getIdUser(), MessageType.SIGNEDINTERNSHIPPOSTERREQUEST, keys);
+	}
+	
+	public void sendRequestSignInternshipPosterRequestMessage(int idInternshipPosterRequest, List<User> users) throws Exception {
+		InternshipPosterRequest request = new InternshipPosterRequestBO().findById(idInternshipPosterRequest);
+		request.setInternship(new InternshipBO().findById(request.getInternship().getIdInternship()));
+		
+		for(User user : users) {
+			List<EmailMessageEntry<String, String>> keys = new ArrayList<EmailMessageEntry<String, String>>();
+			
+			keys.add(new EmailMessageEntry<String, String>("name", user.getName()));
+			keys.add(new EmailMessageEntry<String, String>("student", request.getInternship().getStudent().getName()));
+			keys.add(new EmailMessageEntry<String, String>("supervisor", request.getInternship().getSupervisor().getName()));
+			keys.add(new EmailMessageEntry<String, String>("company", request.getInternship().getCompany().getName()));
+			
+			new EmailMessageBO().sendEmail(user.getIdUser(), MessageType.REQUESTSIGNINTERNSHIPPOSTERREQUEST, keys, false);
 		}
 	}
 	

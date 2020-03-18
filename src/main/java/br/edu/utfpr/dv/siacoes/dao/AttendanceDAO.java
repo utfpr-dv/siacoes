@@ -115,6 +115,37 @@ public class AttendanceDAO {
 		}
 	}
 	
+	public List<Attendance> listByGroup(int idGroup) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT attendance.*, student.name AS studentName, supervisor.name AS supervisorName, proposal.title AS proposalTitle " +
+					"FROM attendance INNER JOIN proposal ON proposal.idProposal=attendance.idProposal " +
+					"INNER JOIN \"user\" student ON student.idUser=attendance.idStudent " +
+					"INNER JOIN \"user\" supervisor ON supervisor.idUser=attendance.idSupervisor " +
+					"WHERE attendance.idGroup = " + String.valueOf(idGroup) + " ORDER BY attendance.date DESC, attendance.startTime DESC");
+			List<Attendance> list = new ArrayList<Attendance>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));			
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public List<Attendance> listByStudent(int idStudent, int idSupervisor, int idProposal, int stage) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
