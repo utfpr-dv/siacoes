@@ -290,6 +290,7 @@ public class SignDatasetBuilder {
 		
 		if(!findSupervisor) {
 			dataset.addSignature(jury.getIdSupervisor(), jury.getSupervisor());
+			dataset.addSupervisorSignature();
 		}
 		
 		return dataset;

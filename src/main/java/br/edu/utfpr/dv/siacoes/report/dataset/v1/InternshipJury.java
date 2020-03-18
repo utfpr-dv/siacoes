@@ -31,6 +31,7 @@ public class InternshipJury extends SignDataset {
 	private String company;
 	private JuryResult result;
 	private List<InternshipJuryAppraiser> appraisers;
+	private List<InternshipJuryAppraiserSignature> appraisersSignature;
 	
 	public Date getDate() {
 		return date;
@@ -188,6 +189,12 @@ public class InternshipJury extends SignDataset {
 	public void setAppraisers(List<InternshipJuryAppraiser> appraisers) {
 		this.appraisers = appraisers;
 	}
+	public List<InternshipJuryAppraiserSignature> getAppraisersSignature() {
+		return appraisersSignature;
+	}
+	public void setAppraisersSignature(List<InternshipJuryAppraiserSignature> appraisersSignature) {
+		this.appraisersSignature = appraisersSignature;
+	}
 	
 	public InternshipJury() {
 		this.setTitle("");
@@ -203,7 +210,8 @@ public class InternshipJury extends SignDataset {
 		this.setAppraisersPonderosity(0);
 		this.setSupervisorScore(0);
 		this.setCompanySupervisorScore(0);
-		this.setAppraisers(new ArrayList<InternshipJury.InternshipJuryAppraiser>());
+		this.setAppraisers(new ArrayList<InternshipJuryAppraiser>());
+		this.setAppraisersSignature(new ArrayList<InternshipJuryAppraiserSignature>());
 	}
 	
 	public void addAppraiser(int idUser, String description, double score, String comments, List<JuryFormAppraiserDetailReport> details) {
@@ -220,6 +228,89 @@ public class InternshipJury extends SignDataset {
 		}
 		
 		this.getAppraisers().add(appraiser);
+		this.addAppraiserSignature(idUser, description);
+	}
+	
+	private void addAppraiserSignature(int idUser, String description) {
+		InternshipJuryAppraiserSignature appraiser = new InternshipJuryAppraiserSignature();
+		
+		appraiser.setJury(this);
+		appraiser.setIdUser(idUser);
+		appraiser.setDescription(description);
+		
+		this.getAppraisersSignature().add(appraiser);
+	}
+	
+	public void addSupervisorSignature() {
+		InternshipJuryAppraiserSignature appraiser = new InternshipJuryAppraiserSignature();
+		
+		appraiser.setJury(this);
+		appraiser.setIdUser(this.getIdSupervisor());
+		appraiser.setDescription("Orientador");
+		
+		this.getAppraisersSignature().add(0, appraiser);
+	}
+	
+	public class InternshipJuryAppraiserSignature implements Serializable {
+		
+		private static final long serialVersionUID = 1L;
+		
+		private InternshipJury jury;
+		private int idUser;
+		private String description;
+		
+		public InternshipJury getJury() {
+			return jury;
+		}
+		public void setJury(InternshipJury jury) {
+			this.jury = jury;
+		}
+		public int getIdUser() {
+			return idUser;
+		}
+		public void setIdUser(int idUser) {
+			this.idUser = idUser;
+		}
+		public String getDescription() {
+			return description;
+		}
+		public void setDescription(String description) {
+			this.description = description;
+		}
+		public String getName() {
+			for(Signature sign : this.getJury().getSignatures()) {
+				if(sign.getIdUser() == this.getIdUser()) {
+					return sign.getName();
+				}
+			}
+			
+			return "";
+		}
+		public InputStream getRubric() {
+			for(Signature sign : this.getJury().getSignatures()) {
+				if(sign.getIdUser() == this.getIdUser()) {
+					return sign.getRubric();
+				}
+			}
+			
+			return null;
+		}
+		public InputStream getSignature() {
+			for(Signature sign : this.getJury().getSignatures()) {
+				if(sign.getIdUser() == this.getIdUser()) {
+					return sign.getSignature();
+				}
+			}
+			
+			return null;
+		}
+		
+		public InternshipJuryAppraiserSignature() {
+			this.setJury(null);
+			this.setIdUser(0);
+			this.setDescription("");
+		}
+		
 	}
 	
 	public class InternshipJuryAppraiser implements Serializable {

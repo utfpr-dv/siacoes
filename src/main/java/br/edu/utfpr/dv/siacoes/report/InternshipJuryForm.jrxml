@@ -60,6 +60,9 @@
 	<field name="appraisers" class="java.util.List">
 		<fieldDescription><![CDATA[appraisers]]></fieldDescription>
 	</field>
+	<field name="appraisersSignature" class="java.util.List">
+		<fieldDescription><![CDATA[appraisersSignature]]></fieldDescription>
+	</field>
 	<field name="company" class="java.lang.String">
 		<fieldDescription><![CDATA[company]]></fieldDescription>
 	</field>
@@ -311,7 +314,7 @@
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{appraisers})]]></dataSourceExpression>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{appraisersSignature})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["br/edu/utfpr/dv/siacoes/report/JuryFormAppraiserList.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
