@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
+import br.edu.utfpr.dv.siacoes.model.InternshipJuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipPosterAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.InternshipPosterRequestForm;
 import br.edu.utfpr.dv.siacoes.model.JuryFormAppraiserReport;
@@ -13,6 +14,7 @@ import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.Attendance;
+import br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipJury;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipPosterRequest;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.Jury;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.JuryRequest;
@@ -245,6 +247,86 @@ public class SignDatasetBuilder {
 		supervisor.setName(request.getSupervisor().getName());
 		
 		users.add(supervisor);
+		
+		return users;
+	}
+	
+	public static InternshipJury build(InternshipJuryFormReport jury) {
+		InternshipJury dataset = new InternshipJury();
+		
+		dataset.setCompany(jury.getCompany());
+		dataset.setTitle(jury.getTitle());
+		dataset.setDate(jury.getDate());
+		dataset.setLocal(jury.getLocal());
+		dataset.setIdStudent(jury.getIdStudent());
+		dataset.setIdSupervisor(jury.getIdSupervisor());
+		dataset.setComments(jury.getComments());
+		dataset.setCompanySupervisorPonderosity(jury.getCompanySupervisorPonderosity());
+		dataset.setSupervisorPonderosity(jury.getSupervisorPonderosity());
+		dataset.setAppraisersPonderosity(jury.getAppraisersPonderosity());
+		dataset.setCompanySupervisorScore(jury.getCompanySupervisorScore());
+		dataset.setSupervisorScore(jury.getSupervisorScore());
+		dataset.setFinalScore(jury.getFinalScore());
+		
+		int app = 1;
+		boolean findSupervisor = false;
+		for(JuryFormAppraiserReport appraiser : jury.getAppraisers()) {
+			dataset.addAppraiser(appraiser.getIdUser(), appraiser.getDescription(), appraiser.getScore(), appraiser.getComments(), appraiser.getDetail());
+			dataset.addSignature(appraiser.getIdUser(), appraiser.getName());
+			
+			if(appraiser.getIdUser() != jury.getIdSupervisor()) {
+				if(app == 1) {
+					dataset.setIdAppraiser1(appraiser.getIdUser());
+				} else if(app == 2) {
+					dataset.setIdAppraiser2(appraiser.getIdUser());
+				}
+				app++;
+			} else {
+				findSupervisor = true;
+			}
+		}
+		
+		dataset.addSignature(jury.getIdStudent(), jury.getStudent());
+		
+		if(!findSupervisor) {
+			dataset.addSignature(jury.getIdSupervisor(), jury.getSupervisor());
+		}
+		
+		return dataset;
+	}
+	
+	public static List<User> getSignaturesList(InternshipJuryFormReport jury) {
+		List<User> users = new ArrayList<User>();
+		boolean findSupervisor = false;
+		
+		for(JuryFormAppraiserReport appraiser : jury.getAppraisers()) {
+			User u = new User();
+			
+			u.setIdUser(appraiser.getIdUser());
+			u.setName(appraiser.getName());
+			
+			users.add(u);
+			
+			if(appraiser.getIdUser() == jury.getIdSupervisor()) {
+				findSupervisor = true;
+			}
+		}
+		
+		if(!findSupervisor && (jury.getIdSupervisor() != 0)) {
+			User supervisor = new User();
+			
+			supervisor.setIdUser(jury.getIdSupervisor());
+			supervisor.setName(jury.getSupervisor());
+			
+			users.add(supervisor);
+		}
+		
+		User student = new User();
+		
+		student.setIdUser(jury.getIdStudent());
+		student.setName(jury.getStudent());
+		
+		users.add(student);
 		
 		return users;
 	}

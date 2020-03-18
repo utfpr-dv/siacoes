@@ -8,6 +8,8 @@ import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.JuryAppraiserRequestDAO;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 
 public class JuryAppraiserRequestBO {
 
@@ -49,6 +51,10 @@ public class JuryAppraiserRequestBO {
 	
 	public int save(int idUser, JuryAppraiserRequest appraiser) throws Exception{
 		try {
+			if(Document.hasSignature(DocumentType.JURYREQUEST, appraiser.getJuryRequest().getIdJuryRequest())) {
+				throw new Exception("A solicitação não pode ser alterada pois ela já foi assinada.");
+			}
+			
 			JuryAppraiserRequestDAO dao = new JuryAppraiserRequestDAO();
 			
 			return dao.save(idUser, appraiser);

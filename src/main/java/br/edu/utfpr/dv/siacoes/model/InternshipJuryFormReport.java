@@ -14,9 +14,12 @@ public class InternshipJuryFormReport implements Serializable {
 	private String title;
 	private Date date;
 	private String local;
+	private int idStudent;
 	private String student;
 	private String comments;
 	private String company;
+	private String supervisor;
+	private int idSupervisor;
 	private double appraisersPonderosity;
 	private double supervisorPonderosity;
 	private double companySupervisorPonderosity;
@@ -46,6 +49,9 @@ public class InternshipJuryFormReport implements Serializable {
 		this.setAppraisers(new ArrayList<JuryFormAppraiserReport>());
 		this.setAppraisersSignatures(new ArrayList<JuryFormAppraiserReport>());
 		this.setResult(JuryResult.NONE);
+		this.setIdStudent(0);
+		this.setIdSupervisor(0);
+		this.setSupervisor("");
 	}
 	
 	public String getTitle() {
@@ -149,6 +155,24 @@ public class InternshipJuryFormReport implements Serializable {
 	}
 	public void setLocal(String local) {
 		this.local = local;
+	}
+	public int getIdStudent() {
+		return idStudent;
+	}
+	public void setIdStudent(int idStudent) {
+		this.idStudent = idStudent;
+	}
+	public int getIdSupervisor() {
+		return idSupervisor;
+	}
+	public void setIdSupervisor(int idSupervisor) {
+		this.idSupervisor = idSupervisor;
+	}
+	public String getSupervisor() {
+		return supervisor;
+	}
+	public void setSupervisor(String supervisor) {
+		this.supervisor = supervisor;
 	}
 
 }

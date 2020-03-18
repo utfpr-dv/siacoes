@@ -49,6 +49,7 @@ import br.edu.utfpr.dv.siacoes.window.EditInternshipJuryWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipPosterRequestWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipReportWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipWindow;
+import br.edu.utfpr.dv.siacoes.window.InternshipJuryGradesWindow;
 import br.edu.utfpr.dv.siacoes.window.InternshipUploadFinalReportWindow;
 
 public class InternshipView extends ListView {
@@ -75,6 +76,7 @@ public class InternshipView extends ListView {
 	private final Button buttonJuryFeedback;
 	private final Button buttonPosterRequest;
 	private final Button buttonPrintPosterRequest;
+	private final Button buttonJuryGrades;
 	
 	private SigesConfig config;
 	
@@ -207,6 +209,15 @@ public class InternshipView extends ListView {
 		this.buttonJuryFeedback.setIcon(FontAwesome.CHECK);
 		this.addActionButton(this.buttonJuryFeedback);
 		
+		this.buttonJuryGrades = new Button("Notas da Banca", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	juryGrades();
+            }
+        });
+		this.buttonJuryGrades.setIcon(FontAwesome.CALCULATOR);
+		this.addActionButton(this.buttonJuryGrades);
+		
 		this.buttonFinalDocument = new Button("Versão Final", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
@@ -234,6 +245,7 @@ public class InternshipView extends ListView {
 			this.buttonFinalDocument.setVisible(this.profile == UserProfile.STUDENT || this.profile == UserProfile.PROFESSOR);
 			this.buttonPosterRequest.setVisible((this.profile == UserProfile.STUDENT) && (this.config.getJuryFormat() == JuryFormat.SESSION));
 			this.buttonPrintPosterRequest.setVisible((this.profile == UserProfile.STUDENT) && (this.config.getJuryFormat() == JuryFormat.SESSION));
+			this.buttonJuryGrades.setVisible(((this.profile == UserProfile.STUDENT) || (this.profile == UserProfile.PROFESSOR)) && (this.config.isShowGradesToStudent()));
 			
 			if(this.profile == UserProfile.PROFESSOR){
 				this.buttonFinalDocument.setCaption("Val. Relat. Final");
@@ -248,6 +260,7 @@ public class InternshipView extends ListView {
 			this.buttonPrintPosterRequest.setVisible(false);
 			this.buttonJuryFeedback.setVisible(false);
 			this.buttonFinalDocument.setVisible(false);
+			this.buttonJuryGrades.setVisible(false);
 		}
 	}
 
@@ -537,11 +550,11 @@ public class InternshipView extends ListView {
 				} else {
 					Internship internship = new InternshipBO().findById((int)id);
 	    			
-	    			if(internship.getType() == InternshipType.REQUIRED){
+	    			if(internship.getType() == InternshipType.REQUIRED) {
 	    				InternshipPosterRequest request = new InternshipPosterRequestBO().preparePosterRequest((int)id);
 	    				
 	    				UI.getCurrent().addWindow(new EditInternshipPosterRequestWindow(request, this));
-	    			}else{
+	    			} else {
 	    				this.showWarningNotification("Solicitar Banca", "A solicitação de banca só pode ser efetuada para o estágio obrigatório");
 	    			}
 				}
@@ -566,6 +579,28 @@ public class InternshipView extends ListView {
 			}
 		} else {
 			this.showWarningNotification("Imprimir Solicitação de Banca", "Selecione um registro para imprimir a Solicitação de Banca.");
+		}
+	}
+	
+	private void juryGrades() {
+		Object value = getIdSelected();
+		
+		if(value != null) {
+			try {
+				Internship internship = new InternshipBO().findById((int)value);
+    			
+    			if(internship.getType() == InternshipType.REQUIRED) {
+    				UI.getCurrent().addWindow(new InternshipJuryGradesWindow(new InternshipJuryBO().findByInternship((int)value)));
+    			} else {
+    				this.showWarningNotification("Notas da Banca", "As notas somente são atribuídas a estágios obrigatórios.");
+    			}
+			} catch (Exception e) {
+            	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+            	
+            	this.showErrorNotification("Notas da Banca", e.getMessage());
+			}
+		} else {
+			this.showWarningNotification("Notas da Banca", "Selecione um registro para visualizar as notas atribuídas pela banca.");
 		}
 	}
 	

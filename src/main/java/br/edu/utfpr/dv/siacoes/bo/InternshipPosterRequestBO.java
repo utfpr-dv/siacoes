@@ -110,6 +110,10 @@ public class InternshipPosterRequestBO {
 				}
 			}
 			
+			if(Document.hasSignature(DocumentType.INTERNSHIPPOSTERREQUEST, request.getIdInternshipPosterRequest())) {
+				throw new Exception("A solicitação não pode ser alterada pois ela já foi assinada.");
+			}
+			
 			request.setRequestDate(DateUtils.getNow().getTime());
 			
 			return new InternshipPosterRequestDAO().save(idUser, request);

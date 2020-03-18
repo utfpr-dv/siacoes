@@ -18,6 +18,8 @@ import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserScoreBO;
 import br.edu.utfpr.dv.siacoes.dao.ConnectionDAO;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiserScore;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 
 public class EditInternshipJuryAppraiserScoreWindow extends EditWindow {
 	
@@ -96,9 +98,14 @@ public class EditInternshipJuryAppraiserScoreWindow extends EditWindow {
 				
 				this.layoutEvaluationItems.addComponent(new HorizontalLayout(labelDescription, labelPonderosity, textScore));
 			}
+			
+			if((this.appraiser.getInternshipJury().getIdInternshipJury() != 0) && Document.hasSignature(DocumentType.INTERNSHIPJURY, this.appraiser.getInternshipJury().getIdInternshipJury())) {
+				this.disableButtons();
+			}
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
+			this.disableButtons();
 			this.showErrorNotification("Carregar Notas", e.getMessage());
 		}
 	}

@@ -17,6 +17,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.renderers.DateRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
@@ -25,6 +26,7 @@ import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryStudentBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
+import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.components.YearField;
 import br.edu.utfpr.dv.siacoes.model.Internship;
@@ -32,11 +34,15 @@ import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryStudent;
 import br.edu.utfpr.dv.siacoes.model.Semester;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipJuryAppraiserFeedbackWindow;
+import br.edu.utfpr.dv.siacoes.window.EditInternshipJuryAppraiserScoreWindow;
 import br.edu.utfpr.dv.siacoes.window.EditInternshipJuryWindow;
+import br.edu.utfpr.dv.siacoes.window.EditInternshipWindow;
 import br.edu.utfpr.dv.siacoes.window.InternshipJuryAppraiserChangeWindow;
+import br.edu.utfpr.dv.siacoes.window.InternshipJuryGradesWindow;
 
 public class InternshipJuryView extends ListView {
 
@@ -54,8 +60,11 @@ public class InternshipJuryView extends ListView {
 	private final Button buttonParticipantsReport;
 	private final Button buttonGrades;
 	private final Button buttonChangeAppraiser;
+	private final Button buttonFillGrades;
+	private final Button buttonSign;
 	
 	private boolean listAll = false;
+	private SigesConfig config;
 	
 	public InternshipJuryView(){
 		super(SystemModule.SIGES);
@@ -67,6 +76,12 @@ public class InternshipJuryView extends ListView {
 			semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
 		} catch (Exception e) {
 			semester = new Semester();
+		}
+		try {
+			this.config = new SigesConfigBO().findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			this.config = new SigesConfig();
 		}
 		
 		this.comboSemester = new SemesterComboBox();
@@ -161,10 +176,30 @@ public class InternshipJuryView extends ListView {
         });
 		this.buttonChangeAppraiser.setIcon(FontAwesome.USERS);
 		
+		this.buttonFillGrades = new Button("Lançar Notas", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	addScore();
+            }
+        });
+		this.buttonFillGrades.addStyleName(ValoTheme.BUTTON_PRIMARY);
+		this.buttonFillGrades.setIcon(FontAwesome.CALCULATOR);
+		
+		this.buttonSign = new Button("Assinar", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	sign();
+            }
+        });
+		this.buttonSign.setIcon(FontAwesome.PENCIL);
+		this.buttonSign.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+		
 		this.addActionButton(this.buttonSchedule);
 		this.addActionButton(this.buttonChangeAppraiser);
 		this.addActionButton(this.buttonFile);
 		this.addActionButton(this.buttonForm);
+		this.addActionButton(this.buttonFillGrades);
+		this.addActionButton(this.buttonSign);
 		this.addActionButton(this.buttonParticipants);
 		this.addActionButton(this.buttonParticipantsReport);
 		this.addActionButton(this.buttonSendFeedback);
@@ -188,6 +223,8 @@ public class InternshipJuryView extends ListView {
 			this.buttonParticipantsReport.setVisible(Session.isUserManager(this.getModule()));
 			this.buttonSingleStatement.setVisible(false);
 			this.buttonFile.setVisible(Session.isUserManager(this.getModule()));
+			this.buttonFillGrades.setVisible(false);
+			this.buttonSign.setVisible(false);
 		}else{
 			this.buttonSendFeedback.setVisible(true);
 			this.buttonChangeAppraiser.setVisible(true);
@@ -198,6 +235,8 @@ public class InternshipJuryView extends ListView {
 			this.buttonSendFeedback.setVisible(Session.isUserProfessor());
 			this.buttonStatements.setVisible(false);
 			this.buttonSchedule.setVisible(Session.isUserProfessor() || Session.isUserSupervisor());
+			this.buttonFillGrades.setVisible(Session.isUserSupervisor() && this.config.isAppraiserFillsGrades());
+			this.buttonSign.setVisible(Session.isUserProfessor() && this.config.isUseDigitalSignature());
 		}
 	}
 	
@@ -472,6 +511,56 @@ public class InternshipJuryView extends ListView {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 	        	
 				this.showErrorNotification("Alterar Membros", e.getMessage());
+			}
+		}
+	}
+	
+	private void sign() {
+		Object value = getIdSelected();
+		
+		if(value == null) {
+			this.showWarningNotification("Assinar Ficha", "Selecione uma banca para assinar a ficha de avaliação.");
+		} else {
+			try {
+				if(Session.getUser().getIdUser() == new InternshipJuryAppraiserBO().findChair((int)value).getAppraiser().getIdUser()) {
+					UI.getCurrent().addWindow(new InternshipJuryGradesWindow(new InternshipJuryBO().findById((int)value)));
+				} else {
+					this.showWarningNotification("Assinar Ficha", "Apenas o presidente da banca pode efetuar a assinatura da ficha de avaliação.");
+				}
+			} catch(Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+	        	
+				this.showErrorNotification("Assinar Ficha", e.getMessage());
+			}
+		}
+	}
+	
+	private void addScore() {
+		Object value = getIdSelected();
+		
+		if(value == null) {
+			this.showWarningNotification("Lançar Notas", "Selecione uma banca para lançar as notas.");
+		} else {
+			try {
+				if(!this.config.isAppraiserFillsGrades() && (Session.getUser().getIdUser() == new InternshipJuryAppraiserBO().findChair((int)value).getAppraiser().getIdUser())) {
+					Internship internship = new InternshipBO().findById(new InternshipJuryBO().findById((int)value).getInternship().getIdInternship());
+					
+					UI.getCurrent().addWindow(new EditInternshipWindow(internship, this));
+				} else {
+					InternshipJuryAppraiser appraiser = new InternshipJuryAppraiserBO().findByAppraiser((int)value, Session.getUser().getIdUser());
+					
+					if((appraiser == null) || (appraiser.getIdInternshipJuryAppraiser() == 0)) {
+						this.showWarningNotification("Lançar Notas", "Não é possível lançar as notas pois você não faz parte dessa banca.");
+					} else if(appraiser.isSubstitute()) {
+						this.showWarningNotification("Lançar Notas", "Apenas membros titulares da banca podem lançar notas.");
+					} else {
+						UI.getCurrent().addWindow(new EditInternshipJuryAppraiserScoreWindow(appraiser));
+					}
+				}
+			} catch(Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				
+				this.showErrorNotification("Lançar Notas", e.getMessage());
 			}
 		}
 	}

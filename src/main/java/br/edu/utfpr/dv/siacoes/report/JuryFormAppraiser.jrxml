@@ -278,8 +278,9 @@
 		<band height="172" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement x="0" y="25" width="481" height="20" uuid="f46e9cd6-1a9c-47c1-965e-23a2cc4b020e">
+				<reportElement x="0" y="25" width="480" height="20" uuid="f46e9cd6-1a9c-47c1-965e-23a2cc4b020e">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="1.0"/>
@@ -293,9 +294,10 @@
 				<text><![CDATA[Observações]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="45" width="481" height="50" uuid="d41fc3c5-6135-4e9a-9b1a-1e665a65eda2">
+				<reportElement x="0" y="45" width="480" height="50" uuid="d41fc3c5-6135-4e9a-9b1a-1e665a65eda2">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>

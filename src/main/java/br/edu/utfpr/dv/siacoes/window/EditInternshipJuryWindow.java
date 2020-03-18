@@ -1,5 +1,6 @@
 ﻿package br.edu.utfpr.dv.siacoes.window;
 
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,6 +33,8 @@ import br.edu.utfpr.dv.siacoes.model.InternshipJuryStudent;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig.JuryFormat;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.view.ListView;
 
 public class EditInternshipJuryWindow extends EditWindow {
@@ -253,6 +256,37 @@ public class EditInternshipJuryWindow extends EditWindow {
 		
 		this.textSupervisorScore.setVisible(!this.jury.isSupervisorFillJuryForm());
 		
+		if(this.jury.getAppraisers() == null){
+			try {
+				InternshipJuryAppraiserBO bo = new InternshipJuryAppraiserBO();
+				
+				this.jury.setAppraisers(bo.listAppraisers(this.jury.getIdInternshipJury()));
+			} catch (Exception e) {
+				this.jury.setAppraisers(null);
+				
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				
+				this.showErrorNotification("Carregar Banca", e.getMessage());
+			}
+		}
+		
+		if(this.jury.getParticipants() == null){
+			try{
+				InternshipJuryStudentBO bo = new InternshipJuryStudentBO();
+				
+				this.jury.setParticipants(bo.listByJury(this.jury.getIdInternshipJury()));
+			} catch (Exception e) {
+				this.jury.setParticipants(null);
+				
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				
+				this.showErrorNotification("Carregar Participantes", e.getMessage());
+			}
+		}
+		
+		this.loadGridAppraisers();
+		this.loadGridParticipants();
+		
 		if(this.jury.getIdInternshipJury() == 0){
 			this.textStartTime.setVisible(false);
 			this.textEndTime.setVisible(false);
@@ -263,37 +297,16 @@ public class EditInternshipJuryWindow extends EditWindow {
 				}
 			}
 		}else {
-			if(this.jury.getAppraisers() == null){
-				try {
-					InternshipJuryAppraiserBO bo = new InternshipJuryAppraiserBO();
-					
-					this.jury.setAppraisers(bo.listAppraisers(this.jury.getIdInternshipJury()));
-				} catch (Exception e) {
-					this.jury.setAppraisers(null);
-					
-					Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-					
-					this.showErrorNotification("Carregar Banca", e.getMessage());
+			try {
+				if(Document.hasSignature(DocumentType.INTERNSHIPJURY, this.jury.getIdInternshipJury())) {
+					this.disableButtons();
 				}
-			}
-			
-			if(this.jury.getParticipants() == null){
-				try{
-					InternshipJuryStudentBO bo = new InternshipJuryStudentBO();
-					
-					this.jury.setParticipants(bo.listByJury(this.jury.getIdInternshipJury()));
-				} catch (Exception e) {
-					this.jury.setParticipants(null);
-					
-					Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-					
-					this.showErrorNotification("Carregar Participantes", e.getMessage());
-				}
+			} catch (SQLException e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				
+				this.disableButtons();
 			}
 		}
-		
-		this.loadGridAppraisers();
-		this.loadGridParticipants();
 	}
 	
 	private void loadGridAppraisers() {

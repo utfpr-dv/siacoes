@@ -384,11 +384,14 @@ public class InternshipJuryDAO {
 			rs.close();
 			
 			stmt.close();
-			stmt = conn.prepareStatement("SELECT supervisorFillJuryForm, supervisorScore FROM internshipJury WHERE idInternshipJury=?");
+			stmt = conn.prepareStatement("SELECT supervisorFillJuryForm, supervisorScore, companySupervisorScore FROM internshipJury WHERE idInternshipJury=?");
 			stmt.setInt(1, idInternshipJury);
 			
 			rs = stmt.executeQuery();
 			rs.next();
+			if(rs.getInt("companySupervisorScore") <= 0) {
+				return false;
+			}
 			if((rs.getInt("supervisorFillJuryForm") == 0) && (rs.getDouble("supervisorScore") > 0)) {
 				numAppraisers = numAppraisers - 1;
 			}

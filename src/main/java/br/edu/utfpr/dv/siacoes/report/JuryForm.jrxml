@@ -152,8 +152,9 @@
 				<text><![CDATA[Média Final:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="166" width="481" height="20" uuid="2f0bb051-c983-44e9-97ee-f6807a02c91e">
+				<reportElement positionType="Float" x="0" y="166" width="480" height="20" uuid="2f0bb051-c983-44e9-97ee-f6807a02c91e">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="1.0"/>
@@ -167,8 +168,9 @@
 				<text><![CDATA[Observações]]></text>
 			</staticText>
 			<textField>
-				<reportElement positionType="Float" x="0" y="186" width="481" height="70" uuid="b4b5321c-a903-4c03-8dbd-78bdbeaddbcc">
+				<reportElement positionType="Float" x="0" y="186" width="480" height="70" uuid="b4b5321c-a903-4c03-8dbd-78bdbeaddbcc">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>

@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 
 import br.edu.utfpr.dv.siacoes.dao.InternshipPosterAppraiserRequestDAO;
 import br.edu.utfpr.dv.siacoes.model.InternshipPosterAppraiserRequest;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 
 public class InternshipPosterAppraiserRequestBO {
 	
@@ -48,6 +50,10 @@ public class InternshipPosterAppraiserRequestBO {
 	
 	public int save(int idUser, InternshipPosterAppraiserRequest appraiser) throws Exception{
 		try {
+			if(Document.hasSignature(DocumentType.INTERNSHIPPOSTERREQUEST, appraiser.getRequest().getIdInternshipPosterRequest())) {
+				throw new Exception("A solicitação não pode ser alterada pois ela já foi assinada.");
+			}
+			
 			InternshipPosterAppraiserRequestDAO dao = new InternshipPosterAppraiserRequestDAO();
 			
 			return dao.save(idUser, appraiser);

@@ -42,6 +42,9 @@ import br.edu.utfpr.dv.siacoes.model.SigesConfig.JuryFormat;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
@@ -244,6 +247,9 @@ public class InternshipJuryBO {
 					}
 				}
 			}
+			if(Document.hasSignature(DocumentType.INTERNSHIPJURY, jury.getIdInternshipJury())) {
+				throw new Exception("A banca não pode ser alterada pois a ficha de avaliação já foi assinada.");
+			}
 			
 			InternshipJuryDAO dao = new InternshipJuryDAO();
 			
@@ -363,12 +369,16 @@ public class InternshipJuryBO {
 	}
 	
 	public byte[] getJuryForm(int idJury) throws Exception {
-		InternshipJuryFormReport report = this.getJuryFormReport(idJury);
-		
-		List<InternshipJuryFormReport> list = new ArrayList<InternshipJuryFormReport>();
-		list.add(report);
-		
-		return new ReportUtils().createPdfStream(list, "InternshipJuryForm", this.findIdDepartment(idJury)).toByteArray();
+		if(Document.hasSignature(DocumentType.INTERNSHIPJURY, idJury)) {
+			return Document.getSignedDocument(DocumentType.INTERNSHIPJURY, idJury);
+		} else {
+			br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipJury dataset = SignDatasetBuilder.build(this.getJuryFormReport(idJury));
+			
+			List<br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipJury> list = new ArrayList<br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipJury>();
+			list.add(dataset);
+			
+			return new ReportUtils().createPdfStream(list, "InternshipJuryForm", this.findIdDepartment(idJury)).toByteArray();
+		}
 	}
 	
 	public InternshipJuryFormReport getJuryFormReport(int idJury) throws Exception{
@@ -388,6 +398,9 @@ public class InternshipJuryBO {
 			InternshipBO ibo = new InternshipBO();
 			Internship internship = ibo.findById(jury.getInternship().getIdInternship());
 			
+			report.setIdStudent(internship.getStudent().getIdUser());
+			report.setIdSupervisor(internship.getSupervisor().getIdUser());
+			report.setSupervisor(internship.getSupervisor().getName());
 			report.setTitle(internship.getReportTitle());
 			report.setStudent(internship.getStudent().getName());
 			report.setCompany(internship.getCompany().getName());
@@ -407,6 +420,7 @@ public class InternshipJuryBO {
 					double scoreSum = 0, writingPonderosity = 0, oralPonderosity = 0, argumentationPonderosity = 0;
 					boolean isSupervisor = false;
 					
+					appraiserReport.setIdUser(appraiser.getAppraiser().getIdUser());
 					appraiserReport.setName(appraiser.getAppraiser().getName());
 					appraiserReport.setComments(appraiser.getComments());
 					appraiserReport.setDate(report.getDate());
@@ -484,6 +498,7 @@ public class InternshipJuryBO {
 						}
 					}
 					
+					scoreReport.setIdUser(appraiserReport.getIdUser());
 					scoreReport.setName(appraiserReport.getName());
 					scoreReport.setDescription(appraiserReport.getDescription());
 					
@@ -581,6 +596,16 @@ public class InternshipJuryBO {
 		InternshipJuryDAO dao = new InternshipJuryDAO();
 		
 		return dao.hasScores(idInternshipJury);
+	}
+	
+	public boolean hasAllScores(int idJury) throws Exception {
+		try {
+			return new InternshipJuryDAO().hasAllScores(idJury);
+		} catch(SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
 	}
 	
 	public List<JuryStudentReport> listJuryStudentReport(int idDepartment, int idInternshipJury, Date startDate, Date endDate, boolean orderByDate) throws Exception {

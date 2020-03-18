@@ -38,7 +38,7 @@ import net.sf.jasperreports.engine.JasperReport;
 public class Document {
 	
 	public enum DocumentType{
-		NONE(0), SUPERVISORAGREEMENT(1), APPRAISERFEEDBACK(2), JURYREQUEST(3), SUPERVISORCHANGE(4), ATTENDANCE(5), JURY(6), INTERNSHIPPOSTERREQUEST(7);
+		NONE(0), SUPERVISORAGREEMENT(1), APPRAISERFEEDBACK(2), JURYREQUEST(3), SUPERVISORCHANGE(4), ATTENDANCE(5), JURY(6), INTERNSHIPPOSTERREQUEST(7), INTERNSHIPJURY(8);
 		
 		private final int value; 
 		DocumentType(int value){ 
@@ -77,6 +77,8 @@ public class Document {
 					return "Banca de TCC";
 				case INTERNSHIPPOSTERREQUEST:
 					return "Ficha de Inscrição para Evento de Avaliação de Estágio Curricular Obrigatório";
+				case INTERNSHIPJURY:
+					return "Banca de Estágio";
 				default:
 					return "Nenhum";
 			}
@@ -319,6 +321,8 @@ public class Document {
 				return new ReportUtils().getJasperData("JuryForm");
 			case INTERNSHIPPOSTERREQUEST:
 				return new ReportUtils().getJasperData("InternshipPosterRequest");
+			case INTERNSHIPJURY:
+				return new ReportUtils().getJasperData("InternshipJuryForm");
 			default:
 				return null;
 		}
