@@ -135,6 +135,18 @@ public class AttendanceBO {
 		}
 	}
 	
+	public List<Integer> listIdGroup(int idProposal, int stage) throws Exception {
+		try {
+			AttendanceDAO dao = new AttendanceDAO();
+			
+			return dao.listIdGroup(idProposal, stage);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public boolean hasSignature(int idAttendance) throws SQLException {
 		int idGroup = new AttendanceDAO().findIdGroup(idAttendance);
 		

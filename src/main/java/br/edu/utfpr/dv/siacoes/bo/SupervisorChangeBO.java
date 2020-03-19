@@ -107,6 +107,18 @@ public class SupervisorChangeBO {
 		}
 	}
 	
+	public List<SupervisorChange> listByProposal(int idProposal) throws Exception {
+		try {
+			SupervisorChangeDAO dao = new SupervisorChangeDAO();
+			
+			return dao.listByProposal(idProposal);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public List<SupervisorChange> list(int idDepartment, int semester, int year, boolean onlyPending) throws Exception{
 		try {
 			SupervisorChangeDAO dao = new SupervisorChangeDAO();

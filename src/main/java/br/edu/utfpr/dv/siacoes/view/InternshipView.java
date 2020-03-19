@@ -294,11 +294,11 @@ public class InternshipView extends ListView {
 				
 				list = bo.list(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status, this.textStartDate1.getValue(), this.textStartDate2.getValue(), this.textEndDate1.getValue(), this.textEndDate2.getValue());
 			}else if(this.profile == UserProfile.PROFESSOR){
-				list = bo.listBySupervisor(Session.getUser().getIdUser());
+				list = bo.listBySupervisor(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			}else if(this.profile == UserProfile.COMPANYSUPERVISOR){
 				list = bo.listByCompanySupervisor(Session.getUser().getIdUser());
 			}else{
-				list = bo.listByStudent(Session.getUser().getIdUser());
+				list = bo.listByStudent(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			}
 			
 			for(Internship c : list){

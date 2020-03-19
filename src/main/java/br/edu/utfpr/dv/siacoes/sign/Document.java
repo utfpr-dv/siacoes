@@ -286,8 +286,8 @@ public class Document {
 				for(SignDataset.Signature s : ((SignDataset)dataset).getSignatures()) {
 					if(sign.getUser().getIdUser() == s.getIdUser()) {
 						s.setName(sign.getUser().getName());
-						s.setSignature(new ByteArrayInputStream(com.will.signature.Signature.getSignature(s.getName(), com.will.signature.Signature.SignFont.PECITA)));
-						s.setRubric(new ByteArrayInputStream(com.will.signature.Signature.getSignature(s.getName().substring(0, s.getName().indexOf(" ")).trim(), com.will.signature.Signature.SignFont.PECITA)));
+						s.setSignature(new ByteArrayInputStream(com.will.signature.Signature.getSignature(s.getName(), com.will.signature.Signature.SignFont.PECITA, sign.isRevoked())));
+						s.setRubric(new ByteArrayInputStream(com.will.signature.Signature.getSignature(s.getName().substring(0, s.getName().indexOf(" ")).trim(), com.will.signature.Signature.SignFont.PECITA, sign.isRevoked())));
 					}
 				}
 			}
@@ -640,6 +640,37 @@ public class Document {
 			} else {
 				return 0;
 			}
+		} finally {
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public static List<Document> list(DocumentType type, int idRegister) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT DISTINCT signdocument.*, (SELECT COUNT(signature.*) FROM signature WHERE signature.signature IS NULL AND signature.iddocument=signdocument.iddocument) AS published, " +
+					"(SELECT MAX(signaturedate) FROM signature WHERE signature.iddocument=signdocument.iddocument) AS publisheddate " +
+					"FROM signdocument INNER JOIN signature sign ON sign.iddocument=signdocument.iddocument " +
+					"WHERE signdocument.type=" + String.valueOf(type.getValue()) + " AND signdocument.idregister=" + String.valueOf(idRegister));
+			
+			List<Document> list = new ArrayList<Document>();
+			
+			while(rs.next()) {
+				list.add(Document.loadObject(rs));
+			}
+			
+			return list;
 		} finally {
 			if((rs != null) && !rs.isClosed())
 				rs.close();

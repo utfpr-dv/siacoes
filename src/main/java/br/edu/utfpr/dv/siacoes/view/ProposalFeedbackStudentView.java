@@ -64,7 +64,7 @@ public class ProposalFeedbackStudentView extends ListView {
 	    	List<Proposal> list = null;
 	    	
 	    	if(Session.isUserStudent()){
-	    		list = bo.listByStudent(Session.getUser().getIdUser());
+	    		list = bo.listByStudent(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 	    	}else{
 	    		list = bo.listBySupervisor(Session.getUser().getIdUser());
 	    	}

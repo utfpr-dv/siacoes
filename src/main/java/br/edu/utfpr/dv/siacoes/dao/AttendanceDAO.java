@@ -517,6 +517,34 @@ public class AttendanceDAO {
 		}
 	}
 	
+	public List<Integer> listIdGroup(int idProposal, int stage) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT idgroup FROM attendancegroup WHERE idProposal=" + String.valueOf(idProposal) + " AND stage=" + String.valueOf(stage));
+			
+			List<Integer> list = new ArrayList<Integer>();
+			
+			while(rs.next()) {
+				list.add(rs.getInt("idgroup"));
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	private Attendance loadObject(ResultSet rs) throws SQLException{
 		Attendance a = new Attendance();
 		

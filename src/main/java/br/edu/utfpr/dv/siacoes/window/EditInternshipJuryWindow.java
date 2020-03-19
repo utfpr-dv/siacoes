@@ -354,6 +354,15 @@ public class EditInternshipJuryWindow extends EditWindow {
 	}
 	
 	@Override
+	public void disableButtons() {
+		super.disableButtons();
+		this.buttonAddAppraiser.setEnabled(false);
+		this.buttonEditAppraiser.setEnabled(false);
+		this.buttonRemoveAppraiser.setEnabled(false);
+		this.buttonAppraiserScore.setEnabled(false);
+	}
+	
+	@Override
 	public void save() {
 		try {
 			InternshipJuryBO bo = new InternshipJuryBO();

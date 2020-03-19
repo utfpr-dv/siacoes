@@ -255,7 +255,7 @@ public class InternshipDAO {
 		}
 	}
 	
-	public List<Internship> listBySupervisor(int idSupervisor) throws SQLException{
+	public List<Internship> listBySupervisor(int idSupervisor, int idDepartment) throws SQLException{
 		ResultSet rs = null;
 		Statement stmt = null;
 		
@@ -266,7 +266,8 @@ public class InternshipDAO {
 					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
 					"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " +  
-					"WHERE internship.idsupervisor=" + String.valueOf(idSupervisor) + " ORDER BY internship.startDate DESC");
+					"WHERE internship.idsupervisor=" + String.valueOf(idSupervisor) + " AND internship.iddepartment=" + String.valueOf(idDepartment) + 
+					" ORDER BY internship.startDate DESC");
 			
 			List<Internship> list = new ArrayList<Internship>();
 			
@@ -283,7 +284,7 @@ public class InternshipDAO {
 		}
 	}
 	
-	public List<Internship> listByStudent(int idStudent) throws SQLException{
+	public List<Internship> listByStudent(int idStudent, int idDepartment) throws SQLException{
 		ResultSet rs = null;
 		Statement stmt = null;
 		
@@ -294,7 +295,8 @@ public class InternshipDAO {
 					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
 					"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " +  
-					"WHERE internship.idstudent=" + String.valueOf(idStudent) + " ORDER BY internship.startDate DESC");
+					"WHERE internship.idstudent=" + String.valueOf(idStudent) + " AND internship.iddepartment=" + String.valueOf(idDepartment) + 
+					" ORDER BY internship.startDate DESC");
 			
 			List<Internship> list = new ArrayList<Internship>();
 			

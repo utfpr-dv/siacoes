@@ -123,6 +123,26 @@ public class JuryBO {
 		}
 	}
 	
+	public Jury findByStage(int idProposal, int stage) throws Exception {
+		if(stage == 2) {
+			Thesis thesis = new ThesisBO().findByProposal(idProposal);
+			
+			if((thesis == null) || (thesis.getIdThesis() == 0)) {
+				return null;
+			} else {
+				return this.findByThesis(thesis.getIdThesis());
+			}
+		} else {
+			Project project = new ProjectBO().findByProposal(idProposal);
+			
+			if((project == null) || (project.getIdProject() == 0)) {
+				return null;
+			} else {
+				return this.findByProject(project.getIdProject());
+			}
+		}
+	}
+	
 	public Jury findByProject(int idProject) throws Exception {
 		try {
 			JuryDAO dao = new JuryDAO();

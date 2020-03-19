@@ -81,11 +81,11 @@ public class InternshipBO {
 		}
 	}
 	
-	public List<Internship> listBySupervisor(int idSupervisor) throws Exception{
+	public List<Internship> listBySupervisor(int idSupervisor, int idDepartment) throws Exception{
 		try{
 			InternshipDAO dao = new InternshipDAO();
 			
-			return dao.listBySupervisor(idSupervisor);
+			return dao.listBySupervisor(idSupervisor, idDepartment);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -93,11 +93,11 @@ public class InternshipBO {
 		}
 	}
 	
-	public List<Internship> listByStudent(int idStudent) throws Exception{
+	public List<Internship> listByStudent(int idStudent, int idDepartment) throws Exception{
 		try{
 			InternshipDAO dao = new InternshipDAO();
 			
-			return dao.listByStudent(idStudent);
+			return dao.listByStudent(idStudent, idDepartment);
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

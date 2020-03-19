@@ -76,11 +76,11 @@ public class ProposalBO {
 		}
 	}
 	
-	public List<Proposal> listByStudent(int idStudent) throws Exception{
+	public List<Proposal> listByStudent(int idStudent, int idDepartment) throws Exception{
 		try {
 			ProposalDAO dao = new ProposalDAO();
 			
-			return dao.listByStudent(idStudent);
+			return dao.listByStudent(idStudent, idDepartment);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

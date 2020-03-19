@@ -29,7 +29,7 @@ public class InternshipService {
 		try {
 			User user = new LoginService().getUser(securityContext);
 			InternshipBO bo = new InternshipBO();
-			List<Internship> list = bo.listByStudent(user.getIdUser());
+			List<Internship> list = bo.listByStudent(user.getIdUser(), idDepartment);
 			
 			return Response.ok(list).build();
 		} catch (Exception e) {

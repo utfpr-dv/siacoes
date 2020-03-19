@@ -418,7 +418,7 @@ public class ProposalDAO {
 		}
 	}
 	
-	public List<Proposal> listByStudent(int idStudent) throws SQLException{
+	public List<Proposal> listByStudent(int idStudent, int idDepartment) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -430,10 +430,11 @@ public class ProposalDAO {
 					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
 					"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=proposal.idCosupervisor " +
-					"WHERE proposal.invalidated=0 AND idStudent = ? " +
+					"WHERE proposal.invalidated=0 AND proposal.idStudent = ? AND proposal.idDepartment = ? " +
 					"ORDER BY proposal.year DESC, proposal.semester DESC, student.name");
 		
 			stmt.setInt(1, idStudent);
+			stmt.setInt(2, idDepartment);
 			
 			rs = stmt.executeQuery();
 			List<Proposal> list = new ArrayList<Proposal>();

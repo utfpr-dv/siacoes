@@ -215,6 +215,45 @@ public class SupervisorChangeDAO {
 		}
 	}
 	
+	public List<SupervisorChange> listByProposal(int idProposal) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			
+			stmt = conn.prepareStatement(
+					"SELECT supervisorchange.*, proposal.title, proposal.iddepartment, proposal.idstudent, student.name AS studentName, student.studentCode, " +
+					"oldsupervisor.name AS oldSupervisorName, oldcosupervisor.name AS oldCosupervisorName, newsupervisor.name AS newSupervisorName " +
+					"FROM supervisorchange INNER JOIN proposal ON proposal.idProposal=supervisorchange.idProposal " +
+					"INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
+					"LEFT JOIN \"user\" oldsupervisor ON oldsupervisor.idUser=supervisorchange.idOldSupervisor " +
+					"LEFT JOIN \"user\" oldcosupervisor ON oldcosupervisor.idUser=supervisorchange.idOldCosupervisor " +
+					"LEFT JOIN \"user\" newsupervisor ON newsupervisor.idUser=supervisorchange.idNewSupervisor " +
+					"WHERE supervisorchange.idproposal=?");
+			
+			stmt.setInt(1, idProposal);
+			
+			rs = stmt.executeQuery();
+			
+			List<SupervisorChange> list = new ArrayList<SupervisorChange>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public SupervisorChange findById(int id) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;

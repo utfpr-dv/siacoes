@@ -114,6 +114,7 @@ import br.edu.utfpr.dv.siacoes.view.SemesterView;
 import br.edu.utfpr.dv.siacoes.view.SignatureView;
 import br.edu.utfpr.dv.siacoes.view.StateView;
 import br.edu.utfpr.dv.siacoes.view.StudentActivityStatusReportView;
+import br.edu.utfpr.dv.siacoes.view.StudentHistoryView;
 import br.edu.utfpr.dv.siacoes.view.StudentView;
 import br.edu.utfpr.dv.siacoes.view.SupervisorChangeView;
 import br.edu.utfpr.dv.siacoes.view.SupervisorView;
@@ -877,6 +878,7 @@ public class SideMenu extends CustomComponent {
 		if(Session.isUserManager(SystemModule.SIGES)){
 			layout.addComponent(new MenuEntry("Administração", 0));
 			
+			layout.addComponent(new MenuEntry("Histórico do Acadêmico", 1, StudentHistoryView.NAME + "/" + String.valueOf(SystemModule.SIGES.getValue())));
 			layout.addComponent(new MenuEntry("Quesitos de Avaliação", 1, InternshipEvaluationItemView.NAME));
 			layout.addComponent(new MenuEntry("Configurações", 1, new EditSigesWindow(sigesConfig, null)));
 		}
@@ -1240,6 +1242,8 @@ public class SideMenu extends CustomComponent {
 		
 		if(Session.isUserManager(SystemModule.SIGET)){
 			layout.addComponent(new MenuEntry("Administração", 0));
+			
+			layout.addComponent(new MenuEntry("Histórico do Acadêmico", 1, StudentHistoryView.NAME + "/" + String.valueOf(SystemModule.SIGET.getValue())));
 			layout.addComponent(new MenuEntry("Alterações de Orientador", 1, SupervisorChangeView.NAME));
 			layout.addComponent(new MenuEntry("Definir Datas", 1, DeadlineView.NAME));
 			layout.addComponent(new MenuEntry("Quesitos de Avaliação", 1, EvaluationItemView.NAME));

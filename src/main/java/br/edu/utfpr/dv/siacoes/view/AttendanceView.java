@@ -185,7 +185,7 @@ public class AttendanceView extends ListView {
 	private void loadProposals(){
 		try {
 			ProposalBO bo = new ProposalBO();
-			List<Proposal> list = bo.listByStudent(this.comboStudent.getStudent().getIdUser());
+			List<Proposal> list = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			
 			this.comboProposal.clear();
 			this.comboProposal.addItems(list);
