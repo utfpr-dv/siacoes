@@ -517,7 +517,7 @@ public class Document {
 					} else if(hasNoneSignature && Document.hasSignature(document.getType(), document.getIdRegister())) {
 						Document.sendRequestSignatureNotification(document.getType(), document.getIdRegister(), Document.listPending(document.getIdDocument()));
 					}
-				} finally { }
+				} catch(Exception e) { }
 				
 				return;
 			}
@@ -867,17 +867,19 @@ public class Document {
 	
 	public static boolean hasAllSignatures(DocumentType type, int idRegister) throws SQLException {
 		Connection conn = null;
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		
 		try {
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.createStatement();
-			
-			rs = stmt.executeQuery("SELECT signdocument.iddocument, signature.signature " +
+			stmt = conn.prepareStatement("SELECT signdocument.iddocument, signature.signature " +
 					"FROM signdocument INNER JOIN signature ON signature.iddocument=signdocument.iddocument " +
-					"WHERE signature.revoked=0 AND signdocument.idregister=" + 
-					String.valueOf(idRegister) + " AND signdocument.type=" + String.valueOf(type.getValue()));
+					"WHERE signature.revoked=0 AND signdocument.idregister=? AND signdocument.type=?", ResultSet.TYPE_SCROLL_SENSITIVE);
+			
+			stmt.setInt(1, idRegister);
+			stmt.setInt(2, type.getValue());
+			
+			rs = stmt.executeQuery();
 			
 			if(!rs.next()) {
 				return false;
