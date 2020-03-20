@@ -45,7 +45,6 @@ public class SignedDocument extends VerticalLayout {
 		this.setExpandRatio(this.panelDocument, 0.7f);
 		this.setExpandRatio(this.panelSignatures, 0.3f);
 		
-		this.setSpacing(true);
 		this.setSizeFull();
 		
 		this.loadDocument(document);

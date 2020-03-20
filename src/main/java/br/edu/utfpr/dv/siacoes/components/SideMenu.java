@@ -112,6 +112,7 @@ import br.edu.utfpr.dv.siacoes.view.ProposalFeedbackView;
 import br.edu.utfpr.dv.siacoes.view.ProposalView;
 import br.edu.utfpr.dv.siacoes.view.SemesterView;
 import br.edu.utfpr.dv.siacoes.view.SignatureView;
+import br.edu.utfpr.dv.siacoes.view.SignedDocumentView;
 import br.edu.utfpr.dv.siacoes.view.StateView;
 import br.edu.utfpr.dv.siacoes.view.StudentActivityStatusReportView;
 import br.edu.utfpr.dv.siacoes.view.StudentHistoryView;
@@ -1293,6 +1294,9 @@ public class SideMenu extends CustomComponent {
 			layout.addComponent(new MenuEntry("Semestres", 1, SemesterView.NAME));
 			layout.addComponent(new MenuEntry("Envio de E-mails", 1, EmailMessageView.NAME));
 			layout.addComponent(new MenuEntry("Usuários", 1, UserView.NAME));
+			if(this.sigesConfig.isUseDigitalSignature() || this.sigetConfig.isUseDigitalSignature()) {
+				layout.addComponent(new MenuEntry("Assinatura de Documentos", 1, SignedDocumentView.NAME));
+			}
 			layout.addComponent(new MenuEntry("Configurações", 1, new EditAppConfigWindow()));
 			
 			layout.addComponent(new MenuEntry("Auditoria", 0));

@@ -681,6 +681,53 @@ public class Document {
 		}
 	}
 	
+	public static List<Document> list(DocumentType type, int idUser, int status) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			String sql = "SELECT DISTINCT signdocument.*, (SELECT COUNT(signature.*) FROM signature WHERE signature.signature IS NULL AND signature.iddocument=signdocument.iddocument) AS published, " +
+							"(SELECT MAX(signaturedate) FROM signature WHERE signature.iddocument=signdocument.iddocument) AS publisheddate " +
+							"FROM signdocument INNER JOIN signature sign ON sign.iddocument=signdocument.iddocument " +
+							"WHERE 1=1";
+			
+			if(type != DocumentType.NONE) {
+				sql += " AND signdocument.type=" + String.valueOf(type.getValue());
+			}
+			if(idUser > 0) {
+				sql += " AND sign.iduser=" + String.valueOf(idUser);
+			}
+			if(status == 0) {
+				sql += " AND sign.signature IS NULL AND sign.revoked=0";
+			} else if(status == 1) {
+				sql += " AND sign.signature IS NOT NULL AND sign.revoked=0";
+			} else if(status == 2) {
+				sql += " AND sign.revoked=1";
+			}
+			
+			rs = stmt.executeQuery(sql);
+			
+			List<Document> list = new ArrayList<Document>();
+			
+			while(rs.next()) {
+				list.add(Document.loadObject(rs));
+			}
+			
+			return list;
+		} finally {
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public static Document find(DocumentType type, int idRegister) throws SQLException {
 		Connection conn = null;
 		Statement stmt = null;

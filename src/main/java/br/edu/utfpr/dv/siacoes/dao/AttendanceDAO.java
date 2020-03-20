@@ -291,7 +291,7 @@ public class AttendanceDAO {
 			
 			stmt.execute();
 			
-			stmt.close();
+			/*stmt.close();
 			
 			stmt = conn.prepareStatement("DELETE FROM attendancegroup WHERE idGroup <> ? AND idProposal=? AND idSupervisor=? AND stage=?");
 			
@@ -300,7 +300,7 @@ public class AttendanceDAO {
 			stmt.setInt(3, idSupervisor);
 			stmt.setInt(4, stage);
 			
-			stmt.execute();
+			stmt.execute();*/
 			
 			conn.commit();
 			
