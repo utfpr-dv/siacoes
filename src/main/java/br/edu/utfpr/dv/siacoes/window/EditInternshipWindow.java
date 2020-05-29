@@ -93,6 +93,7 @@ public class EditInternshipWindow extends EditWindow {
 	private final Button buttonDeleteCompanySupervisorReport;
 	private final Button buttonValidateStudentReport;
 	private final Button buttonValidateSupervisorReport;
+	private final Button buttonValidateCompanySupervisorReport;
 	
 	private SigesConfig config;
 	
@@ -358,6 +359,16 @@ public class EditInternshipWindow extends EditWindow {
 		this.buttonUploadCompanySupervisorReport.setIcon(FontAwesome.UPLOAD);
 		this.buttonUploadCompanySupervisorReport.setWidth("150px");
 		
+		this.buttonValidateCompanySupervisorReport = new Button("Validar", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	validateCompanySupervisorReport();
+            }
+        });
+		this.buttonValidateCompanySupervisorReport.setIcon(FontAwesome.CHECK);
+		this.buttonValidateCompanySupervisorReport.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+		this.buttonValidateCompanySupervisorReport.setWidth("150px");
+		
 		this.buttonDownloadCompanySupervisorReport = new Button("Download", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
@@ -377,7 +388,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.buttonDeleteCompanySupervisorReport.addStyleName(ValoTheme.BUTTON_DANGER);
 		this.buttonDeleteCompanySupervisorReport.setWidth("150px");
 		
-		HorizontalLayout h8 = new HorizontalLayout(this.buttonUploadCompanySupervisorReport, this.buttonDownloadCompanySupervisorReport, this.buttonDeleteCompanySupervisorReport);
+		HorizontalLayout h8 = new HorizontalLayout(this.buttonUploadCompanySupervisorReport, this.buttonDownloadCompanySupervisorReport, this.buttonValidateCompanySupervisorReport, this.buttonDeleteCompanySupervisorReport);
 		h8.setSpacing(true);
 		
 		VerticalLayout tab4 = new VerticalLayout(this.layoutCompanySupervisorReport, h8);
@@ -407,9 +418,9 @@ public class EditInternshipWindow extends EditWindow {
 			this.setSaveButtonEnabled(false);
 			this.buttonUploadStudentReport.setVisible(false);
 			this.buttonUploadSupervisorReport.setVisible(false);
-			this.buttonUploadCompanySupervisorReport.setVisible(false);
 			this.buttonValidateStudentReport.setVisible(false);
 			this.buttonValidateSupervisorReport.setVisible(false);
+			this.buttonValidateCompanySupervisorReport.setVisible(false);
 			this.buttonDeleteStudentReport.setVisible(false);
 			this.buttonDeleteSupervisorReport.setVisible(false);
 			this.buttonDeleteCompanySupervisorReport.setVisible(false);
@@ -574,7 +585,7 @@ public class EditInternshipWindow extends EditWindow {
 	public void addReport(InternshipReport report) throws Exception {
 		report.setDate(DateUtils.getToday().getTime());
 		
-		if(Session.isUserManager(SystemModule.SIGES) || report.getType() == ReportType.COMPANY) {
+		if(Session.isUserManager(SystemModule.SIGES)) {
 			report.setFeedback(ReportFeedback.APPROVED);
 			report.setFeedbackDate(DateUtils.getNow().getTime());
 			report.setFeedbackUser(Session.getUser());

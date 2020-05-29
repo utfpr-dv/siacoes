@@ -68,6 +68,7 @@ public class InternshipView extends ListView {
 	private final DateField textEndDate1;
 	private final DateField textEndDate2;
 	private final Button buttonParcialReport;
+	private final Button buttonCompanySupervisorReport;
 	private final Button buttonFinalReport;
 	private final Button buttonFinalDocument;
 	private final Button buttonJury;
@@ -173,6 +174,15 @@ public class InternshipView extends ListView {
         });
 		this.buttonParcialReport.setIcon(FontAwesome.UPLOAD);
 		this.addActionButton(this.buttonParcialReport);
+		
+		this.buttonCompanySupervisorReport = new Button("Relat. Supervisor", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	companySupervisorReportClick();
+            }
+        });
+		this.buttonCompanySupervisorReport.setIcon(FontAwesome.UPLOAD);
+		this.addActionButton(this.buttonCompanySupervisorReport);
 		
 		this.buttonFinalReport = new Button("Relatório Final", new Button.ClickListener() {
             @Override
@@ -344,6 +354,24 @@ public class InternshipView extends ListView {
 				Internship internship = new InternshipBO().findById((int)id);
 				
 				UI.getCurrent().addWindow(new EditInternshipReportWindow(null, internship, ((this.profile == UserProfile.PROFESSOR) ? ReportType.SUPERVISOR : ReportType.STUDENT)));
+			} catch (Exception e) {
+				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+    			
+    			this.showErrorNotification("Enviar Relatório", e.getMessage());
+			}
+    	}
+	}
+	
+	private void companySupervisorReportClick() {
+		Object id = getIdSelected();
+		
+		if(id == null) {
+    		this.showWarningNotification("Selecionar Registro", "Selecione o registro para enviar o relatório parcial.");
+    	} else {
+    		try {
+				Internship internship = new InternshipBO().findById((int)id);
+				
+				UI.getCurrent().addWindow(new EditInternshipReportWindow(null, internship, ReportType.COMPANY));
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
     			

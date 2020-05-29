@@ -150,6 +150,8 @@ public class InternshipReportBO {
 					bo.sendEmail(internship.getSupervisor().getIdUser(), MessageType.INTERNSHIPSTUDENTREPORTSUBMITTED, keys);
 				} else if(report.getType() == ReportType.SUPERVISOR) {
 					bo.sendEmail(manager.getIdUser(), MessageType.INTERNSHIPSUPERVISORREPORTSUBMITTED, keys);
+				} else if(report.getType() == ReportType.COMPANY) {
+					bo.sendEmail(manager.getIdUser(), MessageType.INTERNSHIPCOMPANYSUPERVISORREPORTSUBMITTED, keys);
 				}
 			}
 		} catch(Exception e) {
