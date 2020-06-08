@@ -366,7 +366,7 @@ public class InternshipView extends ListView {
 		Object id = getIdSelected();
 		
 		if(id == null) {
-    		this.showWarningNotification("Selecionar Registro", "Selecione o registro para enviar o relatório parcial.");
+    		this.showWarningNotification("Selecionar Registro", "Selecione o registro para enviar o relatório do supervisor.");
     	} else {
     		try {
 				Internship internship = new InternshipBO().findById((int)id);

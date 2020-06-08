@@ -63,6 +63,7 @@ public class InternshipUploadFinalReportWindow extends EditWindow {
 			} else if(this.internship.getFinalReport() == null) {
 				throw new Exception("É necessário enviar o relatório final.");
 			}
+			this.internship.setReports(null);
 			
 			bo.save(Session.getIdUserLog(), this.internship);
 			
