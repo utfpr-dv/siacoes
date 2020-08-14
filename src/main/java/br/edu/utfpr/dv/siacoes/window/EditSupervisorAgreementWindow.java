@@ -107,6 +107,7 @@ public class EditSupervisorAgreementWindow extends EditWindow {
 			this.comboFeedback.setValue(DISAPPROVED);
 		} else {
 			this.comboFeedback.setValue(ProposalFeedback.NONE);
+			this.setSignButtonEnabled(false);
 		}
 		
 		try {
@@ -159,10 +160,11 @@ public class EditSupervisorAgreementWindow extends EditWindow {
 			
 			this.parentViewRefreshGrid();
 			
-			if(this.config.isUseDigitalSignature()) {
+			if(this.config.isUseDigitalSignature() && this.proposal.getSupervisorFeedback() != ProposalFeedback.NONE) {
 				this.sign();
+				this.setSignButtonEnabled(true);
 			} else {
-				this.close();	
+				this.close();
 			}
 		}catch(Exception e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);

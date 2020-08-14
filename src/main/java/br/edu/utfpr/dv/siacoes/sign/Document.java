@@ -444,7 +444,7 @@ public class Document {
 		
 		try {
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("UPDATE signature SET revoked=1, revokedDate=?, revokedUser=? WHERE idDocument=?");
+			stmt = conn.prepareStatement("UPDATE signature SET revoked=1, revokedDate=?, idrevokedUser=? WHERE idDocument=?");
 			
 			stmt.setTimestamp(1, new java.sql.Timestamp(DateUtils.getNow().getTime().getTime()));
 			stmt.setInt(2, idUser);
