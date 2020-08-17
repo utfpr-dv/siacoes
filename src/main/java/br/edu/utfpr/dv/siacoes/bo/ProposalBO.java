@@ -425,6 +425,9 @@ public class ProposalBO {
 			}
 			
 			p = new Proposal(new UserBO().findById(idUser));
+			p.getDepartment().setIdDepartment(idDepartment);
+			p.setSemester(semester);
+			p.setYear(year);
 		}
 		
 		return p;

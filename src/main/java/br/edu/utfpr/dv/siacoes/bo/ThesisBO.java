@@ -249,6 +249,8 @@ public class ThesisBO {
 			SupervisorChangeBO sbo = new SupervisorChangeBO();
 			thesis.setSupervisor(sbo.findCurrentSupervisor(project.getProposal().getIdProposal()));
 			thesis.setCosupervisor(sbo.findCurrentCosupervisor(project.getProposal().getIdProposal()));
+			thesis.setSemester(semester);
+			thesis.setYear(year);
 			
 			SigetConfig config = new SigetConfigBO().findByDepartment(idDepartment);
 			if(config.isValidateAttendances()) {

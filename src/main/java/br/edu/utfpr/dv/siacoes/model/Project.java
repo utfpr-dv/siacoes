@@ -46,8 +46,8 @@ public class Project implements Serializable {
 		this.setSupervisor(proposal.getSupervisor());
 		this.setCosupervisor(proposal.getCosupervisor());
 		this.setFile(null);
-		this.setSemester(DateUtils.getSemester());
-		this.setYear(DateUtils.getYear());
+		this.setSemester(proposal.getSemester());
+		this.setYear(proposal.getYear());
 		this.setSubmissionDate(DateUtils.getToday().getTime());
 		this.setAbstract("");
 	}
