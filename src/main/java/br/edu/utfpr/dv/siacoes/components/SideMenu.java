@@ -700,7 +700,7 @@ public class SideMenu extends CustomComponent {
 		layout1.addComponent(iconMessages);
 		layout1.setComponentAlignment(iconMessages, Alignment.MIDDLE_CENTER);
 		
-		if((AppConfig.getInstance().isSigetEnabled() && sigetConfig.isUseDigitalSignature()) || (AppConfig.getInstance().isSigesEnabled() && sigesConfig.isUseDigitalSignature())) {
+		if((AppConfig.getInstance().isSigetEnabled() && sigetConfig.isUseDigitalSignature()) || (AppConfig.getInstance().isSigesEnabled() && sigesConfig.isUseDigitalSignature()) || Session.isUserSupervisor()) {
 			Component iconSignatures = this.getSignaturesIcon();
 			layout1.addComponent(iconSignatures);
 			layout1.setComponentAlignment(iconSignatures, Alignment.MIDDLE_CENTER);
@@ -754,7 +754,7 @@ public class SideMenu extends CustomComponent {
 		layout.addComponent(iconMessages);
 		layout.setComponentAlignment(iconMessages, Alignment.MIDDLE_CENTER);
 		
-		if((AppConfig.getInstance().isSigetEnabled() && sigetConfig.isUseDigitalSignature()) || (AppConfig.getInstance().isSigesEnabled() && sigesConfig.isUseDigitalSignature())) {
+		if((AppConfig.getInstance().isSigetEnabled() && sigetConfig.isUseDigitalSignature()) || (AppConfig.getInstance().isSigesEnabled() && sigesConfig.isUseDigitalSignature()) || Session.isUserSupervisor()) {
 			Component iconSignatures = this.getSignaturesIcon();
 			layout.addComponent(iconSignatures);
 			layout.setComponentAlignment(iconSignatures, Alignment.MIDDLE_CENTER);
@@ -906,14 +906,14 @@ public class SideMenu extends CustomComponent {
 	private Component buildMenuThesis(){
 		VerticalLayout layout = new VerticalLayout();
 		
-		if(this.sigetConfig.isRegisterProposal() && (Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager() || Session.isUserSupervisor() || Session.isUserStudent())) {
+		if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager() || Session.isUserSupervisor() || Session.isUserStudent()) {
 			layout.addComponent(new MenuEntry("Proposta de TCC 1", 0));
 			
 			if(Session.isUserManager(SystemModule.SIGET) || Session.isUserDepartmentManager()){
 				layout.addComponent(new MenuEntry("Listar Propostas", 1, ProposalView.NAME));
 			}
 			
-			if(Session.isUserStudent()){
+			if(this.sigetConfig.isRegisterProposal() && Session.isUserStudent()){
 				layout.addComponent(new MenuEntry("Submeter Proposta", 1, new MenuEntryClickListener() {
 					@Override
 					public void menuClick() {
