@@ -14,7 +14,9 @@ import br.edu.utfpr.dv.siacoes.model.ActivityUnit;
 public class ActivityUnitDAO {
 	
 	public List<ActivityUnit> listAll() throws SQLException{
-		String query = "SELECT * FROM activityunit ORDER BY description";
+		String query = "SELECT * " +
+				       "FROM activityunit " +
+				       "ORDER BY description";
 
 		try(
 			Connection conn = ConnectionDAO.getInstance().getConnection();
@@ -32,7 +34,9 @@ public class ActivityUnitDAO {
 	}
 	
 	public ActivityUnit findById(int id) throws SQLException{
-		String query = "SELECT * FROM activityunit WHERE idActivityUnit=?";
+		String query = "SELECT * " +
+				       "FROM activityunit " +
+				       "WHERE idActivityUnit=?";
 
 		try (
 			Connection conn = ConnectionDAO.getInstance().getConnection();
@@ -55,7 +59,8 @@ public class ActivityUnitDAO {
 	}
 
 	private int insert(int idUser, ActivityUnit unit) throws SQLException {
-		String query = "INSERT INTO activityunit(description, fillAmount, amountDescription) VALUES(?, ?, ?)";
+		String query = "INSERT INTO activityunit(description, fillAmount, amountDescription) " +
+				       "VALUES(?, ?, ?)";
 
 		try (
 			Connection conn = ConnectionDAO.getInstance().getConnection();
@@ -80,7 +85,9 @@ public class ActivityUnitDAO {
 	}
 
 	private int update(int idUser, ActivityUnit unit) throws SQLException {
-		String query = "UPDATE activityunit SET description=?, fillAmount=?, amountDescription=? WHERE idActivityUnit=?";
+		String query = "UPDATE activityunit " +
+				       "SET description=?, fillAmount=?, amountDescription=? " +
+				       "WHERE idActivityUnit=?";
 
 		try (
 			Connection conn = ConnectionDAO.getInstance().getConnection();
