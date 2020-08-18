@@ -15,93 +15,66 @@ import br.edu.utfpr.dv.siacoes.model.Department;
 public class DepartmentDAO {
 
 	public Department findById(int id) throws SQLException{
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		
-		try{
-			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement(
-				"SELECT department.*, campus.name AS campusName " +
-				"FROM department INNER JOIN campus ON campus.idCampus=department.idCampus " +
-				"WHERE idDepartment = ?");
-		
+		String query = "SELECT department.*, campus.name AS campusName " +
+				       "FROM department INNER JOIN campus ON campus.idCampus=department.idCampus " +
+				       "WHERE idDepartment = ?";
+
+		try(
+			Connection conn = ConnectionDAO.getInstance().getConnection();
+			PreparedStatement stmt = conn.prepareStatement(query);
+			ResultSet rs = stmt.executeQuery()
+		) {
 			stmt.setInt(1, id);
-			
-			rs = stmt.executeQuery();
-			
+
 			if(rs.next()){
 				return this.loadObject(rs);
 			}else{
 				return null;
 			}
-		}finally{
-			if((rs != null) && !rs.isClosed())
-				rs.close();
-			if((stmt != null) && !stmt.isClosed())
-				stmt.close();
-			if((conn != null) && !conn.isClosed())
-				conn.close();
 		}
 	}
 	
 	public List<Department> listAll(boolean onlyActive) throws SQLException{
-		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rs = null;
-		
-		try{
-			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.createStatement();
-		
-			rs = stmt.executeQuery("SELECT department.*, campus.name AS campusName " +
-					"FROM department INNER JOIN campus ON campus.idCampus=department.idCampus " + 
-					(onlyActive ? " WHERE department.active=1" : "") + " ORDER BY department.name");
-			
+		String query = "SELECT department.*, campus.name AS campusName " +
+				       "FROM department " +
+				         "INNER JOIN campus " +
+				          "ON campus.idCampus=department.idCampus " +
+				           (onlyActive ? " WHERE department.active=1" : "") +
+				      " ORDER BY department.name";
+
+		try(
+			Connection conn = ConnectionDAO.getInstance().getConnection();
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(query)
+		) {
 			List<Department> list = new ArrayList<Department>();
-			
+
 			while(rs.next()){
 				list.add(this.loadObject(rs));
 			}
-			
+
 			return list;
-		}finally{
-			if((rs != null) && !rs.isClosed())
-				rs.close();
-			if((stmt != null) && !stmt.isClosed())
-				stmt.close();
-			if((conn != null) && !conn.isClosed())
-				conn.close();
 		}
 	}
 	
 	public List<Department> listByCampus(int idCampus, boolean onlyActive) throws SQLException{
-		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rs = null;
-		
-		try{
-			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.createStatement();
-		
-			rs = stmt.executeQuery("SELECT department.*, campus.name AS campusName " +
-					"FROM department INNER JOIN campus ON campus.idCampus=department.idCampus " +
-					"WHERE department.idCampus=" + String.valueOf(idCampus) + (onlyActive ? " AND department.active=1" : "") + " ORDER BY department.name");
-			
+		String query = "SELECT department.*, campus.name AS campusName " +
+				       "FROM department INNER JOIN campus ON campus.idCampus=department.idCampus " +
+				       "WHERE department.idCampus=" + String.valueOf(idCampus) +
+				       (onlyActive ? " AND department.active=1 " : " ") +
+				       "ORDER BY department.name";
+		try (
+			Connection conn = ConnectionDAO.getInstance().getConnection();
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(query)
+		) {
 			List<Department> list = new ArrayList<Department>();
-			
+
 			while(rs.next()){
 				list.add(this.loadObject(rs));
 			}
-			
+
 			return list;
-		}finally{
-			if((rs != null) && !rs.isClosed())
-				rs.close();
-			if((stmt != null) && !stmt.isClosed())
-				stmt.close();
-			if((conn != null) && !conn.isClosed())
-				conn.close();
 		}
 	}
 	
