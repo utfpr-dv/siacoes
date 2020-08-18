@@ -17,61 +17,48 @@ import br.edu.utfpr.dv.siacoes.model.User;
 public class BugReportDAO {
 	
 	public BugReport findById(int id) throws SQLException{
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		
-		try{
-			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT bugreport.*, \"user\".name " + 
-				"FROM bugreport INNER JOIN \"user\" ON \"user\".idUser=bugreport.idUser " +
-				"WHERE idBugReport = ?");
-		
+		String query = "SELECT bugreport.*, \"user\".name " +
+				       "FROM bugreport " +
+				         "INNER JOIN \"user\" " +
+				           "ON \"user\".idUser=bugreport.idUser " +
+				       "WHERE idBugReport = ?";
+
+		try(
+			Connection conn = ConnectionDAO.getInstance().getConnection();
+			PreparedStatement stmt = conn.prepareStatement(query)
+		) {
 			stmt.setInt(1, id);
-			
-			rs = stmt.executeQuery();
-			
-			if(rs.next()){
-				return this.loadObject(rs);
-			}else{
-				return null;
+
+			try(ResultSet rs = stmt.executeQuery()) {
+				if(rs.next()){
+					return this.loadObject(rs);
+				}else{
+					return null;
+				}
 			}
-		}finally{
-			if((rs != null) && !rs.isClosed())
-				rs.close();
-			if((stmt != null) && !stmt.isClosed())
-				stmt.close();
-			if((conn != null) && !conn.isClosed())
-				conn.close();
 		}
 	}
 	
 	public List<BugReport> listAll() throws SQLException{
-		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rs = null;
-		
-		try{
-			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.createStatement();
-			
-			rs = stmt.executeQuery("SELECT bugreport.*, \"user\".name " +
-					"FROM bugreport INNER JOIN \"user\" ON \"user\".idUser=bugreport.idUser " +
-					"ORDER BY status, reportdate");
-			List<BugReport> list = new ArrayList<BugReport>();
-			
-			while(rs.next()){
-				list.add(this.loadObject(rs));
+		String query = "SELECT bugreport.*, \"user\".name " +
+				       "FROM bugreport " +
+				         "INNER JOIN \"user\" " +
+				           "ON \"user\".idUser=bugreport.idUser " +
+				       "ORDER BY status, reportdate";
+
+		try(
+			Connection conn = ConnectionDAO.getInstance().getConnection();
+			Statement stmt = conn.createStatement();
+		) {
+			try(ResultSet rs = stmt.executeQuery(query)) {
+				List<BugReport> list = new ArrayList<BugReport>();
+
+				while(rs.next()){
+					list.add(this.loadObject(rs));
+				}
+
+				return list;
 			}
-			
-			return list;
-		}finally{
-			if((rs != null) && !rs.isClosed())
-				rs.close();
-			if((stmt != null) && !stmt.isClosed())
-				stmt.close();
-			if((conn != null) && !conn.isClosed())
-				conn.close();
 		}
 	}
 	
