@@ -70,50 +70,51 @@ public class ActivityUnitDAO {
 	}
 	
 	public int save(int idUser, ActivityUnit unit) throws SQLException{
-		boolean insert = (unit.getIdActivityUnit() == 0);
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		
-		try{
-			conn = ConnectionDAO.getInstance().getConnection();
-			
-			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO activityunit(description, fillAmount, amountDescription) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-			}else{
-				stmt = conn.prepareStatement("UPDATE activityunit SET description=?, fillAmount=?, amountDescription=? WHERE idActivityUnit=?");
-			}
-			
+		return unit.getIdActivityUnit() == 0 ? this.insert(idUser, unit) : this.update(idUser, unit);
+	}
+
+	private int insert(int idUser, ActivityUnit unit) throws SQLException {
+		String query = "INSERT INTO activityunit(description, fillAmount, amountDescription) VALUES(?, ?, ?)";
+
+		try (
+			Connection conn = ConnectionDAO.getInstance().getConnection();
+			PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)
+		) {
 			stmt.setString(1, unit.getDescription());
 			stmt.setInt(2, (unit.isFillAmount() ? 1 : 0));
 			stmt.setString(3, unit.getAmountDescription());
-			
-			if(!insert){
-				stmt.setInt(4, unit.getIdActivityUnit());
-			}
-			
+
 			stmt.execute();
-			
-			if(insert){
-				rs = stmt.getGeneratedKeys();
-				
+
+			try (ResultSet rs = stmt.getGeneratedKeys()) {
 				if(rs.next()){
 					unit.setIdActivityUnit(rs.getInt(1));
 				}
-				
+
 				new UpdateEvent(conn).registerInsert(idUser, unit);
-			} else {
-				new UpdateEvent(conn).registerUpdate(idUser, unit);
+
+				return unit.getIdActivityUnit();
 			}
-			
+		}
+	}
+
+	private int update(int idUser, ActivityUnit unit) throws SQLException {
+		String query = "UPDATE activityunit SET description=?, fillAmount=?, amountDescription=? WHERE idActivityUnit=?";
+
+		try (
+			Connection conn = ConnectionDAO.getInstance().getConnection();
+			PreparedStatement stmt = conn.prepareStatement(query)
+		) {
+			stmt.setString(1, unit.getDescription());
+			stmt.setInt(2, (unit.isFillAmount() ? 1 : 0));
+			stmt.setString(3, unit.getAmountDescription());
+			stmt.setInt(4, unit.getIdActivityUnit());
+
+			stmt.execute();
+
+			new UpdateEvent(conn).registerUpdate(idUser, unit);
+
 			return unit.getIdActivityUnit();
-		}finally{
-			if((rs != null) && !rs.isClosed())
-				rs.close();
-			if((stmt != null) && !stmt.isClosed())
-				stmt.close();
-			if((conn != null) && !conn.isClosed())
-				conn.close();
 		}
 	}
 	
