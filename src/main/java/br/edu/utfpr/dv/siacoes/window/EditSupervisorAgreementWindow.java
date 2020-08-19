@@ -12,6 +12,7 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 
+import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
@@ -160,7 +161,7 @@ public class EditSupervisorAgreementWindow extends EditWindow {
 			
 			this.parentViewRefreshGrid();
 			
-			if(this.config.isUseDigitalSignature() && this.proposal.getSupervisorFeedback() != ProposalFeedback.NONE) {
+			if((this.proposal.getSupervisor().getIdUser() == Session.getUser().getIdUser()) && this.config.isUseDigitalSignature() && this.proposal.getSupervisorFeedback() != ProposalFeedback.NONE) {
 				this.sign();
 				this.setSignButtonEnabled(true);
 			} else {

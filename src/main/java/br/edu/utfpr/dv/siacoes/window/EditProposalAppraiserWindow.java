@@ -47,7 +47,7 @@ public class EditProposalAppraiserWindow extends EditWindow {
 	private SigetConfig config;
 	
 	public EditProposalAppraiserWindow(ProposalAppraiser appraiser, EditProposalWindow editProposalWindow,  ListView parentView) {
-		super("Editar Avaliador", null);
+		super("Editar Avaliador", parentView);
 		
 		if(parentView != null) {
 			this.setCaption("Emitir Parecer");
@@ -147,6 +147,11 @@ public class EditProposalAppraiserWindow extends EditWindow {
 		if(!this.appraiser.isAllowEditing() || (this.appraiser.getAppraiser().getIdUser() != Session.getUser().getIdUser())){
 			this.comboFeedback.setEnabled(false);
 			this.textComments.setEnabled(false);
+			this.setSignButtonEnabled(false);
+		}
+		
+		if(this.appraiser.getFeedback() == ProposalFeedback.NONE) {
+			this.setSignButtonEnabled(false);
 		}
 		
 		if((this.appraiser.getIdProposalAppraiser() != 0) || (this.appraiser.getAppraiser().getIdUser() != 0)){
@@ -211,12 +216,17 @@ public class EditProposalAppraiserWindow extends EditWindow {
 				this.editProposalWindow.setAppraiser(this.appraiser);
 			}
 			
-			this.showSuccessNotification("Salvar Avaliador", "Avaliador salvo com sucesso.");
+			if(this.appraiser.getAppraiser().getIdUser() == Session.getUser().getIdUser()) {
+				this.showSuccessNotification("Salvar Parecer", "Parecer salvo com sucesso.");
+			} else {
+				this.showSuccessNotification("Salvar Avaliador", "Avaliador salvo com sucesso.");
+			}
 			
 			this.parentViewRefreshGrid();
 			
-			if((this.appraiser.getAppraiser().getIdUser() == Session.getUser().getIdUser()) && this.config.isUseDigitalSignature()) {
+			if((this.appraiser.getAppraiser().getIdUser() == Session.getUser().getIdUser()) && this.config.isUseDigitalSignature() && (this.appraiser.getFeedback() != ProposalFeedback.NONE)) {
 				this.sign();
+				this.setSignButtonEnabled(true);
 			} else {
 				this.close();	
 			}
