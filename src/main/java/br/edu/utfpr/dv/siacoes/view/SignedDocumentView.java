@@ -173,7 +173,7 @@ public class SignedDocumentView extends BasicView {
 		Document doc = this.getSelectedDocument();
 		
 		if((doc != null) && (doc.getIdDocument() != 0)) {
-			this.layoutDocument.addComponent(new SignedDocument(doc));
+			this.layoutDocument.addComponent(new SignedDocument(doc, true));
 		}
 	}
 

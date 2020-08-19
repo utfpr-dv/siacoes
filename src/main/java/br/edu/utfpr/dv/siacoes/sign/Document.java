@@ -939,6 +939,30 @@ public class Document {
 		}
 	}
 	
+	public static boolean hasRevokedSignature(int idDocument) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT DISTINCT signdocument.iddocument " +
+					"FROM signdocument INNER JOIN signature ON signature.iddocument=signdocument.iddocument " +
+					"WHERE signature.signature IS NOT NULL AND signature.revoked=1 AND signdocument.iddocument=" + String.valueOf(idDocument));
+			
+			return rs.next();
+		} finally {
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	private static Document loadObject(ResultSet rs) throws SQLException {
 		Document doc = new Document();
 		

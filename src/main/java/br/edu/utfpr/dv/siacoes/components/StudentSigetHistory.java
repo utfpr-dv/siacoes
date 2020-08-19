@@ -182,7 +182,7 @@ public class StudentSigetHistory extends HorizontalLayout {
 			List<Document> list = Document.list(DocumentType.SUPERVISORAGREEMENT, proposal.getIdProposal());
 			
 			for(Document doc : list) {
-				this.tabDocuments.addTab(new SignedDocument(doc), "Concordância do Orientador");
+				this.tabDocuments.addTab(new SignedDocument(doc, false), "Concordância do Orientador");
 			}
 			
 			List<ProposalAppraiser> appraisers = new ProposalAppraiserBO().listAppraisers(proposal.getIdProposal());
@@ -190,7 +190,7 @@ public class StudentSigetHistory extends HorizontalLayout {
 				list = Document.list(DocumentType.APPRAISERFEEDBACK, appraiser.getIdProposalAppraiser());
 				
 				for(Document doc : list) {
-					this.tabDocuments.addTab(new SignedDocument(doc), "Parecer da Proposta");
+					this.tabDocuments.addTab(new SignedDocument(doc, false), "Parecer da Proposta");
 				}
 			}
 			
@@ -199,7 +199,7 @@ public class StudentSigetHistory extends HorizontalLayout {
 				list = Document.list(DocumentType.JURYREQUEST, request.getIdJuryRequest());
 				
 				for(Document doc : list) {
-					this.tabDocuments.addTab(new SignedDocument(doc), "Requisição de Banca de TCC 1");
+					this.tabDocuments.addTab(new SignedDocument(doc, false), "Requisição de Banca de TCC 1");
 				}
 			}
 			
@@ -208,7 +208,7 @@ public class StudentSigetHistory extends HorizontalLayout {
 				list = Document.list(DocumentType.ATTENDANCE, id);
 				
 				for(Document doc : list) {
-					this.tabDocuments.addTab(new SignedDocument(doc), "Reuniões de TCC 1");
+					this.tabDocuments.addTab(new SignedDocument(doc, false), "Reuniões de TCC 1");
 				}
 			}
 			
@@ -217,7 +217,7 @@ public class StudentSigetHistory extends HorizontalLayout {
 				list = Document.list(DocumentType.JURY, jury.getIdJury());
 				
 				for(Document doc : list) {
-					this.tabDocuments.addTab(new SignedDocument(doc), "Banca de TCC 1");
+					this.tabDocuments.addTab(new SignedDocument(doc, false), "Banca de TCC 1");
 				}
 			}
 			
@@ -226,7 +226,7 @@ public class StudentSigetHistory extends HorizontalLayout {
 				list = Document.list(DocumentType.JURYREQUEST, request.getIdJuryRequest());
 				
 				for(Document doc : list) {
-					this.tabDocuments.addTab(new SignedDocument(doc), "Requisição de Banca de TCC 2");
+					this.tabDocuments.addTab(new SignedDocument(doc, false), "Requisição de Banca de TCC 2");
 				}
 			}
 			
@@ -235,7 +235,7 @@ public class StudentSigetHistory extends HorizontalLayout {
 				list = Document.list(DocumentType.ATTENDANCE, id);
 				
 				for(Document doc : list) {
-					this.tabDocuments.addTab(new SignedDocument(doc), "Reuniões de TCC 2");
+					this.tabDocuments.addTab(new SignedDocument(doc, false), "Reuniões de TCC 2");
 				}
 			}
 			
@@ -244,7 +244,7 @@ public class StudentSigetHistory extends HorizontalLayout {
 				list = Document.list(DocumentType.JURY, jury.getIdJury());
 				
 				for(Document doc : list) {
-					this.tabDocuments.addTab(new SignedDocument(doc), "Banca de TCC 2");
+					this.tabDocuments.addTab(new SignedDocument(doc, false), "Banca de TCC 2");
 				}
 			}
 			
@@ -253,7 +253,7 @@ public class StudentSigetHistory extends HorizontalLayout {
 				list = Document.list(DocumentType.SUPERVISORCHANGE, change.getIdSupervisorChange());
 				
 				for(Document doc : list) {
-					this.tabDocuments.addTab(new SignedDocument(doc), "Alteração de Orientador");
+					this.tabDocuments.addTab(new SignedDocument(doc, false), "Alteração de Orientador");
 				}
 			}
 		} catch(Exception e) {

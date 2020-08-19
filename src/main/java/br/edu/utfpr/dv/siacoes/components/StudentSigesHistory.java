@@ -130,7 +130,7 @@ public class StudentSigesHistory extends HorizontalLayout {
 				List<Document> list = Document.list(DocumentType.INTERNSHIPPOSTERREQUEST, request.getIdInternshipPosterRequest());
 			
 				for(Document doc : list) {
-					this.tabDocuments.addTab(new SignedDocument(doc), "Requisição de Banca");
+					this.tabDocuments.addTab(new SignedDocument(doc, false), "Requisição de Banca");
 				}
 			}
 			
@@ -140,7 +140,7 @@ public class StudentSigesHistory extends HorizontalLayout {
 				List<Document> list = Document.list(DocumentType.INTERNSHIPJURY, jury.getIdInternshipJury());
 				
 				for(Document doc : list) {
-					this.tabDocuments.addTab(new SignedDocument(doc), "Ata da Defesa");
+					this.tabDocuments.addTab(new SignedDocument(doc, false), "Ata da Defesa");
 				}
 			}
 		} catch(Exception e) {
