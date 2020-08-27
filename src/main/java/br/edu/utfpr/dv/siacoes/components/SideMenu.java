@@ -864,7 +864,7 @@ public class SideMenu extends CustomComponent {
 		}
 		
 		layout.addComponent(new MenuEntry("Bancas", 0));
-		if(this.sigesConfig.getJuryFormat() == JuryFormat.SESSION) {
+		if((this.sigesConfig.getJuryFormat() == JuryFormat.SESSION) && (Session.isUserManager(SystemModule.SIGES) || Session.isUserDepartmentManager())) {
 			layout.addComponent(new MenuEntry("Solicitações de Bancas", 1, InternshipPosterRequestView.NAME));
 		} else if(this.sigesConfig.getJuryFormat() == JuryFormat.INDIVIDUAL) {
 			

@@ -192,27 +192,29 @@ public class EditProposalAppraiserWindow extends EditWindow {
 	
 	@Override
 	public void save() {
-		try{
-			if(Session.isUserManager(SystemModule.SIGET)){
+		try {
+			if(Session.isUserManager(SystemModule.SIGET)) {
 				this.appraiser.setAllowEditing(this.checkAllowEditing.getValue());
 				
-				if(this.appraiser.getAppraiser().getIdUser() == 0){
+				if(this.appraiser.getAppraiser().getIdUser() == 0) {
 					this.appraiser.setAppraiser(this.comboAppraiser.getProfessor());
 				}
 			}
 			
-			if(this.appraiser.isAllowEditing() && (this.appraiser.getAppraiser().getIdUser() == Session.getUser().getIdUser()) && (!this.config.isUseDigitalSignature() || !Document.hasSignature(br.edu.utfpr.dv.siacoes.sign.Document.DocumentType.APPRAISERFEEDBACK, this.appraiser.getIdProposalAppraiser()))){
+			if(this.appraiser.isAllowEditing() && (this.appraiser.getAppraiser().getIdUser() == Session.getUser().getIdUser()) && (!this.config.isUseDigitalSignature() || !Document.hasSignature(br.edu.utfpr.dv.siacoes.sign.Document.DocumentType.APPRAISERFEEDBACK, this.appraiser.getIdProposalAppraiser()))) {
 				this.appraiser.setFeedback((ProposalFeedback)this.comboFeedback.getValue());
 				this.appraiser.setComments(this.textComments.getValue());
 			}
 			
-			if(this.editProposalWindow == null){
+			if(this.editProposalWindow == null) {
 				ProposalAppraiserBO bo = new ProposalAppraiserBO();
 				
 				bo.save(Session.getIdUserLog(), this.appraiser);
 				
-				this.showReport(bo.getFeedbackReport(this.appraiser.getProposal().getIdProposal(), this.appraiser.getAppraiser().getIdUser()));
-			}else{
+				if(!this.config.isUseDigitalSignature()) {
+					this.showReport(bo.getFeedbackReport(this.appraiser.getProposal().getIdProposal(), this.appraiser.getAppraiser().getIdUser()));
+				}
+			} else {
 				this.editProposalWindow.setAppraiser(this.appraiser);
 			}
 			
@@ -230,7 +232,7 @@ public class EditProposalAppraiserWindow extends EditWindow {
 			} else {
 				this.close();	
 			}
-		}catch(Exception e){
+		} catch(Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			this.showErrorNotification("Salvar Avaliador", e.getMessage());

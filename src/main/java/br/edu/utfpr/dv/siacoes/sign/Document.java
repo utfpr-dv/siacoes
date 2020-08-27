@@ -37,6 +37,9 @@ import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.dao.ConnectionDAO;
 import br.edu.utfpr.dv.siacoes.model.AppConfig;
 import br.edu.utfpr.dv.siacoes.model.Department;
+import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
+import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
@@ -344,6 +347,61 @@ public class Document {
 		return Document.insertSigned(Document.build(idDepartment, type, idRegister, dataset, users), login, password);
 	}
 	
+	private static boolean validate(Document document) throws Exception {
+		switch(document.getType()) {
+			case SUPERVISORAGREEMENT:
+				Proposal proposal = new ProposalBO().findById(document.getIdRegister());
+				
+				if((proposal == null) || (proposal.getIdProposal() == 0)) {
+					throw new Exception("A Proposta de TCC 1 não foi cadastrada.");
+				}
+				if(proposal.getSupervisorFeedback() == ProposalFeedback.NONE) {
+					throw new Exception("É preciso informar o parecer do orientador para assinar o documento.");
+				}
+				
+				break;
+			case APPRAISERFEEDBACK:
+				ProposalAppraiser appraiser = new ProposalAppraiserBO().findById(document.getIdRegister());
+				
+				if((appraiser == null) || (appraiser.getIdProposalAppraiser() == 0)) {
+					throw new Exception("O avaliador não foi cadastrado.");
+				}
+				if(appraiser.getFeedback() == ProposalFeedback.NONE) {
+					throw new Exception("É preciso informar o parecer da proposta para assinar o documento.");
+				}
+				
+				break;
+			case JURYREQUEST:
+				break;
+			case SUPERVISORCHANGE:
+				break;
+			case ATTENDANCE:
+				break;
+			case JURY:
+				if(!new JuryBO().hasAllScores(document.getIdRegister())) {
+					throw new Exception("Todas as notas devem ser lançadas para que a ficha de avaliação possa ser assinada.");
+				}
+				
+				break;
+			case INTERNSHIPPOSTERREQUEST:
+				break;
+			case INTERNSHIPJURY:
+				if(!new InternshipJuryBO().hasAllScores(document.getIdRegister())) {
+					throw new Exception("Todas as notas devem ser lançadas para que a ficha de avaliação possa ser assinada.");
+				}
+				
+				break;
+			default:
+				throw new Exception("O tipo de documento é inválido.");
+		}
+		
+		if(Document.exists(document.getType(), document.getIdRegister(), document.getIdDocument())) {
+			throw new Exception("Este documento já foi incluído e assinado.");
+		}
+		
+		return true;
+	}
+	
 	public static int insertSigned(Document document, String login, String password) throws Exception {
 		User user = new UserBO().findByLogin(login);
 		boolean find = false;
@@ -372,10 +430,12 @@ public class Document {
 		return Document.insert(Document.build(idDepartment, type, idRegister, dataset, users));
 	}
 	
-	private static int insert(Document document) throws SQLException {
+	private static int insert(Document document) throws Exception {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
+		
+		Document.validate(document);
 		
 		try {
 			conn = ConnectionDAO.getInstance().getConnection();
@@ -473,6 +533,9 @@ public class Document {
 				}
 				if(sign.isRevoked()) {
 					throw new Exception("A assinatura já foi revogada e não é possível assinar o documento novamente.");
+				}
+				if(Document.hasRevokedSignature(document.getIdDocument())) {
+					throw new Exception("As assinaturas deste documento foram revogadas, e não é possível adicionar novas assinaturas a ele.");
 				}
 				
 				boolean hasAllSignatures, hasNoneSignature;
@@ -828,6 +891,32 @@ public class Document {
 					"FROM signdocument INNER JOIN signature ON signature.iddocument=signdocument.iddocument " +
 					"WHERE signature.signature IS NOT NULL AND signature.revoked=0 AND signdocument.idregister=" + 
 					String.valueOf(idRegister) + " AND signdocument.type=" + String.valueOf(type.getValue()));
+			
+			return rs.next();
+		} finally {
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	private static boolean exists(DocumentType type, int idRegister, int idDocument) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT DISTINCT signdocument.iddocument " +
+					"FROM signdocument INNER JOIN signature ON signature.iddocument=signdocument.iddocument " +
+					"WHERE signature.signature IS NOT NULL AND signature.revoked=0 AND signdocument.idregister=" + 
+					String.valueOf(idRegister) + " AND signdocument.type=" + String.valueOf(type.getValue()) + 
+					" AND signdocument.iddocument <> " + String.valueOf(idDocument));
 			
 			return rs.next();
 		} finally {

@@ -253,10 +253,10 @@ public class EditInternshipPosterRequestWindow extends EditWindow {
 			
 			this.parentViewRefreshGrid();
 			
-			if(this.config.isUseDigitalSignature()) {
+			if((Session.getUser().getIdUser() == this.request.getInternship().getStudent().getIdUser()) && this.config.isUseDigitalSignature()) {
 				this.sign();
 			} else {
-				//this.showReport(bo.getJuryRequestForm(this.jury.getIdJuryRequest()));
+				this.showReport(new InternshipPosterRequestBO().getPosterRequestForm(this.request.getIdInternshipPosterRequest()));
 				
 				this.close();	
 			}

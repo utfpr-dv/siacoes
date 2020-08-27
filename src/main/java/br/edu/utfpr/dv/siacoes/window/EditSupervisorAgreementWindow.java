@@ -139,7 +139,7 @@ public class EditSupervisorAgreementWindow extends EditWindow {
 	
 	@Override
 	public void save() {
-		try{
+		try {
 			ProposalBO bo = new ProposalBO();
 			
 			this.proposal.setSupervisorFeedbackDate(DateUtils.getNow().getTime());
@@ -155,7 +155,9 @@ public class EditSupervisorAgreementWindow extends EditWindow {
 			
 			bo.saveSupervisorFeedback(this.proposal);
 			
-			this.showReport(bo.getSupervisorFeedbackReport(this.proposal.getIdProposal()));
+			if(!this.config.isUseDigitalSignature()) {
+				this.showReport(bo.getSupervisorFeedbackReport(this.proposal.getIdProposal()));
+			}
 			
 			this.showSuccessNotification("Salvar Parecer", "Parecer salvo com sucesso.");
 			
@@ -167,7 +169,7 @@ public class EditSupervisorAgreementWindow extends EditWindow {
 			} else {
 				this.close();
 			}
-		}catch(Exception e){
+		} catch(Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			this.showErrorNotification("Salvar Parecer", e.getMessage());
