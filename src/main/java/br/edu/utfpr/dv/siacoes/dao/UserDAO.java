@@ -1040,5 +1040,31 @@ public class UserDAO {
 				conn.close();
 		}
 	}
+	
+	public long getActiveSupervisors() throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT COUNT(DISTINCT \"user\".idUser) AS total FROM \"user\" INNER JOIN userprofile ON userprofile.iduser=\"user\".iduser WHERE \"user\".active=1 AND userprofile.profile=" + String.valueOf(UserProfile.SUPERVISOR.getValue()));
+			
+			if(rs.next()) {
+				return rs.getLong("total");
+			} else {
+				return 0;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
 
 }

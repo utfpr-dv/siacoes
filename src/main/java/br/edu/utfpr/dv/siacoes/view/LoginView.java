@@ -48,7 +48,6 @@ public class LoginView extends CustomComponent implements View {
 	public static final String NAME = "login";
 	
 	private final Label label;
-	private final Label info;
 	private final Label infoAluno;
 	private final Label infoServidor;
     private final TextField textLogin;
@@ -58,6 +57,9 @@ public class LoginView extends CustomComponent implements View {
     private final Panel panelLogin;
     private final GridLayout layoutStats;
     private final CheckBox checkStayConnected;
+    private final Panel panelDocuments;
+    private final Button buttonAuthDocument;
+    private final Button buttonAuthSignature;
     
     private String redirect;
     
@@ -67,9 +69,6 @@ public class LoginView extends CustomComponent implements View {
     	
     	this.label = new Label("SIACOES - Sistema Integrado de Atividades Complementares, Orientações e Estágios");
     	this.label.setStyleName("Title");
-    	
-    	this.info = new Label("Para acessar o SIACOES, efetue o login.");
-    	this.info.setWidth("300px");
     	
     	this.infoAluno = new Label("- Se você for acadêmico, no campo usuário coloque a letra \"a\" e o número do seu R.A. (por exemplo: a1234567 ou a1423599) e no campo senha insira a mesma senha do Sistema Acadêmico.");
     	this.infoAluno.setWidth("300px");
@@ -112,7 +111,7 @@ public class LoginView extends CustomComponent implements View {
         });
     	this.buttonForgotPassword.setWidth("300px");
     	
-        VerticalLayout layoutLogin = new VerticalLayout(this.textLogin, this.textPassword, this.checkStayConnected, this.buttonLogin, this.buttonForgotPassword, this.info, this.infoAluno, this.infoServidor);
+        VerticalLayout layoutLogin = new VerticalLayout(this.textLogin, this.textPassword, this.checkStayConnected, this.buttonLogin, this.buttonForgotPassword, this.infoAluno, this.infoServidor);
         layoutLogin.setSizeUndefined();
         layoutLogin.setResponsive(true);
         layoutLogin.setSpacing(true);
@@ -123,12 +122,44 @@ public class LoginView extends CustomComponent implements View {
         this.panelLogin.setWidth("325px");
         this.panelLogin.setContent(layoutLogin);
         
+        this.buttonAuthDocument = new Button("Autenticação de Documentos", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	authenticateDocument();
+            }
+        });
+    	this.buttonAuthDocument.setWidth("300px");
+    	
+    	this.buttonAuthSignature = new Button("Autenticação de Assinatura Eletrônica", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+            	authenticateSignature();
+            }
+        });
+    	this.buttonAuthSignature.setWidth("300px");
+    	
+    	VerticalLayout layoutDocuments = new VerticalLayout(this.buttonAuthDocument, this.buttonAuthSignature);
+    	layoutDocuments.setSizeUndefined();
+    	layoutDocuments.setResponsive(true);
+    	layoutDocuments.setSpacing(true);
+    	layoutDocuments.setMargin(true);
+        
+        this.panelDocuments = new Panel("Documentos Eletrônicos");
+        this.panelDocuments.setSizeFull();
+        this.panelDocuments.setWidth("325px");
+        this.panelDocuments.setContent(layoutDocuments);
+        
+        VerticalLayout v1 = new VerticalLayout(this.panelLogin, this.panelDocuments);
+        v1.setSizeFull();
+        v1.setWidth("325px");
+        v1.setSpacing(true);
+        
         this.layoutStats = new GridLayout();
         this.layoutStats.setColumns(3);
         this.layoutStats.setSizeFull();
         this.layoutStats.setSpacing(true);
         
-        HorizontalLayout h = new HorizontalLayout(this.layoutStats, this.panelLogin);
+        HorizontalLayout h = new HorizontalLayout(this.layoutStats, v1);
         h.setSpacing(true);
         h.setSizeFull();
         h.setExpandRatio(this.layoutStats, 1);
@@ -152,6 +183,7 @@ public class LoginView extends CustomComponent implements View {
     		
 			this.layoutStats.addComponent(this.createPanelStat("Acadêmicos Ativos", String.valueOf(ubo.getActiveStudents())));
 			this.layoutStats.addComponent(this.createPanelStat("Professores Ativos", String.valueOf(ubo.getActiveProfessors())));
+			this.layoutStats.addComponent(this.createPanelStat("Avaliadores Externos", String.valueOf(ubo.getActiveSupervisors())));
 			
 			ActivitySubmissionBO abo = new ActivitySubmissionBO();
 			
@@ -292,6 +324,14 @@ public class LoginView extends CustomComponent implements View {
     
     private void forgotPassword() {
     	getUI().getNavigator().navigateTo(PasswordView.NAME);
+    }
+    
+    private void authenticateDocument() {
+    	getUI().getNavigator().navigateTo(AuthenticateView.NAME);
+    }
+    
+    private void authenticateSignature() {
+    	getUI().getNavigator().navigateTo(AuthDocumentView.NAME);
     }
     
 }

@@ -586,4 +586,16 @@ public class UserBO {
 		}
 	}
 	
+	public long getActiveSupervisors() throws Exception{
+		try {
+			UserDAO dao = new UserDAO();
+			
+			return dao.getActiveSupervisors();
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 }

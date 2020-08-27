@@ -47,7 +47,7 @@ public class AuthDocumentView extends CustomComponent implements View {
 		this.label = new Label("Sistema Integrado de Atividades Complementares, Orientações e Estágios");
     	this.label.setStyleName("Title");
     	
-		this.panel = new Panel("Autenticação de Documentos");
+		this.panel = new Panel("Autenticação de Assinatura Eletrônica");
 		this.panel.setWidth("500px");
 		
 		this.textGuid = new TextField("Código de Autenticação");
