@@ -13,26 +13,34 @@ import br.edu.utfpr.dv.siacoes.model.ActivityUnit;
 //Em primeiro momento foi constatado que o código abaixo, este bem detalhado,
 //fácil entendimento e visualização, porem há muitas validações para fechamento de conexão com banco de dados, então visto isso
 //encontrei uma outra maneira para fazer, utilizando try-with-resources
+import br.edu.utfpr.dv.siacoes.model.Department;
 
 
-
+//código corrigido, criado classe public para sair da conexão, foi uma forma que encontrei para correção do problema
+public class CloseException extends Exception {
+    public CloseException(Throwable e) {
+        super(e);
+    }
+}    
 
 public class ActivityUnitDAO {
+	
+	
 	
 	public List<ActivityUnit> listAll() throws SQLException{
 		try(
             Connection conn = ConnectionDAO.getInstance().getConnection();
-		    PreparedStatement stmt = conn.createStatement();
+		    PreparedStatement stmt = (PreparedStatement) conn.createStatement();
 			){
 		
-		try (ResultSet rs = stmt.executeQuery("SELECT * FROM activityunit ORDER BY description");
+		try (ResultSet rs = stmt.executeQuery("SELECT * FROM activityunit ORDER BY description")){
 			
 			List<ActivityUnit> list = new ArrayList<ActivityUnit>();
 			
 			while(rs.next()){
 				list.add(this.loadObject(rs));
 			}
-
+		
 			
 			return list;
 		}//ao inves de usar o finally ou mesmo chamar o método close(), para fechamento de recursos, 
@@ -40,25 +48,27 @@ public class ActivityUnitDAO {
 		 catch (SQLException e) {
                      throw new CloseException(e);
 		}
-	}
+		
+		}
+	
 
 	//criado classe privada chamando a consulta do activity e ao gerar a conexão utilizamos a variavel criada
          private static final String SQLAct = 
             "SELECT * FROM activityunit WHERE idActivityUnit=?";
 	
-	public ActivityUnit findById(int id) throws SQLException{
+	public ActivityUnit findById(int id) throws SQLException, CloseException{
 		try (
 		      Connection conn = ConnectionDAO.getInstance().getConnection();
 		      PreparedStatement stmt = conn.prepareStatement(SQLAct);
 	    ){
 		stmt.setInt(1, id);
-		try (ResultSet rs = stmt.executeQuery();
+		try (ResultSet rs = stmt.executeQuery()){
 			
 			if(rs.next()){
 				return this.loadObject(rs);
 			}else{
 				return null;
-			}
+			}}
 		}//ao inves de usar o finally ou mesmo chamar o método close(), para fechamento de recursos, 
 			 //usamos apenas catch (SQLException e)
 		 catch (SQLException e) {
@@ -66,7 +76,7 @@ public class ActivityUnitDAO {
 		}
 	}
 	
-	public int save(int idUser, ActivityUnit unit) throws SQLException{
+	public int save(int idUser, ActivityUnit unit) throws SQLException, CloseException{
 		boolean insert = (unit.getIdActivityUnit() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
