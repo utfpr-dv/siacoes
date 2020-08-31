@@ -13,49 +13,48 @@ import br.edu.utfpr.dv.siacoes.model.BugReport;
 import br.edu.utfpr.dv.siacoes.model.BugReport.BugStatus;
 import br.edu.utfpr.dv.siacoes.model.Module;
 import br.edu.utfpr.dv.siacoes.model.User;
+//Em primeiro momento foi constatado que o código abaixo, este bem detalhado,
+//fácil entendimento e visualização, porem há muitas validações para fechamento de conexão com banco de dados, então visto isso
+//encontrei uma outra maneira para fazer, utilizando try-with-resources
+
+
 
 public class BugReportDAO {
+
+	 //criado clase privada chamando a consulta do departamento e ao gerar a conexão utilizamos a variavel criada
+         private static final String SQLBug = 
+            "SELECT bugreport.*, \"user\".name " + 
+				"FROM bugreport INNER JOIN \"user\" ON \"user\".idUser=bugreport.idUser " +
+				"WHERE idBugReport = ?";
 	
 	public BugReport findById(int id) throws SQLException{
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
+		try (
+		      Connection conn = ConnectionDAO.getInstance().getConnection();
+		      PreparedStatement stmt = conn.prepareStatement(SQLBug);
+	    ){
+		stmt.setInt(1, id);
 		
-		try{
-			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT bugreport.*, \"user\".name " + 
-				"FROM bugreport INNER JOIN \"user\" ON \"user\".idUser=bugreport.idUser " +
-				"WHERE idBugReport = ?");
-		
-			stmt.setInt(1, id);
-			
-			rs = stmt.executeQuery();
+		try(ResultSet rs = stmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
 			}else{
 				return null;
 			}
-		}finally{
-			if((rs != null) && !rs.isClosed())
-				rs.close();
-			if((stmt != null) && !stmt.isClosed())
-				stmt.close();
-			if((conn != null) && !conn.isClosed())
-				conn.close();
+		}//ao inves de usar o finally ou mesmo chamar o método close(), para fechamento de recursos, 
+			 //usamos apenas catch (SQLException e)
+		 catch (SQLException e) {
+                     throw new CloseException(e);
 		}
 	}
 	
 	public List<BugReport> listAll() throws SQLException{
-		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rs = null;
-		
-		try{
-			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.createStatement();
-			
-			rs = stmt.executeQuery("SELECT bugreport.*, \"user\".name " +
+		try (
+		      Connection conn = ConnectionDAO.getInstance().getConnection();
+		      PreparedStatement stmt = conn.createStatement();
+	    ){
+
+		try(ResultSet rs = stmt.executeQuery("SELECT bugreport.*, \"user\".name " +
 					"FROM bugreport INNER JOIN \"user\" ON \"user\".idUser=bugreport.idUser " +
 					"ORDER BY status, reportdate");
 			List<BugReport> list = new ArrayList<BugReport>();
@@ -65,13 +64,10 @@ public class BugReportDAO {
 			}
 			
 			return list;
-		}finally{
-			if((rs != null) && !rs.isClosed())
-				rs.close();
-			if((stmt != null) && !stmt.isClosed())
-				stmt.close();
-			if((conn != null) && !conn.isClosed())
-				conn.close();
+		}//ao inves de usar o finally ou mesmo chamar o método close(), para fechamento de recursos, 
+			 //usamos apenas catch (SQLException e)
+		 catch (SQLException e) {
+                     throw new CloseException(e);
 		}
 	}
 	
@@ -119,13 +115,10 @@ public class BugReportDAO {
 			}
 			
 			return bug.getIdBugReport();
-		}finally{
-			if((rs != null) && !rs.isClosed())
-				rs.close();
-			if((stmt != null) && !stmt.isClosed())
-				stmt.close();
-			if((conn != null) && !conn.isClosed())
-				conn.close();
+		}//ao inves de usar o finally ou mesmo chamar o método close(), para fechamento de recursos, 
+			 //usamos apenas catch (SQLException e)
+		 catch (SQLException e) {
+                     throw new CloseException(e);
 		}
 	}
 	
