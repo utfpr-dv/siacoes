@@ -109,7 +109,7 @@ public class DepartmentDAO {
 	public int save(int idUser, Department department) throws SQLException{
 		boolean insert = (department.getIdDepartment() == 0);
 		if(insert){
-			return salvar(idUser, department]);
+			return salvar(idUser, department);
 		}else{
 			return alterar(idUser, department);
 		}
