@@ -156,7 +156,7 @@ public class DepartmentDAO {
 		}
 	}
 
-	public int alterar(int idUser, Department department){
+	public int alterar(int idUser, Department department) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
