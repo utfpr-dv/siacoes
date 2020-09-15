@@ -4,109 +4,74 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.dao.base.BaseDAO;
 import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.ActivityUnit;
 
-public class ActivityUnitDAO {
+public class ActivityUnitDAO extends BaseDAO<ActivityUnit> {
 	
 	public List<ActivityUnit> listAll() throws SQLException{
-		String query = "SELECT * " +
-				       "FROM activityunit " +
-				       "ORDER BY description";
+		return this.list("SELECT * " +
+				"FROM activityunit " +
+				"ORDER BY description");
+	}
 
-		try(
-			Connection conn = ConnectionDAO.getInstance().getConnection();
-			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(query)
-		) {
-			List<ActivityUnit> list = new ArrayList<ActivityUnit>();
-
-			while(rs.next()){
-				list.add(this.loadObject(rs));
-			}
-
-			return list;
+	@Override
+	protected int insertResultSetStep(int idUser, Connection conn, ResultSet rs, ActivityUnit object) throws SQLException {
+		if(rs.next()){
+			object.setIdActivityUnit(rs.getInt(1));
 		}
-	}
-	
-	public ActivityUnit findById(int id) throws SQLException{
-		String query = "SELECT * " +
-				       "FROM activityunit " +
-				       "WHERE idActivityUnit=?";
 
-		try (
-			Connection conn = ConnectionDAO.getInstance().getConnection();
-			PreparedStatement stmt = conn.prepareStatement(query)
-		) {
-			stmt.setInt(1, id);
+		new UpdateEvent(conn).registerInsert(idUser, object);
 
-			try (ResultSet rs = stmt.executeQuery()) {
-				if(rs.next()){
-					return this.loadObject(rs);
-				}else{
-					return null;
-				}
-			}
-		}
-	}
-	
-	public int save(int idUser, ActivityUnit unit) throws SQLException{
-		return unit.getIdActivityUnit() == 0 ? this.insert(idUser, unit) : this.update(idUser, unit);
+		return object.getIdActivityUnit();
 	}
 
-	private int insert(int idUser, ActivityUnit unit) throws SQLException {
-		String query = "INSERT INTO activityunit(description, fillAmount, amountDescription) " +
-				       "VALUES(?, ?, ?)";
-
-		try (
-			Connection conn = ConnectionDAO.getInstance().getConnection();
-			PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)
-		) {
-			stmt.setString(1, unit.getDescription());
-			stmt.setInt(2, (unit.isFillAmount() ? 1 : 0));
-			stmt.setString(3, unit.getAmountDescription());
-
-			stmt.execute();
-
-			try (ResultSet rs = stmt.getGeneratedKeys()) {
-				if(rs.next()){
-					unit.setIdActivityUnit(rs.getInt(1));
-				}
-
-				new UpdateEvent(conn).registerInsert(idUser, unit);
-
-				return unit.getIdActivityUnit();
-			}
-		}
+	@Override
+	protected String findByIdQuery() {
+		return "SELECT * " +
+				"FROM activityunit " +
+				"WHERE idActivityUnit=?";
 	}
 
-	private int update(int idUser, ActivityUnit unit) throws SQLException {
-		String query = "UPDATE activityunit " +
-				       "SET description=?, fillAmount=?, amountDescription=? " +
-				       "WHERE idActivityUnit=?";
-
-		try (
-			Connection conn = ConnectionDAO.getInstance().getConnection();
-			PreparedStatement stmt = conn.prepareStatement(query)
-		) {
-			stmt.setString(1, unit.getDescription());
-			stmt.setInt(2, (unit.isFillAmount() ? 1 : 0));
-			stmt.setString(3, unit.getAmountDescription());
-			stmt.setInt(4, unit.getIdActivityUnit());
-
-			stmt.execute();
-
-			new UpdateEvent(conn).registerUpdate(idUser, unit);
-
-			return unit.getIdActivityUnit();
-		}
+	@Override
+	protected String insertQuery() {
+		return "INSERT INTO activityunit(description, fillAmount, amountDescription) " +
+				"VALUES(?, ?, ?)";
 	}
-	
-	private ActivityUnit loadObject(ResultSet rs) throws SQLException{
+
+	@Override
+	protected String updateQuery() {
+		return "UPDATE activityunit " +
+				"SET description=?, fillAmount=?, amountDescription=? " +
+				"WHERE idActivityUnit=?";
+	}
+
+	@Override
+	protected int getId(ActivityUnit object) {
+		return object.getIdActivityUnit();
+	}
+
+	@Override
+	protected PreparedStatement insertStatementStep(PreparedStatement stmt, ActivityUnit object) throws SQLException {
+		stmt.setString(1, object.getDescription());
+		stmt.setInt(2, (object.isFillAmount() ? 1 : 0));
+		stmt.setString(3, object.getAmountDescription());
+		return stmt;
+	}
+
+	@Override
+	protected PreparedStatement updateStatementStep(PreparedStatement stmt, ActivityUnit object) throws SQLException {
+		stmt.setString(1, object.getDescription());
+		stmt.setInt(2, (object.isFillAmount() ? 1 : 0));
+		stmt.setString(3, object.getAmountDescription());
+		stmt.setInt(4, object.getIdActivityUnit());
+		return stmt;
+	}
+
+	protected ActivityUnit loadObject(ResultSet rs) throws SQLException{
 		ActivityUnit unit = new ActivityUnit();
 		
 		unit.setIdActivityUnit(rs.getInt("idActivityUnit"));
