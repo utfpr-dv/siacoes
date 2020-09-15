@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.bo;
+package br.edu.utfpr.dv.siacoes.bo;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -6,11 +6,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.catalina.tribes.util.Arrays;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 
 import br.edu.utfpr.dv.siacoes.dao.ActivityGroupDAO;
