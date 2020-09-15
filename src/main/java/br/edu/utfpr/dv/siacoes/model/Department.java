@@ -1,14 +1,15 @@
-﻿package br.edu.utfpr.dv.siacoes.model;
+package br.edu.utfpr.dv.siacoes.model;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 import java.io.Serializable;
 
-@Data
+@Data @Builder
 public class Department implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private int idDepartment;
 	private Campus campus;
 	private String name;
@@ -17,16 +18,4 @@ public class Department implements Serializable {
 	private boolean active;
 	private String site;
 	private String initials;
-	
-	public Department(){
-		this.setIdDepartment(0);
-		this.setCampus(new Campus());
-		this.setName("");
-		this.setFullName("");
-		this.setLogo(null);
-		this.setActive(true);
-		this.setSite("");
-		this.setInitials("");
-	}
-
 }
