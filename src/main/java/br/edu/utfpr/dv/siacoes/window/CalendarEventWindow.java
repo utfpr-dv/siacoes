@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.window;
+package br.edu.utfpr.dv.siacoes.window;
 
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextArea;

@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.util;
+package br.edu.utfpr.dv.siacoes.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

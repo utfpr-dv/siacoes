@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.bo;
+package br.edu.utfpr.dv.siacoes.bo;
 
 import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;

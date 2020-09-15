@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.view;
+package br.edu.utfpr.dv.siacoes.view;
 
 import java.util.UUID;
 
