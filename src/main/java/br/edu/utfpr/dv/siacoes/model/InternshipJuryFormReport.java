@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.model;
+package br.edu.utfpr.dv.siacoes.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;

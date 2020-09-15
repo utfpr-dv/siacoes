@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.window;
+package br.edu.utfpr.dv.siacoes.window;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;

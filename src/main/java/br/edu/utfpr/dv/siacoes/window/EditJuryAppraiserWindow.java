@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.window;
+package br.edu.utfpr.dv.siacoes.window;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

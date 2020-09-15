@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.dao;
+package br.edu.utfpr.dv.siacoes.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

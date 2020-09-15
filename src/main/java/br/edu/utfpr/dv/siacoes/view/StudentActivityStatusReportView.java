@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.view;
+package br.edu.utfpr.dv.siacoes.view;
 
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.NativeSelect;

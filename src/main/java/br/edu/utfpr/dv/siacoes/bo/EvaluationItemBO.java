@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.bo;
+package br.edu.utfpr.dv.siacoes.bo;
 
 import java.sql.SQLException;
 import java.util.List;

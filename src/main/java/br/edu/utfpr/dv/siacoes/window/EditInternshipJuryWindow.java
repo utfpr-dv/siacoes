@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.window;
+package br.edu.utfpr.dv.siacoes.window;
 
 import java.sql.SQLException;
 import java.util.logging.Level;

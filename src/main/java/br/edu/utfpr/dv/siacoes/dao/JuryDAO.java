@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.dao;
+package br.edu.utfpr.dv.siacoes.dao;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

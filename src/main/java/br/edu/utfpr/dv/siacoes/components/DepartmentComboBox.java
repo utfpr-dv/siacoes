@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.components;
+package br.edu.utfpr.dv.siacoes.components;
 
 import java.util.List;
 import java.util.logging.Level;

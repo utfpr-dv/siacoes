@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.model;
+package br.edu.utfpr.dv.siacoes.model;
 
 import java.io.InputStream;
 import java.io.Serializable;
