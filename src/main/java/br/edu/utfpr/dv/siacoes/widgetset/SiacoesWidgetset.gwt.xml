@@ -25,4 +25,6 @@
 
 
     
+
+    <inherits name="org.vaadin.thomas.timefield.WidgetSet" />
 </module>
