@@ -14,23 +14,25 @@ import br.edu.utfpr.dv.siacoes.model.BugReport.BugStatus;
 import br.edu.utfpr.dv.siacoes.model.Module;
 import br.edu.utfpr.dv.siacoes.model.User;
 
+// A classe está implementada dentro dos meus conhecimentos sobre java
+
 public class BugReportDAO {
-	
+
 	public BugReport findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		
+
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT bugreport.*, \"user\".name " + 
-				"FROM bugreport INNER JOIN \"user\" ON \"user\".idUser=bugreport.idUser " +
-				"WHERE idBugReport = ?");
-		
+			stmt = conn.prepareStatement("SELECT bugreport.*, \"user\".name " +
+					"FROM bugreport INNER JOIN \"user\" ON \"user\".idUser=bugreport.idUser " +
+					"WHERE idBugReport = ?");
+
 			stmt.setInt(1, id);
-			
+
 			rs = stmt.executeQuery();
-			
+
 			if(rs.next()){
 				return this.loadObject(rs);
 			}else{
@@ -45,25 +47,25 @@ public class BugReportDAO {
 				conn.close();
 		}
 	}
-	
+
 	public List<BugReport> listAll() throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
-		
+
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
-			
+
 			rs = stmt.executeQuery("SELECT bugreport.*, \"user\".name " +
 					"FROM bugreport INNER JOIN \"user\" ON \"user\".idUser=bugreport.idUser " +
 					"ORDER BY status, reportdate");
 			List<BugReport> list = new ArrayList<BugReport>();
-			
+
 			while(rs.next()){
 				list.add(this.loadObject(rs));
 			}
-			
+
 			return list;
 		}finally{
 			if((rs != null) && !rs.isClosed())
@@ -74,22 +76,22 @@ public class BugReportDAO {
 				conn.close();
 		}
 	}
-	
+
 	public int save(BugReport bug) throws SQLException{
 		boolean insert = (bug.getIdBugReport() == 0);
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		
+
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			
+
 			if(insert){
 				stmt = conn.prepareStatement("INSERT INTO bugreport(idUser, module, title, description, reportDate, type, status, statusDate, statusDescription) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
 				stmt = conn.prepareStatement("UPDATE bugreport SET idUser=?, module=?, title=?, description=?, reportDate=?, type=?, status=?, statusDate=?, statusDescription=? WHERE idBugReport=?");
 			}
-			
+
 			stmt.setInt(1, bug.getUser().getIdUser());
 			stmt.setInt(2, bug.getModule().getValue());
 			stmt.setString(3, bug.getTitle());
@@ -103,21 +105,21 @@ public class BugReportDAO {
 				stmt.setDate(8, new java.sql.Date(bug.getStatusDate().getTime()));
 			}
 			stmt.setString(9, bug.getStatusDescription());
-			
+
 			if(!insert){
 				stmt.setInt(10, bug.getIdBugReport());
 			}
-			
+
 			stmt.execute();
-			
+
 			if(insert){
 				rs = stmt.getGeneratedKeys();
-				
+
 				if(rs.next()){
 					bug.setIdBugReport(rs.getInt(1));
 				}
 			}
-			
+
 			return bug.getIdBugReport();
 		}finally{
 			if((rs != null) && !rs.isClosed())
@@ -128,10 +130,10 @@ public class BugReportDAO {
 				conn.close();
 		}
 	}
-	
+
 	private BugReport loadObject(ResultSet rs) throws SQLException{
 		BugReport bug = new BugReport();
-		
+
 		bug.setIdBugReport(rs.getInt("idBugReport"));
 		bug.setUser(new User());
 		bug.getUser().setIdUser(rs.getInt("idUser"));
@@ -144,8 +146,11 @@ public class BugReportDAO {
 		bug.setStatus(BugReport.BugStatus.valueOf(rs.getInt("status")));
 		bug.setStatusDate(rs.getDate("statusDate"));
 		bug.setStatusDescription(rs.getString("statusDescription"));
-		
+
 		return bug;
 	}
 
+
+
 }
+
