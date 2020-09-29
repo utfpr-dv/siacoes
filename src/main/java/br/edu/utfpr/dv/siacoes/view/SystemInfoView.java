@@ -117,16 +117,17 @@ public class SystemInfoView extends BasicView {
 		
 		try {
 			GridLayout stats = new GridLayout();
-			stats.setColumns(6);
+			stats.setColumns(4);
 			stats.setSizeFull();
 			stats.setSpacing(true);
 			stats.setMargin(true);
 			
 			stats.addComponent(this.createPanelStat("Tamanho do Banco", new SystemBO().getDatabaseSizeAsString()));
-			stats.addComponent(this.createPanelStat("Certificados", new SystemBO().getCertificatesSizeAsString()));
 			stats.addComponent(this.createPanelStat("Atividades Complementares", new SystemBO().getSigacSizeAsString()));
 			stats.addComponent(this.createPanelStat("Estágios", new SystemBO().getSigesSizeAsString()));
 			stats.addComponent(this.createPanelStat("TCC", new SystemBO().getSigetSizeAsString()));
+			stats.addComponent(this.createPanelStat("Certificados", new SystemBO().getCertificatesSizeAsString()));
+			stats.addComponent(this.createPanelStat("Assinatura de Documentos", new SystemBO().getSignatureSizeAsString()));
 			stats.addComponent(this.createPanelStat("Log de Eventos", new SystemBO().getLogSizeAsString()));
 			
 			panelDB.setContent(stats);

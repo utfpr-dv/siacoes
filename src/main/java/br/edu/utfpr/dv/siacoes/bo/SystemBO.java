@@ -69,6 +69,16 @@ public class SystemBO {
 		}
 	}
 	
+	public int getSignatureSize() throws Exception {
+		try {
+			return new SystemDAO().getSignatureSize();
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
+	}
+	
 	public String getDatabaseSizeAsString() throws Exception {
 		try {
 			return StringUtils.getFormattedBytes(this.getDatabaseSize());
@@ -122,6 +132,16 @@ public class SystemBO {
 	public String getLogSizeAsString() throws Exception {
 		try {
 			return StringUtils.getFormattedBytes(this.getLogSize());
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
+	}
+	
+	public String getSignatureSizeAsString() throws Exception {
+		try {
+			return StringUtils.getFormattedBytes(this.getSignatureSize());
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

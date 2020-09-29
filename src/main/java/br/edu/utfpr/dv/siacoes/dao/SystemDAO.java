@@ -175,4 +175,32 @@ public class SystemDAO {
 		}
 	}
 	
+	public int getSignatureSize() throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT SUM(pg_total_relation_size(c.oid)) AS total " +
+					"FROM pg_class c LEFT JOIN pg_namespace n ON n.oid = c.relnamespace " +
+					"WHERE relkind = 'r' AND relname IN ('signature', 'signaturekey', 'signdocument')");
+			
+			if(rs.next()) {
+				return rs.getInt("total");
+			} else {
+				return 0;
+			}
+		} finally {
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 }
