@@ -75,7 +75,7 @@ public class EmailMessageBO {
 	
 	public void sendForgotPasswordEmail(User user) throws Exception {
 		String token = new LoginService().generateToken(user.getLogin());
-		String link = AppConfig.getInstance().getHost() + "/#!password/" + token;
+		String link = AppConfig.getInstance().getHost() + "/password/" + token;
 		String message = "Você solicitou a recuperação de senha do sistema SIACOES<br/><br/>" +
 				"Para redefinir a sua senha, acesse o link:<br/>" +
 				"<a href=\"" + link + "\">" + link + "</a>";

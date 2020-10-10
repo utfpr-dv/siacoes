@@ -49,6 +49,25 @@ public class JuryAppraiserScoreBO {
 		}
 	}
 	
+	public int save(int idUser, List<JuryAppraiserScore> scores) throws Exception {
+		try {
+			this.conn.setAutoCommit(false);
+			
+			for(JuryAppraiserScore jas : scores) {
+				this.save(idUser, jas);
+			}
+			
+			this.conn.commit();
+			
+			return 1;
+		} catch(Exception e) {
+			this.conn.rollback();
+			throw e;
+		} finally {
+			this.conn.setAutoCommit(true);
+		}
+	}
+	
 	public int save(int idUser, JuryAppraiserScore score) throws Exception{
 		if((score.getScore() < 0) || (score.getScore() > score.getEvaluationItem().getPonderosity())){
 			throw new Exception("A nota deve estar entre 0 e peso do quesito.");

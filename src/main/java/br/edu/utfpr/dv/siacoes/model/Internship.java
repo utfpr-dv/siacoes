@@ -47,6 +47,16 @@ public class Internship implements Serializable {
 					return "";
 			}
 		}
+		
+		public static InternshipStatus fromDescription(String value) {
+			for(InternshipStatus d : InternshipStatus.values()){
+				if(d.getDescription().equals(value)){
+					return d;
+				}
+			}
+			
+			return null;
+		}
 	}
 	
 	public enum InternshipType{
@@ -84,6 +94,16 @@ public class Internship implements Serializable {
 				default:
 					return "Não Obrigatório";
 			}
+		}
+		
+		public static InternshipType fromDescription(String value) {
+			for(InternshipType d : InternshipType.values()){
+				if(d.getDescription().equals(value)){
+					return d;
+				}
+			}
+			
+			return null;
 		}
 	}
 	

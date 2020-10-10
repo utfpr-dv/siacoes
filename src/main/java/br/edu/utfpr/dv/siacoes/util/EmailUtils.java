@@ -1,13 +1,14 @@
 ﻿package br.edu.utfpr.dv.siacoes.util;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.security.GeneralSecurityException;
 import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 
 import com.sun.mail.util.MailSSLSocketFactory;
+
+import br.edu.utfpr.dv.siacoes.log.Logger;
 
 public class EmailUtils {
 	
@@ -97,7 +98,7 @@ public class EmailUtils {
 	            
 	            props.put("mail.smtp.ssl.socketFactory", sf);
 			} catch (GeneralSecurityException e) {
-				Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+				Logger.log(Level.SEVERE, e.getMessage(), e);
 			}
         }
         
@@ -145,7 +146,7 @@ public class EmailUtils {
             
             Transport.send(message, getUser(), getPassword());
         } catch (Exception e) {
-        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+        	Logger.log(Level.SEVERE, e.getMessage(), e);
         	
         	throw e;
         }

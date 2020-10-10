@@ -49,6 +49,25 @@ public class InternshipJuryAppraiserScoreBO {
 		}
 	}
 	
+	public int save(int idUser, List<InternshipJuryAppraiserScore> scores) throws Exception {
+		try {
+			this.conn.setAutoCommit(false);
+			
+			for(InternshipJuryAppraiserScore jas : scores) {
+				this.save(idUser, jas);
+			}
+			
+			this.conn.commit();
+			
+			return 1;
+		} catch(Exception e) {
+			this.conn.rollback();
+			throw e;
+		} finally {
+			this.conn.setAutoCommit(true);
+		}
+	}
+	
 	public int save(int idUser, InternshipJuryAppraiserScore score) throws Exception{
 		if((score.getScore() < 0) || (score.getScore() > score.getInternshipEvaluationItem().getPonderosity())){
 			throw new Exception("A nota deve estar entre 0 e o peso do quesito.");

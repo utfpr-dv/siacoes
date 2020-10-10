@@ -61,6 +61,24 @@ public class ProposalAppraiserBO {
 		}
 	}
 	
+	public List<ProposalAppraiser> listByAppraiser(int idAppraiser, int semester, int year) throws Exception{
+		try {
+			ProposalAppraiserDAO dao = new ProposalAppraiserDAO();
+			
+			List<ProposalAppraiser> ret = dao.listByAppraiser(idAppraiser, semester, year);
+			
+			for(ProposalAppraiser appraiser : ret) {
+				appraiser.setProposal(new ProposalBO().findById(appraiser.getProposal().getIdProposal()));
+			}
+			
+			return ret;
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public int save(int idUser, ProposalAppraiser appraiser) throws Exception{
 		int ret = 0;
 		boolean isInsert = (appraiser.getIdProposalAppraiser() == 0);

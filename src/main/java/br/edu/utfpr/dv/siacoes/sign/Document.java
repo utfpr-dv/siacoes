@@ -278,7 +278,7 @@ public class Document {
 		Object dataset = in.readObject();
 		in.close();
 		
-		((SignDataset)dataset).setValidateUrl(AppConfig.getInstance().getHost() + "/#!authdocument/" + ((SignDataset)dataset).getGuid());
+		((SignDataset)dataset).setValidateUrl(AppConfig.getInstance().getHost() + "/authdocument/" + ((SignDataset)dataset).getGuid());
 		((SignDataset)dataset).setLegalText("Documento assinado eletronicamente com fundamento no art. 6º, § 1º, do Decreto nº 8.539, de 8 de outubro de 2015. A autenticidade deste documento pode ser conferida no site " + 
 				((SignDataset)dataset).getValidateUrl() + " ou efetuando a leitura do QRCode ao lado.\nCódigo de autenticação: " + ((SignDataset)dataset).getGuid());
 		((SignDataset)dataset).setQrCode(new ByteArrayInputStream(Document.createQRCode(((SignDataset)dataset).getValidateUrl(), 100, 100)));

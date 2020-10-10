@@ -2,6 +2,10 @@
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -52,6 +56,10 @@ public class DateUtils {
 		return today.get(Calendar.YEAR);
 	}
 	
+	public static int getYear(LocalDate date){
+		return date.getYear();
+	}
+	
 	public static int getYear(Date date){
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
@@ -64,6 +72,10 @@ public class DateUtils {
 		return today.get(Calendar.MONTH);
 	}
 	
+	public static int getMonth(LocalDate date){
+		return date.getMonth().getValue();
+	}
+	
 	public static int getMonth(Date date){
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
@@ -74,6 +86,10 @@ public class DateUtils {
 		Calendar today = DateUtils.getToday();
 		
 		return today.get(Calendar.DAY_OF_MONTH);
+	}
+	
+	public static int getDay(LocalDate date){
+		return date.getDayOfMonth();
 	}
 	
 	public static int getDay(Date date){
@@ -271,6 +287,10 @@ public class DateUtils {
 		return cal.getTime();
 	}
 	
+	public static int getDifferenceInMonths(LocalDate startDate, LocalDate endDate) {
+		return DateUtils.getDifferenceInMonths(DateUtils.convertToDate(startDate), DateUtils.convertToDate(endDate));
+	}
+	
 	public static int getDifferenceInMonths(Date startDate, Date endDate) {
 		Calendar startCalendar = new GregorianCalendar();
 		startCalendar.setTime(startDate);
@@ -281,6 +301,10 @@ public class DateUtils {
 		return diffYear * 12 + endCalendar.get(Calendar.MONTH) - startCalendar.get(Calendar.MONTH);
 	}
 	
+	public static int getDifferenceInWeeks(LocalDate startDate, LocalDate endDate) {
+		return DateUtils.getDifferenceInWeeks(DateUtils.convertToDate(startDate), DateUtils.convertToDate(endDate));
+	}
+	
 	public static int getDifferenceInWeeks(Date startDate, Date endDate) {
 		Calendar startCalendar = new GregorianCalendar();
 		startCalendar.setTime(startDate);
@@ -289,6 +313,49 @@ public class DateUtils {
 
 		int diffYear = endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR);
 		return diffYear * 52 + endCalendar.get(Calendar.WEEK_OF_YEAR) - startCalendar.get(Calendar.WEEK_OF_YEAR);
+	}
+	
+	public static LocalDate convertToLocalDate(Date dateToConvert) {
+		if (dateToConvert == null)
+            return null;
+		
+		if (dateToConvert instanceof java.sql.Timestamp)
+			return ((java.sql.Timestamp) dateToConvert).toLocalDateTime().toLocalDate();
+		else if (dateToConvert instanceof java.sql.Date)
+			return ((java.sql.Date) dateToConvert).toLocalDate();
+		else
+			return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	}
+	
+	public static LocalDateTime convertToLocalDateTime(Date dateToConvert) {
+		if (dateToConvert == null)
+            return null;
+		
+		if (dateToConvert instanceof java.sql.Timestamp)
+			return ((java.sql.Timestamp) dateToConvert).toLocalDateTime();
+		else
+			return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+	}
+	
+	public static Date convertToDate(LocalDate dateToConvert) {
+		if(dateToConvert == null) 
+			return null;
+		
+	    return java.util.Date.from(dateToConvert.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+	}
+	
+	public static Date convertToDate(LocalDateTime dateToConvert) {
+		if(dateToConvert == null) 
+			return null;
+		
+	    return java.util.Date.from(dateToConvert.atZone(ZoneId.systemDefault()).toInstant());
+	}
+	
+	public static Date convertToDate(LocalTime dateToConvert) {
+		if(dateToConvert == null) 
+			return null;
+		
+	    return java.util.Date.from(dateToConvert.atDate(LocalDate.of(1990, 1, 1)).atZone(ZoneId.systemDefault()).toInstant());
 	}
 	
 }

@@ -28,3 +28,11 @@ https2.txt
 https renew\.txt
 
 src/main/java/br/edu/utfpr/dv/siacoes/sign/SignatureKey.java
+
+tsconfig.json
+
+types.d.ts
+
+webpack.config.js
+
+webpack.generated.js

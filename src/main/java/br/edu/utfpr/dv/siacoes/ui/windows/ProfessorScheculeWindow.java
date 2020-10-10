@@ -1,0 +1,70 @@
+package br.edu.utfpr.dv.siacoes.ui.windows;
+
+import java.util.List;
+import java.util.logging.Level;
+
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.grid.Grid.SelectionMode;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+
+import br.edu.utfpr.dv.siacoes.Session;
+import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
+import br.edu.utfpr.dv.siacoes.bo.JuryBO;
+import br.edu.utfpr.dv.siacoes.bo.JuryRequestBO;
+import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
+import br.edu.utfpr.dv.siacoes.log.Logger;
+import br.edu.utfpr.dv.siacoes.model.InternshipJury;
+import br.edu.utfpr.dv.siacoes.model.Jury;
+import br.edu.utfpr.dv.siacoes.model.JuryRequest;
+import br.edu.utfpr.dv.siacoes.model.Semester;
+import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.ui.grid.ProfessorScheduleDataSource;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
+
+public class ProfessorScheculeWindow extends BasicWindow {
+	
+	private final Grid<ProfessorScheduleDataSource> gridSchedule;
+
+	public ProfessorScheculeWindow(User professor) {
+		super("Agenda do Professor");
+		
+		this.gridSchedule = new Grid<ProfessorScheduleDataSource>();
+		this.gridSchedule.setSelectionMode(SelectionMode.SINGLE);
+		this.gridSchedule.setSizeFull();
+		this.gridSchedule.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
+		this.gridSchedule.addColumn(ProfessorScheduleDataSource::getDate).setHeader("Data").setFlexGrow(0).setWidth("150px");
+		this.gridSchedule.addColumn(ProfessorScheduleDataSource::getStart).setHeader("Início").setFlexGrow(0).setWidth("100px");
+		this.gridSchedule.addColumn(ProfessorScheduleDataSource::getEnd).setHeader("Término").setFlexGrow(0).setWidth("100px");
+		this.gridSchedule.addColumn(ProfessorScheduleDataSource::getDescription).setHeader("Compromisso");
+		
+		VerticalLayout layout = new VerticalLayout(this.gridSchedule, new Label("* Bancas pré-agendadas."));
+		layout.expand(this.gridSchedule);
+		layout.setSpacing(true);
+		layout.setSizeFull();
+		
+		this.add(layout);
+		
+		this.setWidth("900px");
+		this.setHeight("400px");
+		
+		this.loadSchedule(professor);
+	}
+	
+	private void loadSchedule(User professor) {
+		try {
+			Semester semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
+			List<Jury> list = new JuryBO().listByAppraiser(professor.getIdUser(), semester.getSemester(), semester.getYear());
+			List<JuryRequest> list3 = new JuryRequestBO().listByAppraiser(professor.getIdUser(), semester.getSemester(), semester.getYear());
+			List<InternshipJury> list2 = new InternshipJuryBO().listByAppraiser(professor.getIdUser(), semester.getSemester(), semester.getYear());
+			
+			this.gridSchedule.setItems(ProfessorScheduleDataSource.load(list, list3, list2));
+		} catch (Exception e) {
+			Logger.log(Level.SEVERE, e.getMessage(), e);
+			
+			this.showErrorNotification("Listar Compromissos", e.getMessage());
+		}
+	}
+	
+}

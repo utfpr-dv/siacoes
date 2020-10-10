@@ -165,6 +165,12 @@ public class FinalDocument implements Serializable {
 		else
 			return this.getProject().getYear();
 	}
+	public User getStudent() {
+		if((this.getThesis() != null) && (this.getThesis().getIdThesis() != 0))
+			return this.getThesis().getStudent();
+		else
+			return this.getProject().getStudent();
+	}
 	public String getNativeAbstract() {
 		return nativeAbstract;
 	}

@@ -12,11 +12,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-import com.vaadin.server.Extension;
-import com.vaadin.server.FileDownloader;
-import com.vaadin.server.StreamResource;
-import com.vaadin.server.VaadinService;
-import com.vaadin.ui.Button;
+import com.vaadin.flow.server.StreamResource;
 
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.bo.DepartmentBO;
@@ -38,31 +34,7 @@ import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 public class ReportUtils {
 	
 	//Base path for report template
-    private String baseReportsPath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath() + "/WEB-INF/reports/";
-
-    /**
-     * Get database connection, call report generation method and export's report to Vaadin's FileDownloader
-     * @param reportTemplate Report template file name
-     * @param reportOutputFilename Pdf output file name
-     * @param buttonToExtend Vaadin button to extend
-     */
-    public void prepareForPdfReport(String reportName, String reportOutputFilename, List dataSource, int idDepartment, Button buttonToExtend){
-    	this.prepareForPdfReport(reportName, reportOutputFilename, dataSource, idDepartment, buttonToExtend, true);
-    }
-    
-    public void prepareForPdfReport(String reportName, String reportOutputFilename, List dataSource, int idDepartment, Button buttonToExtend, boolean removeExtensions){
-        reportOutputFilename += ("_" + getDateAsString() + ".pdf");
-        StreamResource myResource = createPdfResource(dataSource, reportName, reportOutputFilename, idDepartment);
-        FileDownloader fileDownloader = new FileDownloader(myResource);
-        
-        if(removeExtensions && (buttonToExtend.getExtensions().size() > 0)){
-        	while(buttonToExtend.getExtensions().size() > 0){
-        		buttonToExtend.removeExtension((Extension)buttonToExtend.getExtensions().toArray()[0]);	
-        	}
-        }
-        
-        fileDownloader.extend(buttonToExtend);
-    }
+    //private String baseReportsPath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath() + "/WEB-INF/reports/";
 
     /**
      * Generate pdf report, and return it as a StreamResource
@@ -72,20 +44,20 @@ public class ReportUtils {
      * @return StreamResource with the generated pdf report
      */
     private StreamResource createPdfResource(final List beanCollection, final String templatePath, String reportFileName, int idDepartment) {
-        return new StreamResource(new StreamResource.StreamSource() {
-            @Override
-            public InputStream getStream () {
-                ByteArrayOutputStream pdfBuffer = new ByteArrayOutputStream();
+    	StreamResource resource = new StreamResource(reportFileName, () -> {
+    		ByteArrayOutputStream pdfBuffer = new ByteArrayOutputStream();
 
-                try {
-                    executeReport(templatePath, beanCollection, pdfBuffer, idDepartment);
-                } catch (JRException e) {
-                    e.printStackTrace();
-                }
-                // Return a stream from the buffer.
-                return new ByteArrayInputStream(pdfBuffer.toByteArray());
+            try {
+                executeReport(templatePath, beanCollection, pdfBuffer, idDepartment);
+            } catch (JRException e) {
+                e.printStackTrace();
             }
-        }, reportFileName);
+
+            return new ByteArrayInputStream(pdfBuffer.toByteArray());
+    	});
+		resource.setCacheTime(0);
+    	
+    	return resource;
     }
     
     public ByteArrayOutputStream createPdfStream(final List beanCollection, final String templatePath, int idDepartment) throws Exception {

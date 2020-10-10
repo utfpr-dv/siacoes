@@ -7,10 +7,9 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.Cookie;
 
-import com.vaadin.server.VaadinService;
-import com.vaadin.server.VaadinSession;
-import com.vaadin.server.WebBrowser;
-import com.vaadin.ui.UI;
+import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.WebBrowser;
 
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.UserDepartment;
@@ -34,7 +33,7 @@ public class Session {
 		}
 		
 		if((user != null) && ((Session.getAdministrator() == null) || (Session.getAdministrator().getIdUser() == 0))) {
-			WebBrowser webBrowser = UI.getCurrent().getPage().getWebBrowser();
+			WebBrowser webBrowser = VaadinSession.getCurrent().getBrowser();
 			LoginEvent.registerLogin(user.getIdUser(), webBrowser.getAddress(), webBrowser.getBrowserApplication() + " " + webBrowser.getBrowserMajorVersion() + "." + webBrowser.getBrowserMinorVersion());
 		}
 	}
@@ -174,7 +173,7 @@ public class Session {
 	}
 	
 	public static void logoff() {
-		WebBrowser webBrowser = UI.getCurrent().getPage().getWebBrowser();
+		WebBrowser webBrowser = VaadinSession.getCurrent().getBrowser();
 		LoginEvent.registerLogout(Session.getUser().getIdUser(), webBrowser.getAddress(), webBrowser.getBrowserApplication() + " " + webBrowser.getBrowserMajorVersion() + "." + webBrowser.getBrowserMinorVersion());
 		
 		Session.setUser(null);
@@ -186,6 +185,7 @@ public class Session {
 		cookie.setPath("/");
         VaadinService.getCurrentResponse().addCookie(cookie);
         //VaadinSession.getCurrent().close();
+        VaadinSession.getCurrent().getSession().invalidate();
 	}
 	
 	public static boolean isUserProfessor(){

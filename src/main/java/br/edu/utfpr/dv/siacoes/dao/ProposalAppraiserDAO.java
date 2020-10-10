@@ -79,6 +79,31 @@ public class ProposalAppraiserDAO {
 		}
 	}
 	
+	public List<ProposalAppraiser> listByAppraiser(int idAppraiser, int semester, int year) throws SQLException{
+		ResultSet rs = null;
+		Statement stmt = null;
+		
+		try{
+			stmt = this.conn.createStatement();
+			rs = stmt.executeQuery("SELECT proposalappraiser.*, appraiser.name as appraiserName " +
+					"FROM proposalappraiser INNER JOIN \"user\" appraiser ON appraiser.idUser=proposalappraiser.idAppraiser " +
+					"INNER JOIN proposal ON proposal.idproposal=proposalappraiser.idproposal " + 
+					"WHERE proposalappraiser.idAppraiser=" + String.valueOf(idAppraiser) + " AND proposal.semester=" + String.valueOf(semester) + " AND proposal.year=" + String.valueOf(year));
+			List<ProposalAppraiser> list = new ArrayList<ProposalAppraiser>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs));
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
+	}
+	
 	public ProposalAppraiser findById(int id) throws SQLException{
 		ResultSet rs = null;
 		PreparedStatement stmt = null;

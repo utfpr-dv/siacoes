@@ -937,7 +937,7 @@ public class CertificateBO {
 	}
 	
 	private String getLink(String guid){
-		return AppConfig.getInstance().getHost() + "/#!authenticate/" + guid;
+		return AppConfig.getInstance().getHost() + "/authenticate/" + guid;
 	}
 	
 	private byte[] createQRCode(String qrCodeData, int qrCodeheight, int qrCodewidth) throws WriterException, IOException {
