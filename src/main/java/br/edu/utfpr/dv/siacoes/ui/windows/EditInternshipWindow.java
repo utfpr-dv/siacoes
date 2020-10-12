@@ -26,6 +26,7 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
@@ -260,7 +261,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.gridStudentReport.setSelectionMode(SelectionMode.SINGLE);
 		this.gridStudentReport.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
 		this.gridStudentReport.addColumn(InternshipReportDataSource::getTitle).setHeader("Relatório").setFlexGrow(0).setWidth("150px");
-		this.gridStudentReport.addColumn(InternshipReportDataSource::getDate).setHeader("Data de Upload").setFlexGrow(0).setWidth("150px");
+		this.gridStudentReport.addColumn(new LocalDateRenderer<>(InternshipReportDataSource::getDate, "dd/MM/yyyy")).setHeader("Data de Upload").setFlexGrow(0).setWidth("150px");
 		this.gridStudentReport.addColumn(InternshipReportDataSource::getFeedback).setHeader("Feedback");
 		this.gridStudentReport.setWidth("810px");
 		this.gridStudentReport.setHeight("450px");
@@ -302,7 +303,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.gridSupervisorReport.setSelectionMode(SelectionMode.SINGLE);
 		this.gridSupervisorReport.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
 		this.gridSupervisorReport.addColumn(InternshipReportDataSource::getTitle).setHeader("Relatório").setFlexGrow(0).setWidth("150px");
-		this.gridSupervisorReport.addColumn(InternshipReportDataSource::getDate).setHeader("Data de Upload").setFlexGrow(0).setWidth("150px");
+		this.gridSupervisorReport.addColumn(new LocalDateRenderer<>(InternshipReportDataSource::getDate, "dd/MM/yyyy")).setHeader("Data de Upload").setFlexGrow(0).setWidth("150px");
 		this.gridSupervisorReport.addColumn(InternshipReportDataSource::getFeedback).setHeader("Feedback");
 		this.gridSupervisorReport.setWidth("810px");
 		this.gridSupervisorReport.setHeight("450px");
@@ -344,7 +345,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.gridCompanySupervisorReport.setSelectionMode(SelectionMode.SINGLE);
 		this.gridCompanySupervisorReport.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
 		this.gridCompanySupervisorReport.addColumn(InternshipReportDataSource::getTitle).setHeader("Relatório").setFlexGrow(0).setWidth("150px");
-		this.gridCompanySupervisorReport.addColumn(InternshipReportDataSource::getDate).setHeader("Data de Upload").setFlexGrow(0).setWidth("150px");
+		this.gridCompanySupervisorReport.addColumn(new LocalDateRenderer<>(InternshipReportDataSource::getDate, "dd/MM/yyyy")).setHeader("Data de Upload").setFlexGrow(0).setWidth("150px");
 		this.gridCompanySupervisorReport.addColumn(InternshipReportDataSource::getFeedback).setHeader("Feedback");
 		this.gridCompanySupervisorReport.setWidth("810px");
 		this.gridCompanySupervisorReport.setHeight("450px");

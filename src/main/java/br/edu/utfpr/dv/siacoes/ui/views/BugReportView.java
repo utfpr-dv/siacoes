@@ -21,9 +21,9 @@ public class BugReportView extends ListView<BugReportDataSource> {
 	public BugReportView(){
 		super(SystemModule.GENERAL);
 		
-		this.getGrid().addColumn(BugReportDataSource::getDescription).setHeader("Descrição");
-		this.getGrid().addColumn(BugReportDataSource::getType).setHeader("Tipo").setFlexGrow(0).setWidth("150px");
-		this.getGrid().addColumn(BugReportDataSource::getStatus).setHeader("Status").setFlexGrow(0).setWidth("150px");
+		this.getGrid().addColumn(BugReportDataSource::getDescription, "Description").setHeader("Descrição");
+		this.getGrid().addColumn(BugReportDataSource::getType, "Type").setHeader("Tipo").setFlexGrow(0).setWidth("150px");
+		this.getGrid().addColumn(BugReportDataSource::getStatus, "Status").setHeader("Status").setFlexGrow(0).setWidth("150px");
 		
 		this.setAddCaption("Reportar");
 		this.setFiltersVisible(false);

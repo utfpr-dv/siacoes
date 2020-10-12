@@ -53,6 +53,7 @@ public abstract class ListView<T> extends LoggedView implements AfterNavigationO
 		this.grid.setSizeFull();
 		//this.grid.removeColumnByKey("id");
 		this.grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
+		this.grid.setColumnReorderingAllowed(false);
 		this.grid.addItemDoubleClickListener(event -> {
 			if(this.isEditVisible()){
 				this.edit();
@@ -102,6 +103,7 @@ public abstract class ListView<T> extends LoggedView implements AfterNavigationO
 		this.buttonFilter.setWidth("170px");
 		
 		this.labelGridRecords = new Label();
+		this.labelGridRecords.getElement().getStyle().set("margin-left", "5px");
 		
 		this.layoutFields = new HorizontalLayout();
 		this.layoutFields.setSpacing(true);
@@ -177,6 +179,18 @@ public abstract class ListView<T> extends LoggedView implements AfterNavigationO
     	this.gridRowCount = 0;
 		
     	this.loadGrid();
+    	
+    	try {
+    		this.gridRowCount = this.grid.getListDataView().getItemCount();
+    	} catch(Exception e1) {
+    		try {
+    			this.gridRowCount = this.grid.getLazyDataView().getItemCountEstimate();
+    		} catch(Exception e2) {
+    			try {
+    				this.gridRowCount = this.grid.getDataProvider().size(null);
+    			} finally {}
+    		}
+    	}
     	
     	this.labelGridRecords.setText("Listando " + String.valueOf(this.gridRowCount) + " registro(s).");
     }

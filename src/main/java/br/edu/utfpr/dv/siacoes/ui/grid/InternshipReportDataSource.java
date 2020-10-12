@@ -1,16 +1,17 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.InternshipReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportType;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class InternshipReportDataSource extends BasicDataSource {
 	
 	private String title;
-	private Date date;
+	private LocalDate date;
 	private String feedback;
 	private ReportType type;
 	private byte[] file;
@@ -18,7 +19,7 @@ public class InternshipReportDataSource extends BasicDataSource {
 	public InternshipReportDataSource(InternshipReport report) {
 		this.setId(report.getIdInternshipReport());
 		this.setTitle(report.isFinalReport() ? "Final" : "Parcial");
-		this.setDate(report.getDate());
+		this.setDate(DateUtils.convertToLocalDate(report.getDate()));
 		this.setFeedback(report.getFeedback().toString());
 		this.setType(report.getType());
 		this.setFile(report.getReport());
@@ -50,10 +51,10 @@ public class InternshipReportDataSource extends BasicDataSource {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 	public String getFeedback() {

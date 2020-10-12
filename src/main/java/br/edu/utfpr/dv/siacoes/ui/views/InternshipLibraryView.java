@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -26,10 +27,10 @@ public class InternshipLibraryView extends ListView<InternshipLibraryDataSource>
 	public InternshipLibraryView(){
 		super(SystemModule.SIGES);
 		
-		this.getGrid().addColumn(InternshipLibraryDataSource::getSubmission).setHeader("Submissão").setFlexGrow(0).setWidth("125px");
-		this.getGrid().addColumn(InternshipLibraryDataSource::getTitle).setHeader("Título");
-		this.getGrid().addColumn(InternshipLibraryDataSource::getStudent).setHeader("Acadêmico");
-		this.getGrid().addColumn(InternshipLibraryDataSource::getCompany).setHeader("Empresa");
+		this.getGrid().addColumn(new LocalDateRenderer<>(InternshipLibraryDataSource::getSubmission, "dd/MM/yyyy"), "Submission").setHeader("Submissão").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(InternshipLibraryDataSource::getTitle, "Title").setHeader("Título");
+		this.getGrid().addColumn(InternshipLibraryDataSource::getStudent, "Student").setHeader("Acadêmico");
+		this.getGrid().addColumn(InternshipLibraryDataSource::getCompany, "Company").setHeader("Empresa");
 		
 		this.buttonDownloadFile = new Button("Download", new Icon(VaadinIcon.DOWNLOAD), event -> {
             download();

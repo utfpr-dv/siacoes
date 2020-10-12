@@ -27,7 +27,7 @@ public class DepartmentView extends ListView<DepartmentDataSource> {
 		
 		this.setProfilePerimissions(UserProfile.ADMINISTRATOR);
 		
-		this.getGrid().addColumn(DepartmentDataSource::getName).setHeader("Nome");
+		this.getGrid().addColumn(DepartmentDataSource::getName, "Name").setHeader("Nome");
 		this.getGrid().addColumn(DepartmentDataSource::getActive).setHeader("Ativo").setFlexGrow(0).setWidth("100px");
 		
 		this.comboCampus = new CampusComboBox();

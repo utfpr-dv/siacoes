@@ -8,6 +8,8 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
@@ -34,9 +36,9 @@ public class ProfessorScheculeWindow extends BasicWindow {
 		this.gridSchedule.setSelectionMode(SelectionMode.SINGLE);
 		this.gridSchedule.setSizeFull();
 		this.gridSchedule.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
-		this.gridSchedule.addColumn(ProfessorScheduleDataSource::getDate).setHeader("Data").setFlexGrow(0).setWidth("150px");
-		this.gridSchedule.addColumn(ProfessorScheduleDataSource::getStart).setHeader("Início").setFlexGrow(0).setWidth("100px");
-		this.gridSchedule.addColumn(ProfessorScheduleDataSource::getEnd).setHeader("Término").setFlexGrow(0).setWidth("100px");
+		this.gridSchedule.addColumn(new LocalDateRenderer<>(ProfessorScheduleDataSource::getDate, "dd/MM/yyyy")).setHeader("Data").setFlexGrow(0).setWidth("150px");
+		this.gridSchedule.addColumn(new LocalDateTimeRenderer<>(ProfessorScheduleDataSource::getStart, "HH:mm")).setHeader("Início").setFlexGrow(0).setWidth("100px");
+		this.gridSchedule.addColumn(new LocalDateTimeRenderer<>(ProfessorScheduleDataSource::getEnd, "HH:mm")).setHeader("Término").setFlexGrow(0).setWidth("100px");
 		this.gridSchedule.addColumn(ProfessorScheduleDataSource::getDescription).setHeader("Compromisso");
 		
 		VerticalLayout layout = new VerticalLayout(this.gridSchedule, new Label("* Bancas pré-agendadas."));

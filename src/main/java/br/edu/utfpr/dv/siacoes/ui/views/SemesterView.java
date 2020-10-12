@@ -3,6 +3,7 @@
 import java.util.List;
 import java.util.logging.Level;
 
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -29,8 +30,8 @@ public class SemesterView extends ListView<SemesterDataSource> {
 		
 		this.getGrid().addColumn(SemesterDataSource::getSemester).setHeader("Semestre").setFlexGrow(0).setWidth("125px");
 		this.getGrid().addColumn(SemesterDataSource::getYear).setHeader("Ano").setFlexGrow(0).setWidth("125px");
-		this.getGrid().addColumn(SemesterDataSource::getStart).setHeader("Início").setFlexGrow(0).setWidth("125px");
-		this.getGrid().addColumn(SemesterDataSource::getEnd).setHeader("Fim").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(new LocalDateRenderer<>(SemesterDataSource::getStart, "dd/MM/yyyy")).setHeader("Início").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(new LocalDateRenderer<>(SemesterDataSource::getEnd, "dd/MM/yyyy")).setHeader("Fim").setFlexGrow(0).setWidth("125px");
 		
 		this.comboCampus = new CampusComboBox();
 		

@@ -24,8 +24,8 @@ public class CompanyView extends ListView<CompanyDataSource> {
 		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
-		this.getGrid().addColumn(CompanyDataSource::getName).setHeader("Nome");
-		this.getGrid().addColumn(CompanyDataSource::getCity).setHeader("Cidade");
+		this.getGrid().addColumn(CompanyDataSource::getName, "Name").setHeader("Nome");
+		this.getGrid().addColumn(CompanyDataSource::getCity, "City").setHeader("Cidade");
 		this.getGrid().addColumn(CompanyDataSource::getPhone).setHeader("Telefone");
 		this.getGrid().addColumn(CompanyDataSource::getEmail).setHeader("E-mail");
 		

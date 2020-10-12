@@ -11,6 +11,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -57,10 +58,10 @@ public class ThesisView extends ListView<ThesisDataSource> {
 		
 		this.getGrid().addColumn(ThesisDataSource::getSemester).setHeader("Semestre").setFlexGrow(0).setWidth("100px");
 		this.getGrid().addColumn(ThesisDataSource::getYear).setHeader("Ano").setFlexGrow(0).setWidth("100px");
-		this.getGrid().addColumn(ThesisDataSource::getStudent).setHeader("Acadêmico");
-		this.getGrid().addColumn(ThesisDataSource::getSupervisor).setHeader("Orientador");
-		this.getGrid().addColumn(ThesisDataSource::getTitle).setHeader("Título");
-		this.getGrid().addColumn(ThesisDataSource::getSubmisstion).setHeader("Submissão").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(ThesisDataSource::getStudent, "Student").setHeader("Acadêmico");
+		this.getGrid().addColumn(ThesisDataSource::getSupervisor, "Supervisor").setHeader("Orientador");
+		this.getGrid().addColumn(ThesisDataSource::getTitle, "Title").setHeader("Título");
+		this.getGrid().addColumn(new LocalDateRenderer<>(ThesisDataSource::getSubmisstion, "dd/MM/yyyy"), "Submission").setHeader("Submissão").setFlexGrow(0).setWidth("125px");
 		
 		this.buttonDownloadThesis = new Button("Monografia", new Icon(VaadinIcon.CLOUD_DOWNLOAD), event -> {
             downloadFile();

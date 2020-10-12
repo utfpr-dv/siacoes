@@ -24,9 +24,9 @@ public class CityView extends ListView<CityDataSource> {
 		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
-		this.getGrid().addColumn(CityDataSource::getName).setHeader("Nome");
-		this.getGrid().addColumn(CityDataSource::getState).setHeader("Estado").setFlexGrow(0).setWidth("100px");
-		this.getGrid().addColumn(CityDataSource::getCountry).setHeader("País");
+		this.getGrid().addColumn(CityDataSource::getName, "Name").setHeader("Nome");
+		this.getGrid().addColumn(CityDataSource::getState, "State").setHeader("Estado").setFlexGrow(0).setWidth("100px");
+		this.getGrid().addColumn(CityDataSource::getCountry, "Country").setHeader("País");
 		
 		this.setFiltersVisible(false);
 		this.setDeleteVisible(false);

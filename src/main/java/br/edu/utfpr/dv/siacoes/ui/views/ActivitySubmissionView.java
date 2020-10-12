@@ -66,10 +66,10 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 		this.getGrid().addComponentColumn(item -> createStudentDescription(this.getGrid(), item)).setHeader("Acadêmico");
 		this.getGrid().addColumn(ActivitySubmissionDataSource::getSemester).setHeader("Sem.").setFlexGrow(0).setWidth("75px");
 		this.getGrid().addColumn(ActivitySubmissionDataSource::getYear).setHeader("Ano").setFlexGrow(0).setWidth("80px");
-		this.getGrid().addColumn(ActivitySubmissionDataSource::getGroup).setHeader("Grupo").setFlexGrow(0).setWidth("80px");
-		this.getGrid().addColumn(ActivitySubmissionDataSource::getActivity).setHeader("Atividade");
+		this.getGrid().addColumn(ActivitySubmissionDataSource::getGroup, "Group").setHeader("Grupo").setFlexGrow(0).setWidth("80px");
+		this.getGrid().addColumn(ActivitySubmissionDataSource::getActivity, "Activity").setHeader("Atividade");
 		this.getGrid().addColumn(ActivitySubmissionDataSource::getDescription).setHeader("Descrição da Atividade").setFlexGrow(0).setWidth("350px");
-		this.getGrid().addColumn(ActivitySubmissionDataSource::getFeedback).setHeader("Parecer").setFlexGrow(0).setWidth("150px");
+		this.getGrid().addColumn(ActivitySubmissionDataSource::getFeedback, "Feedback").setHeader("Parecer").setFlexGrow(0).setWidth("150px");
 		this.getGrid().addColumn(ActivitySubmissionDataSource::getScore).setHeader("Pontuação").setFlexGrow(0).setWidth("125px");
 		
 		this.optionFilterType = new RadioButtonGroup<String>();

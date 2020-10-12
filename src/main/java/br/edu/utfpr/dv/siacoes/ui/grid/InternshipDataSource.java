@@ -1,17 +1,18 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.Internship;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class InternshipDataSource extends BasicDataSource {
 
 	private String student;
 	private String company;
 	private String supervisor;
-	private Date startDate;
+	private LocalDate startDate;
 	private String type;
 	private String status;
 	
@@ -20,7 +21,7 @@ public class InternshipDataSource extends BasicDataSource {
 		this.setStudent(internship.getStudent().getName());
 		this.setCompany(internship.getCompany().getName());
 		this.setSupervisor(internship.getSupervisor().getName());
-		this.setStartDate(internship.getStartDate());
+		this.setStartDate(DateUtils.convertToLocalDate(internship.getStartDate()));
 		this.setType(internship.getType().toString());
 		this.setStatus(internship.getStatus().toString());
 	}
@@ -53,10 +54,10 @@ public class InternshipDataSource extends BasicDataSource {
 	public void setSupervisor(String supervisor) {
 		this.supervisor = supervisor;
 	}
-	public Date getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 	public String getType() {

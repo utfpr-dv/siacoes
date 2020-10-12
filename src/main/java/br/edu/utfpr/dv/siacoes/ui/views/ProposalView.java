@@ -11,6 +11,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -51,12 +52,12 @@ public class ProposalView extends ListView<ProposalDataSource> {
 		
 		this.getGrid().addColumn(ProposalDataSource::getSemester).setHeader("Semestre").setFlexGrow(0).setWidth("100px");
 		this.getGrid().addColumn(ProposalDataSource::getYear).setHeader("Ano").setFlexGrow(0).setWidth("100px");
-		this.getGrid().addColumn(ProposalDataSource::getStudent).setHeader("Acadêmico");
-		this.getGrid().addColumn(ProposalDataSource::getSupervisor).setHeader("Orientador");
-		this.getGrid().addColumn(ProposalDataSource::getTitle).setHeader("Título");
-		this.getGrid().addColumn(ProposalDataSource::getSubmission).setHeader("Registro").setFlexGrow(0).setWidth("125px");
-		this.getGrid().addColumn(ProposalDataSource::getHasFile).setHeader("Prop. Env.").setFlexGrow(0).setWidth("125px");
-		this.getGrid().addColumn(ProposalDataSource::getSupervisorFeedback).setHeader("Feedback Orient.").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(ProposalDataSource::getStudent, "Student").setHeader("Acadêmico");
+		this.getGrid().addColumn(ProposalDataSource::getSupervisor, "Supervisor").setHeader("Orientador");
+		this.getGrid().addColumn(ProposalDataSource::getTitle, "Title").setHeader("Título");
+		this.getGrid().addColumn(new LocalDateRenderer<>(ProposalDataSource::getSubmission, "dd/MM/yyyy"), "Submission").setHeader("Registro").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(ProposalDataSource::getHasFile, "HasFile").setHeader("Prop. Env.").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(ProposalDataSource::getSupervisorFeedback, "SupervisorFeedback").setHeader("Feedback Orient.").setFlexGrow(0).setWidth("125px");
 		
 		this.setAddVisible(false);
 		this.setDeleteVisible(false);

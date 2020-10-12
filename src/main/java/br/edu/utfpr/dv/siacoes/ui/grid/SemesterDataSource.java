@@ -1,24 +1,25 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.Semester;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class SemesterDataSource extends BasicDataSource {
 
 	private int semester;
 	private int year;
-	private Date start;
-	private Date end;
+	private LocalDate start;
+	private LocalDate end;
 	
 	public SemesterDataSource(Semester semester) {
 		this.setId(Integer.parseInt(String.valueOf(semester.getYear()) + String.valueOf(semester.getSemester()) + String.valueOf(semester.getCampus().getIdCampus())));
 		this.setSemester(semester.getSemester());
 		this.setYear(semester.getYear());
-		this.setStart(semester.getStartDate());
-		this.setEnd(semester.getEndDate());
+		this.setStart(DateUtils.convertToLocalDate(semester.getStartDate()));
+		this.setEnd(DateUtils.convertToLocalDate(semester.getEndDate()));
 	}
 	
 	public static List<SemesterDataSource> load(List<Semester> list) {
@@ -61,16 +62,16 @@ public class SemesterDataSource extends BasicDataSource {
 	public void setYear(int year) {
 		this.year = year;
 	}
-	public Date getStart() {
+	public LocalDate getStart() {
 		return start;
 	}
-	public void setStart(Date start) {
+	public void setStart(LocalDate start) {
 		this.start = start;
 	}
-	public Date getEnd() {
+	public LocalDate getEnd() {
 		return end;
 	}
-	public void setEnd(Date end) {
+	public void setEnd(LocalDate end) {
 		this.end = end;
 	}
 	

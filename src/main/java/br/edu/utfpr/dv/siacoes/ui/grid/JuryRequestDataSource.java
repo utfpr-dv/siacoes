@@ -1,15 +1,16 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.JuryRequest;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class JuryRequestDataSource extends BasicDataSource {
 
-	private Date date;
+	private LocalDateTime date;
 	private String local;
 	private int stage;
 	private String student;
@@ -18,7 +19,7 @@ public class JuryRequestDataSource extends BasicDataSource {
 	
 	public JuryRequestDataSource(JuryRequest request) {
 		this.setId(request.getIdJuryRequest());
-		this.setDate(request.getDate());
+		this.setDate(DateUtils.convertToLocalDateTime(request.getDate()));
 		this.setLocal(request.getLocal());
 		this.setStage(request.getStage());
 		this.setStudent(request.getStudent());
@@ -43,10 +44,10 @@ public class JuryRequestDataSource extends BasicDataSource {
 		return ret;
 	}
 	
-	public Date getDate() {
+	public LocalDateTime getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
+	public void setDate(LocalDateTime date) {
 		this.date = date;
 	}
 	public String getLocal() {

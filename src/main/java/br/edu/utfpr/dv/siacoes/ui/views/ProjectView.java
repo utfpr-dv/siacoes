@@ -11,6 +11,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -57,10 +58,10 @@ public class ProjectView extends ListView<ProjectDataSource> {
 		
 		this.getGrid().addColumn(ProjectDataSource::getSemester).setHeader("Semestre").setFlexGrow(0).setWidth("100px");
 		this.getGrid().addColumn(ProjectDataSource::getYear).setHeader("Ano").setFlexGrow(0).setWidth("100px");
-		this.getGrid().addColumn(ProjectDataSource::getStudent).setHeader("Acadêmico");
-		this.getGrid().addColumn(ProjectDataSource::getSupervisor).setHeader("Orientador");
-		this.getGrid().addColumn(ProjectDataSource::getTitle).setHeader("Título");
-		this.getGrid().addColumn(ProjectDataSource::getSubmisstion).setHeader("Submissão").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(ProjectDataSource::getStudent, "Student").setHeader("Acadêmico");
+		this.getGrid().addColumn(ProjectDataSource::getSupervisor, "Supervisor").setHeader("Orientador");
+		this.getGrid().addColumn(ProjectDataSource::getTitle, "Title").setHeader("Título");
+		this.getGrid().addColumn(new LocalDateRenderer<>(ProjectDataSource::getSubmisstion, "dd/MM/yyyy"), "Submission").setHeader("Submissão").setFlexGrow(0).setWidth("125px");
 		
 		this.buttonDownloadProject = new Button("Projeto", new Icon(VaadinIcon.CLOUD_DOWNLOAD), event -> {
             downloadFile();

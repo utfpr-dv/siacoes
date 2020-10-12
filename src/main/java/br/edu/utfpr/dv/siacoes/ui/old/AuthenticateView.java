@@ -1,28 +1,18 @@
 package br.edu.utfpr.dv.siacoes.ui.old;
 
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
-import com.vaadin.flow.router.OptionalParameter;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+//import com.vaadin.navigator.View;
+//import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+//import com.vaadin.ui.CustomComponent;
 
-import br.edu.utfpr.dv.siacoes.ui.views.ViewFrame;
+public class AuthenticateView /*extends CustomComponent implements View*/ {
 
-@PageTitle("Validar Declaração")
-@Route(value = "#!authenticate")
-public class AuthenticateView extends ViewFrame implements HasUrlParameter<String> {
-
-	@Override
-	public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-		if(parameter != null) {
-			String guid = parameter;
-			
-			if(guid.isEmpty()) {
-				this.getUI().ifPresent(ui -> ui.navigate(br.edu.utfpr.dv.siacoes.ui.views.AuthenticateView.class));
-			} else {
-				this.getUI().ifPresent(ui -> ui.navigate(br.edu.utfpr.dv.siacoes.ui.views.AuthenticateView.class, guid));
-			}
+	/*@Override
+	public void enter(ViewChangeEvent event) {
+		if(event.getParameters() != null){
+			getUI().getPage().open("authenticate", "");
+		} else {
+			getUI().getPage().open("authenticate/" + event.getParameters().trim(), "");
 		}
-	}
+	}*/
 	
 }

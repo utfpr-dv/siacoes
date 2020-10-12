@@ -39,8 +39,8 @@ public class UserView extends ListView<UserDataSource> {
 		
 		this.setProfilePerimissions(UserProfile.ADMINISTRATOR);
 		
-		this.getGrid().addColumn(UserDataSource::getLogin).setHeader("Login").setFlexGrow(0).setWidth("300px");
-		this.getGrid().addColumn(UserDataSource::getName).setHeader("Nome");
+		this.getGrid().addColumn(UserDataSource::getLogin, "Login").setHeader("Login").setFlexGrow(0).setWidth("300px");
+		this.getGrid().addColumn(UserDataSource::getName, "Name").setHeader("Nome");
 		this.getGrid().addColumn(UserDataSource::getEmail).setHeader("E-mail");
 		this.getGrid().addColumn(UserDataSource::getProfile).setHeader("Perfil");
 		

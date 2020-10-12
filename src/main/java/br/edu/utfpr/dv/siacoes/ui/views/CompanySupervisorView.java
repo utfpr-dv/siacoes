@@ -31,8 +31,8 @@ public class CompanySupervisorView extends ListView<CompanySupervisorDataSource>
 		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
-		this.getGrid().addColumn(CompanySupervisorDataSource::getName).setHeader("Nome");
-		this.getGrid().addColumn(CompanySupervisorDataSource::getCompany).setHeader("Empresa");
+		this.getGrid().addColumn(CompanySupervisorDataSource::getName, "Name").setHeader("Nome");
+		this.getGrid().addColumn(CompanySupervisorDataSource::getCompany, "Company").setHeader("Empresa");
 		this.getGrid().addColumn(CompanySupervisorDataSource::getPhone).setHeader("Telefone").setFlexGrow(0).setWidth("150px");
 		this.getGrid().addColumn(CompanySupervisorDataSource::getEmail).setHeader("E-mail");
 		

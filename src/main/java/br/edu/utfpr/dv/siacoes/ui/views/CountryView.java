@@ -24,7 +24,7 @@ public class CountryView extends ListView<CountryDataSource> {
 		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
-		this.getGrid().addColumn(CountryDataSource::getName).setHeader("Nome");
+		this.getGrid().addColumn(CountryDataSource::getName, "Name").setHeader("Nome");
 		
 		this.setFiltersVisible(false);
 		this.setDeleteVisible(false);

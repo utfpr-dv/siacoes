@@ -50,5 +50,5 @@ public class LoggedView extends ViewFrame implements BeforeEnterObserver {
         	}
         }
 	}
-
+	
 }

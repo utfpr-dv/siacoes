@@ -8,6 +8,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -49,12 +50,12 @@ public class JuryRequestView extends ListView<JuryRequestDataSource> {
 		super(SystemModule.SIGET);
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
-		this.getGrid().addColumn(JuryRequestDataSource::getDate).setHeader("Data e Hora").setFlexGrow(0).setWidth("150px");
+		this.getGrid().addColumn(new LocalDateTimeRenderer<>(JuryRequestDataSource::getDate, "dd/MM/yyyy HH:mm"), "Date").setHeader("Data e Hora").setFlexGrow(0).setWidth("150px");
 		this.getGrid().addColumn(JuryRequestDataSource::getLocal).setHeader("Local");
-		this.getGrid().addColumn(JuryRequestDataSource::getStage).setHeader("TCC").setFlexGrow(0).setWidth("50px");
-		this.getGrid().addColumn(JuryRequestDataSource::getStudent).setHeader("Acadêmico");
-		this.getGrid().addColumn(JuryRequestDataSource::getChair).setHeader("Presidente");
-		this.getGrid().addColumn(JuryRequestDataSource::getConfirmed).setHeader("Confirmada").setFlexGrow(0).setWidth("100px");
+		this.getGrid().addColumn(JuryRequestDataSource::getStage, "Stage").setHeader("TCC").setFlexGrow(0).setWidth("50px");
+		this.getGrid().addColumn(JuryRequestDataSource::getStudent, "Student").setHeader("Acadêmico");
+		this.getGrid().addColumn(JuryRequestDataSource::getChair, "Chair").setHeader("Presidente");
+		this.getGrid().addColumn(JuryRequestDataSource::getConfirmed, "Confirmed").setHeader("Confirmada").setFlexGrow(0).setWidth("100px");
 		
 		Semester semester;
 		try {

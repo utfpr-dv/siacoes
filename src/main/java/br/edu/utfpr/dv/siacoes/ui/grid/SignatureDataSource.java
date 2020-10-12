@@ -1,21 +1,22 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.sign.Signature;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class SignatureDataSource extends BasicDataSource {
 
 	private String name;
-	private Date date;
+	private LocalDateTime date;
 	private String status;
 	
 	public SignatureDataSource(Signature sign) {
 		this.setId(sign.getIdSignature());
 		this.setName(sign.getUser().getName());
-		this.setDate(sign.getSignatureDate());
+		this.setDate(DateUtils.convertToLocalDateTime(sign.getSignatureDate()));
 		this.setStatus(sign.getStatus().toString());
 	}
 	
@@ -41,10 +42,10 @@ public class SignatureDataSource extends BasicDataSource {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Date getDate() {
+	public LocalDateTime getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
+	public void setDate(LocalDateTime date) {
 		this.date = date;
 	}
 	public String getStatus() {

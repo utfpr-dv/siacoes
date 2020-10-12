@@ -7,6 +7,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -46,10 +47,10 @@ public class ProposalFeedbackView extends ListView<ProposalAppraiserDataSource> 
 		
 		this.getGrid().addColumn(ProposalAppraiserDataSource::getSemester).setHeader("Semestre").setFlexGrow(0).setWidth("100px");
 		this.getGrid().addColumn(ProposalAppraiserDataSource::getYear).setHeader("Ano").setFlexGrow(0).setWidth("100px");
-		this.getGrid().addColumn(ProposalAppraiserDataSource::getTitle).setHeader("Título");
-		this.getGrid().addColumn(ProposalAppraiserDataSource::getStudent).setHeader("Acadêmico");
-		this.getGrid().addColumn(ProposalAppraiserDataSource::getSubmission).setHeader("Submissão").setFlexGrow(0).setWidth("125px");
-		this.getGrid().addColumn(ProposalAppraiserDataSource::getFeedback).setHeader("Parecer").setFlexGrow(0).setWidth("150px");
+		this.getGrid().addColumn(ProposalAppraiserDataSource::getTitle, "Title").setHeader("Título");
+		this.getGrid().addColumn(ProposalAppraiserDataSource::getStudent, "Student").setHeader("Acadêmico");
+		this.getGrid().addColumn(new LocalDateRenderer<>(ProposalAppraiserDataSource::getSubmission, "dd/MM/yyyy"), "Submission").setHeader("Submissão").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(ProposalAppraiserDataSource::getFeedback, "Feedback").setHeader("Parecer").setFlexGrow(0).setWidth("150px");
 		
 		this.setAddVisible(false);
 		this.setDeleteVisible(false);

@@ -43,10 +43,10 @@ public class InternshipPosterRequestView extends ListView<InternshipPosterReques
 		super(SystemModule.SIGES);
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
-		this.getGrid().addColumn(InternshipPosterRequestDataSource::getStudent).setHeader("Acadêmico");
-		this.getGrid().addColumn(InternshipPosterRequestDataSource::getCompany).setHeader("Empresa");
-		this.getGrid().addColumn(InternshipPosterRequestDataSource::getSupervisor).setHeader("Orientador");
-		this.getGrid().addColumn(InternshipPosterRequestDataSource::getConfirmed).setHeader("Confirmada").setFlexGrow(0).setWidth("100px");
+		this.getGrid().addColumn(InternshipPosterRequestDataSource::getStudent, "Student").setHeader("Acadêmico");
+		this.getGrid().addColumn(InternshipPosterRequestDataSource::getCompany, "Company").setHeader("Empresa");
+		this.getGrid().addColumn(InternshipPosterRequestDataSource::getSupervisor, "Supervisor").setHeader("Orientador");
+		this.getGrid().addColumn(InternshipPosterRequestDataSource::getConfirmed, "Confirmed").setHeader("Confirmada").setFlexGrow(0).setWidth("100px");
 		
 		Semester semester;
 		try {

@@ -12,6 +12,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
@@ -86,11 +87,11 @@ public class InternshipJuryView extends ListView<InternshipJuryDataSource> imple
 			this.config = new SigesConfig();
 		}
 		
-		this.getGrid().addColumn(InternshipJuryDataSource::getDate).setHeader("Data e Hora").setFlexGrow(0).setWidth("150px");
+		this.getGrid().addColumn(new LocalDateTimeRenderer<>(InternshipJuryDataSource::getDate, "dd/MM/yyyy HH:mm"), "Date").setHeader("Data e Hora").setFlexGrow(0).setWidth("150px");
 		this.getGrid().addColumn(InternshipJuryDataSource::getLocal).setHeader("Local").setFlexGrow(0).setWidth("200px");
 		this.getGrid().addColumn(InternshipJuryDataSource::getMember).setHeader("Membro").setFlexGrow(0).setWidth("125px");
-		this.getGrid().addColumn(InternshipJuryDataSource::getStudent).setHeader("Acadêmico");
-		this.getGrid().addColumn(InternshipJuryDataSource::getCompany).setHeader("Empresa");
+		this.getGrid().addColumn(InternshipJuryDataSource::getStudent, "Student").setHeader("Acadêmico");
+		this.getGrid().addColumn(InternshipJuryDataSource::getCompany, "Company").setHeader("Empresa");
 		
 		this.comboSemester = new SemesterComboBox();
 		this.comboSemester.setValue(semester.getSemester());

@@ -1,16 +1,17 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.SupervisorChange;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class SupervisorChangeDataSource extends BasicDataSource {
 
 	private int stage;
 	private String student;
-	private Date date;
+	private LocalDate date;
 	private String oldSupervisor;
 	private String newSupervisor;
 	private String status;
@@ -19,7 +20,7 @@ public class SupervisorChangeDataSource extends BasicDataSource {
 		this.setId(change.getIdSupervisorChange());
 		this.setStage(change.getStage());
 		this.setStudent(change.getProposal().getStudent().getName());
-		this.setDate(change.getDate());
+		this.setDate(DateUtils.convertToLocalDate(change.getDate()));
 		this.setOldSupervisor(change.getOldSupervisor().getName());
 		this.setNewSupervisor(change.getNewSupervisor().getName());
 		this.setStatus(change.getApproved().toString());
@@ -47,10 +48,10 @@ public class SupervisorChangeDataSource extends BasicDataSource {
 	public void setStudent(String student) {
 		this.student = student;
 	}
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 	public String getOldSupervisor() {

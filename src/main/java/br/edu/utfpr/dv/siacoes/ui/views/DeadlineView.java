@@ -3,6 +3,7 @@
 import java.util.List;
 import java.util.logging.Level;
 
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -36,11 +37,11 @@ public class DeadlineView extends ListView<DeadlineDataSource> {
 		
 		this.getGrid().addColumn(DeadlineDataSource::getSemester).setHeader("Semestre");
 		this.getGrid().addColumn(DeadlineDataSource::getYear).setHeader("Ano");
-		this.getGrid().addColumn(DeadlineDataSource::getProposal).setHeader(sigetConfig.isRegisterProposal() ? "Proposta" : "Reg. Orient.");
-		this.getGrid().addColumn(DeadlineDataSource::getProject).setHeader("Projeto");
-		this.getGrid().addColumn(DeadlineDataSource::getThesis).setHeader("Monografia");
-		this.getGrid().addColumn(DeadlineDataSource::getFinalProject).setHeader("Proj. Final");
-		this.getGrid().addColumn(DeadlineDataSource::getFinalThesis).setHeader("Monog. Final");
+		this.getGrid().addColumn(new LocalDateRenderer<>(DeadlineDataSource::getProposal, "dd/MM/yyyy")).setHeader(sigetConfig.isRegisterProposal() ? "Proposta" : "Reg. Orient.");
+		this.getGrid().addColumn(new LocalDateRenderer<>(DeadlineDataSource::getProject, "dd/MM/yyyy")).setHeader("Projeto");
+		this.getGrid().addColumn(new LocalDateRenderer<>(DeadlineDataSource::getThesis, "dd/MM/yyyy")).setHeader("Monografia");
+		this.getGrid().addColumn(new LocalDateRenderer<>(DeadlineDataSource::getFinalProject, "dd/MM/yyyy")).setHeader("Proj. Final");
+		this.getGrid().addColumn(new LocalDateRenderer<>(DeadlineDataSource::getFinalThesis, "dd/MM/yyyy")).setHeader("Monog. Final");
 		
     	this.setFiltersVisible(false);
     	this.setDeleteVisible(false);

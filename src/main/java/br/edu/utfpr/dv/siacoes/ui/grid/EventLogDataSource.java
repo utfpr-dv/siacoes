@@ -1,21 +1,22 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class EventLogDataSource extends BasicDataSource {
 
-	private Date date;
+	private LocalDateTime date;
 	private String type;
 	private String user;
 	private String table;
 	
 	public EventLogDataSource(UpdateEvent event) {
 		this.setId((int)event.getIdLog());
-		this.setDate(event.getDate());
+		this.setDate(DateUtils.convertToLocalDateTime(event.getDate()));
 		this.setType(event.getEvent().toString());
 		this.setUser(event.getUser().getName());
 		this.setTable(event.getClassName());
@@ -31,10 +32,10 @@ public class EventLogDataSource extends BasicDataSource {
 		return ret;
 	}
 	
-	public Date getDate() {
+	public LocalDateTime getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
+	public void setDate(LocalDateTime date) {
 		this.date = date;
 	}
 	public String getType() {

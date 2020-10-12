@@ -18,6 +18,7 @@ import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.server.StreamResource;
 
 import br.edu.utfpr.dv.siacoes.Session;
@@ -37,7 +38,7 @@ public class SignedDocument extends VerticalLayout {
 		this.gridSignatures.setSelectionMode(SelectionMode.SINGLE);
 		this.gridSignatures.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
 		this.gridSignatures.addColumn(SignatureDataSource::getName).setHeader("Assinante");
-		this.gridSignatures.addColumn(SignatureDataSource::getDate).setHeader("Data e Hora").setFlexGrow(0).setWidth("170px");
+		this.gridSignatures.addColumn(new LocalDateTimeRenderer<>(SignatureDataSource::getDate, "dd/MM/yyyy HH:mm")).setHeader("Data e Hora").setFlexGrow(0).setWidth("170px");
 		this.gridSignatures.addColumn(SignatureDataSource::getStatus).setHeader("Situação").setFlexGrow(0).setWidth("120px");
 		this.gridSignatures.setSizeFull();
 		

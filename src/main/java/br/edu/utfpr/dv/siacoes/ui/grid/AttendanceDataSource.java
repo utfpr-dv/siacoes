@@ -1,23 +1,25 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.Attendance;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class AttendanceDataSource extends BasicDataSource {
 
-	private Date date;
-	private Date start;
-	private Date end;
+	private LocalDate date;
+	private LocalDateTime start;
+	private LocalDateTime end;
 	private String comments;
 	
 	public AttendanceDataSource(Attendance attendance) {
 		this.setId(attendance.getIdAttendance());
-		this.setDate(attendance.getDate());
-		this.setStart(attendance.getStartTime());
-		this.setEnd(attendance.getEndTime());
+		this.setDate(DateUtils.convertToLocalDate(attendance.getDate()));
+		this.setStart(DateUtils.convertToLocalDateTime(attendance.getStartTime()));
+		this.setEnd(DateUtils.convertToLocalDateTime(attendance.getEndTime()));
 		this.setComments(attendance.getComments());
 	}
 	
@@ -31,22 +33,22 @@ public class AttendanceDataSource extends BasicDataSource {
 		return ret;
 	}
 	
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
-	public Date getStart() {
+	public LocalDateTime getStart() {
 		return start;
 	}
-	public void setStart(Date start) {
+	public void setStart(LocalDateTime start) {
 		this.start = start;
 	}
-	public Date getEnd() {
+	public LocalDateTime getEnd() {
 		return end;
 	}
-	public void setEnd(Date end) {
+	public void setEnd(LocalDateTime end) {
 		this.end = end;
 	}
 	public String getComments() {

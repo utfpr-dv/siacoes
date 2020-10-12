@@ -1,10 +1,11 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.Proposal;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class ProposalDataSource extends BasicDataSource {
 
@@ -13,7 +14,7 @@ public class ProposalDataSource extends BasicDataSource {
 	private int year;
 	private String student;
 	private String supervisor;
-	private Date submission;
+	private LocalDate submission;
 	private String hasFile;
 	private String supervisorFeedback;
 	
@@ -24,7 +25,7 @@ public class ProposalDataSource extends BasicDataSource {
 		this.setYear(proposal.getYear());
 		this.setStudent(proposal.getStudent().getName());
 		this.setSupervisor(proposal.getSupervisor().getName());
-		this.setSubmission(proposal.getSubmissionDate());
+		this.setSubmission(DateUtils.convertToLocalDate(proposal.getSubmissionDate()));
 		this.setHasFile(proposal.getFile() != null ? "Sim" : "Não");
 		this.setSupervisorFeedback(proposal.getSupervisorFeedback().toString());
 	}
@@ -69,10 +70,10 @@ public class ProposalDataSource extends BasicDataSource {
 	public void setSupervisor(String supervisor) {
 		this.supervisor = supervisor;
 	}
-	public Date getSubmission() {
+	public LocalDate getSubmission() {
 		return submission;
 	}
-	public void setSubmission(Date submission) {
+	public void setSubmission(LocalDate submission) {
 		this.submission = submission;
 	}
 	public String getHasFile() {

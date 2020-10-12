@@ -36,3 +36,9 @@ types.d.ts
 webpack.config.js
 
 webpack.generated.js
+
+pnpmfile.js
+
+pnpm-lock.yaml
+
+node_modules/

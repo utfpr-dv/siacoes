@@ -1,9 +1,10 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
@@ -13,20 +14,20 @@ import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class ProfessorScheduleDataSource extends BasicDataSource {
 
-	private Date date;
-	private Date start;
-	private Date end;
+	private LocalDate date;
+	private LocalDateTime start;
+	private LocalDateTime end;
 	private int type;
 	private String description;
 	
 	public ProfessorScheduleDataSource(Jury jury) {
 		this.setId(jury.getIdJury());
 		this.setType(1);
-		this.setDate(jury.getDate());
-		this.setStart(jury.getDate());
-		this.setEnd(DateUtils.addHour(jury.getDate(), 1));
+		this.setDate(DateUtils.convertToLocalDate(jury.getDate()));
+		this.setStart(DateUtils.convertToLocalDateTime(jury.getDate()));
+		this.setEnd(DateUtils.convertToLocalDateTime(jury.getDate()).plusHours(1));
 		if(jury.getStage() == 2) {
-			this.setEnd(DateUtils.addMinute(this.getEnd(), 30));
+			this.setEnd(this.getEnd().plusMinutes(30));
 			this.setDescription("Banca de TCC 2 - " + jury.getStudent());
 		} else {
 			this.setDescription("Banca de TCC 1 - " + jury.getStudent());
@@ -36,11 +37,11 @@ public class ProfessorScheduleDataSource extends BasicDataSource {
 	public ProfessorScheduleDataSource(JuryRequest jury) {
 		this.setId(jury.getIdJuryRequest());
 		this.setType(2);
-		this.setDate(jury.getDate());
-		this.setStart(jury.getDate());
-		this.setEnd(DateUtils.addHour(jury.getDate(), 1));
+		this.setDate(DateUtils.convertToLocalDate(jury.getDate()));
+		this.setStart(DateUtils.convertToLocalDateTime(jury.getDate()));
+		this.setEnd(DateUtils.convertToLocalDateTime(jury.getDate()).plusHours(1));
 		if(jury.getStage() == 2) {
-			this.setEnd(DateUtils.addMinute(this.getEnd(), 30));
+			this.setEnd(this.getEnd().plusMinutes(30));
 			this.setDescription("* Banca de TCC 2 - " + jury.getStudent());
 		} else {
 			this.setDescription("* Banca de TCC 1 - " + jury.getStudent());
@@ -50,9 +51,9 @@ public class ProfessorScheduleDataSource extends BasicDataSource {
 	public ProfessorScheduleDataSource(InternshipJury jury) {
 		this.setId(jury.getIdInternshipJury());
 		this.setType(3);
-		this.setDate(jury.getDate());
-		this.setStart(jury.getDate());
-		this.setEnd(DateUtils.addHour(jury.getDate(), 1));
+		this.setDate(DateUtils.convertToLocalDate(jury.getDate()));
+		this.setStart(DateUtils.convertToLocalDateTime(jury.getDate()));
+		this.setEnd(DateUtils.convertToLocalDateTime(jury.getDate()).plusHours(1));
 		this.setDescription("Banca de Estágio - " + jury.getStudent());
 	}
 	
@@ -74,9 +75,9 @@ public class ProfessorScheduleDataSource extends BasicDataSource {
 		Collections.sort(ret, new Comparator<ProfessorScheduleDataSource>() {
 			@Override
 			public int compare(ProfessorScheduleDataSource e1, ProfessorScheduleDataSource e2) {
-				if (e1.getDate().before(e2.getDate())) {
+				if (e1.getDate().isBefore(e2.getDate())) {
 		            return -1;
-		        } else if (e1.getDate().after(e2.getDate())) {
+		        } else if (e1.getDate().isAfter(e2.getDate())) {
 		            return 1;
 		        } else {
 		            return 0;
@@ -87,22 +88,22 @@ public class ProfessorScheduleDataSource extends BasicDataSource {
 		return ret;
 	}
 	
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
-	public Date getStart() {
+	public LocalDateTime getStart() {
 		return start;
 	}
-	public void setStart(Date start) {
+	public void setStart(LocalDateTime start) {
 		this.start = start;
 	}
-	public Date getEnd() {
+	public LocalDateTime getEnd() {
 		return end;
 	}
-	public void setEnd(Date end) {
+	public void setEnd(LocalDateTime end) {
 		this.end = end;
 	}
 	public int getType() {

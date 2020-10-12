@@ -1,21 +1,22 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.log.LoginEvent;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class LoginLogDataSource extends BasicDataSource {
 
-	private Date date;
+	private LocalDateTime date;
 	private String type;
 	private String ip;
 	private String browser;
 	
 	public LoginLogDataSource(LoginEvent login) {
 		this.setId((int)login.getIdLog());
-		this.setDate(login.getDate());
+		this.setDate(DateUtils.convertToLocalDateTime(login.getDate()));
 		this.setIp(login.getSource());
 		this.setType(login.getEvent().toString());
 		this.setBrowser(login.getDevice());
@@ -31,10 +32,10 @@ public class LoginLogDataSource extends BasicDataSource {
 		return ret;
 	}
 	
-	public Date getDate() {
+	public LocalDateTime getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
+	public void setDate(LocalDateTime date) {
 		this.date = date;
 	}
 	public String getType() {

@@ -12,6 +12,8 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -50,9 +52,9 @@ public class AttendanceView extends ListView<AttendanceDataSource> {
 	public AttendanceView(){
 		super(SystemModule.SIGET);
 		
-		this.getGrid().addColumn(AttendanceDataSource::getDate).setHeader("Data").setFlexGrow(0).setWidth("125px");
-		this.getGrid().addColumn(AttendanceDataSource::getStart).setHeader("Horário Inicial").setFlexGrow(0).setWidth("125px");
-		this.getGrid().addColumn(AttendanceDataSource::getEnd).setHeader("Horário Final").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(new LocalDateRenderer<>(AttendanceDataSource::getDate, "dd/MM/yyyy")).setHeader("Data").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(new LocalDateTimeRenderer<>(AttendanceDataSource::getStart, "HH:mm")).setHeader("Horário Inicial").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(new LocalDateTimeRenderer<>(AttendanceDataSource::getEnd, "HH:MM")).setHeader("Horário Final").setFlexGrow(0).setWidth("125px");
 		this.getGrid().addColumn(AttendanceDataSource::getComments).setHeader("Observaçoes");
 		
 		this.comboSupervisor = new Select<User>();

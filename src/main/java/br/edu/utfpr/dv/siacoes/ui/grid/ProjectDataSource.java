@@ -1,10 +1,11 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.Project;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class ProjectDataSource extends BasicDataSource {
 
@@ -13,7 +14,7 @@ public class ProjectDataSource extends BasicDataSource {
 	private String student;
 	private String supervisor;
 	private String title;
-	private Date submisstion;
+	private LocalDate submisstion;
 	
 	public ProjectDataSource(Project project) {
 		this.setId(project.getIdProject());
@@ -22,7 +23,7 @@ public class ProjectDataSource extends BasicDataSource {
 		this.setStudent(project.getStudent().getName());
 		this.setSupervisor(project.getSupervisor().getName());
 		this.setTitle(project.getTitle());
-		this.setSubmisstion(project.getSubmissionDate());
+		this.setSubmisstion(DateUtils.convertToLocalDate(project.getSubmissionDate()));
 	}
 	
 	public static List<ProjectDataSource> load(List<Project> list) {
@@ -65,10 +66,10 @@ public class ProjectDataSource extends BasicDataSource {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public Date getSubmisstion() {
+	public LocalDate getSubmisstion() {
 		return submisstion;
 	}
-	public void setSubmisstion(Date submisstion) {
+	public void setSubmisstion(LocalDate submisstion) {
 		this.submisstion = submisstion;
 	}
 	

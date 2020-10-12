@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -36,11 +37,11 @@ public class InternshipFinalDocumentView extends ListView<InternshipFinalDocumen
 		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
-		this.getGrid().addColumn(InternshipFinalDocumentDataSource::getStudent).setHeader("Acadêmico");
-		this.getGrid().addColumn(InternshipFinalDocumentDataSource::getCompany).setHeader("Empresa");
-		this.getGrid().addColumn(InternshipFinalDocumentDataSource::getSubmission).setHeader("Submissão").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(InternshipFinalDocumentDataSource::getStudent, "Student").setHeader("Acadêmico");
+		this.getGrid().addColumn(InternshipFinalDocumentDataSource::getCompany, "Company").setHeader("Empresa");
+		this.getGrid().addColumn(new LocalDateRenderer<>(InternshipFinalDocumentDataSource::getSubmission, "dd/MM/yyyy"), "Submission").setHeader("Submissão").setFlexGrow(0).setWidth("125px");
 		this.getGrid().addColumn(InternshipFinalDocumentDataSource::getPrivate).setHeader("Sigilo").setFlexGrow(0).setWidth("100px");
-		this.getGrid().addColumn(InternshipFinalDocumentDataSource::getFeedback).setHeader("Feedback").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(InternshipFinalDocumentDataSource::getFeedback, "Feedback").setHeader("Feedback").setFlexGrow(0).setWidth("125px");
 		
 		Semester semester;
 		try {

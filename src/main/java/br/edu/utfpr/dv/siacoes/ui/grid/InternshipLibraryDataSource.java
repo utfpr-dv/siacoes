@@ -1,21 +1,22 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class InternshipLibraryDataSource extends BasicDataSource {
 
-	private Date submission;
+	private LocalDate submission;
 	private String title;
 	private String student;
 	private String company;
 	
 	public InternshipLibraryDataSource(InternshipFinalDocument doc) {
 		this.setId(doc.getIdInternshipFinalDocument());
-		this.setSubmission(doc.getSubmissionDate());
+		this.setSubmission(DateUtils.convertToLocalDate(doc.getSubmissionDate()));
 		this.setTitle(doc.getInternship().getReportTitle());
 		this.setStudent(doc.getInternship().getStudent().getName());
 		this.setCompany(doc.getInternship().getCompany().getName());
@@ -31,10 +32,10 @@ public class InternshipLibraryDataSource extends BasicDataSource {
 		return ret;
 	}
 	
-	public Date getSubmission() {
+	public LocalDate getSubmission() {
 		return submission;
 	}
-	public void setSubmission(Date submission) {
+	public void setSubmission(LocalDate submission) {
 		this.submission = submission;
 	}
 	public String getTitle() {

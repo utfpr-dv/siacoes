@@ -37,7 +37,6 @@ import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.ui.MainLayout;
 import br.edu.utfpr.dv.siacoes.ui.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.YearField;
-import br.edu.utfpr.dv.siacoes.ui.grid.ThesisDataSource;
 import br.edu.utfpr.dv.siacoes.ui.grid.TutoredDataSource;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditJuryRequestWindow;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditSupervisorAgreementWindow;
@@ -69,9 +68,9 @@ public class TutoredView extends ListView<TutoredDataSource> {
 		
 		this.setProfilePerimissions(UserProfile.SUPERVISOR);
 		
-		this.getGrid().addColumn(TutoredDataSource::getStudent).setHeader("Acadêmico");
-		this.getGrid().addColumn(TutoredDataSource::getStage).setHeader("TCC").setFlexGrow(0).setWidth("100px");
-		this.getGrid().addColumn(TutoredDataSource::getTitle).setHeader("Título");
+		this.getGrid().addColumn(TutoredDataSource::getStudent, "Student").setHeader("Acadêmico");
+		this.getGrid().addColumn(TutoredDataSource::getStage, "Stage").setHeader("TCC").setFlexGrow(0).setWidth("100px");
+		this.getGrid().addColumn(TutoredDataSource::getTitle, "Title").setHeader("Título");
 		this.getGrid().addColumn(TutoredDataSource::getSemester).setHeader("Semestre").setFlexGrow(0).setWidth("100px");
 		this.getGrid().addColumn(TutoredDataSource::getYear).setHeader("Ano").setFlexGrow(0).setWidth("100px");
 		

@@ -32,7 +32,7 @@ public class StudentView extends ListView<StudentDataSource> {
 		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
-		this.getGrid().addColumn(StudentDataSource::getName).setHeader("Nome");
+		this.getGrid().addColumn(StudentDataSource::getName, "Name").setHeader("Nome");
 		this.getGrid().addColumn(StudentDataSource::getStudentCode).setHeader("R.A.");
 		
 		this.textName = new TextField("Nome:");

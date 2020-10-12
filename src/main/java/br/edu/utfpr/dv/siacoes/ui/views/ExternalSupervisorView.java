@@ -24,9 +24,9 @@ public class ExternalSupervisorView extends ListView<UserDataSource> {
 		super(SystemModule.SIGET);
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
-		this.getGrid().addColumn(UserDataSource::getName).setHeader("Nome");
+		this.getGrid().addColumn(UserDataSource::getName, "Name").setHeader("Nome");
 		this.getGrid().addColumn(UserDataSource::getEmail).setHeader("E-mail");
-		this.getGrid().addColumn(UserDataSource::getInstitution).setHeader("Instituição");
+		this.getGrid().addColumn(UserDataSource::getInstitution, "Institution").setHeader("Instituição");
 		this.getGrid().addColumn(UserDataSource::getResearchArea).setHeader("Áreas de Pesquisa");
 		
 		this.setFiltersVisible(false);

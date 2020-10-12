@@ -1,10 +1,11 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.FinalDocument;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class FinalDocumentDataSource extends BasicDataSource {
 	
@@ -13,7 +14,7 @@ public class FinalDocumentDataSource extends BasicDataSource {
 	private int year;
 	private String student;
 	private String title;
-	private Date submission;
+	private LocalDate submission;
 	private String _private;
 	private String supervisorFeedback;
 	
@@ -24,7 +25,7 @@ public class FinalDocumentDataSource extends BasicDataSource {
 		this.setYear(doc.getYear());
 		this.setStudent(doc.getStudent().getName());
 		this.setTitle(doc.getTitle());
-		this.setSubmission(doc.getSubmissionDate());
+		this.setSubmission(DateUtils.convertToLocalDate(doc.getSubmissionDate()));
 		this.setPrivate(doc.isPrivate() ? "Sim" : "Não");
 		this.setSupervisorFeedback(doc.getSupervisorFeedback().toString());
 	}
@@ -69,10 +70,10 @@ public class FinalDocumentDataSource extends BasicDataSource {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public Date getSubmission() {
+	public LocalDate getSubmission() {
 		return submission;
 	}
-	public void setSubmission(Date submission) {
+	public void setSubmission(LocalDate submission) {
 		this.submission = submission;
 	}
 	public String getPrivate() {

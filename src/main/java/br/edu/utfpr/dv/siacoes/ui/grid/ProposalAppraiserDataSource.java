@@ -1,9 +1,10 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
@@ -19,7 +20,7 @@ public class ProposalAppraiserDataSource extends BasicDataSource {
 	private int year;
 	private String title;
 	private String student;
-	private Date submission;
+	private LocalDate submission;
 	
 	public ProposalAppraiserDataSource(ProposalAppraiser appraiser) {
 		this.setId(appraiser.getIdProposalAppraiser());
@@ -32,7 +33,7 @@ public class ProposalAppraiserDataSource extends BasicDataSource {
 		this.setYear(appraiser.getProposal().getYear());
 		this.setTitle(appraiser.getProposal().getTitle());
 		this.setStudent(appraiser.getProposal().getStudent().getName());
-		this.setSubmission(appraiser.getProposal().getSubmissionDate());
+		this.setSubmission(DateUtils.convertToLocalDate(appraiser.getProposal().getSubmissionDate()));
 	}
 	
 	public static List<ProposalAppraiserDataSource> load(List<ProposalAppraiser> list) {
@@ -99,10 +100,10 @@ public class ProposalAppraiserDataSource extends BasicDataSource {
 	public void setStudent(String student) {
 		this.student = student;
 	}
-	public Date getSubmission() {
+	public LocalDate getSubmission() {
 		return submission;
 	}
-	public void setSubmission(Date submission) {
+	public void setSubmission(LocalDate submission) {
 		this.submission = submission;
 	}
 	

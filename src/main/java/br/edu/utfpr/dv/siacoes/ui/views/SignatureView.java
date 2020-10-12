@@ -21,6 +21,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
@@ -102,8 +103,8 @@ public class SignatureView extends LoggedView {
 			loadSignedDocument(event.getItem());
 		});
 		this.gridSigned.addColumn(SignedDocumentDataSource::getType).setHeader("Documento");
-		this.gridSigned.addColumn(SignedDocumentDataSource::getGeneratedDate).setHeader("Gerado em").setFlexGrow(0).setWidth("150px");
-		this.gridSigned.addColumn(SignedDocumentDataSource::getSignatureDate).setHeader("Assinado em").setFlexGrow(0).setWidth("150px");
+		this.gridSigned.addColumn(new LocalDateTimeRenderer<>(SignedDocumentDataSource::getGeneratedDate, "dd/MM/yyyy HH:mm")).setHeader("Gerado em").setFlexGrow(0).setWidth("150px");
+		this.gridSigned.addColumn(new LocalDateTimeRenderer<>(SignedDocumentDataSource::getSignatureDate, "dd/MM/yyyy HH:mm")).setHeader("Assinado em").setFlexGrow(0).setWidth("150px");
 		this.gridSigned.addColumn(SignedDocumentDataSource::getStatus).setHeader("Situação").setFlexGrow(0).setWidth("120px");
 		
 		this.layoutGridSigned = new VerticalLayout();

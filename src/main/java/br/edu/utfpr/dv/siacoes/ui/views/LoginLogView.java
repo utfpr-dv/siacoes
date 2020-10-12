@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -29,8 +30,8 @@ public class LoginLogView extends ListView<LoginLogDataSource> {
 		
 		this.setProfilePerimissions(UserProfile.ADMINISTRATOR);
 		
-		this.getGrid().addColumn(LoginLogDataSource::getDate).setHeader("Registro").setFlexGrow(0).setWidth("150px");
-		this.getGrid().addColumn(LoginLogDataSource::getType).setHeader("Operação").setFlexGrow(0).setWidth("100px");
+		this.getGrid().addColumn(new LocalDateTimeRenderer<>(LoginLogDataSource::getDate, "dd/MM/yyyy HH:mm"), "Date").setHeader("Registro").setFlexGrow(0).setWidth("150px");
+		this.getGrid().addColumn(LoginLogDataSource::getType, "Type").setHeader("Operação").setFlexGrow(0).setWidth("100px");
 		this.getGrid().addColumn(LoginLogDataSource::getIp).setHeader("IP Origem").setFlexGrow(0).setWidth("200px");
 		this.getGrid().addColumn(LoginLogDataSource::getBrowser).setHeader("Navegador/Sistema Origem");
 		

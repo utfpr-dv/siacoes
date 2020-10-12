@@ -14,6 +14,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
@@ -77,12 +78,12 @@ public class JuryView extends ListView<JuryDataSource> implements HasUrlParamete
 	public JuryView(){
 		super(SystemModule.SIGET);
 		
-		this.getGrid().addColumn(JuryDataSource::getDate).setHeader("Data e Hora").setFlexGrow(0).setWidth("150px");
+		this.getGrid().addColumn(new LocalDateTimeRenderer<>(JuryDataSource::getDate, "dd/MM/yyyy HH:mm"), "Date").setHeader("Data e Hora").setFlexGrow(0).setWidth("150px");
 		this.getGrid().addColumn(JuryDataSource::getLocal).setHeader("Local").setFlexGrow(0).setWidth("200px");
-		this.getGrid().addColumn(JuryDataSource::getStage).setHeader("TCC").setFlexGrow(0).setWidth("50px");
+		this.getGrid().addColumn(JuryDataSource::getStage, "Stage").setHeader("TCC").setFlexGrow(0).setWidth("50px");
 		this.getGrid().addColumn(JuryDataSource::getMember).setHeader("Membro").setFlexGrow(0).setWidth("125px");
-		this.getGrid().addColumn(JuryDataSource::getStudent).setHeader("Acadêmico");
-		this.getGrid().addColumn(JuryDataSource::getTitle).setHeader("Título");
+		this.getGrid().addColumn(JuryDataSource::getStudent, "Student").setHeader("Acadêmico");
+		this.getGrid().addColumn(JuryDataSource::getTitle, "Title").setHeader("Título");
 		
 		Semester semester;
 		try {

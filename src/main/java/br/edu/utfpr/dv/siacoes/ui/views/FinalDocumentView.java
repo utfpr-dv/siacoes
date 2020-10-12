@@ -2,8 +2,6 @@
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -13,6 +11,7 @@ import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
@@ -29,7 +28,6 @@ import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.ui.MainLayout;
 import br.edu.utfpr.dv.siacoes.ui.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.YearField;
-import br.edu.utfpr.dv.siacoes.ui.grid.EventLogDataSource;
 import br.edu.utfpr.dv.siacoes.ui.grid.FinalDocumentDataSource;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditFinalDocumentWindow;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
@@ -51,14 +49,14 @@ public class FinalDocumentView extends ListView<FinalDocumentDataSource> {
 		
 		this.setProfilePerimissions(UserProfile.PROFESSOR);
 		
-		this.getGrid().addColumn(FinalDocumentDataSource::getStage).setHeader("TCC").setFlexGrow(0).setWidth("100px");
+		this.getGrid().addColumn(FinalDocumentDataSource::getStage, "Stage").setHeader("TCC").setFlexGrow(0).setWidth("100px");
 		this.getGrid().addColumn(FinalDocumentDataSource::getSemester).setHeader("Semestre").setFlexGrow(0).setWidth("100px");
 		this.getGrid().addColumn(FinalDocumentDataSource::getYear).setHeader("Ano").setFlexGrow(0).setWidth("100px");
-		this.getGrid().addColumn(FinalDocumentDataSource::getStudent).setHeader("Acadêmico");
+		this.getGrid().addColumn(FinalDocumentDataSource::getStudent, "Student").setHeader("Acadêmico");
 		this.getGrid().addColumn(FinalDocumentDataSource::getTitle).setHeader("Título");
-		this.getGrid().addColumn(FinalDocumentDataSource::getSubmission).setHeader("Submissão").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(new LocalDateRenderer<>(FinalDocumentDataSource::getSubmission, "dd/MM/yyyy"), "Submission").setHeader("Submissão").setFlexGrow(0).setWidth("125px");
 		this.getGrid().addColumn(FinalDocumentDataSource::getPrivate).setHeader("Sigilo").setFlexGrow(0).setWidth("100px");
-		this.getGrid().addColumn(FinalDocumentDataSource::getSupervisorFeedback).setHeader("Feedback").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(FinalDocumentDataSource::getSupervisorFeedback, "Feedback").setHeader("Feedback").setFlexGrow(0).setWidth("125px");
 		
 		Semester semester;
 		try {

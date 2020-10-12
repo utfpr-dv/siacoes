@@ -13,6 +13,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
@@ -97,12 +98,12 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 		
-		this.getGrid().addColumn(InternshipDataSource::getStudent).setHeader("Acadêmico");
-		this.getGrid().addColumn(InternshipDataSource::getCompany).setHeader("Empresa");
-		this.getGrid().addColumn(InternshipDataSource::getSupervisor).setHeader("Orientador");
-		this.getGrid().addColumn(InternshipDataSource::getStartDate).setHeader("Data Início").setFlexGrow(0).setWidth("125px");
-		this.getGrid().addColumn(InternshipDataSource::getType).setHeader("Tipo").setFlexGrow(0).setWidth("160px");
-		this.getGrid().addColumn(InternshipDataSource::getStatus).setHeader("Situação").setFlexGrow(0).setWidth("150px");
+		this.getGrid().addColumn(InternshipDataSource::getStudent, "Student").setHeader("Acadêmico");
+		this.getGrid().addColumn(InternshipDataSource::getCompany, "Company").setHeader("Empresa");
+		this.getGrid().addColumn(InternshipDataSource::getSupervisor, "Supervisor").setHeader("Orientador");
+		this.getGrid().addColumn(new LocalDateRenderer<>(InternshipDataSource::getStartDate, "dd/MM/yyyy"), "Date").setHeader("Data Início").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(InternshipDataSource::getType, "Type").setHeader("Tipo").setFlexGrow(0).setWidth("160px");
+		this.getGrid().addColumn(InternshipDataSource::getStatus, "Status").setHeader("Situação").setFlexGrow(0).setWidth("150px");
 		
 		this.textYear = new YearField();
 		this.textYear.setYear(0);

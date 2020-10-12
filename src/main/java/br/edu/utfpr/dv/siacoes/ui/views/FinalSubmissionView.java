@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -28,10 +29,10 @@ public class FinalSubmissionView extends ListView<FinalSubmissionDataSource> {
 		super(SystemModule.SIGAC);
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
-		this.getGrid().addColumn(FinalSubmissionDataSource::getStudent).setHeader("Acadêmico");
+		this.getGrid().addColumn(FinalSubmissionDataSource::getStudent, "Student").setHeader("Acadêmico");
 		this.getGrid().addColumn(FinalSubmissionDataSource::getFinalScore).setHeader("Pont. Final").setFlexGrow(0).setWidth("150px");
-		this.getGrid().addColumn(FinalSubmissionDataSource::getDate).setHeader("Data").setFlexGrow(0).setWidth("150px");
-		this.getGrid().addColumn(FinalSubmissionDataSource::getFeedbackUser).setHeader("Avaliador");
+		this.getGrid().addColumn(new LocalDateRenderer<>(FinalSubmissionDataSource::getDate, "dd/MM/yyyy"), "Date").setHeader("Data").setFlexGrow(0).setWidth("150px");
+		this.getGrid().addColumn(FinalSubmissionDataSource::getFeedbackUser, "FeedbackUser").setHeader("Avaliador");
 		
 		this.buttonFinalReport = new Button("Relatório Final", new Icon(VaadinIcon.FILE_TEXT_O), event -> {
             finalReport();

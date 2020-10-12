@@ -1,14 +1,15 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class InternshipJuryDataSource extends BasicDataSource {
 
-	private Date date;
+	private LocalDateTime date;
 	private String local;
 	private String member;
 	private String student;
@@ -16,7 +17,7 @@ public class InternshipJuryDataSource extends BasicDataSource {
 	
 	public InternshipJuryDataSource(InternshipJury jury) {
 		this.setId(jury.getIdInternshipJury());
-		this.setDate(jury.getDate());
+		this.setDate(DateUtils.convertToLocalDateTime(jury.getDate()));
 		this.setLocal(jury.getLocal());
 		this.setMember("");
 		this.setStudent(jury.getInternship().getStudent().getName());
@@ -33,10 +34,10 @@ public class InternshipJuryDataSource extends BasicDataSource {
 		return ret;
 	}
 	
-	public Date getDate() {
+	public LocalDateTime getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
+	public void setDate(LocalDateTime date) {
 		this.date = date;
 	}
 	public String getLocal() {

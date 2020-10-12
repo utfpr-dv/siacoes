@@ -225,9 +225,9 @@ public class DocumentView extends ListView<DocumentDataSource> implements HasUrl
 
 	@Override
 	public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-		if(parameter != null && !parameter.isEmpty()) {
+		if(parameter != null && !parameter.trim().isEmpty()) {
 			try{
-				SystemModule module = SystemModule.valueOf(Integer.parseInt(parameter));
+				SystemModule module = SystemModule.valueOf(Integer.parseInt(parameter.trim()));
 				
 				this.setModule(module);
 		    	

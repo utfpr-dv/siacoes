@@ -7,6 +7,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -34,10 +35,10 @@ public class EventLogView extends ListView<EventLogDataSource> {
 		
 		this.setProfilePerimissions(UserProfile.ADMINISTRATOR);
 		
-		this.getGrid().addColumn(EventLogDataSource::getDate).setHeader("Nome").setFlexGrow(0).setWidth("150px");
-		this.getGrid().addColumn(EventLogDataSource::getType).setHeader("Operação").setFlexGrow(0).setWidth("100px");
-		this.getGrid().addColumn(EventLogDataSource::getUser).setHeader("Usuário");
-		this.getGrid().addColumn(EventLogDataSource::getTable).setHeader("Tabela");
+		this.getGrid().addColumn(new LocalDateTimeRenderer<>(EventLogDataSource::getDate, "dd/MM/yyyy HH:mm"), "Date").setHeader("Data e Hora").setFlexGrow(0).setWidth("150px");
+		this.getGrid().addColumn(EventLogDataSource::getType, "Type").setHeader("Operação").setFlexGrow(0).setWidth("100px");
+		this.getGrid().addColumn(EventLogDataSource::getUser, "User").setHeader("Usuário");
+		this.getGrid().addColumn(EventLogDataSource::getTable, "Table").setHeader("Tabela");
 		
 		this.comboUser = new UserComboBox("Usuário");
 		

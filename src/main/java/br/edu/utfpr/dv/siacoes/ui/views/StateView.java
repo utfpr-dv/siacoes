@@ -24,9 +24,9 @@ public class StateView extends ListView<StateDataSource> {
 		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
-		this.getGrid().addColumn(StateDataSource::getName).setHeader("Nome");
-		this.getGrid().addColumn(StateDataSource::getCountry).setHeader("País");
-		this.getGrid().addColumn(StateDataSource::getInitials).setHeader("Sigla").setFlexGrow(0).setWidth("100px");
+		this.getGrid().addColumn(StateDataSource::getName, "Name").setHeader("Nome");
+		this.getGrid().addColumn(StateDataSource::getCountry, "Country").setHeader("País");
+		this.getGrid().addColumn(StateDataSource::getInitials, "Initials").setHeader("Sigla").setFlexGrow(0).setWidth("100px");
 		
 		this.setFiltersVisible(false);
 		this.setDeleteVisible(false);

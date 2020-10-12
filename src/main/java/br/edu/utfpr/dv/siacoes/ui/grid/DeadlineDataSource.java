@@ -1,30 +1,31 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.Deadline;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class DeadlineDataSource extends BasicDataSource {
 
 	private int semester;
 	private int year;
-	private Date proposal;
-	private Date project;
-	private Date finalProject;
-	private Date thesis;
-	private Date finalThesis;
+	private LocalDate proposal;
+	private LocalDate project;
+	private LocalDate finalProject;
+	private LocalDate thesis;
+	private LocalDate finalThesis;
 	
 	public DeadlineDataSource(Deadline deadline) {
 		this.setId(deadline.getIdDeadline());
 		this.setSemester(deadline.getSemester());
 		this.setYear(deadline.getYear());
-		this.setProposal(deadline.getProposalDeadline());
-		this.setProject(deadline.getProjectDeadline());
-		this.setFinalProject(deadline.getProjectFinalDocumentDeadline());
-		this.setThesis(deadline.getThesisDeadline());
-		this.setFinalThesis(deadline.getThesisFinalDocumentDeadline());
+		this.setProposal(DateUtils.convertToLocalDate(deadline.getProposalDeadline()));
+		this.setProject(DateUtils.convertToLocalDate(deadline.getProjectDeadline()));
+		this.setFinalProject(DateUtils.convertToLocalDate(deadline.getProjectFinalDocumentDeadline()));
+		this.setThesis(DateUtils.convertToLocalDate(deadline.getThesisDeadline()));
+		this.setFinalThesis(DateUtils.convertToLocalDate(deadline.getThesisFinalDocumentDeadline()));
 	}
 	
 	public static List<DeadlineDataSource> load(List<Deadline> list) {
@@ -49,34 +50,34 @@ public class DeadlineDataSource extends BasicDataSource {
 	public void setYear(int year) {
 		this.year = year;
 	}
-	public Date getProposal() {
+	public LocalDate getProposal() {
 		return proposal;
 	}
-	public void setProposal(Date proposal) {
+	public void setProposal(LocalDate proposal) {
 		this.proposal = proposal;
 	}
-	public Date getProject() {
+	public LocalDate getProject() {
 		return project;
 	}
-	public void setProject(Date project) {
+	public void setProject(LocalDate project) {
 		this.project = project;
 	}
-	public Date getFinalProject() {
+	public LocalDate getFinalProject() {
 		return finalProject;
 	}
-	public void setFinalProject(Date finalProject) {
+	public void setFinalProject(LocalDate finalProject) {
 		this.finalProject = finalProject;
 	}
-	public Date getThesis() {
+	public LocalDate getThesis() {
 		return thesis;
 	}
-	public void setThesis(Date thesis) {
+	public void setThesis(LocalDate thesis) {
 		this.thesis = thesis;
 	}
-	public Date getFinalThesis() {
+	public LocalDate getFinalThesis() {
 		return finalThesis;
 	}
-	public void setFinalThesis(Date finalThesis) {
+	public void setFinalThesis(LocalDate finalThesis) {
 		this.finalThesis = finalThesis;
 	}
 	

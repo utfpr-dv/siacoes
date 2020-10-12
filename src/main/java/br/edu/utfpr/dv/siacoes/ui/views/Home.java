@@ -3,6 +3,8 @@ package br.edu.utfpr.dv.siacoes.ui.views;
 import java.io.ByteArrayInputStream;
 import java.util.logging.Level;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H1;
@@ -12,9 +14,15 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.server.VaadinRequest;
+import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinServletRequest;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
@@ -29,7 +37,7 @@ import br.edu.utfpr.dv.siacoes.ui.windows.EditStudentProfileWindow;
 
 @PageTitle("SIACOES")
 @Route(value = "", layout = MainLayout.class)
-public class Home extends LoggedView implements AfterNavigationObserver {
+public class Home extends LoggedView implements AfterNavigationObserver, HasUrlParameter<String> {
 	
 	private Image logoDepartment;
 	private Image logoUniversity;
@@ -118,6 +126,17 @@ public class Home extends LoggedView implements AfterNavigationObserver {
 			}
 		} catch(Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
+		}
+	}
+	
+	@Override
+	public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
+		VaadinRequest vaadinRequest = VaadinService.getCurrentRequest();
+		HttpServletRequest httpServletRequest = ((VaadinServletRequest)vaadinRequest).getHttpServletRequest();
+		String requestUrl = httpServletRequest.getRequestURL().toString();
+		
+		if(parameter != null && !parameter.trim().isEmpty()) {
+			
 		}
 	}
 

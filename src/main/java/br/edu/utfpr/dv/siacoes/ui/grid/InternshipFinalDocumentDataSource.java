@@ -1,16 +1,17 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class InternshipFinalDocumentDataSource extends BasicDataSource {
 
 	private String student;
 	private String company;
-	private Date submission;
+	private LocalDate submission;
 	private String _private;
 	private String feedback;
 	
@@ -18,7 +19,7 @@ public class InternshipFinalDocumentDataSource extends BasicDataSource {
 		this.setId(doc.getIdInternshipFinalDocument());
 		this.setStudent(doc.getInternship().getStudent().getName());
 		this.setCompany(doc.getInternship().getCompany().getName());
-		this.setSubmission(doc.getSubmissionDate());
+		this.setSubmission(DateUtils.convertToLocalDate(doc.getSubmissionDate()));
 		this.setPrivate(doc.isPrivate() ? "Sim" : "Não");
 		this.setFeedback(doc.getSupervisorFeedback().toString());
 	}
@@ -45,10 +46,10 @@ public class InternshipFinalDocumentDataSource extends BasicDataSource {
 	public void setCompany(String company) {
 		this.company = company;
 	}
-	public Date getSubmission() {
+	public LocalDate getSubmission() {
 		return submission;
 	}
-	public void setSubmission(Date submission) {
+	public void setSubmission(LocalDate submission) {
 		this.submission = submission;
 	}
 	public String getPrivate() {

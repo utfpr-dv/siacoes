@@ -31,8 +31,8 @@ public class ActivityView extends ListView<ActivityDataSource> {
 		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
-		this.getGrid().addColumn(ActivityDataSource::getGroup).setHeader("Grupo").setFlexGrow(0).setWidth("100px");
-		this.getGrid().addColumn(ActivityDataSource::getDescription).setHeader("Descrição");
+		this.getGrid().addColumn(ActivityDataSource::getGroup, "Group").setHeader("Grupo").setFlexGrow(0).setWidth("100px");
+		this.getGrid().addColumn(ActivityDataSource::getDescription, "Description").setHeader("Descrição");
 		this.getGrid().addColumn(ActivityDataSource::getScore).setHeader("Pontuação").setFlexGrow(0).setWidth("125px");
 		this.getGrid().addColumn(ActivityDataSource::getUnit).setHeader("Unidade").setFlexGrow(0).setWidth("200px");
 		

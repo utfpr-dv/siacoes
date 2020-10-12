@@ -24,7 +24,7 @@ public class ActivityUnitView extends ListView<ActivityUnitDataSource> {
 		
 		this.setProfilePerimissions(UserProfile.ADMINISTRATOR);
 		
-		this.getGrid().addColumn(ActivityUnitDataSource::getDescription).setHeader("Descrição");
+		this.getGrid().addColumn(ActivityUnitDataSource::getDescription, "Description").setHeader("Descrição");
 		this.getGrid().addColumn(ActivityUnitDataSource::getFillAmount).setHeader("Inform. Qtde.").setFlexGrow(0).setWidth("150px");
 		
 		this.setFiltersVisible(false);

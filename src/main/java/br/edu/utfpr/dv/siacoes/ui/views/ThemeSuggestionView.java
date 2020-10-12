@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -25,9 +26,9 @@ public class ThemeSuggestionView extends ListView<ThemeSuggestionDataSource> {
 	public ThemeSuggestionView(){
 		super(SystemModule.SIGET);
 		
-		this.getGrid().addColumn(ThemeSuggestionDataSource::getSubmission).setHeader("Submissão").setFlexGrow(0).setWidth("125px");
-		this.getGrid().addColumn(ThemeSuggestionDataSource::getTitle).setHeader("Título");
-		this.getGrid().addColumn(ThemeSuggestionDataSource::getUser).setHeader("Proponente");
+		this.getGrid().addColumn(new LocalDateRenderer<>(ThemeSuggestionDataSource::getSubmission, "dd/MM/yyyy"), "Submission").setHeader("Submissão").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(ThemeSuggestionDataSource::getTitle, "Title").setHeader("Título");
+		this.getGrid().addColumn(ThemeSuggestionDataSource::getUser, "User").setHeader("Proponente");
 		
 		this.checkActive = new Checkbox("Apenas Ativos");
 		this.checkActive.setValue(true);

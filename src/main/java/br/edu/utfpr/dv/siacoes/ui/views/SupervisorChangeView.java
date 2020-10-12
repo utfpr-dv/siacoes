@@ -7,6 +7,7 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -35,12 +36,12 @@ public class SupervisorChangeView extends ListView<SupervisorChangeDataSource> {
 		
 		this.setProfilePerimissions(UserProfile.MANAGER);
 		
-		this.getGrid().addColumn(SupervisorChangeDataSource::getStage).setHeader("TCC").setFlexGrow(0).setWidth("100px");
-		this.getGrid().addColumn(SupervisorChangeDataSource::getStudent).setHeader("Acadêmico");
-		this.getGrid().addColumn(SupervisorChangeDataSource::getDate).setHeader("Data").setFlexGrow(0).setWidth("125px");
-		this.getGrid().addColumn(SupervisorChangeDataSource::getOldSupervisor).setHeader("Orientador Anterior");
-		this.getGrid().addColumn(SupervisorChangeDataSource::getNewSupervisor).setHeader("Novo Orientador");
-		this.getGrid().addColumn(SupervisorChangeDataSource::getStatus).setHeader("Situação").setFlexGrow(0).setWidth("150px");
+		this.getGrid().addColumn(SupervisorChangeDataSource::getStage, "Stage").setHeader("TCC").setFlexGrow(0).setWidth("100px");
+		this.getGrid().addColumn(SupervisorChangeDataSource::getStudent, "Student").setHeader("Acadêmico");
+		this.getGrid().addColumn(new LocalDateRenderer<>(SupervisorChangeDataSource::getDate, "dd/MM/yyyy"), "Date").setHeader("Data").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(SupervisorChangeDataSource::getOldSupervisor, "OldSupervisor").setHeader("Orientador Anterior");
+		this.getGrid().addColumn(SupervisorChangeDataSource::getNewSupervisor, "NewSupervisor").setHeader("Novo Orientador");
+		this.getGrid().addColumn(SupervisorChangeDataSource::getStatus, "Status").setHeader("Situação").setFlexGrow(0).setWidth("150px");
 		
 		this.setAddVisible(false);
 		this.setDeleteVisible(false);
