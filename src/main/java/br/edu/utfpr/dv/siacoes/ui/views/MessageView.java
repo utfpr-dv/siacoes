@@ -12,7 +12,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -20,6 +19,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -28,6 +28,7 @@ import br.edu.utfpr.dv.siacoes.bo.MessageBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.Message;
 import br.edu.utfpr.dv.siacoes.ui.MainLayout;
+import br.edu.utfpr.dv.siacoes.ui.grid.MessageDataSource;
 
 @PageTitle("Mensagens do Sistema")
 @Route(value = "message", layout = MainLayout.class)
@@ -38,8 +39,7 @@ public class MessageView extends LoggedView {
 	private static final String LISTUNREAD = "Listar apenas mensagens não lidas";
 	
 	List<Message> list;
-	private Grid<Message> grid;
-	private final VerticalLayout layoutListMessages;
+	private Grid<MessageDataSource> grid;
 	private final RadioButtonGroup<String> optionFilterType;
 	private final Button buttonMarkAsRead;
 	private final Button buttonMarkAsUnread;
@@ -92,10 +92,10 @@ public class MessageView extends LoggedView {
 		layoutMessage.setSizeFull();
 		layoutMessage.expand(this.textMessage);
 		
-		this.grid = new Grid<Message>();
-		this.grid.addComponentColumn(item -> createSender(this.grid, item)).setHeader("Remetente").setFlexGrow(0).setWidth("100px");
+		this.grid = new Grid<MessageDataSource>();
+		this.grid.addColumn(MessageDataSource::getSender).setHeader("Remetente").setFlexGrow(0).setWidth("130px");
 		this.grid.addComponentColumn(item -> createSubject(this.grid, item)).setHeader("Assunto");
-		this.grid.addColumn(Message::getDate).setHeader("Data e Hora").setFlexGrow(0).setWidth("125px");
+		this.grid.addColumn(new LocalDateTimeRenderer<>(MessageDataSource::getDate, "dd/MM/yyyy HH:mm")).setHeader("Data e Hora").setFlexGrow(0).setWidth("170px");
 		this.grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
 		this.grid.setSelectionMode(SelectionMode.SINGLE);
 		this.grid.setSizeFull();
@@ -103,12 +103,8 @@ public class MessageView extends LoggedView {
 			loadMessage(event.getItem());
 		});
 		
-		this.layoutListMessages = new VerticalLayout();
-		this.layoutListMessages.setSizeFull();
-		this.layoutListMessages.addAndExpand(this.grid);
-		
 		HorizontalLayout hl = new HorizontalLayout();
-		hl.addAndExpand(this.layoutListMessages, layoutMessage);
+		hl.addAndExpand(this.grid, layoutMessage);
 		hl.setSizeFull();
 		hl.setSpacing(true);
 		hl.setMargin(false);
@@ -136,18 +132,12 @@ public class MessageView extends LoggedView {
 		this.listMessages();
 	}
 	
-	private Component createSubject(Grid<Message> grid, Message item) {
-		Label label = new Label(item.getTitle());
+	private Component createSubject(Grid<MessageDataSource> grid, MessageDataSource item) {
+		Label label = new Label(item.getSubject());
 		
 		if(!item.isRead()) {
-			//label.the
+			label.getElement().getStyle().set("bold", "true");
 		}
-		
-		return label;
-	}
-	
-	private Component createSender(Grid<Message> grid, Message item) {
-		Label label = new Label(item.getModule().getShortDescription());
 		
 		return label;
 	}
@@ -169,13 +159,24 @@ public class MessageView extends LoggedView {
 	}
 	
 	private void loadGrid() {
-		this.grid.setItems(this.list);
+		this.grid.setItems(MessageDataSource.load(this.list));
 	}
 	
-	private void loadMessage(Message message) {
+	private Message findMessage(MessageDataSource message) {
+		for(Message msg : this.list) {
+			if(msg.getIdMessage() == message.getId()) {
+				return msg;
+			}
+		}
+		
+		return null;
+	}
+	
+	private void loadMessage(MessageDataSource msg) {
+		Message message = this.findMessage(msg);
+		
 		if(message == null)
 			return;
-		
 		
 		if(!message.isRead()) {
 			try {

@@ -105,8 +105,7 @@ public class EmailUtils {
         if(isAuthenticate()){
         	session = Session.getDefaultInstance(props, new javax.mail.Authenticator(){
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(
-                        getUser(), getPassword());
+                    return new PasswordAuthentication(getUser(), getPassword());
                 }
             });
         }else{
@@ -144,7 +143,7 @@ public class EmailUtils {
             	message.setText(body);
             }
             
-            Transport.send(message, getUser(), getPassword());
+            Transport.send(message);
         } catch (Exception e) {
         	Logger.log(Level.SEVERE, e.getMessage(), e);
         	

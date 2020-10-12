@@ -35,7 +35,7 @@ public class EmailMessageView extends ListView<EmailMessageDataSource> {
 		
 		this.setProfilePerimissions(UserProfile.ADMINISTRATOR);
 		
-		this.getGrid().addColumn(EmailMessageDataSource::getType, "Type").setHeader("Módulo");
+		this.getGrid().addColumn(EmailMessageDataSource::getType, "Type").setHeader("Tipo");
 		this.getGrid().addColumn(EmailMessageDataSource::getTitle, "Title").setHeader("Título");
 		this.getGrid().addColumn(EmailMessageDataSource::getMessage).setHeader("Mensagem");
 		
