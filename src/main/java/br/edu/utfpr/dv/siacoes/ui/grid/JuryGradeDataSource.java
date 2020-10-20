@@ -77,12 +77,14 @@ public class JuryGradeDataSource {
 			}
 		}
 		
-		JuryGradeDataSource company = new JuryGradeDataSource();
-		company.setDescription("Supervisor da Empresa");
-		company.setAppraiser("");
-		company.setTotal(report.getCompanySupervisorScore());
-		company.setPonderosity(report.getCompanySupervisorPonderosity());
-		ret.add(company);
+		if(report.getCompanySupervisorPonderosity() > 0) {
+			JuryGradeDataSource company = new JuryGradeDataSource();
+			company.setDescription("Supervisor da Empresa");
+			company.setAppraiser("");
+			company.setTotal(report.getCompanySupervisorScore());
+			company.setPonderosity(report.getCompanySupervisorPonderosity());
+			ret.add(company);
+		}
 		
 		JuryGradeDataSource supervisor = new JuryGradeDataSource();
 		supervisor.setDescription("Orientador");

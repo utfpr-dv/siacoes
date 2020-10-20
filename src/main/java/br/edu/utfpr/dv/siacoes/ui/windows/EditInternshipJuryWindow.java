@@ -316,6 +316,10 @@ public class EditInternshipJuryWindow extends EditWindow {
 				this.disableButtons();
 			}
 		}
+		
+		if(this.jury.getCompanySupervisorPonderosity() == 0) {
+			this.textSupervisorScore.setVisible(false);
+		}
 	}
 	
 	private void loadGridAppraisers() {
