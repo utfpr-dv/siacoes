@@ -101,10 +101,10 @@ public class NaviDrawer extends Div
 	}
 
 	private void initFooter() {
-		railButton = UIUtils.createSmallButton("Collapse", VaadinIcon.CHEVRON_LEFT_SMALL);
+		railButton = UIUtils.createSmallButton("Ocultar", VaadinIcon.CHEVRON_LEFT_SMALL);
 		railButton.addClassName(CLASS_NAME + "__footer");
 		railButton.addClickListener(event -> toggleRailMode());
-		railButton.getElement().setAttribute("aria-label", "Collapse menu");
+		railButton.getElement().setAttribute("aria-label", "Ocultar menu");
 		mainContent.add(railButton);
 	}
 
@@ -112,14 +112,14 @@ public class NaviDrawer extends Div
 		if (getElement().hasAttribute(RAIL)) {
 			getElement().setAttribute(RAIL, false);
 			railButton.setIcon(new Icon(VaadinIcon.CHEVRON_LEFT_SMALL));
-			railButton.setText("Collapse");
-			UIUtils.setAriaLabel("Collapse menu", railButton);
+			railButton.setText("Ocultar");
+			UIUtils.setAriaLabel("Ocultar menu", railButton);
 
 		} else {
 			getElement().setAttribute(RAIL, true);
 			railButton.setIcon(new Icon(VaadinIcon.CHEVRON_RIGHT_SMALL));
-			railButton.setText("Expand");
-			UIUtils.setAriaLabel("Expand menu", railButton);
+			railButton.setText("Mostrar");
+			UIUtils.setAriaLabel("Mostrar menu", railButton);
 			getUI().get().getPage().executeJavaScript(
 					"var originalStyle = getComputedStyle($0).pointerEvents;" //
 							+ "$0.style.pointerEvents='none';" //

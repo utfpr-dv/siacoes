@@ -62,6 +62,14 @@ public class NaviMenu extends Div {
 		addNaviItem(parent, item);
 		return item;
 	}
+	
+	public void collapseAll() {
+		getNaviItems().forEach(item -> item.collapseAll());
+	}
+	
+	public void expandAll() {
+		getNaviItems().forEach(item -> item.expandAll());
+	}
 
 	public List<NaviItem> getNaviItems() {
 		List<NaviItem> items = (List) getChildren()

@@ -56,7 +56,6 @@ public class NaviItem extends Div {
 			routerLink.setClassName(CLASS_NAME + "__link");
 			routerLink.setHighlightCondition(HighlightConditions.sameLocation());
 			this.link = routerLink;
-
 		} else {
 			Div div = new Div(new Span(text));
 			div.addClickListener(e -> expandCollapse.click());
@@ -106,6 +105,26 @@ public class NaviItem extends Div {
 		}
 		item.setLevel(getLevel() + 1);
 		subItems.add(item);
+	}
+	
+	public void collapse() {
+		this.setSubItemsVisible(false);
+	}
+	
+	public void expand() {
+		this.setSubItemsVisible(true);
+	}
+	
+	public void collapseAll() {
+		subItems.forEach(item -> item.collapseAll());
+		
+		this.collapse();
+	}
+	
+	public void expandAll() {
+		subItems.forEach(item -> item.expandAll());
+		
+		this.expand();
 	}
 
 	private void setSubItemsVisible(boolean visible) {

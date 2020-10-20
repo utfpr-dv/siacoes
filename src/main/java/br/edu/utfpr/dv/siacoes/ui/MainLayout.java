@@ -762,17 +762,7 @@ public class MainLayout extends FlexBoxLayout implements RouterLayout, AfterNavi
 		menu.addNaviItem(admin, "Sugestões e Problemas", BugReportView.class);
 		menu.addNaviItem(admin, "Sobre o Sistema", AboutView.class);
 		
-		
-		
-		/*menu.addNaviItem(VaadinIcon.HOME, "Home", Home.class);
-		menu.addNaviItem(VaadinIcon.INSTITUTION, "Accounts", Accounts.class);
-		menu.addNaviItem(VaadinIcon.CREDIT_CARD, "Payments", Payments.class);
-		menu.addNaviItem(VaadinIcon.CHART, "Statistics", Statistics.class);
-
-		NaviItem personnel = menu.addNaviItem(VaadinIcon.USERS, "Personnel",
-				null);
-		menu.addNaviItem(personnel, "Accountants", Accountants.class);
-		menu.addNaviItem(personnel, "Managers", Managers.class);*/
+		menu.collapseAll();
 	}
 
 	/**
