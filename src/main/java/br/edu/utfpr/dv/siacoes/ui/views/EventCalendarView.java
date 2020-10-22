@@ -1,5 +1,6 @@
 package br.edu.utfpr.dv.siacoes.ui.views;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,7 +27,6 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.Lumo;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
@@ -53,6 +53,7 @@ import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.ui.MainLayout;
 import br.edu.utfpr.dv.siacoes.ui.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.YearField;
+import br.edu.utfpr.dv.siacoes.ui.windows.EventCalendarWindow;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 @PageTitle("Calendário de Eventos")
@@ -138,6 +139,10 @@ public class EventCalendarView extends LoggedView {
 		this.calendar.changeView(CalendarViewImpl.TIME_GRID_WEEK);
 		this.calendar.today();
 		this.calendar.setBusinessHours(new BusinessHours(LocalTime.of(7, 0), LocalTime.of(23, 0)));
+		this.calendar.addEntryClickedListener(event -> {
+			EventCalendarWindow window = new EventCalendarWindow(event.getEntry());
+			window.open();
+		});
 		
 		this.buttonPrevious = new Button("Semana Anterior", new Icon(VaadinIcon.ARROW_LEFT), event -> {
 			this.calendar.previous();
@@ -190,6 +195,7 @@ public class EventCalendarView extends LoggedView {
 			List<Jury> listThesis = new ArrayList<Jury>();
 			List<JuryRequest> listRequest = new ArrayList<JuryRequest>();
 			List<InternshipJury> listInternship = new ArrayList<InternshipJury>();
+			LocalDateTime firstDate = null;
 			
 			this.calendar.removeAllEntries();
 			
@@ -221,9 +227,14 @@ public class EventCalendarView extends LoggedView {
 			
 			this.calendar.today();
 			
-			if((listThesis.size() == 0) && (listInternship.size() == 0)) {
+			if((listThesis.size() == 0) && (listRequest.size() == 0) && (listInternship.size() == 0)) {
 				this.showWarningNotification("Listar Eventos", "Não há bancas agendadas para este semestre.");
+				this.calendar.today();
 			} else {
+				if(listThesis.size() > 0) {
+					firstDate = DateUtils.convertToLocalDateTime(listThesis.get(0).getDate());
+				}
+				
 				for(Jury jury : listThesis){
 					String title = "Banca de TCC " + String.valueOf(jury.getStage());
 					String student = "Acadêmico(a): " + jury.getStudent().getName();
@@ -254,9 +265,16 @@ public class EventCalendarView extends LoggedView {
 					entry.setStart(DateUtils.convertToLocalDateTime(jury.getDate()));
 					entry.setEnd(DateUtils.convertToLocalDateTime(endTime));
 					entry.setDescription(student + "\n" + local + "\n" + appraisers);
+					entry.setColor("green");
 					entry.setEditable(false);
 					
 					this.calendar.addEntry(entry);
+				}
+				
+				if(listRequest.size() > 0) {
+					if((firstDate == null) || (firstDate.isAfter(DateUtils.convertToLocalDateTime(listRequest.get(0).getDate())))) {
+						firstDate = DateUtils.convertToLocalDateTime(listRequest.get(0).getDate());
+					}
 				}
 				
 				for(JuryRequest request : listRequest) {
@@ -289,9 +307,16 @@ public class EventCalendarView extends LoggedView {
 					entry.setStart(DateUtils.convertToLocalDateTime(request.getDate()));
 					entry.setEnd(DateUtils.convertToLocalDateTime(endTime));
 					entry.setDescription(student + "\n" + local + "\n" + appraisers);
+					entry.setColor("red");
 					entry.setEditable(false);
 					
 					this.calendar.addEntry(entry);
+				}
+				
+				if(listInternship.size() > 0) {
+					if((firstDate == null) || (firstDate.isAfter(DateUtils.convertToLocalDateTime(listInternship.get(0).getDate())))) {
+						firstDate = DateUtils.convertToLocalDateTime(listInternship.get(0).getDate());
+					}
 				}
 				
 				for(InternshipJury jury : listInternship) {
@@ -320,9 +345,14 @@ public class EventCalendarView extends LoggedView {
 					entry.setStart(DateUtils.convertToLocalDateTime(jury.getDate()));
 					entry.setEnd(DateUtils.convertToLocalDateTime(endTime));
 					entry.setDescription(student + "\n" + local + "\n" + appraisers);
+					entry.setColor("blue");
 					entry.setEditable(false);
 					
 					this.calendar.addEntry(entry);
+				}
+				
+				if(firstDate != null) {
+					this.calendar.gotoDate(firstDate.toLocalDate());
 				}
 			}
 		} catch (Exception e) {
