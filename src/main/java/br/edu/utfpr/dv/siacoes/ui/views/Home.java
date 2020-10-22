@@ -59,6 +59,8 @@ public class Home extends LoggedView implements AfterNavigationObserver, HasUrlP
     	
     	this.anchorDepartment = new Anchor();
     	this.anchorDepartment.setTarget("_blank");
+    	this.anchorDepartment.getElement().getStyle().set("text-align", "center");
+    	this.anchorDepartment.getElement().getStyle().set("align-self", "center");
     	this.anchorDepartment.add(this.logoDepartment);
     	
     	this.logoUniversity = new Image();
@@ -67,9 +69,12 @@ public class Home extends LoggedView implements AfterNavigationObserver, HasUrlP
     	
     	this.anchorUniversity = new Anchor();
     	this.anchorUniversity.setTarget("_blank");
+    	this.anchorUniversity.getElement().getStyle().set("text-align", "center");
+    	this.anchorUniversity.getElement().getStyle().set("align-self", "center");
     	this.anchorUniversity.add(this.logoUniversity);
     	
-    	HorizontalLayout layoutLogo = new HorizontalLayout(this.anchorDepartment, this.anchorUniversity);
+    	HorizontalLayout layoutLogo = new HorizontalLayout();
+    	layoutLogo.addAndExpand(this.anchorDepartment, this.anchorUniversity);
     	layoutLogo.setSpacing(true);
     	layoutLogo.setSizeFull();
     	

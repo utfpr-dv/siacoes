@@ -132,7 +132,7 @@ public class EditFinalDocumentWindow extends EditWindow {
 		
 		this.textComments = new TextArea();
 		this.textComments.setWidth("800px");
-		this.textComments.setHeight("350px");
+		this.textComments.setHeight("430px");
 		this.textComments.setVisible(false);
 		
 		this.textFeedbackDate = new DatePicker("Data do Feedback");
@@ -146,12 +146,12 @@ public class EditFinalDocumentWindow extends EditWindow {
 		
 		this.textNativeAbstract = new TextArea();
 		this.textNativeAbstract.setWidth("800px");
-		this.textNativeAbstract.setHeight("350px");
+		this.textNativeAbstract.setHeight("430px");
 		this.textNativeAbstract.setVisible(false);
 		
 		this.textEnglishAbstract = new TextArea();
 		this.textEnglishAbstract.setWidth("800px");
-		this.textEnglishAbstract.setHeight("350px");
+		this.textEnglishAbstract.setHeight("430px");
 		this.textEnglishAbstract.setVisible(false);
 		
 		this.buttonDownloadFile = new Button("Baixar Arquivo", new Icon(VaadinIcon.CLOUD_DOWNLOAD), event -> {
@@ -201,7 +201,7 @@ public class EditFinalDocumentWindow extends EditWindow {
 		
 		VerticalLayout layout = new VerticalLayout(this.tab, pages);
 		layout.setWidth("820px");
-		layout.setHeight("400px");
+		layout.setHeight("500px");
 		layout.setSpacing(false);
 		layout.setMargin(false);
 		layout.setPadding(false);

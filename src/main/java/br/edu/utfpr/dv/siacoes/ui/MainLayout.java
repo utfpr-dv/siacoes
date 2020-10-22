@@ -630,34 +630,36 @@ public class MainLayout extends FlexBoxLayout implements RouterLayout, AfterNavi
 					}
 				});
 			}
-			NaviItem supervisorChange = menu.addNaviItem(siget4, "Alterar Orientador", null);
-			supervisorChange.addClickListener(event -> {
-				try {
-    	        	Proposal proposal = new ProposalBO().findLastProposal(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
-					
-					if((proposal == null) || (proposal.getIdProposal() == 0)) {
-						Notification.showErrorNotification("Alterar Orientador", "É necessário efetuar a submissão da proposta.");
-					} else {
-						Thesis thesis = new ThesisBO().findByProposal(proposal.getIdProposal());
-						Jury jury = null;
+			if(Session.isUserStudent()) {
+				NaviItem supervisorChange = menu.addNaviItem(siget4, "Alterar Orientador", null);
+				supervisorChange.addClickListener(event -> {
+					try {
+	    	        	Proposal proposal = new ProposalBO().findLastProposal(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 						
-						if((thesis != null) && (thesis.getIdThesis() != 0)) {
-							jury = new JuryBO().findByThesis(0);
-						}
-						
-						if((jury != null) && (jury.getIdJury() != 0)) {
-							Notification.showErrorNotification("Alterar Orientador", "Não é possível efetuar a alteração de orientador pois a banca de TCC 2 já foi agendada.");
+						if((proposal == null) || (proposal.getIdProposal() == 0)) {
+							Notification.showErrorNotification("Alterar Orientador", "É necessário efetuar a submissão da proposta.");
 						} else {
-							EditSupervisorChangeWindow window = new EditSupervisorChangeWindow(proposal, null, false);
-							window.open();
+							Thesis thesis = new ThesisBO().findByProposal(proposal.getIdProposal());
+							Jury jury = null;
+							
+							if((thesis != null) && (thesis.getIdThesis() != 0)) {
+								jury = new JuryBO().findByThesis(0);
+							}
+							
+							if((jury != null) && (jury.getIdJury() != 0)) {
+								Notification.showErrorNotification("Alterar Orientador", "Não é possível efetuar a alteração de orientador pois a banca de TCC 2 já foi agendada.");
+							} else {
+								EditSupervisorChangeWindow window = new EditSupervisorChangeWindow(proposal, null, false);
+								window.open();
+							}
 						}
+					} catch (Exception e) {
+						Logger.log(Level.SEVERE, e.getMessage(), e);
+						
+						Notification.showErrorNotification("Alterar Orientador", e.getMessage());
 					}
-				} catch (Exception e) {
-					Logger.log(Level.SEVERE, e.getMessage(), e);
-					
-					Notification.showErrorNotification("Alterar Orientador", e.getMessage());
-				}
-			});
+				});
+			}
 			if(Session.isUserSupervisor()) {
 				menu.addNaviItem(siget4, "Meus Orientados", TutoredView.class);
 			}

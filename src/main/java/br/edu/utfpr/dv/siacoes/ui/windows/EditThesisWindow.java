@@ -167,7 +167,7 @@ public class EditThesisWindow extends EditWindow {
 		
 		this.textAbstract = new TextArea();
 		this.textAbstract.setWidth("800px");
-		this.textAbstract.setHeight("300px");
+		this.textAbstract.setHeight("400px");
 		this.textAbstract.setVisible(false);
 		
 		Tab tab1 = new Tab("Dados da Monografia");
@@ -192,7 +192,7 @@ public class EditThesisWindow extends EditWindow {
 		
 		VerticalLayout layout = new VerticalLayout(this.tabData, pages);
 		layout.setWidth("810px");
-		layout.setHeight("370px");
+		layout.setHeight("470px");
 		layout.setSpacing(false);
 		layout.setMargin(false);
 		layout.setPadding(false);
@@ -206,12 +206,12 @@ public class EditThesisWindow extends EditWindow {
 				Deadline d = dbo.findBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 				
 				if(DateUtils.getToday().getTime().after(d.getThesisDeadline())){
-					this.uploadFile.setEnabled(false);
+					this.uploadFile.setVisible(false);
 					this.setSaveButtonEnabled(false);
 				}
 			} catch (Exception e) {
 				Logger.log(Level.SEVERE, e.getMessage(), e);
-				this.uploadFile.setEnabled(false);
+				this.uploadFile.setVisible(false);
 				this.setSaveButtonEnabled(false);
 				this.showErrorNotification("Submeter Monografia", "Não foi possível determinar a data limite para entrega das monografias.");
 			}
@@ -221,7 +221,7 @@ public class EditThesisWindow extends EditWindow {
 		this.textTitle.focus();
 		
 		this.setSaveButtonEnabled(this.thesis.getStudent().getIdUser() == Session.getUser().getIdUser());
-		this.uploadFile.setEnabled(this.thesis.getStudent().getIdUser() == Session.getUser().getIdUser());
+		this.uploadFile.setVisible(this.thesis.getStudent().getIdUser() == Session.getUser().getIdUser());
 		
 		this.addButton(this.buttonDownloadFile);
 		this.buttonDownloadFile.setWidth("250px");

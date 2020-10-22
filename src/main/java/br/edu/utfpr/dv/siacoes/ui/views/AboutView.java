@@ -1,5 +1,6 @@
 package br.edu.utfpr.dv.siacoes.ui.views;
 
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.html.Image;
@@ -19,7 +20,14 @@ public class AboutView extends LoggedView {
 		Image logoES = new Image(UIUtils.IMG_PATH + "logos/es.png", "");
 		logoES.setMaxHeight("300px");
 		logoES.setMaxWidth("500px");
-		logoES.setWidth("50%");
+		
+		Anchor anchorES = new Anchor();
+		anchorES.setTarget("_blank");
+		anchorES.setHref("https://coens.dv.utfpr.edu.br/");
+		anchorES.getElement().getStyle().set("text-align", "center");
+		anchorES.getElement().getStyle().set("align-self", "center");
+		anchorES.add(logoES);
+		anchorES.setWidth("50%");
 		
 		H1 label = new H1("SIACOES - Sistema Integrado de Atividades Complementares, Orientações e Estágios");
 		
@@ -35,7 +43,7 @@ public class AboutView extends LoggedView {
 		
 		VerticalLayout vl = new VerticalLayout(label, label, label2, label3, label4, label5, label6);
 		
-		HorizontalLayout hl = new HorizontalLayout(logoES, vl);
+		HorizontalLayout hl = new HorizontalLayout(anchorES, vl);
 		
 		this.setViewContent(hl);
 	}

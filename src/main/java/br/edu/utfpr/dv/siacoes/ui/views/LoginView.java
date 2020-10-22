@@ -214,7 +214,9 @@ public class LoginView extends ViewFrame implements HasUrlParameter<String> {
     	panel.getElement().getStyle().set("min-width", "300px");
     	
     	H1 label = new H1(value);
-    	label.getElement().getStyle().set("margin", "0");
+    	label.getElement().getStyle().set("margin-top", "30px");
+    	label.getElement().getStyle().set("margin-left", "auto");
+    	label.getElement().getStyle().set("margin-right", "auto");
     	
     	HorizontalLayout h = new HorizontalLayout(label);
     	h.setMargin(false);

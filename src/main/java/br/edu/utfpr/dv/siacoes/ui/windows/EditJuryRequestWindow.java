@@ -165,7 +165,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		v1.setSpacing(false);
 		v1.setMargin(false);
 		v1.setPadding(false);
-		v1.setWidth("100px");
+		v1.setWidth("150px");
 		v1.setVisible(allowEdit);
 		HorizontalLayout h2 = new HorizontalLayout(this.gridAppraisers, v1);
 		h2.setSpacing(true);
@@ -173,12 +173,12 @@ public class EditJuryRequestWindow extends EditWindow {
 		h2.setPadding(false);
 		h2.expand(this.gridAppraisers);
 		h2.setHeight("120px");
-		h2.setWidth("800px");
+		h2.setWidth("100%");
 		Details panelAppraisers = new Details();
 		panelAppraisers.setSummaryText("Membros Titulares");
 		panelAppraisers.setOpened(true);
 		panelAppraisers.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-		panelAppraisers.getElement().getStyle().set("width", "100%");
+		panelAppraisers.getElement().getStyle().set("width", "800px");
 		panelAppraisers.setContent(h2);
 		
 		this.gridSubstitutes = new Grid<JuryAppraiserDataSource>();
@@ -209,7 +209,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		v2.setSpacing(false);
 		v2.setMargin(false);
 		v2.setPadding(false);
-		v2.setWidth("100px");
+		v2.setWidth("150px");
 		v2.setVisible(allowEdit);
 		HorizontalLayout h3 = new HorizontalLayout(this.gridSubstitutes, v2);
 		h3.setSpacing(true);
@@ -217,12 +217,12 @@ public class EditJuryRequestWindow extends EditWindow {
 		h3.setPadding(false);
 		h3.expand(this.gridSubstitutes);
 		h3.setHeight("120px");
-		h3.setWidth("800px");
+		h3.setWidth("100%");
 		Details panelSubstitutes = new Details();
 		panelSubstitutes.setSummaryText("Suplentes");
 		panelSubstitutes.setOpened(true);
 		panelSubstitutes.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-		panelSubstitutes.getElement().getStyle().set("width", "100%");
+		panelSubstitutes.getElement().getStyle().set("width", "800px");
 		panelSubstitutes.setContent(h3);
 		
 		VerticalLayout tab2 = new VerticalLayout(this.comboChair, panelAppraisers, panelSubstitutes, this.textSupervisorAbsenceReason);
@@ -252,8 +252,8 @@ public class EditJuryRequestWindow extends EditWindow {
 		this.tabContainer.setSelectedTab(t1);
 		
 		VerticalLayout layout = new VerticalLayout(this.tabContainer, pages);
-		layout.setWidth("810px");
-		layout.setHeight("520px");
+		layout.setWidth("820px");
+		layout.setHeight("600px");
 		layout.setSpacing(false);
 		layout.setMargin(false);
 		layout.setPadding(false);

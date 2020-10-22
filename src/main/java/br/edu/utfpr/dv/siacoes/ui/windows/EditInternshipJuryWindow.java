@@ -256,8 +256,8 @@ public class EditInternshipJuryWindow extends EditWindow {
 	private void loadJury(){
 		this.textDate.setValue(DateUtils.convertToLocalDateTime(this.jury.getDate()));
 		this.textLocal.setValue(this.jury.getLocal());
-		this.textStartTime.setValue(DateUtils.convertToLocalDateTime(this.jury.getStartTime()).toLocalTime());
-		this.textEndTime.setValue(DateUtils.convertToLocalDateTime(this.jury.getEndTime()).toLocalTime());
+		this.textStartTime.setValue(DateUtils.convertToLocalTime(this.jury.getStartTime()));
+		this.textEndTime.setValue(DateUtils.convertToLocalTime(this.jury.getEndTime()));
 		this.textComments.setValue(this.jury.getComments());
 		this.textCompanySupervisorScore.setValue(String.format("%.2f", this.jury.getCompanySupervisorScore()));
 		this.textSupervisorScore.setValue(String.format("%.2f", this.jury.getSupervisorScore()));

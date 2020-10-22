@@ -14,6 +14,7 @@ import org.vaadin.stefan.fullcalendar.FullCalendar;
 import org.vaadin.stefan.fullcalendar.FullCalendarBuilder;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.details.DetailsVariant;
@@ -25,6 +26,7 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.lumo.Lumo;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
@@ -68,6 +70,9 @@ public class EventCalendarView extends LoggedView {
 	private final RadioButtonGroup<String> optionFilterType;
 	private final Button buttonFilter;
 	private final Details panelFilter;
+	private final Button buttonPrevious;
+	private final Button buttonNext;
+	private final Button buttonToday;
 	
 	private final FullCalendar calendar;
 	
@@ -134,7 +139,29 @@ public class EventCalendarView extends LoggedView {
 		this.calendar.today();
 		this.calendar.setBusinessHours(new BusinessHours(LocalTime.of(7, 0), LocalTime.of(23, 0)));
 		
-		VerticalLayout vl = new VerticalLayout(this.panelFilter, this.calendar);
+		this.buttonPrevious = new Button("Semana Anterior", new Icon(VaadinIcon.ARROW_LEFT), event -> {
+			this.calendar.previous();
+		});
+		this.buttonPrevious.addThemeVariants(ButtonVariant.LUMO_SMALL);
+		
+		this.buttonToday = new Button("Semana Atual", new Icon(VaadinIcon.CALENDAR_CLOCK), event -> {
+			this.calendar.today();
+		});
+		this.buttonToday.addThemeVariants(ButtonVariant.LUMO_SMALL);
+		
+		this.buttonNext = new Button("Próxima Semana", new Icon(VaadinIcon.ARROW_RIGHT), event -> {
+			this.calendar.next();
+		});
+		this.buttonNext.addThemeVariants(ButtonVariant.LUMO_SMALL);
+		this.buttonNext.setIconAfterText(true);
+		
+		HorizontalLayout hl = new HorizontalLayout();
+		hl.addAndExpand(this.buttonPrevious, this.buttonToday, this.buttonNext);
+		hl.setMargin(false);
+		hl.setPadding(false);
+		hl.setSpacing(false);
+		
+		VerticalLayout vl = new VerticalLayout(this.panelFilter, hl, this.calendar);
 		vl.setSizeFull();
 		vl.setSpacing(false);
 		vl.setMargin(false);

@@ -82,7 +82,7 @@ public class EditJuryWindow extends EditWindow {
 		}
 		
 		this.textLocal = new TextField("Local");
-		this.textLocal.setWidth("800px");
+		this.textLocal.setWidth("900px");
 		this.textLocal.setMaxLength(100);
 		this.textLocal.setRequired(true);
 		
@@ -93,11 +93,11 @@ public class EditJuryWindow extends EditWindow {
 		this.textEndTime = new TimePicker("Horário Final");
 		
 		this.textComments = new TextArea("Observações");
-		this.textComments.setWidth("800px");
+		this.textComments.setWidth("900px");
 		this.textComments.setHeight("150px");
 		
 		this.textSupervisorAbsenceReason = new TextArea("Motivo da ausência do Professor Orientador na banca");
-		this.textSupervisorAbsenceReason.setWidth("800px");
+		this.textSupervisorAbsenceReason.setWidth("900px");
 		this.textSupervisorAbsenceReason.setHeight("75px");
 		
 		VerticalLayout tab1 = new VerticalLayout();
@@ -118,7 +118,7 @@ public class EditJuryWindow extends EditWindow {
 		this.gridAppraisers.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
 		this.gridAppraisers.addColumn(JuryAppraiserDataSource::getMember).setHeader("Membro");
 		this.gridAppraisers.addColumn(JuryAppraiserDataSource::getAppraiser).setHeader("Nome");
-		this.gridAppraisers.setWidth("800px");
+		this.gridAppraisers.setWidth("900px");
 		this.gridAppraisers.setHeight("370px");
 		
 		this.buttonAddAppraiser = new Button("Adicionar Membro", new Icon(VaadinIcon.PLUS), event -> {
@@ -166,7 +166,7 @@ public class EditJuryWindow extends EditWindow {
 		this.gridParticipants.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
 		this.gridParticipants.addColumn(JuryParticipantDataSource::getStudentCode).setHeader("R.A.");
 		this.gridParticipants.addColumn(JuryParticipantDataSource::getName).setHeader("Nome");
-		this.gridParticipants.setWidth("800px");
+		this.gridParticipants.setWidth("900px");
 		this.gridParticipants.setHeight("370px");
 		
 		this.buttonAddParticipant = new Button("Adicionar Acadêmico", new Icon(VaadinIcon.PLUS), event -> {
@@ -214,11 +214,11 @@ public class EditJuryWindow extends EditWindow {
 		    selectedPage.setVisible(true);
 		});
 		
-		this.tabContainer.setSelectedTab(t3);
+		this.tabContainer.setSelectedTab(t1);
 		
 		VerticalLayout layout = new VerticalLayout(this.tabContainer, pages);
-		layout.setWidth("820px");
-		layout.setHeight("450px");
+		layout.setWidth("920px");
+		layout.setHeight("480px");
 		layout.setSpacing(false);
 		layout.setMargin(false);
 		layout.setPadding(false);
@@ -232,8 +232,8 @@ public class EditJuryWindow extends EditWindow {
 	private void loadJury(){
 		this.textDate.setValue(DateUtils.convertToLocalDateTime(this.jury.getDate()));
 		this.textLocal.setValue(this.jury.getLocal());
-		this.textStartTime.setValue(DateUtils.convertToLocalDateTime(this.jury.getStartTime()).toLocalTime());
-		this.textEndTime.setValue(DateUtils.convertToLocalDateTime(this.jury.getEndTime()).toLocalTime());
+		this.textStartTime.setValue(DateUtils.convertToLocalTime(this.jury.getStartTime()));
+		this.textEndTime.setValue(DateUtils.convertToLocalTime(this.jury.getEndTime()));
 		this.textComments.setValue(this.jury.getComments());
 		this.textSupervisorAbsenceReason.setValue(this.jury.getSupervisorAbsenceReason());
 		

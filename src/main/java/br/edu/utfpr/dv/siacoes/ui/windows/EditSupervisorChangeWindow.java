@@ -8,6 +8,7 @@ import java.util.logging.Level;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
@@ -49,7 +50,7 @@ public class EditSupervisorChangeWindow extends EditWindow {
 	private SupervisorComboBox comboNewCosupervisor;
 	private TextArea textComments;
 	private Select<ChangeFeedback> comboApproved;
-	private Label labelDateApproved;
+	private DatePicker textDateApproved;
 	private TextArea textApprovalComments;
 	private Tabs tabData;
 	private Button buttonPrintStatement;
@@ -155,7 +156,8 @@ public class EditSupervisorChangeWindow extends EditWindow {
 		this.comboApproved.setItems(ChangeFeedback.NONE, ChangeFeedback.APPROVED, ChangeFeedback.DISAPPROVED);
 		this.comboApproved.setWidth("200px");
 		
-		this.labelDateApproved = new Label();
+		this.textDateApproved = new DatePicker("Data");
+		this.textDateApproved.setEnabled(false);
 		
 		this.textApprovalComments = new TextArea("Comentários");
 		this.textApprovalComments.setWidth("810px");
@@ -167,7 +169,7 @@ public class EditSupervisorChangeWindow extends EditWindow {
 		v2.setPadding(false);
 		v2.setVisible(false);
 		
-		HorizontalLayout h3 = new HorizontalLayout(this.comboApproved, this.labelDateApproved);
+		HorizontalLayout h3 = new HorizontalLayout(this.comboApproved, this.textDateApproved);
 		h3.setSpacing(true);
 		h3.setMargin(false);
 		h3.setPadding(false);
@@ -238,7 +240,7 @@ public class EditSupervisorChangeWindow extends EditWindow {
 		this.textComments.setValue(this.supervisorChange.getComments());
 		this.comboApproved.setValue(this.supervisorChange.getApproved());
 		this.textApprovalComments.setValue(this.supervisorChange.getApprovalComments());
-		this.labelDateApproved.setText(DateUtils.format(this.supervisorChange.getApprovalDate(), "dd/MM/yyyy"));
+		this.textDateApproved.setValue(DateUtils.convertToLocalDate(this.supervisorChange.getApprovalDate()));
 		
 		if(!Session.isUserManager(SystemModule.SIGET) || (this.supervisorChange.getApproved() != ChangeFeedback.NONE)){
 			this.comboApproved.setEnabled(false);

@@ -128,12 +128,12 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 		
 		this.textStartDate1 = new DatePicker("Início Entre");
 		//this.textStartDate1.setDateFormat("dd/MM/yyyy");
-		this.textStartDate2 = new DatePicker("");
+		this.textStartDate2 = new DatePicker("E");
 		//this.textStartDate2.setDateFormat("dd/MM/yyyy");
 		
 		this.textEndDate1 = new DatePicker("Término Entre");
 		//this.textEndDate1.setDateFormat("dd/MM/yyyy");
-		this.textEndDate2 = new DatePicker("");
+		this.textEndDate2 = new DatePicker("E");
 		//this.textEndDate2.setDateFormat("dd/MM/yyyy");
 		
 		HorizontalLayout h1 = new HorizontalLayout(this.comboStudent, this.comboProfessor, this.comboType, this.comboStatus);

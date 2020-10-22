@@ -103,6 +103,7 @@ public class UserView extends ListView<UserDataSource> {
 				
 				Session.loginAs(user);
 				
+				MainLayout.reloadNaviItems();
 				this.getUI().ifPresent(ui -> ui.navigate(Home.class));
 			} catch (Exception e) {
 				Logger.log(Level.SEVERE, e.getMessage(), e);

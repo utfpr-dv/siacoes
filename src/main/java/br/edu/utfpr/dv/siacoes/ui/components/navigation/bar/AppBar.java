@@ -133,9 +133,13 @@ public class AppBar extends FlexBoxLayout {
 		avatarImage.setClassName(CLASS_NAME + "__avatar");
 		avatarImage.setAlt("User menu");
 		
-		StreamResource resource = new StreamResource("filename" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(DateUtils.getNow().getTime()) + ".png", () -> new ByteArrayInputStream(user.getPhoto()));
-		resource.setCacheTime(0);
-		avatarImage.setSrc(resource);
+		if(user.getPhoto() != null) {
+			StreamResource resource = new StreamResource("avatar" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(DateUtils.getNow().getTime()) + ".png", () -> new ByteArrayInputStream(user.getPhoto()));
+			resource.setCacheTime(0);
+			avatarImage.setSrc(resource);
+		} else {
+			avatarImage.setSrc(UIUtils.IMG_PATH + "avatar.png");
+		}
 		
 		this.avatar = new HorizontalLayout(userName, avatarImage);
 		this.avatar.setSpacing(true);
@@ -205,6 +209,7 @@ public class AppBar extends FlexBoxLayout {
 			contextMenu.addItem("Logoff de " + Session.getUser().getName(), event -> { 
 				Session.logoffAs();
 				
+				MainLayout.reloadNaviItems();
 				this.getUI().ifPresent(ui -> ui.navigate(Home.class));
 			});
 		}

@@ -188,7 +188,7 @@ public class EditProposalWindow extends EditWindow {
 		this.gridAppraisers.addColumn(ProposalAppraiserDataSource::getIndication).setHeader("Indicação").setFlexGrow(0).setWidth("150px");
 		this.gridAppraisers.addColumn(ProposalAppraiserDataSource::getFeedback).setHeader("Parecer").setFlexGrow(0).setWidth("150px");
 		this.gridAppraisers.setWidth("800px");
-		this.gridAppraisers.setHeight("300px");
+		this.gridAppraisers.setHeight("360px");
 		
 		this.buttonAddAppraiser = new Button("Adicionar Avaliador", new Icon(VaadinIcon.PLUS), event -> {
             addAppraiser();
@@ -238,7 +238,7 @@ public class EditProposalWindow extends EditWindow {
 		
 		VerticalLayout layout = new VerticalLayout(this.tab, pages);
 		layout.setWidth("820px");
-		layout.setHeight("370px");
+		layout.setHeight("470px");
 		layout.setSpacing(false);
 		layout.setMargin(false);
 		layout.setPadding(false);
@@ -248,6 +248,7 @@ public class EditProposalWindow extends EditWindow {
 		if(Session.isUserManager(SystemModule.SIGET)) {
 			if(submitProposal) {
 				this.tab.add(t2);
+				this.tab.setFlexGrowForEnclosedTabs(1);
 				
 				this.loadGridAppraisers();
 			} else {
@@ -260,12 +261,12 @@ public class EditProposalWindow extends EditWindow {
 				Deadline d = dbo.findBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 				
 				if(DateUtils.getToday().getTime().after(d.getProposalDeadline())){
-					this.uploadFile.setEnabled(false);
+					this.uploadFile.setVisible(false);
 					this.setSaveButtonEnabled(false);
 				}
 			} catch (Exception e) {
 				Logger.log(Level.SEVERE, e.getMessage(), e);
-				this.uploadFile.setEnabled(false);
+				this.uploadFile.setVisible(false);
 				this.setSaveButtonEnabled(false);
 				this.showErrorNotification("Submeter Proposta", "Não foi possível determinar a data limite para entrega das propostas.");
 			}
@@ -321,7 +322,7 @@ public class EditProposalWindow extends EditWindow {
 			}
 		}
 		
-		this.buttonDownloadProposal.setVisible(this.uploadFile.isVisible() && (this.proposal.getFile() != null));
+		this.buttonDownloadProposal.setVisible(this.proposal.getFile() != null);
 	}
 	
 	private void loadGridAppraisers(){

@@ -165,7 +165,7 @@ public class EditProjectWindow extends EditWindow {
 		
 		this.textAbstract = new TextArea();
 		this.textAbstract.setWidth("800px");
-		this.textAbstract.setHeight("300px");
+		this.textAbstract.setHeight("400px");
 		this.textAbstract.setVisible(false);
 		
 		Tab t1 = new Tab("Dados do Projeto");
@@ -190,7 +190,7 @@ public class EditProjectWindow extends EditWindow {
 		
 		VerticalLayout layout = new VerticalLayout(this.tabData, pages);
 		layout.setWidth("810px");
-		layout.setHeight("370px");
+		layout.setHeight("470px");
 		layout.setSpacing(false);
 		layout.setMargin(false);
 		layout.setPadding(false);
@@ -204,12 +204,12 @@ public class EditProjectWindow extends EditWindow {
 				Deadline d = dbo.findBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 				
 				if(DateUtils.getToday().getTime().after(d.getProjectDeadline())){
-					this.uploadFile.setEnabled(false);
+					this.uploadFile.setVisible(false);
 					this.setSaveButtonEnabled(false);
 				}
 			} catch (Exception e) {
 				Logger.log(Level.SEVERE, e.getMessage(), e);
-				this.uploadFile.setEnabled(false);
+				this.uploadFile.setVisible(false);
 				this.setSaveButtonEnabled(false);
 				this.showErrorNotification("Submeter Projeto", "Não foi possível determinar a data limite para entrega dos projetos.");
 			}
@@ -219,7 +219,7 @@ public class EditProjectWindow extends EditWindow {
 		this.textTitle.focus();
 		
 		this.setSaveButtonEnabled(this.project.getStudent().getIdUser() == Session.getUser().getIdUser());
-		this.uploadFile.setEnabled(this.project.getStudent().getIdUser() == Session.getUser().getIdUser());
+		this.uploadFile.setVisible(this.project.getStudent().getIdUser() == Session.getUser().getIdUser());
 		
 		this.addButton(this.buttonDownloadFile);
 		this.buttonDownloadFile.setWidth("250px");

@@ -337,6 +337,18 @@ public class DateUtils {
 			return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
 	
+	public static LocalTime convertToLocalTime(Date dateToConvert) {
+		if (dateToConvert == null)
+            return null;
+		
+		if (dateToConvert instanceof java.sql.Timestamp)
+			return ((java.sql.Timestamp) dateToConvert).toLocalDateTime().toLocalTime();
+		else if(dateToConvert instanceof java.sql.Time)
+			return ((java.sql.Time) dateToConvert).toLocalTime();
+		else
+			return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().toLocalTime();
+	}
+	
 	public static Date convertToDate(LocalDate dateToConvert) {
 		if(dateToConvert == null) 
 			return null;
