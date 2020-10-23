@@ -15,6 +15,7 @@ import org.verapdf.pdfa.Foundries;
 import org.verapdf.pdfa.PDFAParser;
 import org.verapdf.pdfa.VeraGreenfieldFoundryProvider;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.upload.Upload;
@@ -72,6 +73,9 @@ public class FileUploader extends HorizontalLayout {
 		
 		this.uploadFile = new Upload(this.buffer);
 		this.uploadFile.setMaxFiles(1);
+		
+		Button uploadButton = new Button("Enviar");
+		this.uploadFile.setUploadButton(uploadButton);
 		
 		this.uploadFile.addFileRejectedListener(event -> {
 			Notification.showErrorNotification("Carregamento do Arquivo", event.getErrorMessage());
