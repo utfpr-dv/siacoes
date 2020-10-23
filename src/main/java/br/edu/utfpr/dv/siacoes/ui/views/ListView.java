@@ -63,19 +63,19 @@ public abstract class ListView<T> extends LoggedView implements AfterNavigationO
 		this.buttonAdd = new Button("Adicionar", new Icon(VaadinIcon.PLUS), event -> {
 			addClick();
         });
-		this.buttonAdd.setWidth("170px");
+		this.buttonAdd.setWidth("210px");
 		this.buttonAdd.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
 		
 		this.buttonEdit = new Button("Editar", new Icon(VaadinIcon.PENCIL), event -> {
 			edit();
         });
-		this.buttonEdit.setWidth("170px");
+		this.buttonEdit.setWidth("210px");
 		this.buttonEdit.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		
 		this.buttonDelete = new Button("Excluir", new Icon(VaadinIcon.TRASH), event -> {
 			delete();
         });
-		this.buttonDelete.setWidth("170px");
+		this.buttonDelete.setWidth("210px");
 		this.buttonDelete.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
 		
 		this.layoutButtons = new VerticalLayout(buttonAdd, buttonEdit, buttonDelete);
@@ -100,7 +100,7 @@ public abstract class ListView<T> extends LoggedView implements AfterNavigationO
         		showErrorNotification("Filtrar", e.getMessage());
         	}
         });
-		this.buttonFilter.setWidth("170px");
+		this.buttonFilter.setWidth("210px");
 		
 		this.labelGridRecords = new Label();
 		this.labelGridRecords.getElement().getStyle().set("margin-left", "5px");
@@ -130,7 +130,7 @@ public abstract class ListView<T> extends LoggedView implements AfterNavigationO
 		this.panelFilter.getElement().getStyle().set("width", "100%");
 		
 		this.layoutActions = new VerticalLayout();
-		this.layoutActions.setWidth("210px");
+		this.layoutActions.setWidth("250px");
 		this.layoutActions.setHeight("100%");
 		this.layoutActions.setSpacing(false);
 		this.layoutActions.setMargin(false);
@@ -210,7 +210,7 @@ public abstract class ListView<T> extends LoggedView implements AfterNavigationO
     }
     
     public void addActionButton(Button button){
-    	button.setWidth("170px");
+    	button.setWidth("210px");
     	this.layoutButtons.add(button);
     }
     

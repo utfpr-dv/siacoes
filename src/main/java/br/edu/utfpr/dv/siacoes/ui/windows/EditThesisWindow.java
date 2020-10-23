@@ -192,7 +192,7 @@ public class EditThesisWindow extends EditWindow {
 		
 		VerticalLayout layout = new VerticalLayout(this.tabData, pages);
 		layout.setWidth("810px");
-		layout.setHeight("470px");
+		layout.setHeight("500px");
 		layout.setSpacing(false);
 		layout.setMargin(false);
 		layout.setPadding(false);

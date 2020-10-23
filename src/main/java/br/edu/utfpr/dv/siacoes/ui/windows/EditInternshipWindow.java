@@ -412,7 +412,7 @@ public class EditInternshipWindow extends EditWindow {
 		
 		VerticalLayout layout = new VerticalLayout(this.tabContainer, pages);
 		layout.setWidth("820px");
-		layout.setHeight("590px");
+		layout.setHeight("630px");
 		layout.setSpacing(false);
 		layout.setMargin(false);
 		layout.setPadding(false);

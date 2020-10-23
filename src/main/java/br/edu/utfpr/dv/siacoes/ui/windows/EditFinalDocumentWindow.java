@@ -201,7 +201,7 @@ public class EditFinalDocumentWindow extends EditWindow {
 		
 		VerticalLayout layout = new VerticalLayout(this.tab, pages);
 		layout.setWidth("820px");
-		layout.setHeight("500px");
+		layout.setHeight("540px");
 		layout.setSpacing(false);
 		layout.setMargin(false);
 		layout.setPadding(false);

@@ -238,7 +238,7 @@ public class EditProposalWindow extends EditWindow {
 		
 		VerticalLayout layout = new VerticalLayout(this.tab, pages);
 		layout.setWidth("820px");
-		layout.setHeight("470px");
+		layout.setHeight("500px");
 		layout.setSpacing(false);
 		layout.setMargin(false);
 		layout.setPadding(false);
