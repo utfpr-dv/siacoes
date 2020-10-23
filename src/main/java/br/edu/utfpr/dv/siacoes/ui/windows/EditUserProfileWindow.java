@@ -21,10 +21,10 @@ import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.User;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploaderListener;
+import br.edu.utfpr.dv.siacoes.ui.components.FileUploader.AcceptedDocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class EditUserProfileWindow extends EditWindow {
@@ -73,8 +73,7 @@ public class EditUserProfileWindow extends EditWindow {
 		this.textLattes.setMaxLength(100);
 		
 		this.uploadPhoto = new FileUploader("Enviar Foto");
-		this.uploadPhoto.getAcceptedDocumentTypes().add(DocumentType.JPEG);
-		this.uploadPhoto.getAcceptedDocumentTypes().add(DocumentType.PNG);
+		this.uploadPhoto.setAcceptedType(AcceptedDocumentType.IMAGE);
 		this.uploadPhoto.setMaxBytesLength(300 * 1024);
 		this.uploadPhoto.setFileUploadListener(new FileUploaderListener() {
 			@Override

@@ -22,28 +22,28 @@ public class Document implements Serializable {
 		
 		public String getExtension(){
 			switch(this){
-			case PDF:
-				return ".pdf";
-			case DOC:
-				return ".doc";
-			case DOCX:
-				return ".docx";
-			case ZIP:
-				return ".zip";
-			case ODT:
-				return ".odt";
-			case PPT:
-				return ".ppt";
-			case PPTX:
-				return ".pptx";
-			case JPEG:
-				return ".jpeg";
-			case PNG:
-				return ".png";
-			case PDFA:
-				return ".pdf";
-			default:
-				return "";
+				case PDF:
+					return ".pdf";
+				case DOC:
+					return ".doc";
+				case DOCX:
+					return ".docx";
+				case ZIP:
+					return ".zip";
+				case ODT:
+					return ".odt";
+				case PPT:
+					return ".ppt";
+				case PPTX:
+					return ".pptx";
+				case JPEG:
+					return ".jpeg";
+				case PNG:
+					return ".png";
+				case PDFA:
+					return ".pdf";
+				default:
+					return "";
 			}
 		}
 		

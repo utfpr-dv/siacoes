@@ -41,8 +41,8 @@ import br.edu.utfpr.dv.siacoes.ui.components.FileUploaderListener;
 import br.edu.utfpr.dv.siacoes.ui.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.YearField;
+import br.edu.utfpr.dv.siacoes.ui.components.FileUploader.AcceptedDocumentType;
 import br.edu.utfpr.dv.siacoes.ui.views.ListView;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class EditThesisWindow extends EditWindow {
@@ -120,7 +120,7 @@ public class EditThesisWindow extends EditWindow {
 		this.textSubmissionDate.setRequired(true);
 		
 		this.uploadFile = new FileUploader("(Formato PDF, " + this.config.getMaxFileSizeAsString() + ")");
-		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);
+		this.uploadFile.setAcceptedType(AcceptedDocumentType.PDF);
 		this.uploadFile.setMaxBytesLength(this.config.getMaxFileSize());
 		this.uploadFile.setFileUploadListener(new FileUploaderListener() {
 			@Override

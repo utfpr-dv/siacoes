@@ -42,8 +42,8 @@ import br.edu.utfpr.dv.siacoes.ui.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploaderListener;
 import br.edu.utfpr.dv.siacoes.ui.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.YearField;
+import br.edu.utfpr.dv.siacoes.ui.components.FileUploader.AcceptedDocumentType;
 import br.edu.utfpr.dv.siacoes.ui.views.ListView;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class EditFinalDocumentWindow extends EditWindow {
@@ -111,7 +111,7 @@ public class EditFinalDocumentWindow extends EditWindow {
 		this.textSubmissionDate.setRequired(true);
 		
 		this.uploadFile = new FileUploader("(Formato PDF/A, " + this.config.getMaxFileSizeAsString() + ")");
-		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDFA);
+		this.uploadFile.setAcceptedType(AcceptedDocumentType.PDFA);
 		this.uploadFile.setMaxBytesLength(this.config.getMaxFileSize());
 		this.uploadFile.setFileUploadListener(new FileUploaderListener() {
 			@Override

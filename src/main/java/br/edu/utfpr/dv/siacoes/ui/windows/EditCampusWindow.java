@@ -14,10 +14,10 @@ import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.Campus;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploaderListener;
+import br.edu.utfpr.dv.siacoes.ui.components.FileUploader.AcceptedDocumentType;
 import br.edu.utfpr.dv.siacoes.ui.views.ListView;
 
 public class EditCampusWindow extends EditWindow {
@@ -62,8 +62,7 @@ public class EditCampusWindow extends EditWindow {
 		this.checkActive.setLabel("Ativo");
 		
 		this.uploadLogo = new FileUploader("Enviar Logotipo");
-		this.uploadLogo.getAcceptedDocumentTypes().add(DocumentType.JPEG);
-		this.uploadLogo.getAcceptedDocumentTypes().add(DocumentType.PNG);
+		this.uploadLogo.setAcceptedType(AcceptedDocumentType.IMAGE);
 		this.uploadLogo.setMaxBytesLength(300 * 1024);
 		this.uploadLogo.setFileUploadListener(new FileUploaderListener() {
 			@Override

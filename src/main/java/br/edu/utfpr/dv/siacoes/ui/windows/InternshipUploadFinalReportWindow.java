@@ -11,8 +11,8 @@ import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploader;
+import br.edu.utfpr.dv.siacoes.ui.components.FileUploader.AcceptedDocumentType;
 import br.edu.utfpr.dv.siacoes.ui.views.ListView;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 
 public class InternshipUploadFinalReportWindow extends EditWindow {
 	
@@ -38,7 +38,7 @@ public class InternshipUploadFinalReportWindow extends EditWindow {
 		this.textReportTitle.setWidth("400px");
 		
 		this.uploadFinalReport = new FileUploader("(Formato PDF, " + this.config.getMaxFileSizeAsString() + ")");
-		this.uploadFinalReport.getAcceptedDocumentTypes().add(DocumentType.PDF);
+		this.uploadFinalReport.setAcceptedType(AcceptedDocumentType.PDF);
 		this.uploadFinalReport.setMaxBytesLength(this.config.getMaxFileSize());
 		
 		this.addField(this.textReportTitle);

@@ -14,9 +14,9 @@ import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.DepartmentBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.Department;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.ui.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploader;
+import br.edu.utfpr.dv.siacoes.ui.components.FileUploader.AcceptedDocumentType;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploaderListener;
 import br.edu.utfpr.dv.siacoes.ui.views.ListView;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
@@ -66,8 +66,7 @@ public class EditDepartmentWindow extends EditWindow {
 		this.checkActive = new Checkbox("Ativo");
 		
 		this.uploadLogo = new FileUploader("Enviar Logotipo");
-		this.uploadLogo.getAcceptedDocumentTypes().add(DocumentType.JPEG);
-		this.uploadLogo.getAcceptedDocumentTypes().add(DocumentType.PNG);
+		this.uploadLogo.setAcceptedType(AcceptedDocumentType.IMAGE);
 		this.uploadLogo.setMaxBytesLength(300 * 1024);
 		this.uploadLogo.setFileUploadListener(new FileUploaderListener() {
 			@Override

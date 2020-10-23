@@ -20,7 +20,6 @@ import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.Campus;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
@@ -32,6 +31,7 @@ import br.edu.utfpr.dv.siacoes.ui.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploaderListener;
 import br.edu.utfpr.dv.siacoes.ui.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.YearField;
+import br.edu.utfpr.dv.siacoes.ui.components.FileUploader.AcceptedDocumentType;
 import br.edu.utfpr.dv.siacoes.ui.views.ListView;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
@@ -84,7 +84,7 @@ public class EditInternshipFinalDocumentWindow extends EditWindow {
 		this.textSubmissionDate.setRequired(true);
 		
 		this.uploadFile = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
-		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDFA);
+		this.uploadFile.setAcceptedType(AcceptedDocumentType.PDFA);
 		this.uploadFile.setMaxBytesLength(6 * 1024 * 1024);
 		this.uploadFile.setFileUploadListener(new FileUploaderListener() {
 			@Override

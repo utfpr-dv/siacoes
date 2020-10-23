@@ -17,9 +17,9 @@ import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploaderListener;
+import br.edu.utfpr.dv.siacoes.ui.components.FileUploader.AcceptedDocumentType;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 
 public class EditInternshipJuryAppraiserFeedbackWindow extends EditWindow {
 	
@@ -50,7 +50,7 @@ public class EditInternshipJuryAppraiserFeedbackWindow extends EditWindow {
 		}
 		
 		this.uploadFile = new FileUploader("Arquivo Comentado (Formato PDF, " + this.config.getMaxFileSizeAsString() + ")");
-		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);
+		this.uploadFile.setAcceptedType(AcceptedDocumentType.PDF);
 		this.uploadFile.setMaxBytesLength(this.config.getMaxFileSize());
 		this.uploadFile.setFileUploadListener(new FileUploaderListener() {
 			@Override
@@ -64,7 +64,7 @@ public class EditInternshipJuryAppraiserFeedbackWindow extends EditWindow {
 		});
 		
 		this.uploadAdditionalFile = new FileUploader("Arquivos Complementares (Formato ZIP, " + this.config.getMaxFileSizeAsString() + ")");
-		this.uploadAdditionalFile.getAcceptedDocumentTypes().add(DocumentType.ZIP);
+		this.uploadFile.setAcceptedType(AcceptedDocumentType.ZIP);
 		this.uploadAdditionalFile.setMaxBytesLength(this.config.getMaxFileSize());
 		this.uploadAdditionalFile.setFileUploadListener(new FileUploaderListener() {
 			@Override

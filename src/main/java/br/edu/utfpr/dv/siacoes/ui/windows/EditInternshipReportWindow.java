@@ -10,7 +10,7 @@ import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploaderListener;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.ui.components.FileUploader.AcceptedDocumentType;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportType;
@@ -43,7 +43,7 @@ public class EditInternshipReportWindow extends EditWindow {
 		}
 		
 		this.uploadFile = new FileUploader("(Formato PDF, " + this.config.getMaxFileSizeAsString() + ")");
-		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);
+		this.uploadFile.setAcceptedType(AcceptedDocumentType.PDF);
 		this.uploadFile.setMaxBytesLength(this.config.getMaxFileSize());
 		this.uploadFile.setFileUploadListener(new FileUploaderListener() {
 			@Override

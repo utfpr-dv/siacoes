@@ -20,7 +20,6 @@ import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.User;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
@@ -29,6 +28,7 @@ import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploaderListener;
 import br.edu.utfpr.dv.siacoes.ui.components.SupervisorComboBox;
+import br.edu.utfpr.dv.siacoes.ui.components.FileUploader.AcceptedDocumentType;
 import br.edu.utfpr.dv.siacoes.ui.views.ListView;
 
 public class EditProposalAppraiserWindow extends EditWindow {
@@ -81,7 +81,7 @@ public class EditProposalAppraiserWindow extends EditWindow {
 		this.checkAllowEditing = new Checkbox("Permite edição");
 		
 		this.uploadFile = new FileUploader("Enviar arquivo comentado (PDF, 2 MB)");
-		this.uploadFile.getAcceptedDocumentTypes().add(DocumentType.PDF);
+		this.uploadFile.setAcceptedType(AcceptedDocumentType.PDF);
 		this.uploadFile.setMaxBytesLength(this.config.getMaxFileSize());
 		this.uploadFile.setFileUploadListener(new FileUploaderListener() {
 			@Override

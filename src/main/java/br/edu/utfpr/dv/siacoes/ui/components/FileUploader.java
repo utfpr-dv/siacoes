@@ -23,25 +23,55 @@ import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 
 public class FileUploader extends HorizontalLayout {
+	
+	public enum AcceptedDocumentType{
+		ANY(0), PDF(1), PDFA(2), FORMATTED_DOC(3), PRESENTATION(4), IMAGE(5), ZIP(6);
+		
+		private final int value; 
+		AcceptedDocumentType(int value){ 
+			this.value = value; 
+		}
+		
+		public int getValue(){ 
+			return value;
+		}
+		
+		public String getTypeDescription() {
+			switch(this) {
+				case PDF:
+					return "do tipo PDF";
+				case PDFA:
+					return "do tipo PDF/A";
+				case FORMATTED_DOC:
+					return "do tipo DOC, DOCX ou ODT";
+				case PRESENTATION:
+					return "do tipo PPT ou PPTX";
+				case IMAGE:
+					return "do tipo JPG ou PNG";
+				case ZIP:
+					return "do tipo ZIP";
+				default:
+					return "de qualquer tipo";
+			}
+		}
+	}
 
 	private final MemoryBuffer buffer;
 	private final Upload uploadFile;
 	private final List<DocumentType> acceptedDocumentTypes;
+	private AcceptedDocumentType acceptedType;
 	private FileUploaderListener fileUploadListener;
 	private byte[] uploadedFile;
 	private DocumentType fileType;
 	private boolean validatePDFAFile;
 	
-	private File tempFile = null;
-	
 	public FileUploader(String caption) {
-		//DocumentUploader listener = new DocumentUploader();
-		
 		this.buffer = new MemoryBuffer();
+		
+		this.acceptedType = AcceptedDocumentType.ANY;
 		
 		this.uploadFile = new Upload(this.buffer);
 		this.uploadFile.setMaxFiles(1);
-		this.uploadFile.setDropLabel(new Label("Upload a 300 bytes file in .csv format"));
 		
 		this.uploadFile.addFileRejectedListener(event -> {
 			Notification.showErrorNotification("Carregamento do Arquivo", event.getErrorMessage());
@@ -66,8 +96,6 @@ public class FileUploader extends HorizontalLayout {
 	            
 	            uploadedFile = buf;
 	            
-	            //setSuccess();
-	            
 	            if(fileUploadListener != null) {
 	            	fileUploadListener.uploadSucceeded();
 	            }
@@ -75,8 +103,6 @@ public class FileUploader extends HorizontalLayout {
 	            Notification.showSuccessNotification("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.");
 	        } catch (Exception e) {
 	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	        	
-	        	//setError(e.getMessage());
 	            
 	        	Notification.showErrorNotification("Carregamento do Arquivo", e.getMessage());
 	        }
@@ -86,6 +112,50 @@ public class FileUploader extends HorizontalLayout {
 		
 		this.acceptedDocumentTypes = new ArrayList<DocumentType>();
 		this.setMaxBytesLength(0);
+	}
+	
+	private void updateDropLabel() {
+		if(this.getMaxBytesLength() > 0) {
+			this.uploadFile.setDropLabel(new Label("Envie um arquivo " + this.getAcceptedType().getTypeDescription() + " de até " + this.getStringMaxBytesLength()));	
+		} else {
+			this.uploadFile.setDropLabel(new Label("Envie um arquivo " + this.getAcceptedType().getTypeDescription()));
+		}
+	}
+	
+	@SuppressWarnings("incomplete-switch")
+	private void updateFileTypes() {
+		this.acceptedDocumentTypes.clear();
+		
+		switch(this.getAcceptedType()) {
+			case PDF:
+				this.acceptedDocumentTypes.add(DocumentType.PDF);
+				this.uploadFile.setAcceptedFileTypes("application/pdf", "application/wps-office.pdf");
+				break;
+			case PDFA:
+				this.acceptedDocumentTypes.add(DocumentType.PDFA);
+				this.uploadFile.setAcceptedFileTypes("application/pdf", "application/wps-office.pdf");
+				break;
+			case FORMATTED_DOC:
+				this.acceptedDocumentTypes.add(DocumentType.DOC);
+				this.acceptedDocumentTypes.add(DocumentType.DOCX);
+				this.acceptedDocumentTypes.add(DocumentType.ODT);
+				this.uploadFile.setAcceptedFileTypes("application/msword", "application/vnd.ms-word", "application/x-msword", "application/wps-office.doc", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/wps-office.docx", "application/vnd.oasis.opendocument.text");
+				break;
+			case PRESENTATION:
+				this.acceptedDocumentTypes.add(DocumentType.PPT);
+				this.acceptedDocumentTypes.add(DocumentType.PPTX);
+				this.uploadFile.setAcceptedFileTypes("application/vnd.ms-powerpoint", "application/powerpoint", "application/mspowerpoint", "application/x-mspowerpoint", "application/wps-office.ppt", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/vnd.openxmlformats-officedocument.presentationml.slideshow", "application/wps-office.pptx");
+				break;
+			case IMAGE:
+				this.acceptedDocumentTypes.add(DocumentType.JPEG);
+				this.acceptedDocumentTypes.add(DocumentType.PNG);
+				this.uploadFile.setAcceptedFileTypes("image/jpeg", "image/png");
+				break;
+			case ZIP:
+				this.acceptedDocumentTypes.add(DocumentType.ZIP);
+				this.uploadFile.setAcceptedFileTypes("application/zip", "application/x-zip-compressed");
+				break;
+		}
 	}
 	
 	public void setDropLabel(String label) {
@@ -114,10 +184,17 @@ public class FileUploader extends HorizontalLayout {
 
 	public void setMaxBytesLength(int maxBytesLength) {
 		this.uploadFile.setMaxFileSize(maxBytesLength);
+		this.updateDropLabel();
 	}
 
-	public List<DocumentType> getAcceptedDocumentTypes() {
-		return acceptedDocumentTypes;
+	public AcceptedDocumentType getAcceptedType() {
+		return this.acceptedType;
+	}
+	
+	public void setAcceptedType(AcceptedDocumentType type) {
+		this.acceptedType = type;
+		this.updateFileTypes();
+		this.updateDropLabel();
 	}
 	
 	private String getStringMaxBytesLength() {
@@ -136,18 +213,18 @@ public class FileUploader extends HorizontalLayout {
 	private boolean isDocumentTypeAccept(DocumentType docType) {
 		this.validatePDFAFile = false;
 		
-		if((this.getAcceptedDocumentTypes() == null) || (this.getAcceptedDocumentTypes().size() == 0)) {
+		if((this.acceptedDocumentTypes == null) || (this.acceptedDocumentTypes.size() == 0)) {
 			return true;
 		}
 		
-		for(DocumentType doc : this.getAcceptedDocumentTypes()) {
+		for(DocumentType doc : this.acceptedDocumentTypes) {
 			if(doc == docType) {
 				return true;
 			}
 		}
 		
 		if(docType == DocumentType.PDF) {
-			for(DocumentType doc : this.getAcceptedDocumentTypes()) {
+			for(DocumentType doc : this.acceptedDocumentTypes) {
 				if(doc == DocumentType.PDFA) {
 					this.validatePDFAFile = true;
 					return true;
@@ -202,109 +279,17 @@ public class FileUploader extends HorizontalLayout {
 	}
 	
 	private String getStringAcceptedDocumentTypes() {
-		if((this.getAcceptedDocumentTypes() == null) || (this.getAcceptedDocumentTypes().size() == 0)) {
+		if((this.acceptedDocumentTypes == null) || (this.acceptedDocumentTypes.size() == 0)) {
 			return "(Todos os documentos)";
 		}
 		
-		String ret = this.getAcceptedDocumentTypes().get(0).toString();
+		String ret = this.acceptedDocumentTypes.get(0).toString();
 		
-		for(int i = 1; i < this.getAcceptedDocumentTypes().size(); i++) {
-			ret = ret + ", " + this.getAcceptedDocumentTypes().get(i).toString();
+		for(int i = 1; i < this.acceptedDocumentTypes.size(); i++) {
+			ret = ret + ", " + this.acceptedDocumentTypes.get(i).toString();
 		}
 		
 		return ret;
 	}
-	
-	/*private void setSuccess() {
-		this.progressBar.setVisible(false);
-		this.imageFileUploaded.setSource(new ThemeResource("images/ok.png"));
-		this.imageFileUploaded.setVisible(true);
-		this.imageFileUploaded.setDescription(null);
-	}
-	
-	private void setError(String errorMessage) {
-		this.progressBar.setVisible(false);
-		this.imageFileUploaded.setSource(new ThemeResource("images/error.png"));
-		this.imageFileUploaded.setVisible(true);
-		this.imageFileUploaded.setDescription(errorMessage);
-	}
-	
-	private void setProgress() {
-		this.progressBar.setValue(0.0f);
-		this.progressBar.setVisible(true);
-		this.imageFileUploaded.setVisible(false);
-	}
-
-	@SuppressWarnings("serial")
-	class DocumentUploader implements Receiver, SucceededListener, StartedListener, ProgressListener {
-		private File tempFile = null;
-		
-		@Override
-		public OutputStream receiveUpload(String filename, String mimeType) {
-			try {
-				if(!isDocumentTypeAccept(DocumentType.fromMimeType(mimeType))) {
-					throw new Exception("O arquivo precisa estar em um dos seguintes formatos: " + getStringAcceptedDocumentTypes() + ".");
-				}
-
-				fileType = DocumentType.fromMimeType(mimeType);
-	            tempFile = File.createTempFile(filename, "tmp");
-	            tempFile.deleteOnExit();
-	            return new FileOutputStream(tempFile);
-	        } catch (Exception e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	        	
-	        	setError(e.getMessage());
-	            
-	        	Notification.showErrorNotification("Carregamento do Arquivo", e.getMessage());
-	        }
-
-	        return null;
-		}
-		
-		@Override
-		public void uploadSucceeded(SucceededEvent event) {
-			try {
-	            FileInputStream input = new FileInputStream(tempFile);
-	            
-	            if((getMaxBytesLength() > 0) && (input.available() > getMaxBytesLength())) {
-	            	throw new Exception("O arquivo precisa ter um tamanho máximo de " + getStringMaxBytesLength() + ".");
-	            }
-	            
-	            byte[] buffer = new byte[input.available()];
-	            
-	            input.read(buffer);
-	            
-	            if(validatePDFAFile && !validatePDFA(buffer)) {
-	            	throw new Exception("O arquivo precisa estar no formato PDF/A (padrão utilizado para arquivamento de longo prazo de documentos eletrônicos).");
-	            }
-	            
-	            uploadedFile = buffer;
-	            
-	            setSuccess();
-	            
-	            if(fileUploadListener != null) {
-	            	fileUploadListener.uploadSucceeded();
-	            }
-	            
-	            Notification.showSuccessNotification("Carregamento do Arquivo", "O arquivo foi enviado com sucesso.\n\nClique em SALVAR para concluir a submissão.");
-	        } catch (Exception e) {
-	        	Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-	        	
-	        	setError(e.getMessage());
-	            
-	        	Notification.showErrorNotification("Carregamento do Arquivo", e.getMessage());
-	        }
-		}
-
-		@Override
-		public void updateProgress(long readBytes, long contentLength) {
-			progressBar.setValue((float)readBytes / contentLength);
-		}
-
-		@Override
-		public void uploadStarted(StartedEvent event) {
-			setProgress();
-		}
-	}*/
 	
 }

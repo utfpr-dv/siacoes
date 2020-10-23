@@ -36,7 +36,6 @@ import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.Internship;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipRequiredType;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport;
@@ -49,6 +48,7 @@ import br.edu.utfpr.dv.siacoes.ui.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploaderListener;
 import br.edu.utfpr.dv.siacoes.ui.components.StudentComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.SupervisorComboBox;
+import br.edu.utfpr.dv.siacoes.ui.components.FileUploader.AcceptedDocumentType;
 import br.edu.utfpr.dv.siacoes.ui.grid.InternshipReportDataSource;
 import br.edu.utfpr.dv.siacoes.ui.views.ListView;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportFeedback;
@@ -177,9 +177,9 @@ public class EditInternshipWindow extends EditWindow {
 		this.textReportTitle.setWidth("810px");
 		
 		this.uploadInternshipPlan = new FileUploader("(Formato PDF, " + this.config.getMaxFileSizeAsString() + ")");
-		this.uploadInternshipPlan.setDropLabel("Enviar Plano de Estágio");
-		this.uploadInternshipPlan.getAcceptedDocumentTypes().add(DocumentType.PDF);
+		this.uploadInternshipPlan.setAcceptedType(AcceptedDocumentType.PDF);
 		this.uploadInternshipPlan.setMaxBytesLength(this.config.getMaxFileSize());
+		this.uploadInternshipPlan.setDropLabel("Enviar Plano de Estágio");
 		this.uploadInternshipPlan.setFileUploadListener(new FileUploaderListener() {
 			@Override
 			public void uploadSucceeded() {
@@ -196,9 +196,9 @@ public class EditInternshipWindow extends EditWindow {
         });
 		
 		this.uploadFinalReport = new FileUploader("(Formato PDF, " + this.config.getMaxFileSizeAsString() + ")");
-		this.uploadFinalReport.setDropLabel("Enviar Relatório Final");
-		this.uploadFinalReport.getAcceptedDocumentTypes().add(DocumentType.PDF);
+		this.uploadFinalReport.setAcceptedType(AcceptedDocumentType.PDF);
 		this.uploadFinalReport.setMaxBytesLength(this.config.getMaxFileSize());
+		this.uploadFinalReport.setDropLabel("Enviar Relatório Final");
 		this.uploadFinalReport.setFileUploadListener(new FileUploaderListener() {
 			@Override
 			public void uploadSucceeded() {

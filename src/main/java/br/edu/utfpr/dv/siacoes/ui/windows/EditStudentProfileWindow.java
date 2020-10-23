@@ -28,7 +28,7 @@ import br.edu.utfpr.dv.siacoes.ui.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploaderListener;
 import br.edu.utfpr.dv.siacoes.ui.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.YearField;
-import br.edu.utfpr.dv.siacoes.model.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.ui.components.FileUploader.AcceptedDocumentType;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
@@ -96,8 +96,7 @@ public class EditStudentProfileWindow extends EditWindow {
 		this.textYear.setLabel("Ano de Ingresso");
 		
 		this.uploadPhoto = new FileUploader("Enviar Foto");
-		this.uploadPhoto.getAcceptedDocumentTypes().add(DocumentType.JPEG);
-		this.uploadPhoto.getAcceptedDocumentTypes().add(DocumentType.PNG);
+		this.uploadPhoto.setAcceptedType(AcceptedDocumentType.IMAGE);
 		this.uploadPhoto.setMaxBytesLength(300 * 1024);
 		this.uploadPhoto.setFileUploadListener(new FileUploaderListener() {
 			@Override
