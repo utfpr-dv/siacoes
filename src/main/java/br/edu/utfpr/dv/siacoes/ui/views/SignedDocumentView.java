@@ -16,6 +16,8 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.router.BeforeLeaveEvent;
+import com.vaadin.flow.router.BeforeLeaveObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -31,7 +33,7 @@ import br.edu.utfpr.dv.siacoes.ui.grid.SignedDocumentDataSource;
 
 @PageTitle("Documentos Assinados")
 @Route(value = "signeddocument", layout = MainLayout.class)
-public class SignedDocumentView extends LoggedView {
+public class SignedDocumentView extends LoggedView implements BeforeLeaveObserver {
 	
 	private final Grid<SignedDocumentDataSource> gridDocuments;
 	private final HorizontalLayout layoutFields;
@@ -192,6 +194,11 @@ public class SignedDocumentView extends LoggedView {
 		if((doc != null) && (doc.getIdDocument() != 0)) {
 			this.layoutDocument.add(new SignedDocument(doc, true));
 		}
+	}
+
+	@Override
+	public void beforeLeave(BeforeLeaveEvent event) {
+		MainLayout.reloadNaviItems();
 	}
 
 }

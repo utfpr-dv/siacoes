@@ -20,6 +20,8 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
+import com.vaadin.flow.router.BeforeLeaveEvent;
+import com.vaadin.flow.router.BeforeLeaveObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -32,7 +34,7 @@ import br.edu.utfpr.dv.siacoes.ui.grid.MessageDataSource;
 
 @PageTitle("Mensagens do Sistema")
 @Route(value = "message", layout = MainLayout.class)
-public class MessageView extends LoggedView {
+public class MessageView extends LoggedView implements BeforeLeaveObserver {
 	
 	private static final String LISTALL = "Litar todas as mensagens";
 	private static final String LISTREAD = "Listar apenas mensagens lidas";
@@ -136,7 +138,7 @@ public class MessageView extends LoggedView {
 		Label label = new Label(item.getSubject());
 		
 		if(!item.isRead()) {
-			label.getElement().getStyle().set("bold", "true");
+			label.getElement().getStyle().set("font-weight", "600");
 		}
 		
 		return label;
@@ -184,7 +186,15 @@ public class MessageView extends LoggedView {
 			} catch (Exception e) {
 				Logger.log(Level.SEVERE, e.getMessage(), e);
 			}
+			message.setRead(true);
 			this.loadGrid();
+			
+			for(int i = 0; i < this.grid.getListDataView().getItemCount(); i++) {
+				if(message.getIdMessage() == this.grid.getListDataView().getItem(i).getId()) {
+					this.grid.select(this.grid.getListDataView().getItem(i));
+					break;
+				}
+			}
 		}
 		
 		this.textSender.setReadOnly(false);
@@ -199,6 +209,11 @@ public class MessageView extends LoggedView {
 		this.textTitle.setReadOnly(true);
 		this.textMessage.setReadOnly(true);
 		
+	}
+
+	@Override
+	public void beforeLeave(BeforeLeaveEvent event) {
+		MainLayout.reloadNaviItems();
 	}
 
 }
