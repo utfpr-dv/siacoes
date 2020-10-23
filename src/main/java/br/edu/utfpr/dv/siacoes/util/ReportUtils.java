@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -165,7 +163,7 @@ public class ReportUtils {
         String department = "";
         InputStream logoUTFPR = null;
 		try {
-			logoUTFPR = new ByteArrayInputStream(Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("br/edu/utfpr/dv/siacoes/images/assinatura_UTFPR.png").toString().replace("file:/", ""))));
+			logoUTFPR = new ByteArrayInputStream(this.readLogo("br/edu/utfpr/dv/siacoes/images/assinatura_UTFPR.png"));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -187,7 +185,7 @@ public class ReportUtils {
         
         InputStream brasaoRepublica = null;
 		try {
-			brasaoRepublica = new ByteArrayInputStream(Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("br/edu/utfpr/dv/siacoes/images/brasao_republica.png").toString().replace("file:/", ""))));
+			brasaoRepublica = new ByteArrayInputStream(this.readLogo("br/edu/utfpr/dv/siacoes/images/brasao_republica.png"));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -227,6 +225,13 @@ public class ReportUtils {
         if(templateFile.exists()){
         	System.setProperty("jasper.reports.compile.temp", templateFile.getParent());
         }
+    }
+    
+    private byte[] readLogo(String path) throws IOException {
+    	InputStream fis = this.getClass().getClassLoader().getResourceAsStream(path);
+		byte[] ret = new byte[fis.available()];
+		fis.read(ret);
+		return ret;
     }
 
 }
