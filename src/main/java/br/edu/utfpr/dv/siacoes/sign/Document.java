@@ -268,6 +268,9 @@ public class Document {
 	}
 	
 	private static byte[] getSignedDocument(Document doc) throws Exception {
+		if(doc == null)
+			return null;
+		
 		ByteArrayInputStream bis = new ByteArrayInputStream(doc.getReport());
 		ObjectInput in = new ObjectInputStream(bis);
 		JasperReport jasperReport = (JasperReport)in.readObject();

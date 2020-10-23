@@ -14,10 +14,12 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
@@ -41,9 +43,9 @@ public class AuthDocumentView extends ViewFrame implements HasUrlParameter<Strin
 	private final Button buttonAuthenticate;
 	private final VerticalLayout layoutGuid;
 	
-	private final HorizontalLayout layoutDocument;
-	private final Details panelDocument;
-	private final Details panelSignatures;
+	private final SplitLayout layoutDocument;
+	private final VerticalLayout panelDocument;
+	private final VerticalLayout panelSignatures;
 	private final Grid<SignatureDataSource> gridSignatures;
 	
 	public AuthDocumentView() {
@@ -53,7 +55,7 @@ public class AuthDocumentView extends ViewFrame implements HasUrlParameter<Strin
 		this.gridSignatures.setSelectionMode(SelectionMode.SINGLE);
 		this.gridSignatures.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
 		this.gridSignatures.addColumn(SignatureDataSource::getName).setHeader("Assinante");
-		this.gridSignatures.addColumn(SignatureDataSource::getDate).setHeader("Data e Hora").setFlexGrow(0).setWidth("170px");
+		this.gridSignatures.addColumn(new LocalDateTimeRenderer<>(SignatureDataSource::getDate, "dd/MM/yyyy HH:mm")).setHeader("Data e Hora").setFlexGrow(0).setWidth("170px");
 		this.gridSignatures.addColumn(SignatureDataSource::getStatus).setHeader("Situação").setFlexGrow(0).setWidth("120px");
 		this.gridSignatures.setSizeFull();
     	
@@ -89,32 +91,21 @@ public class AuthDocumentView extends ViewFrame implements HasUrlParameter<Strin
 		
 		this.setViewContent(this.layoutGuid);
 		
-		this.panelDocument = new Details();
-		this.panelDocument.setSummaryText("Documento");
-		this.panelDocument.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-		this.panelDocument.setOpened(true);
-		this.panelDocument.getElement().getStyle().set("width", "100%");
-		this.panelDocument.getElement().getStyle().set("height", "100%");
+		this.panelDocument = new VerticalLayout();
+		this.panelDocument.setSizeFull();
 		
-		this.panelSignatures = new Details();
-		this.panelSignatures.setSummaryText("Assinaturas");
-		this.panelSignatures.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-		this.panelSignatures.setOpened(true);
-		this.panelSignatures.getElement().getStyle().set("width", "100%");
-		this.panelSignatures.getElement().getStyle().set("height", "100%");
-		this.panelSignatures.setContent(this.gridSignatures);
+		this.panelSignatures = new VerticalLayout(new H4("Assinaturas"), this.gridSignatures);
+		this.panelSignatures.setSizeFull();
 		
-		this.layoutDocument = new HorizontalLayout(this.panelDocument, this.panelSignatures);
+		this.layoutDocument = new SplitLayout(this.panelDocument, this.panelSignatures);
 		this.layoutDocument.setSizeFull();
-		this.layoutDocument.setSpacing(true);
-		this.layoutDocument.setMargin(false);
-		this.layoutDocument.setPadding(false);
 		
 		this.textGuid.focus();
 	}
 	
 	private void validate() {
 		this.gridSignatures.setItems(new ArrayList<SignatureDataSource>());
+		this.panelDocument.removeAll();
 		
 		try {
 			byte[] report = Document.getSignedDocument(this.textGuid.getValue().trim());
@@ -129,11 +120,9 @@ public class AuthDocumentView extends ViewFrame implements HasUrlParameter<Strin
 				viewer.setWidth("100%");
 				viewer.setHeight("100%");
 				
-				this.panelDocument.setContent(viewer);
+				this.panelDocument.add(new H4("Documento"), viewer);
 				
 				this.gridSignatures.setItems(SignatureDataSource.load(doc.getSignatures(), true));
-				
-				this.panelSignatures.setContent(this.gridSignatures);
 				
 				this.setViewContent(this.layoutDocument);				
 			}
