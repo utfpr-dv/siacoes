@@ -76,6 +76,18 @@
   width: var(--lumo-icon-size-s);
 }
 
+/* Div */
+.navi-drawer[rail]:not([open]):not(:hover) .navi-item__link div {
+  flex-shrink: 0;
+  margin-left: auto;
+  margin-right: 0;
+  transition: margin var(--transition-duration-s);
+}
+
+.navi-item__link div {
+  margin-right: 18px;
+}
+
 /* Text */
 .navi-item__link span {
   cursor: inherit;

@@ -37,6 +37,38 @@ public class NaviItem extends Div {
 		this(text, navigationTarget);
 		link.getElement().insertChild(0, new Icon(icon).getElement());
 	}
+	
+	public NaviItem(VaadinIcon icon, int notificationCount, String text, Class<? extends Component> navigationTarget) {
+		this(text, navigationTarget);
+		
+		if(notificationCount > 0) {
+			Div div = new Div();
+			div.setHeight("24px");
+			div.setWidth("24px");
+			div.getElement().getStyle().set("position", "relative");
+			div.add(new Icon(icon));
+			
+			Span span = new Span(notificationCount > 9 ? "9+" : String.valueOf(notificationCount));
+			span.setHeight("15px");
+			span.setWidth("15px");
+			span.getElement().getStyle().set("font-weight", "600");
+			span.getElement().getStyle().set("background", "red");
+			span.getElement().getStyle().set("border-radius", "7px");
+			span.getElement().getStyle().set("color", "white");
+			span.getElement().getStyle().set("font-size", "8pt");
+			span.getElement().getStyle().set("text-align", "center");
+			span.getElement().getStyle().set("display", "block");
+			
+			div.add(span);
+			span.getElement().getStyle().set("position", "absolute");
+			span.getElement().getStyle().set("top", "0px");
+			span.getElement().getStyle().set("right", "0px");
+			
+			link.getElement().insertChild(0, div.getElement());
+		} else {
+			link.getElement().insertChild(0, new Icon(icon).getElement());
+		}
+	}
 
 	public NaviItem(Image image, String text, Class<? extends Component> navigationTarget) {
 		this(text, navigationTarget);

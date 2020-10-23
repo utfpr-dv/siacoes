@@ -15,6 +15,7 @@ import com.vaadin.flow.theme.lumo.Lumo;
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.FinalDocumentBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
+import br.edu.utfpr.dv.siacoes.bo.MessageBO;
 import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
@@ -32,6 +33,7 @@ import br.edu.utfpr.dv.siacoes.model.SigacConfig;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
+import br.edu.utfpr.dv.siacoes.sign.Document;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig.JuryFormat;
 import br.edu.utfpr.dv.siacoes.ui.components.FlexBoxLayout;
@@ -248,8 +250,8 @@ public class MainLayout extends FlexBoxLayout implements RouterLayout, AfterNavi
 		
 		menu.removeAll();
 		
-		menu.addNaviItem(VaadinIcon.ENVELOPE, "Mensagens", MessageView.class);
-		menu.addNaviItem(VaadinIcon.EDIT, "Central de Assinaturas", SignatureView.class);
+		menu.addNaviItem(VaadinIcon.ENVELOPE, this.getUnreadMessages(), "Mensagens", MessageView.class);
+		menu.addNaviItem(VaadinIcon.EDIT, this.getUnsignedDocuments(), "Central de Assinaturas", SignatureView.class);
 		menu.addNaviItem(VaadinIcon.CALENDAR, "Calendário", EventCalendarView.class);
 		
 		NaviItem sigac = menu.addNaviItem(VaadinIcon.DIPLOMA, "Atividades Complementares", null);
@@ -944,5 +946,21 @@ public class MainLayout extends FlexBoxLayout implements RouterLayout, AfterNavi
         	UI.getCurrent().getPage().open("pdf/session-" + id, "_blank");
     	}
     }
+	
+	private int getUnreadMessages() {
+		try {
+			return new MessageBO().getUnreadMessages(Session.getUser().getIdUser());
+		} catch (Exception e) {
+			return 0;
+		}
+	}
+	
+	private int getUnsignedDocuments() {
+		try {
+			return Document.getPendingDocuments(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
+		} catch (Exception e) {
+			return 0;
+		}
+	}
 
 }
