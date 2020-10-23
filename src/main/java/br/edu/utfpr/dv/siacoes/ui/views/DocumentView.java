@@ -42,7 +42,7 @@ public class DocumentView extends ListView<DocumentDataSource> implements HasUrl
     	super(SystemModule.GENERAL);
 
     	this.buttonDownload = new Button("Baixar Arquivo", new Icon(VaadinIcon.CLOUD_DOWNLOAD));
-    	this.buttonDownload.setWidth("170px");
+    	this.buttonDownload.setWidth("210px");
     	
     	this.anchorDownload = new Anchor();
     	this.anchorDownload.getElement().setAttribute("download", true);
@@ -55,7 +55,7 @@ public class DocumentView extends ListView<DocumentDataSource> implements HasUrl
 		});
     	
     	this.buttonDownloadAll = new Button("Baixar Todos", new Icon(VaadinIcon.FILE_ZIP));
-    	this.buttonDownloadAll.setWidth("170px");
+    	this.buttonDownloadAll.setWidth("210px");
     	
     	this.buttonMoveUp = new Button("Para Cima", new Icon(VaadinIcon.ARROW_UP), event -> {
             moveUp();

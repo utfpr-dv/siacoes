@@ -1,7 +1,7 @@
 :root {
   --app-bar-height: var(--lumo-size-xl);
 
-  --navi-drawer-width: calc(var(--lumo-size-m) * 7);
+  --navi-drawer-width: calc(var(--lumo-size-m) * 8);
   --navi-drawer-rail-width: calc(var(--lumo-size-m) * 1.75);
   --navi-item-indentation: calc(var(--lumo-icon-size-s) + var(--lumo-space-l));
 

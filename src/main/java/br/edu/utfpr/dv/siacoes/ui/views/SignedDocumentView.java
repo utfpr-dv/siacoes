@@ -10,14 +10,14 @@ import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.router.BeforeLeaveEvent;
-import com.vaadin.flow.router.BeforeLeaveObserver;
+import com.vaadin.flow.component.splitlayout.SplitLayout;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -33,15 +33,14 @@ import br.edu.utfpr.dv.siacoes.ui.grid.SignedDocumentDataSource;
 
 @PageTitle("Documentos Assinados")
 @Route(value = "signeddocument", layout = MainLayout.class)
-public class SignedDocumentView extends LoggedView implements BeforeLeaveObserver {
+public class SignedDocumentView extends LoggedView {
 	
 	private final Grid<SignedDocumentDataSource> gridDocuments;
 	private final HorizontalLayout layoutFields;
     private final VerticalLayout layoutFilter;
     private final Button buttonFilter;
-    private final Label labelGridRecords;
     private final Details panelFilter;
-    private final Details panelList;
+    private final VerticalLayout panelList;
     private final VerticalLayout layoutDocument;
     private final Select<DocumentType> comboDocumentType;
     private final Select<String> comboStatus;
@@ -66,7 +65,7 @@ public class SignedDocumentView extends LoggedView implements BeforeLeaveObserve
 			this.loadDocument();
 		});
 		this.gridDocuments.addColumn(SignedDocumentDataSource::getType).setHeader("Documento");
-		this.gridDocuments.addColumn(SignedDocumentDataSource::getGeneratedDate).setHeader("Gerado em").setFlexGrow(0).setWidth("150px");
+		this.gridDocuments.addColumn(new LocalDateTimeRenderer<>(SignedDocumentDataSource::getGeneratedDate, "dd/MM/yyyy HH:mm")).setHeader("Gerado em").setFlexGrow(0).setWidth("170px");
 		
 		this.listDocuments = new ArrayList<Document>();
 		
@@ -74,8 +73,6 @@ public class SignedDocumentView extends LoggedView implements BeforeLeaveObserve
             refreshGrid();
         });
 		this.buttonFilter.setWidth("150px");
-		
-		this.labelGridRecords = new Label();
 		
 		this.comboDocumentType = new Select<DocumentType>();
 		this.comboDocumentType.setLabel("Documento");
@@ -103,21 +100,11 @@ public class SignedDocumentView extends LoggedView implements BeforeLeaveObserve
 		this.panelFilter.setSummaryText("Filtros");
 		this.panelFilter.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
 		this.panelFilter.setOpened(true);
+		this.panelFilter.getElement().getStyle().set("width", "100%");
 		this.panelFilter.setContent(this.layoutFilter);
 		
-		this.panelList = new Details();
-		this.panelList.setSummaryText("Lista de Documentos");
-		this.panelList.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-		this.panelList.setOpened(true);
-		
-		this.labelGridRecords.setText(String.valueOf(this.listDocuments.size()) + " registro(s)");
-		VerticalLayout layout = new VerticalLayout(this.gridDocuments, this.labelGridRecords);
-		layout.expand(this.gridDocuments);
-		layout.setSizeFull();
-		layout.setSpacing(false);
-		layout.setMargin(false);
-		layout.setPadding(false);
-		this.panelList.setContent(layout);
+		this.panelList = new VerticalLayout(new H4("Lista de Documentos"), this.gridDocuments);
+		this.panelList.setSizeFull();
 		
 		this.layoutDocument = new VerticalLayout();
 		this.layoutDocument.setSpacing(false);
@@ -125,10 +112,7 @@ public class SignedDocumentView extends LoggedView implements BeforeLeaveObserve
 		this.layoutDocument.setPadding(false);
 		this.layoutDocument.setSizeFull();
 		
-		HorizontalLayout h1 = new HorizontalLayout(this.panelList, this.layoutDocument);
-		h1.setSpacing(true);
-		h1.setMargin(false);
-		h1.setPadding(false);
+		SplitLayout h1 = new SplitLayout(this.panelList, this.layoutDocument);
 		h1.setSizeFull();
 		
 		VerticalLayout content = new VerticalLayout(this.panelFilter, h1);
@@ -194,11 +178,6 @@ public class SignedDocumentView extends LoggedView implements BeforeLeaveObserve
 		if((doc != null) && (doc.getIdDocument() != 0)) {
 			this.layoutDocument.add(new SignedDocument(doc, true));
 		}
-	}
-
-	@Override
-	public void beforeLeave(BeforeLeaveEvent event) {
-		MainLayout.reloadNaviItems();
 	}
 
 }

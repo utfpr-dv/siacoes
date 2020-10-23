@@ -2,6 +2,7 @@ package br.edu.utfpr.dv.siacoes.ui.components;
 
 import java.io.ByteArrayInputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.claspina.confirmdialog.ButtonOption;
@@ -15,8 +16,10 @@ import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.server.StreamResource;
@@ -28,8 +31,7 @@ import br.edu.utfpr.dv.siacoes.ui.grid.SignatureDataSource;
 
 public class SignedDocument extends VerticalLayout {
 	
-	private final Details panelDocument;
-	private final Details panelSignatures;
+	private final HorizontalLayout panelDocument;
 	private Grid<SignatureDataSource> gridSignatures;
 	private final Button buttonRevokeSignatures;
 	
@@ -40,18 +42,7 @@ public class SignedDocument extends VerticalLayout {
 		this.gridSignatures.addColumn(SignatureDataSource::getName).setHeader("Assinante");
 		this.gridSignatures.addColumn(new LocalDateTimeRenderer<>(SignatureDataSource::getDate, "dd/MM/yyyy HH:mm")).setHeader("Data e Hora").setFlexGrow(0).setWidth("170px");
 		this.gridSignatures.addColumn(SignatureDataSource::getStatus).setHeader("Situação").setFlexGrow(0).setWidth("120px");
-		this.gridSignatures.setSizeFull();
-		
-		this.panelDocument = new Details();
-		this.panelDocument.setSummaryText("Documento");
-		this.panelDocument.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-		this.panelDocument.setOpened(true);
-		
-		this.panelSignatures = new Details();
-		this.panelSignatures.setSummaryText("Assinaturas");
-		this.panelSignatures.setContent(this.gridSignatures);
-		this.panelSignatures.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-		this.panelSignatures.setOpened(true);
+		this.gridSignatures.setWidthFull();
 		
 		this.buttonRevokeSignatures = new Button("Revogar Assinaturas", new Icon(VaadinIcon.TRASH), event -> {
             revoke(document);
@@ -59,13 +50,21 @@ public class SignedDocument extends VerticalLayout {
 		this.buttonRevokeSignatures.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
 		this.buttonRevokeSignatures.setWidthFull();
 		
+		this.panelDocument = new HorizontalLayout();
+		this.panelDocument.setMargin(false);
+		this.panelDocument.setPadding(false);
+		this.panelDocument.setSpacing(false);
+		this.panelDocument.setSizeFull();
+		
+		this.add(new H4("Documento"));
 		this.add(this.panelDocument);
-		this.add(this.panelSignatures);
+		this.add(new H4("Assinaturas"));
+		this.add(this.gridSignatures);
 		if(showRevoke) {
 			this.add(this.buttonRevokeSignatures);
 		}
 		this.setFlexGrow(0.7, this.panelDocument);
-		this.setFlexGrow(0.3, this.panelSignatures);
+		this.setFlexGrow(0.2, this.gridSignatures);
 		
 		this.setSizeFull();
 		
@@ -73,6 +72,9 @@ public class SignedDocument extends VerticalLayout {
 	}
 	
 	private void loadDocument(Document doc) {
+		this.gridSignatures.setItems(new ArrayList<SignatureDataSource>());
+		this.panelDocument.removeAll();
+		
 		try {
 			byte[] report = Document.getSignedDocument(doc.getIdDocument());
 			
@@ -85,11 +87,9 @@ public class SignedDocument extends VerticalLayout {
 				viewer.setWidth("100%");
 				viewer.setHeight("100%");
 				
-				this.panelDocument.setContent(viewer);
+				this.panelDocument.add(viewer);
 				
 				this.gridSignatures.setItems(SignatureDataSource.load(doc.getSignatures()));
-				
-				this.panelSignatures.setContent(this.gridSignatures);
 				
 				if(Document.hasRevokedSignature(doc.getIdDocument())) {
 					this.buttonRevokeSignatures.setVisible(false);

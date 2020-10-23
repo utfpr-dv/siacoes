@@ -1,6 +1,7 @@
 package br.edu.utfpr.dv.siacoes.dao;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -39,7 +40,7 @@ public class ConnectionDAO {
 		
 		try{
 			Properties props = new Properties();
-	        FileInputStream fis = new FileInputStream(this.getClass().getClassLoader().getResource("/dblocal.properties").getPath());
+			InputStream fis = this.getClass().getClassLoader().getResourceAsStream("/dblocal.properties");
 	        
 	        props.load(fis);
 	        

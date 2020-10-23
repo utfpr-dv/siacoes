@@ -22,6 +22,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
+import com.vaadin.flow.router.BeforeLeaveEvent;
+import com.vaadin.flow.router.BeforeLeaveObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
@@ -35,7 +37,7 @@ import br.edu.utfpr.dv.siacoes.ui.windows.SignatureWindow;
 
 @PageTitle("Central de Assinaturas")
 @Route(value = "signature", layout = MainLayout.class)
-public class SignatureView extends LoggedView {
+public class SignatureView extends LoggedView implements BeforeLeaveObserver {
 	
 	private final Grid<Document> gridPending;
 	private final Grid<SignedDocumentDataSource> gridSigned;
@@ -248,6 +250,11 @@ public class SignatureView extends LoggedView {
 			
 			this.showErrorNotification("Carregar Documento", e.getMessage());
 		}
+	}
+
+	@Override
+	public void beforeLeave(BeforeLeaveEvent event) {
+		MainLayout.reloadNaviItems();
 	}
 
 }

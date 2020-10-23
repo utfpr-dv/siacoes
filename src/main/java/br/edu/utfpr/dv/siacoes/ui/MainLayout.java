@@ -688,8 +688,8 @@ public class MainLayout extends FlexBoxLayout implements RouterLayout, AfterNavi
 		} else if(Session.isUserSupervisor()) {
 			menu.addNaviItem(siget5, "Minhas Bancas", JuryView.class);
 		}
-		NaviItem siget7 = menu.addNaviItem(siget, "Repositório", DocumentView.class);
-		NaviItem doc3 = menu.addNaviItem(siget7, "Regulamentos e Anexos", null);
+		NaviItem siget7 = menu.addNaviItem(siget, "Repositório", null);
+		NaviItem doc3 = menu.addNaviItem(siget7, "Regulamentos e Anexos", DocumentView.class);
 		doc3.addClickListener(event -> {
 			this.getUI().ifPresent(ui -> ui.navigate(DocumentView.class, String.valueOf(SystemModule.SIGET.getValue())));
 		});
