@@ -39,7 +39,7 @@ import br.edu.utfpr.dv.siacoes.ui.windows.SignatureWindow;
 @Route(value = "signature", layout = MainLayout.class)
 public class SignatureView extends LoggedView implements BeforeLeaveObserver {
 	
-	private final Grid<Document> gridPending;
+	private final Grid<SignedDocumentDataSource> gridPending;
 	private final Grid<SignedDocumentDataSource> gridSigned;
 	
 	private List<Document> listPending;
@@ -55,15 +55,15 @@ public class SignatureView extends LoggedView implements BeforeLeaveObserver {
 	private final Tabs tab;
 	
 	public SignatureView() {
-		this.gridPending = new Grid<Document>();
+		this.gridPending = new Grid<SignedDocumentDataSource>();
 		this.gridPending.setSelectionMode(SelectionMode.SINGLE);
 		this.gridPending.setSizeFull();
 		this.gridPending.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
 		this.gridPending.addItemClickListener(event -> {
 			loadPendingDocument(event.getItem());
 		});
-		this.gridPending.addColumn(Document::getType).setHeader("Documento");
-		this.gridPending.addColumn(Document::getGeneratedDate).setHeader("Gerado em").setFlexGrow(0).setWidth("150px");
+		this.gridPending.addColumn(SignedDocumentDataSource::getType).setHeader("Documento");
+		this.gridPending.addColumn(new LocalDateTimeRenderer<>(SignedDocumentDataSource::getGeneratedDate, "dd/MM/yyyy HH:mm")).setHeader("Gerado em").setFlexGrow(0).setWidth("170px");
 		
 		this.layoutGridPending = new VerticalLayout();
 		this.layoutGridPending.setSizeFull();
@@ -105,8 +105,8 @@ public class SignatureView extends LoggedView implements BeforeLeaveObserver {
 			loadSignedDocument(event.getItem());
 		});
 		this.gridSigned.addColumn(SignedDocumentDataSource::getType).setHeader("Documento");
-		this.gridSigned.addColumn(new LocalDateTimeRenderer<>(SignedDocumentDataSource::getGeneratedDate, "dd/MM/yyyy HH:mm")).setHeader("Gerado em").setFlexGrow(0).setWidth("150px");
-		this.gridSigned.addColumn(new LocalDateTimeRenderer<>(SignedDocumentDataSource::getSignatureDate, "dd/MM/yyyy HH:mm")).setHeader("Assinado em").setFlexGrow(0).setWidth("150px");
+		this.gridSigned.addColumn(new LocalDateTimeRenderer<>(SignedDocumentDataSource::getGeneratedDate, "dd/MM/yyyy HH:mm")).setHeader("Gerado em").setFlexGrow(0).setWidth("170px");
+		this.gridSigned.addColumn(new LocalDateTimeRenderer<>(SignedDocumentDataSource::getSignatureDate, "dd/MM/yyyy HH:mm")).setHeader("Assinado em").setFlexGrow(0).setWidth("170px");
 		this.gridSigned.addColumn(SignedDocumentDataSource::getStatus).setHeader("Situação").setFlexGrow(0).setWidth("120px");
 		
 		this.layoutGridSigned = new VerticalLayout();
@@ -166,7 +166,7 @@ public class SignatureView extends LoggedView implements BeforeLeaveObserver {
 		try {
 			this.listPending = Document.listPending(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			
-			this.gridPending.setItems(this.listPending);
+			this.gridPending.setItems(SignedDocumentDataSource.load(this.listPending, true));
 		} catch (Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 			
@@ -178,7 +178,7 @@ public class SignatureView extends LoggedView implements BeforeLeaveObserver {
 		try {
 			this.listSigned = Document.listSigned(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			
-			this.gridSigned.setItems(SignedDocumentDataSource.load(this.listSigned));
+			this.gridSigned.setItems(SignedDocumentDataSource.load(this.listSigned, true));
 	    	
 		} catch (Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
@@ -188,7 +188,7 @@ public class SignatureView extends LoggedView implements BeforeLeaveObserver {
 	}
 	
 	private void sign() {
-		Document doc = this.gridPending.asSingleSelect().getValue();
+		SignedDocumentDataSource doc = this.gridPending.asSingleSelect().getValue();
 		
 		if(doc != null) {
 			try {
@@ -206,7 +206,7 @@ public class SignatureView extends LoggedView implements BeforeLeaveObserver {
 		this.buttonSign.setEnabled(true);
 	}
 	
-	private void loadPendingDocument(Document doc) {
+	private void loadPendingDocument(SignedDocumentDataSource doc) {
 		this.layoutFramePending.removeAll();
 		
 		if(doc == null)

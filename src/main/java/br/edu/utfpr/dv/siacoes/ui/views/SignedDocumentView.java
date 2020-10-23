@@ -159,7 +159,7 @@ public class SignedDocumentView extends LoggedView {
 		try {
 			this.listDocuments.addAll(Document.list((DocumentType)this.comboDocumentType.getValue(), (this.comboUser.getUser() == null ? 0 : this.comboUser.getUser().getIdUser()), status));
 			
-			this.gridDocuments.setItems(SignedDocumentDataSource.load(this.listDocuments));
+			this.gridDocuments.setItems(SignedDocumentDataSource.load(this.listDocuments, false));
 			
 			if(this.listDocuments.size() == 0) {
 				showWarningNotification("Listar Registros", "Não há registros para serem exibidos.");

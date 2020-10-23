@@ -23,19 +23,26 @@ public class SignedDocumentDataSource {
 		this.setIdDocument(doc.getIdDocument());
 		this.setType(doc.getType());
 		this.setGeneratedDate(DateUtils.convertToLocalDateTime(doc.getGeneratedDate()));
-		this.setSignatureDate(DateUtils.convertToLocalDateTime(sign.getSignatureDate()));
-		this.setStatus(sign.getStatus());
+		
+		if(sign != null) {
+			this.setSignatureDate(DateUtils.convertToLocalDateTime(sign.getSignatureDate()));
+			this.setStatus(sign.getStatus());
+		}
 	}
 	
-	public static List<SignedDocumentDataSource> load(List<Document> list) {
+	public static List<SignedDocumentDataSource> load(List<Document> list, boolean filterUser) {
 		List<SignedDocumentDataSource> ret = new ArrayList<SignedDocumentDataSource>();
 		
 		for(Document doc : list) {
-    		for(Signature sign : doc.getSignatures()) {
-    			if(sign.getUser().getIdUser() == Session.getUser().getIdUser()) {
-    				ret.add(new SignedDocumentDataSource(doc, sign));
-    			}
-    		}
+			if(filterUser) {
+	    		for(Signature sign : doc.getSignatures()) {
+	    			if(sign.getUser().getIdUser() == Session.getUser().getIdUser()) {
+	    				ret.add(new SignedDocumentDataSource(doc, sign));
+	    			}
+	    		}
+			} else {
+				ret.add(new SignedDocumentDataSource(doc, null));
+			}
     	}
 		
 		return ret;
