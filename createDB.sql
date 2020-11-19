@@ -889,6 +889,12 @@ CREATE TABLE `internshipposterappraiserrequest` (
     CONSTRAINT `fk_internshipposterappraiserrequest_appraiser` FOREIGN KEY (`idappraiser`) REFERENCES `user` (`iduser`) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
+CREATE OR REPLACE VIEW internshipview AS
+	SELECT internship.idinternship, internship.iddepartment, internship.idcompany, internship.idcompanysupervisor, internship.idsupervisor, internship.idstudent,
+	internship.type, internship.comments, internship.reporttitle, internship.startdate, internship.enddate, internship.totalhours, internship.requiredtype, 
+	internship.term, internship.weekhours, internship.weekdays, internship.fillonlytotalhours
+	FROM internship;
+
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(1, 2, '', '', '{student};{group};{activity};{semester};{year};{comments}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(2, 2, '', '', '{student};{group};{activity};{semester};{year};{comments};{feedbackUser};{feedback}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(3, 3, '', '', '{student};{company};{companySupervisor};{supervisor};{type};{startDate};{comments}');

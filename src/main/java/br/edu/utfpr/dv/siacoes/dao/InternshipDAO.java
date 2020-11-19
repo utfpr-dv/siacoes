@@ -98,7 +98,7 @@ public class InternshipDAO {
 			stmt = this.conn.createStatement();
 			
 			rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
-					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"FROM internshipview AS internship INNER JOIN company ON company.idcompany=internship.idcompany " +
 					"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " + 
 					"ORDER BY internship.startDate DESC");
@@ -126,7 +126,7 @@ public class InternshipDAO {
 			stmt = this.conn.createStatement();
 			
 			rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
-					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"FROM internshipview AS internship INNER JOIN company ON company.idcompany=internship.idcompany " +
 					"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " + 
 					"WHERE internship.iddepartment=" + String.valueOf(idDepartment) +
@@ -172,7 +172,7 @@ public class InternshipDAO {
 			stmt = this.conn.createStatement();
 			
 			rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
-					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"FROM internshipview AS internship INNER JOIN company ON company.idcompany=internship.idcompany " +
 					"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " +
 					"WHERE internship.iddepartment=" + String.valueOf(idDepartment) +
@@ -207,7 +207,7 @@ public class InternshipDAO {
 			stmt = this.conn.createStatement();
 			
 			rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
-					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"FROM internshipview AS internship INNER JOIN company ON company.idcompany=internship.idcompany " +
 					"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " + 
 					"WHERE internship.idcompany=" + String.valueOf(idCompany) + " ORDER BY internship.startDate DESC");
@@ -235,7 +235,7 @@ public class InternshipDAO {
 			stmt = this.conn.createStatement();
 			
 			rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
-					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"FROM internshipview AS internship INNER JOIN company ON company.idcompany=internship.idcompany " +
 					"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " + 
 					"WHERE internship.idcompanysupervisor=" + String.valueOf(idCompanySupervisor) + " ORDER BY internship.startDate DESC");
@@ -263,7 +263,7 @@ public class InternshipDAO {
 			stmt = this.conn.createStatement();
 			
 			rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
-					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"FROM internshipview AS internship INNER JOIN company ON company.idcompany=internship.idcompany " +
 					"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " +  
 					"WHERE internship.idsupervisor=" + String.valueOf(idSupervisor) + " AND internship.iddepartment=" + String.valueOf(idDepartment) + 
@@ -292,7 +292,7 @@ public class InternshipDAO {
 			stmt = this.conn.createStatement();
 			
 			rs = stmt.executeQuery("SELECT internship.*, company.name AS companyName, student.name AS studentName, supervisor.name AS supervisorName " +
-					"FROM internship INNER JOIN company ON company.idcompany=internship.idcompany " +
+					"FROM internshipview AS internship INNER JOIN company ON company.idcompany=internship.idcompany " +
 					"INNER JOIN \"user\" student ON student.iduser=internship.idstudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.iduser=internship.idsupervisor " +  
 					"WHERE internship.idstudent=" + String.valueOf(idStudent) + " AND internship.iddepartment=" + String.valueOf(idDepartment) + 
