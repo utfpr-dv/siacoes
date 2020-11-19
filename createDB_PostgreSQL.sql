@@ -888,6 +888,12 @@ CREATE TABLE internshipposterappraiserrequest (
 CREATE INDEX fk_internshipposterappraiserrequest_internshipposterrequest_idx ON internshipposterappraiserrequest (idinternshipposterrequest);
 CREATE INDEX fk_internshipposterappraiserrequest_appraiser_idx ON internshipposterappraiserrequest (idappraiser);
 
+CREATE OR REPLACE VIEW internshipview AS
+	SELECT internship.idinternship, internship.iddepartment, internship.idcompany, internship.idcompanysupervisor, internship.idsupervisor, internship.idstudent,
+	internship.type, internship.comments, internship.reporttitle, internship.startdate, internship.enddate, internship.totalhours, internship.requiredtype, 
+	internship.term, internship.weekhours, internship.weekdays, internship.fillonlytotalhours
+	FROM internship;
+
 CREATE OR REPLACE FUNCTION year(timestamp) RETURNS integer AS $$
 DECLARE
    d ALIAS FOR $1;
