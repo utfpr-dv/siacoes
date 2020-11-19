@@ -127,6 +127,7 @@ public class InternshipJuryBO {
 						
 						jury.setSupervisorFillJuryForm(config.isSupervisorFillJuryForm());
 						jury.setJuryFormat(config.getJuryFormat());
+						jury.setCompanySupervisorPonderosity(config.getCompanySupervisorPonderosity());
 						jury.setPosterRequest(request);
 						
 						InternshipJuryAppraiser appraiser = new InternshipJuryAppraiser();
@@ -155,6 +156,7 @@ public class InternshipJuryBO {
 					
 					jury.setSupervisorFillJuryForm(config.isSupervisorFillJuryForm());
 					jury.setJuryFormat(config.getJuryFormat());
+					jury.setCompanySupervisorPonderosity(config.getCompanySupervisorPonderosity());
 					
 					InternshipJuryAppraiser appraiser = new InternshipJuryAppraiser();
 					appraiser.setChair(true);

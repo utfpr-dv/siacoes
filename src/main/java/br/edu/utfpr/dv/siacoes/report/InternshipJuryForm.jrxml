@@ -118,62 +118,8 @@
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="562" splitType="Stretch">
+		<band height="398" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<staticText>
-				<reportElement positionType="Float" x="0" y="470" width="480" height="20" uuid="2f0bb051-c983-44e9-97ee-f6807a02c91e">
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Observações]]></text>
-			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="0" y="490" width="480" height="50" uuid="b4b5321c-a903-4c03-8dbd-78bdbeaddbcc">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<box leftPadding="2">
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement verticalAlignment="Top">
-					<font fontName="Arial" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{comments}]]></textFieldExpression>
-			</textField>
-			<subreport>
-				<reportElement positionType="Float" x="0" y="542" width="480" height="20" uuid="4f2a0334-c1c5-461c-8241-0c144885c5f8">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<subreportParameter name="brasao_republica">
-					<subreportParameterExpression><![CDATA[$P{brasao_republica}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="logo_utfpr">
-					<subreportParameterExpression><![CDATA[$P{logo_utfpr}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="campus">
-					<subreportParameterExpression><![CDATA[$P{campus}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="department">
-					<subreportParameterExpression><![CDATA[$P{department}]]></subreportParameterExpression>
-				</subreportParameter>
-				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{appraisers})]]></dataSourceExpression>
-				<subreportExpression><![CDATA["br/edu/utfpr/dv/siacoes/report/InternshipJuryFormAppraiser.jasper"]]></subreportExpression>
-			</subreport>
 			<staticText>
 				<reportElement x="0" y="26" width="110" height="20" uuid="8b22b975-7e98-4439-8183-be551cccc9ff">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -540,132 +486,6 @@
 				</textElement>
 				<textFieldExpression><![CDATA[IF($F{appraiser2Score} == 0, "", new java.text.DecimalFormat("#0.00").format($F{appraiser2Score}))]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement positionType="Float" x="0" y="398" width="300" height="25" uuid="0a39723d-a112-429d-9c73-f8b1e5247f90">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<box leftPadding="2" rightPadding="2">
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Justified" verticalAlignment="Middle">
-					<font fontName="Arial" size="10" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Supervisão - Nota atribuída a partir do relatório de avaliação do supervisor.]]></text>
-			</staticText>
-			<staticText>
-				<reportElement positionType="Float" x="0" y="423" width="300" height="25" uuid="a8a43372-292e-45fe-acc3-9624884e5214">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<box leftPadding="2" rightPadding="2">
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Justified" verticalAlignment="Middle">
-					<font fontName="Arial" size="10" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Orientação - Nota atribuída a partir do relatório de acompanhamento e relatório final.]]></text>
-			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="300" y="398" width="60" height="25" uuid="3814ec20-6d00-4a2c-b790-77aedb902e71">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#0.0").format($F{companySupervisorPonderosity})]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement positionType="Float" x="300" y="423" width="60" height="25" uuid="2241caa4-6669-40c9-8c9b-5ea574dbec61">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#0.0").format($F{supervisorPonderosity})]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement positionType="Float" x="360" y="398" width="120" height="25" uuid="be040e11-8e4f-4833-ac38-d7f175922855">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[IF($F{companySupervisorScore} == 0, "", new java.text.DecimalFormat("#0.00").format($F{companySupervisorScore}))]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement positionType="Float" x="360" y="423" width="120" height="25" uuid="f664f2c6-f5c1-4c25-b866-8f0dfc4d3130">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[IF($F{supervisorScore} == 0, "", new java.text.DecimalFormat("#0.00").format($F{supervisorScore}))]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement positionType="Float" x="0" y="448" width="360" height="20" uuid="9b8b5057-4e5e-4e4d-a9b0-60a6bc2a1b99">
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<box leftPadding="2">
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Justified" verticalAlignment="Middle">
-					<font fontName="Arial" size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[NOTA FINAL (MÉDIA PONDERADA)]]></text>
-			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="360" y="448" width="120" height="20" uuid="bb7f1916-8055-4251-ac38-dced5f3b881a">
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[IF($F{finalScore} == 0, "", new java.text.DecimalFormat("#0.00").format($F{finalScore}))]]></textFieldExpression>
-			</textField>
 			<textField>
 				<reportElement positionType="Float" x="1" y="226" width="480" height="16" uuid="7ec6c156-7ce2-4e0d-9c59-919fa0a8da5b">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -764,12 +584,199 @@
 				</reportElement>
 				<imageExpression><![CDATA[$F{studentRubric}]]></imageExpression>
 			</image>
+		</band>
+		<band height="25">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<printWhenExpression><![CDATA[$F{companySupervisorPonderosity} > 0]]></printWhenExpression>
+			<textField>
+				<reportElement positionType="Float" x="360" y="0" width="120" height="25" uuid="e620d3d2-be3c-484a-8c92-39daa0e88ecb">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{companySupervisorScore} == 0, "", new java.text.DecimalFormat("#0.00").format($F{companySupervisorScore}))]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="0" width="300" height="25" uuid="29f527b3-1ff3-43af-a973-3714dfa5ea56">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Supervisão - Nota atribuída a partir do relatório de avaliação do supervisor.]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="300" y="0" width="60" height="25" uuid="d47cc1d4-ebc4-48a2-922c-c8a5255c12e9">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#0.0").format($F{companySupervisorPonderosity})]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="139">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement positionType="Float" x="360" y="25" width="120" height="20" uuid="c446a700-7fd2-4cc5-bf70-d7fa221ccd58">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{finalScore} == 0, "", new java.text.DecimalFormat("#0.00").format($F{finalScore}))]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="0" width="300" height="25" uuid="41520504-4248-4ff0-9ae5-b8f011195bef">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Orientação - Nota atribuída a partir do relatório de acompanhamento e relatório final.]]></text>
+			</staticText>
 			<break>
-				<reportElement x="0" y="540" width="481" height="1" uuid="df95a282-bf26-4d14-bbe7-50ae243159e5">
+				<reportElement x="0" y="117" width="481" height="1" uuid="c3644ce6-2d22-4cc9-84a3-7feecd13cc9e">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 			</break>
+			<subreport>
+				<reportElement positionType="Float" x="0" y="119" width="480" height="20" uuid="c612183d-4198-4f6b-be27-9d6c423fa324">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<subreportParameter name="brasao_republica">
+					<subreportParameterExpression><![CDATA[$P{brasao_republica}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="logo_utfpr">
+					<subreportParameterExpression><![CDATA[$P{logo_utfpr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="campus">
+					<subreportParameterExpression><![CDATA[$P{campus}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="department">
+					<subreportParameterExpression><![CDATA[$P{department}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{appraisers})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["br/edu/utfpr/dv/siacoes/report/InternshipJuryFormAppraiser.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement positionType="Float" x="360" y="0" width="120" height="25" uuid="60e09b96-c035-40d2-b8c6-b6aad179ea14">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{supervisorScore} == 0, "", new java.text.DecimalFormat("#0.00").format($F{supervisorScore}))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="67" width="480" height="50" uuid="5011dfa6-8c41-4661-a7ca-ed81a56249a1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box leftPadding="2">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{comments}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="300" y="0" width="60" height="25" uuid="de6fde54-490e-4def-94b3-f17905a34dcd">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#0.0").format($F{supervisorPonderosity})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="47" width="480" height="20" uuid="2f6f1d9e-f802-490e-8007-4d3ef7c85014">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Observações]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="25" width="360" height="20" uuid="56b93ffa-6519-406a-8e94-287d6c92ef35">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box leftPadding="2">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOTA FINAL (MÉDIA PONDERADA)]]></text>
+			</staticText>
 		</band>
 	</detail>
 	<pageFooter>

@@ -36,9 +36,9 @@ public class SigesConfigBO {
 		if(config.getMinimumScore() <= 0){
 			throw new Exception("A nota mínima para aprovação deve ser superior a zero.");
 		}
-		if(config.getCompanySupervisorPonderosity() <= 0){
+		/*if(config.getCompanySupervisorPonderosity() <= 0){
 			throw new Exception("O peso da nota do supervisor deve ser superior a zero.");
-		}
+		}*/
 		if(config.getSupervisorPonderosity() <= 0){
 			throw new Exception("O peso da nota do orientador deve ser superior a zero.");
 		}
