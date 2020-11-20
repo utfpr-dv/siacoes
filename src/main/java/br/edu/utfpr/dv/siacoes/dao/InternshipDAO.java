@@ -147,10 +147,11 @@ public class InternshipDAO {
 		}
 	}
 	
-	public List<Internship> list(int idDepartment, int year, int idStudent, int idSupervisor, int idCompany, int type, int status, Date startDate1, Date startDate2, Date endDate1, Date endDate2) throws SQLException {
+	public List<Internship> list(int idDepartment, int year, int idStudent, int idSupervisor, int idCompany, int type, int status, Date startDate1, Date startDate2, Date endDate1, Date endDate2, int companyStatus) throws SQLException {
 		ResultSet rs = null;
 		Statement stmt = null;
 		String filterDate = "";
+		String filterStatus = "";
 		
 		if ((startDate1 != null) && (DateUtils.getYear(startDate1) > 1900) && (startDate2 != null) && (DateUtils.getYear(startDate2) > 1900)) {
 			filterDate = filterDate + " AND internship.startDate BETWEEN '" + DateUtils.format(DateUtils.getDayBegin(startDate1), "yyyy-MM-dd HH:mm:ss") + "' AND '" + DateUtils.format(DateUtils.getDayEnd(startDate2), "yyyy-MM-dd HH:mm:ss") + "'";
@@ -168,6 +169,18 @@ public class InternshipDAO {
 			filterDate = filterDate + " AND internship.endDate <= '" + DateUtils.format(DateUtils.getDayEnd(endDate2), "yyyy-MM-dd HH:mm:ss") + "'";
 		}
 		
+		if(status == 0) {
+			filterStatus = " AND ((NOT internship.hasfinalreport) OR (internship.type = 1 AND NOT EXISTS(SELECT idinternshipjury FROM internshipjury WHERE internshipjury.idinternship = internship.idinternship)))";	
+		} else if(status == 1) {
+			filterStatus = " AND internship.hasfinalreport AND (internship.type = 0 OR EXISTS(SELECT idinternshipjury FROM internshipjury WHERE internshipjury.idinternship = internship.idinternship))";
+		}
+		
+		if(companyStatus == 0) {
+			filterStatus = filterStatus + " AND (internship.endDate IS NULL OR internship.endDate >= CURRENT_DATE)";
+		} else if(companyStatus == 1) {
+			filterStatus = filterStatus + " AND internship.endDate < CURRENT_DATE";
+		}
+		
 		try {
 			stmt = this.conn.createStatement();
 			
@@ -180,8 +193,7 @@ public class InternshipDAO {
 					(idStudent > 0 ? " AND internship.idstudent = " + String.valueOf(idStudent) : "") +
 					(idSupervisor > 0 ? " AND internship.idsupervisor = " + String.valueOf(idSupervisor) : "") +
 					(idCompany > 0 ? " AND internship.idcompany = " + String.valueOf(idCompany) : "") +
-					(type >= 0 ? " AND internship.type = " + String.valueOf(type) : "") + filterDate +
-					(status == 0 ? " AND (internship.endDate IS NULL OR internship.endDate >= CURRENT_DATE)" : (status == 1 ? " AND internship.endDate < CURRENT_DATE" : "")) +
+					(type >= 0 ? " AND internship.type = " + String.valueOf(type) : "") + filterDate + filterStatus +
 					" ORDER BY internship.startDate DESC");
 			
 			List<Internship> list = new ArrayList<Internship>();

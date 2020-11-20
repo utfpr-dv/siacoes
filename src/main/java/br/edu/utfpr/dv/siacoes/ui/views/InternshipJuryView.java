@@ -188,7 +188,7 @@ public class InternshipJuryView extends ListView<InternshipJuryDataSource> imple
 			this.buttonSign.setVisible(false);
 		}else{
 			this.buttonSendFeedback.setVisible(true);
-			this.buttonChangeAppraiser.setVisible(true);
+			this.buttonChangeAppraiser.setVisible(Session.isUserProfessor());
 			this.buttonFile.setVisible(Session.isUserProfessor());
 			this.buttonForm.setVisible(Session.isUserProfessor());
 			this.buttonParticipants.setVisible(Session.isUserProfessor());

@@ -203,7 +203,7 @@ public class JuryView extends ListView<JuryDataSource> implements HasUrlParamete
 			this.buttonSign.setVisible(false);
 		}else{
 			this.buttonSendFeedback.setVisible(true);
-			this.buttonChangeAppraiser.setVisible(true);
+			this.buttonChangeAppraiser.setVisible(Session.isUserProfessor());
 			this.buttonTerm.setVisible(false);
 			this.buttonFile.setVisible(Session.isUserSupervisor());
 			this.buttonForm.setVisible(Session.isUserProfessor());

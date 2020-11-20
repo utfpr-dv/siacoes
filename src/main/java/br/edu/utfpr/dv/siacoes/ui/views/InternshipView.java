@@ -69,6 +69,7 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 	private final SupervisorComboBox comboProfessor;
 	private final CompanyComboBox comboCompany;
 	private final Select<String> comboStatus;
+	private final Select<String> comboCompanyStatus;
 	private final Select<String> comboType;
 	private final DatePicker textStartDate1;
 	private final DatePicker textStartDate2;
@@ -115,14 +116,20 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 		this.comboCompany = new CompanyComboBox();
 		
 		this.comboStatus = new Select<String>();
-		this.comboStatus.setLabel("Situação");
-		this.comboStatus.setWidth("195px");
+		this.comboStatus.setLabel("Situação do Processo");
+		this.comboStatus.setWidth("170px");
 		this.comboStatus.setItems(InternshipStatus.CURRENT.toString(), InternshipStatus.FINISHED.toString(), ALL);
 		this.comboStatus.setValue(InternshipStatus.CURRENT.toString());
 		
+		this.comboCompanyStatus = new Select<String>();
+		this.comboCompanyStatus.setLabel("Situação na Empresa");
+		this.comboCompanyStatus.setWidth("170px");
+		this.comboCompanyStatus.setItems(InternshipStatus.CURRENT.toString(), InternshipStatus.FINISHED.toString(), ALL);
+		this.comboCompanyStatus.setValue(InternshipStatus.CURRENT.toString());
+		
 		this.comboType = new Select<String>();
 		this.comboType.setLabel("Tipo");
-		this.comboType.setWidth("195px");
+		this.comboType.setWidth("150px");
 		this.comboType.setItems(InternshipType.NONREQUIRED.toString(), InternshipType.REQUIRED.toString(), ALL);
 		this.comboType.setValue(ALL);
 		
@@ -136,7 +143,7 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 		this.textEndDate2 = new DatePicker("E");
 		//this.textEndDate2.setDateFormat("dd/MM/yyyy");
 		
-		HorizontalLayout h1 = new HorizontalLayout(this.comboStudent, this.comboProfessor, this.comboType, this.comboStatus);
+		HorizontalLayout h1 = new HorizontalLayout(this.comboStudent, this.comboProfessor, this.comboType, this.comboCompanyStatus, this.comboStatus);
 		h1.setSpacing(true);
 		h1.setMargin(false);
 		h1.setPadding(false);
@@ -252,7 +259,7 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 			List<Internship> list;
 			
 			if(this.profile == UserProfile.MANAGER){
-				int type = -1, status = -1;
+				int type = -1, status = -1, companyStatus = -1;
 				
 				if(!this.comboType.getValue().equals(ALL)){
 					type = InternshipType.fromDescription(this.comboType.getValue()).getValue();
@@ -262,7 +269,11 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 					status = InternshipStatus.fromDescription(this.comboStatus.getValue()).getValue();
 				}
 				
-				list = bo.list(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status, DateUtils.convertToDate(this.textStartDate1.getValue()), DateUtils.convertToDate(this.textStartDate2.getValue()), DateUtils.convertToDate(this.textEndDate1.getValue()), DateUtils.convertToDate(this.textEndDate2.getValue()));
+				if(!this.comboCompanyStatus.getValue().equals(ALL)){
+					companyStatus = InternshipStatus.fromDescription(this.comboCompanyStatus.getValue()).getValue();
+				}
+				
+				list = bo.list(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status, DateUtils.convertToDate(this.textStartDate1.getValue()), DateUtils.convertToDate(this.textStartDate2.getValue()), DateUtils.convertToDate(this.textEndDate1.getValue()), DateUtils.convertToDate(this.textEndDate2.getValue()), companyStatus);
 			}else if(this.profile == UserProfile.PROFESSOR){
 				list = bo.listBySupervisor(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			}else if(this.profile == UserProfile.COMPANYSUPERVISOR){
