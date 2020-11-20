@@ -245,7 +245,7 @@ public class JuryView extends ListView {
 			this.buttonSign.setVisible(false);
 		}else{
 			this.buttonSendFeedback.setVisible(true);
-			this.buttonChangeAppraiser.setVisible(true);
+			this.buttonChangeAppraiser.setVisible(Session.isUserSupervisor());
 			this.buttonTerm.setVisible(false);
 			this.buttonFile.setVisible(Session.isUserSupervisor());
 			this.buttonForm.setVisible(Session.isUserProfessor());

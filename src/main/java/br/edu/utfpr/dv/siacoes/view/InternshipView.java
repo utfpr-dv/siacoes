@@ -16,6 +16,7 @@ import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.renderers.DateRenderer;
 
@@ -62,6 +63,7 @@ public class InternshipView extends ListView {
 	private final SupervisorComboBox comboProfessor;
 	private final CompanyComboBox comboCompany;
 	private final NativeSelect comboStatus;
+	private final NativeSelect comboCompanyStatus;
 	private final NativeSelect comboType;
 	private final DateField textStartDate1;
 	private final DateField textStartDate2;
@@ -102,16 +104,24 @@ public class InternshipView extends ListView {
 		
 		this.comboCompany = new CompanyComboBox();
 		
-		this.comboStatus = new NativeSelect("Situação");
-		this.comboStatus.setWidth("195px");
+		this.comboStatus = new NativeSelect("Situação do Processo");
+		this.comboStatus.setWidth("150px");
 		this.comboStatus.setNullSelectionAllowed(false);
 		this.comboStatus.addItem(InternshipStatus.CURRENT);
 		this.comboStatus.addItem(InternshipStatus.FINISHED);
 		this.comboStatus.addItem("Todos");
 		this.comboStatus.select(InternshipStatus.CURRENT);
 		
+		this.comboCompanyStatus = new NativeSelect("Situação na Empresa");
+		this.comboCompanyStatus.setWidth("150px");
+		this.comboCompanyStatus.setNullSelectionAllowed(false);
+		this.comboCompanyStatus.addItem(InternshipStatus.CURRENT);
+		this.comboCompanyStatus.addItem(InternshipStatus.FINISHED);
+		this.comboCompanyStatus.addItem("Todos");
+		this.comboCompanyStatus.select(InternshipStatus.CURRENT);
+		
 		this.comboType = new NativeSelect("Tipo");
-		this.comboType.setWidth("195px");
+		this.comboType.setWidth("150px");
 		this.comboType.setNullSelectionAllowed(false);
 		this.comboType.addItem(InternshipType.NONREQUIRED);
 		this.comboType.addItem(InternshipType.REQUIRED);
@@ -128,7 +138,7 @@ public class InternshipView extends ListView {
 		this.textEndDate2 = new DateField("");
 		this.textEndDate2.setDateFormat("dd/MM/yyyy");
 		
-		HorizontalLayout h1 = new HorizontalLayout(this.comboStudent, this.comboProfessor, this.comboType, this.comboStatus);
+		HorizontalLayout h1 = new HorizontalLayout(this.comboStudent, this.comboProfessor, this.comboType, this.comboCompanyStatus, this.comboStatus);
 		h1.setSpacing(true);
 		
 		HorizontalLayout h2 = new HorizontalLayout(this.comboCompany, this.textYear, this.textStartDate1, this.textStartDate2, this.textEndDate1, this.textEndDate2);
@@ -281,7 +291,7 @@ public class InternshipView extends ListView {
 		this.getGrid().addColumn("Orientador", String.class);
 		this.getGrid().addColumn("Data Início", Date.class).setRenderer(new DateRenderer(new SimpleDateFormat("dd/MM/yyyy")));
 		this.getGrid().addColumn("Tipo", String.class);
-		this.getGrid().addColumn("Situação", String.class);
+		this.getGrid().addColumn("Situação na Empresa", String.class);
 		
 		this.getGrid().getColumns().get(3).setWidth(125);
 		this.getGrid().getColumns().get(4).setWidth(160);
@@ -292,7 +302,7 @@ public class InternshipView extends ListView {
 			List<Internship> list;
 			
 			if(this.profile == UserProfile.MANAGER){
-				int type = -1, status = -1;
+				int type = -1, status = -1, companyStatus = -1;
 				
 				if(!this.comboType.getValue().equals("Todos")){
 					type = ((InternshipType)this.comboType.getValue()).getValue();
@@ -302,7 +312,11 @@ public class InternshipView extends ListView {
 					status = ((InternshipStatus)this.comboStatus.getValue()).getValue();
 				}
 				
-				list = bo.list(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status, this.textStartDate1.getValue(), this.textStartDate2.getValue(), this.textEndDate1.getValue(), this.textEndDate2.getValue());
+				if(!this.comboCompanyStatus.getValue().equals("Todos")){
+					companyStatus = ((InternshipStatus)this.comboCompanyStatus.getValue()).getValue();
+				}
+				
+				list = bo.list(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status, this.textStartDate1.getValue(), this.textStartDate2.getValue(), this.textEndDate1.getValue(), this.textEndDate2.getValue(), companyStatus);
 			}else if(this.profile == UserProfile.PROFESSOR){
 				list = bo.listBySupervisor(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			}else if(this.profile == UserProfile.COMPANYSUPERVISOR){

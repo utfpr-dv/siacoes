@@ -41,14 +41,14 @@ public class InternshipBO {
 		}
 	}
 	
-	public List<Internship> list(int idDepartment, int year, int idStudent, int idSupervisor, int idCompany, int type, int status, Date startDate1, Date startDate2, Date endDate1, Date endDate2) throws Exception{
+	public List<Internship> list(int idDepartment, int year, int idStudent, int idSupervisor, int idCompany, int type, int status, Date startDate1, Date startDate2, Date endDate1, Date endDate2, int companyStatus) throws Exception{
 		try{
 			InternshipDAO dao = new InternshipDAO();
 			
-			if((year == 0) && (idStudent == 0) && (idSupervisor == 0) && (idCompany == 0) && (type == -1) && (status == -1) && ((startDate1 == null) || (DateUtils.getYear(startDate1) <= 1900)) && ((startDate2 == null) || (DateUtils.getYear(startDate2) <= 1900)) && ((endDate1 == null) || (DateUtils.getYear(endDate1) <= 1900)) && ((endDate2 == null) || (DateUtils.getYear(endDate2) <= 1900))){
+			if((year == 0) && (idStudent == 0) && (idSupervisor == 0) && (idCompany == 0) && (type == -1) && (status == -1) && (companyStatus == -1) && ((startDate1 == null) || (DateUtils.getYear(startDate1) <= 1900)) && ((startDate2 == null) || (DateUtils.getYear(startDate2) <= 1900)) && ((endDate1 == null) || (DateUtils.getYear(endDate1) <= 1900)) && ((endDate2 == null) || (DateUtils.getYear(endDate2) <= 1900))){
 				return dao.listByDepartment(idDepartment);
 			}else{
-				return dao.list(idDepartment, year, idStudent, idSupervisor, idCompany, type, status, startDate1, startDate2, endDate1, endDate2);	
+				return dao.list(idDepartment, year, idStudent, idSupervisor, idCompany, type, status, startDate1, startDate2, endDate1, endDate2, companyStatus);	
 			}
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);

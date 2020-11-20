@@ -892,7 +892,7 @@ CREATE TABLE `internshipposterappraiserrequest` (
 CREATE OR REPLACE VIEW internshipview AS
 	SELECT internship.idinternship, internship.iddepartment, internship.idcompany, internship.idcompanysupervisor, internship.idsupervisor, internship.idstudent,
 	internship.type, internship.comments, internship.reporttitle, internship.startdate, internship.enddate, internship.totalhours, internship.requiredtype, 
-	internship.term, internship.weekhours, internship.weekdays, internship.fillonlytotalhours
+	internship.term, internship.weekhours, internship.weekdays, internship.fillonlytotalhours, internship.finalreport IS NOT NULL AS hasfinalreport
 	FROM internship;
 
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(1, 2, '', '', '{student};{group};{activity};{semester};{year};{comments}');

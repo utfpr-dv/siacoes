@@ -769,8 +769,8 @@ public class InternshipJuryBO {
 		List<JuryGrade> report = new ArrayList<JuryGrade>();
 		
 		if(listAll) {
-			List<Internship> list = new InternshipBO().list(idDepartment, year - 1, 0, 0, 0, 1, -1, null, null, null, null);
-			List<Internship> list2 = new InternshipBO().list(idDepartment, year, 0, 0, 0, 1, -1, null, null, null, null);
+			List<Internship> list = new InternshipBO().list(idDepartment, year - 1, 0, 0, 0, 1, -1, null, null, null, null, -1);
+			List<Internship> list2 = new InternshipBO().list(idDepartment, year,    0, 0, 0, 1, -1, null, null, null, null, -1);
 			
 			for(Internship internship : list2) {
 				boolean find = false;

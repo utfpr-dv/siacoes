@@ -891,7 +891,7 @@ CREATE INDEX fk_internshipposterappraiserrequest_appraiser_idx ON internshippost
 CREATE OR REPLACE VIEW internshipview AS
 	SELECT internship.idinternship, internship.iddepartment, internship.idcompany, internship.idcompanysupervisor, internship.idsupervisor, internship.idstudent,
 	internship.type, internship.comments, internship.reporttitle, internship.startdate, internship.enddate, internship.totalhours, internship.requiredtype, 
-	internship.term, internship.weekhours, internship.weekdays, internship.fillonlytotalhours
+	internship.term, internship.weekhours, internship.weekdays, internship.fillonlytotalhours, internship.finalreport IS NOT NULL AS hasfinalreport
 	FROM internship;
 
 CREATE OR REPLACE FUNCTION year(timestamp) RETURNS integer AS $$
