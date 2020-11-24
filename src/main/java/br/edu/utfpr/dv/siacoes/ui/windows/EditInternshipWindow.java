@@ -24,6 +24,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.LocalDateRenderer;
@@ -71,10 +73,11 @@ public class EditInternshipWindow extends EditWindow {
 	private final TextArea textComments;
 	private final DatePicker startDate;
 	private final DatePicker endDate;
-	private final TextField textTotalHours;
-	private final TextField textWeekHours;
+	private final IntegerField textTotalHours;
+	private final NumberField textWeekHours;
 	private final TextField textWeekDays;
 	private final TextField textTerm;
+	private final TextField textSei;
 	private final TextField textReportTitle;
 	private final FileUploader uploadInternshipPlan;
 	private final Button buttonDownloadInternshipPlan;
@@ -141,13 +144,13 @@ public class EditInternshipWindow extends EditWindow {
 		
 		this.comboType = new Select<InternshipType>();
 		this.comboType.setLabel("Tipo de Estágio");
-		this.comboType.setWidth("200px");
+		this.comboType.setWidth("175px");
 		this.comboType.setItems(InternshipType.NONREQUIRED, InternshipType.REQUIRED);
 		this.comboType.setValue(InternshipType.NONREQUIRED);
 		
 		this.comboRequiredType = new Select<InternshipRequiredType>();
 		this.comboRequiredType.setLabel("Categorização do Estágio");
-		this.comboRequiredType.setWidth("200px");
+		this.comboRequiredType.setWidth("175px");
 		this.comboRequiredType.setItems(InternshipRequiredType.UNIVERSITY, InternshipRequiredType.EXTERNAL, InternshipRequiredType.SCHOLARSHIP, InternshipRequiredType.PROFESSIONAL, InternshipRequiredType.VALIDATION);
 		this.comboRequiredType.setValue(InternshipRequiredType.UNIVERSITY);
 		
@@ -158,20 +161,23 @@ public class EditInternshipWindow extends EditWindow {
 		this.endDate = new DatePicker("Data de Término");
 		//this.endDate.setDateFormat("dd/MM/yyyy");
 		
-		this.textTotalHours = new TextField("Horas");
+		this.textTotalHours = new IntegerField("Horas");
 		this.textTotalHours.setWidth("100px");
-		this.textTotalHours.setRequired(true);
+		//this.textTotalHours.setRequired(true);
 		
-		this.textWeekHours = new TextField("C.H. Sem.");
+		this.textWeekHours = new NumberField("C.H. Sem.");
 		this.textWeekHours.setWidth("100px");
-		this.textWeekHours.setRequired(true);
+		//this.textWeekHours.setRequired(true);
 		
 		this.textWeekDays = new TextField("Dias/Sem.");
 		this.textWeekDays.setWidth("100px");
 		this.textWeekDays.setRequired(true);
 		
 		this.textTerm = new TextField("Termo");
-		this.textTerm.setWidth("200px");
+		this.textTerm.setWidth("150px");
+		
+		this.textSei = new TextField("Processo no SEI");
+		this.textSei.setWidth("200px");
 		
 		this.textReportTitle = new TextField("Título do Relatório Final");
 		this.textReportTitle.setWidth("810px");
@@ -234,7 +240,7 @@ public class EditInternshipWindow extends EditWindow {
 		h3.setMargin(false);
 		h3.setPadding(false);
 		
-		HorizontalLayout h4 = new HorizontalLayout(this.comboType, this.comboRequiredType, this.textTerm);
+		HorizontalLayout h4 = new HorizontalLayout(this.comboType, this.comboRequiredType, this.textTerm, this.textSei);
 		h4.setSpacing(true);
 		h4.setMargin(false);
 		h4.setPadding(false);
@@ -479,12 +485,13 @@ public class EditInternshipWindow extends EditWindow {
 		this.comboRequiredType.setValue(this.internship.getRequiredType());
 		this.startDate.setValue(DateUtils.convertToLocalDate(this.internship.getStartDate()));
 		this.endDate.setValue(DateUtils.convertToLocalDate(this.internship.getEndDate()));
-		this.textTotalHours.setValue(String.valueOf(this.internship.getTotalHours()));
+		this.textTotalHours.setValue(this.internship.getTotalHours());
 		this.textComments.setValue(this.internship.getComments());
 		this.textReportTitle.setValue(this.internship.getReportTitle());
 		this.textTerm.setValue(this.internship.getTerm());
-		this.textWeekHours.setValue(String.valueOf(this.internship.getWeekHours()));
+		this.textWeekHours.setValue(this.internship.getWeekHours());
 		this.textWeekDays.setValue(String.valueOf(this.internship.getWeekDays()));
+		this.textSei.setValue(this.internship.getSei());
 		
 		this.internship.setReports(null);
 		
@@ -501,6 +508,10 @@ public class EditInternshipWindow extends EditWindow {
 			this.textWeekDays.setVisible(false);
 		} else {
 			this.textTotalHours.setVisible(false);
+		}
+		
+		if(!this.config.isUseSei() && this.internship.getSei().trim().isEmpty()) {
+			this.textSei.setVisible(false);
 		}
 	}
 	
@@ -703,11 +714,12 @@ public class EditInternshipWindow extends EditWindow {
 			this.internship.setStartDate(DateUtils.convertToDate(this.startDate.getValue()));
 			this.internship.setEndDate(DateUtils.convertToDate(this.endDate.getValue()));
 			this.internship.setTerm(this.textTerm.getValue());
-			this.internship.setTotalHours(Integer.parseInt(this.textTotalHours.getValue()));
-			this.internship.setWeekHours(Double.parseDouble(this.textWeekHours.getValue().replace(",", ".")));
+			this.internship.setTotalHours(this.textTotalHours.getValue());
+			this.internship.setWeekHours(this.textWeekHours.getValue());
 			this.internship.setWeekDays(Integer.parseInt(this.textWeekDays.getValue()));
 			this.internship.setComments(this.textComments.getValue());
 			this.internship.setReportTitle(this.textReportTitle.getValue());
+			this.internship.setSei(this.textSei.getValue());
 			
 			bo.save(Session.getIdUserLog(), this.internship);
 			

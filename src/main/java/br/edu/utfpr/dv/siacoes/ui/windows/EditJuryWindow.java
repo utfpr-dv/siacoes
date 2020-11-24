@@ -68,6 +68,7 @@ public class EditJuryWindow extends EditWindow {
 	private final Button buttonParticipantsReport;
 	private final TimePicker textStartTime;
 	private final TimePicker textEndTime;
+	private final TextField textSei;
 	private final TextArea textComments;
 	private final TextArea textSupervisorAbsenceReason;
 	private final Tabs tabContainer;
@@ -92,6 +93,9 @@ public class EditJuryWindow extends EditWindow {
 		
 		this.textEndTime = new TimePicker("Horário Final");
 		
+		this.textSei = new TextField("Processo no SEI");
+		this.textSei.setWidth("200px");
+		
 		this.textComments = new TextArea("Observações");
 		this.textComments.setWidth("900px");
 		this.textComments.setHeight("150px");
@@ -105,7 +109,7 @@ public class EditJuryWindow extends EditWindow {
 		tab1.setMargin(false);
 		tab1.setPadding(false);
 		tab1.add(this.textLocal);
-		HorizontalLayout h1 = new HorizontalLayout(this.textDate, this.textStartTime, this.textEndTime);
+		HorizontalLayout h1 = new HorizontalLayout(this.textDate, this.textStartTime, this.textEndTime, this.textSei);
 		h1.setSpacing(true);
 		h1.setMargin(false);
 		h1.setPadding(false);
@@ -236,6 +240,7 @@ public class EditJuryWindow extends EditWindow {
 		this.textEndTime.setValue(DateUtils.convertToLocalTime(this.jury.getEndTime()));
 		this.textComments.setValue(this.jury.getComments());
 		this.textSupervisorAbsenceReason.setValue(this.jury.getSupervisorAbsenceReason());
+		this.textSei.setValue(this.jury.getSei());
 		
 		if(this.jury.getIdJury() == 0) {
 			this.textStartTime.setVisible(false);
@@ -289,6 +294,10 @@ public class EditJuryWindow extends EditWindow {
 					if((this.jury.getJuryRequest() == null) || (this.jury.getJuryRequest().getIdJuryRequest() == 0)) {
 						this.showWarningNotification("Agendamento de Banca", "O Professor Orientador não efetuou a solicitação de agendamento de banca.");
 					}
+				}
+				
+				if(!config.isUseSei() && this.jury.getSei().trim().isEmpty()) {
+					this.textSei.setVisible(false);
 				}
 			} catch (Exception e) {
 				Logger.log(Level.SEVERE, e.getMessage(), e);
@@ -344,6 +353,7 @@ public class EditJuryWindow extends EditWindow {
 			this.jury.setEndTime(DateUtils.convertToDate(this.textEndTime.getValue()));
 			this.jury.setDate(DateUtils.convertToDate(this.textDate.getValue()));
 			this.jury.setSupervisorAbsenceReason(this.textSupervisorAbsenceReason.getValue());
+			this.jury.setSei(this.textSei.getValue());
 			
 			bo.save(Session.getIdUserLog(), this.jury);
 			

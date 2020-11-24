@@ -68,6 +68,7 @@ public class Jury implements Serializable {
 	private JuryRequest juryRequest;
 	private String supervisorAbsenceReason;
 	private boolean supervisorAssignsGrades;
+	private String sei;
 	
 	public Jury(){
 		this.setIdJury(0);
@@ -83,6 +84,7 @@ public class Jury implements Serializable {
 		this.setJuryRequest(null);
 		this.setSupervisorAbsenceReason("");
 		this.setSupervisorAssignsGrades(false);
+		this.setSei("");
 	}
 	
 	public int getIdJury() {
@@ -168,6 +170,12 @@ public class Jury implements Serializable {
 	}
 	public void setSupervisorAssignsGrades(boolean supervisorAssignsGrades) {
 		this.supervisorAssignsGrades = supervisorAssignsGrades;
+	}
+	public String getSei() {
+		return sei;
+	}
+	public void setSei(String sei) {
+		this.sei = sei;
 	}
 	public int getStage(){
 		if((this.getThesis() != null) && (this.getThesis().getIdThesis() != 0)){

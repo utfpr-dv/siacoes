@@ -24,21 +24,25 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
+import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryStudentBO;
+import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryStudent;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig.JuryFormat;
 import br.edu.utfpr.dv.siacoes.sign.Document;
 import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
@@ -68,8 +72,9 @@ public class EditInternshipJuryWindow extends EditWindow {
 	private final TimePicker textStartTime;
 	private final TimePicker textEndTime;
 	private final TextArea textComments;
-	private final TextField textCompanySupervisorScore;
-	private final TextField textSupervisorScore;
+	private final NumberField textCompanySupervisorScore;
+	private final NumberField textSupervisorScore;
+	private final TextField textSei;
 	private final TextArea textSupervisorAbsenceReason;
 	private final Tabs tabContainer;
 	private final Select<JuryResult> comboResult;
@@ -93,15 +98,18 @@ public class EditInternshipJuryWindow extends EditWindow {
 		//this.textDate.setResolution(Resolution.MINUTE);
 		//this.textDate.setRequired(true);
 		
-		this.textCompanySupervisorScore = new TextField("Nota do Supervisor na Empresa");
+		this.textCompanySupervisorScore = new NumberField("Nota do Supervisor na Empresa");
 		this.textCompanySupervisorScore.setWidth("210px");
 		
-		this.textSupervisorScore = new TextField("Nota do Orientador");
+		this.textSupervisorScore = new NumberField("Nota do Orientador");
 		this.textSupervisorScore.setWidth("170px");
 		
 		this.textStartTime = new TimePicker("Horário Inicial");
 		
 		this.textEndTime = new TimePicker("Horário Final");
+		
+		this.textSei = new TextField("Processo no SEI");
+		this.textSei.setWidth("200px");
 		
 		this.comboResult = new Select<JuryResult>();
 		this.comboResult.setLabel("Resultado Final");
@@ -122,7 +130,7 @@ public class EditInternshipJuryWindow extends EditWindow {
 		tab1.setMargin(false);
 		tab1.setPadding(false);
 		tab1.add(this.textLocal);
-		HorizontalLayout h1 = new HorizontalLayout(this.textDate, this.textStartTime, this.textEndTime);
+		HorizontalLayout h1 = new HorizontalLayout(this.textDate, this.textStartTime, this.textEndTime, this.textSei);
 		h1.setSpacing(true);
 		h1.setMargin(false);
 		h1.setPadding(false);
@@ -259,9 +267,10 @@ public class EditInternshipJuryWindow extends EditWindow {
 		this.textStartTime.setValue(DateUtils.convertToLocalTime(this.jury.getStartTime()));
 		this.textEndTime.setValue(DateUtils.convertToLocalTime(this.jury.getEndTime()));
 		this.textComments.setValue(this.jury.getComments());
-		this.textCompanySupervisorScore.setValue(String.format("%.2f", this.jury.getCompanySupervisorScore()));
-		this.textSupervisorScore.setValue(String.format("%.2f", this.jury.getSupervisorScore()));
+		this.textCompanySupervisorScore.setValue(this.jury.getCompanySupervisorScore());
+		this.textSupervisorScore.setValue(this.jury.getSupervisorScore());
 		this.comboResult.setValue(this.jury.getResult());
+		this.textSei.setValue(this.jury.getSei());
 		
 		this.textSupervisorScore.setVisible(!this.jury.isSupervisorFillJuryForm());
 		
@@ -318,7 +327,17 @@ public class EditInternshipJuryWindow extends EditWindow {
 		}
 		
 		if(this.jury.getCompanySupervisorPonderosity() == 0) {
-			this.textSupervisorScore.setVisible(false);
+			this.textCompanySupervisorScore.setVisible(false);
+		}
+		
+		try {
+			SigesConfig config = new SigesConfigBO().findByDepartment(new InternshipBO().findIdDepartment(this.jury.getInternship().getIdInternship()));
+
+			if(!config.isUseSei() && this.jury.getSei().trim().isEmpty()) {
+				this.textSei.setVisible(false);
+			}
+		} catch (Exception e) {
+			Logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 	
@@ -357,10 +376,11 @@ public class EditInternshipJuryWindow extends EditWindow {
 			this.jury.setStartTime(DateUtils.convertToDate(this.textStartTime.getValue()));
 			this.jury.setEndTime(DateUtils.convertToDate(this.textEndTime.getValue()));
 			this.jury.setDate(DateUtils.convertToDate(this.textDate.getValue()));
-			this.jury.setCompanySupervisorScore(Double.parseDouble(this.textCompanySupervisorScore.getValue().replace(",", ".")));
-			this.jury.setSupervisorScore(Double.parseDouble(this.textSupervisorScore.getValue().replace(",", ".")));
+			this.jury.setCompanySupervisorScore(this.textCompanySupervisorScore.getValue());
+			this.jury.setSupervisorScore(this.textSupervisorScore.getValue());
 			this.jury.setResult((JuryResult)this.comboResult.getValue());
 			this.jury.setSupervisorAbsenceReason(this.textSupervisorAbsenceReason.getValue());
+			this.jury.setSei(this.textSei.getValue());
 			
 			bo.save(Session.getIdUserLog(), this.jury);
 			

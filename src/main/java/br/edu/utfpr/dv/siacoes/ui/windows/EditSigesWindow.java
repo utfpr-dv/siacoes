@@ -14,7 +14,6 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
-import com.vaadin.flow.component.textfield.TextField;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
@@ -43,6 +42,7 @@ public class EditSigesWindow extends EditWindow {
 	private final Checkbox checkAppraiserFillsGrades;
 	private final IntegerField textMinimumJuryMembers;
 	private final IntegerField textMinimumJurySubstitutes;
+	private final Checkbox checkUseSei;
 	
 	private final Tabs tab;
 	
@@ -86,13 +86,15 @@ public class EditSigesWindow extends EditWindow {
 		
 		this.checkUseDigitalSignature = new Checkbox("Usar assinatura digital");
 		
+		this.checkUseSei = new Checkbox("Indicar processo no SEI");
+		
 		this.textMinimumJuryMembers = new IntegerField("Número mínimo de membros titulares na banca (exceto o presidente)");
 		this.textMinimumJuryMembers.setWidth("450px");
 		
 		this.textMinimumJurySubstitutes = new IntegerField("Número mínimo de suplentes na banca");
 		this.textMinimumJurySubstitutes.setWidth("260px");
 		
-		VerticalLayout v1 = new VerticalLayout(this.comboSupervisorFilter, this.checkFillOnlyTotalHours);
+		VerticalLayout v1 = new VerticalLayout(this.comboSupervisorFilter, this.checkFillOnlyTotalHours, this.checkUseSei);
 		v1.setSpacing(false);
 		v1.setMargin(false);
 		v1.setPadding(false);
@@ -178,6 +180,7 @@ public class EditSigesWindow extends EditWindow {
 		this.checkAppraiserFillsGrades.setValue(this.config.isAppraiserFillsGrades());
 		this.textMinimumJuryMembers.setValue(this.config.getMinimumJuryMembers());
 		this.textMinimumJurySubstitutes.setValue(this.config.getMinimumJurySubstitutes());
+		this.checkUseSei.setValue(this.config.isUseSei());
 	}
 
 	@Override
@@ -199,6 +202,7 @@ public class EditSigesWindow extends EditWindow {
 			this.config.setAppraiserFillsGrades(this.checkAppraiserFillsGrades.getValue());
 			this.config.setMinimumJuryMembers(this.textMinimumJuryMembers.getValue());
 			this.config.setMinimumJurySubstitutes(this.textMinimumJurySubstitutes.getValue());
+			this.config.setUseSei(this.checkUseSei.getValue());
 			
 			bo.save(Session.getIdUserLog(), this.config);
 			

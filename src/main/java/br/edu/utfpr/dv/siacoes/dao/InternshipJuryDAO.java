@@ -232,7 +232,7 @@ public class InternshipJuryDAO {
 			boolean insert = (jury.getIdInternshipJury() == 0);
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO internshipjury(date, local, idInternship, comments, startTime, endTime, minimumScore, supervisorPonderosity, companySupervisorPonderosity, companySupervisorScore, result, supervisorAbsenceReason, supervisorScore, supervisorFillJuryForm, juryformat) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO internshipjury(date, local, idInternship, comments, startTime, endTime, minimumScore, supervisorPonderosity, companySupervisorPonderosity, companySupervisorScore, result, supervisorAbsenceReason, supervisorScore, supervisorFillJuryForm, juryformat, sei) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 				
 				jury.setMinimumScore(10);
 				
@@ -253,7 +253,7 @@ public class InternshipJuryDAO {
 					}
 				}
 			}else{
-				stmt = conn.prepareStatement("UPDATE internshipjury SET date=?, local=?, idInternship=?, comments=?, startTime=?, endTime=?, minimumScore=?, supervisorPonderosity=?, companySupervisorPonderosity=?, companySupervisorScore=?, result=?, supervisorAbsenceReason=?, supervisorScore=?, supervisorFillJuryForm=?, juryformat=? WHERE idInternshipJury=?");
+				stmt = conn.prepareStatement("UPDATE internshipjury SET date=?, local=?, idInternship=?, comments=?, startTime=?, endTime=?, minimumScore=?, supervisorPonderosity=?, companySupervisorPonderosity=?, companySupervisorScore=?, result=?, supervisorAbsenceReason=?, supervisorScore=?, supervisorFillJuryForm=?, juryformat=?, sei=? WHERE idInternshipJury=?");
 			}
 			
 			stmt.setTimestamp(1, new java.sql.Timestamp(jury.getDate().getTime()));
@@ -271,9 +271,10 @@ public class InternshipJuryDAO {
 			stmt.setDouble(13, jury.getSupervisorScore());
 			stmt.setInt(14, jury.isSupervisorFillJuryForm() ? 1 : 0);
 			stmt.setInt(15, jury.getJuryFormat().getValue());
+			stmt.setString(16, jury.getSei());
 			
 			if(!insert){
-				stmt.setInt(16, jury.getIdInternshipJury());
+				stmt.setInt(17, jury.getIdInternshipJury());
 			}
 			
 			stmt.execute();
@@ -359,6 +360,7 @@ public class InternshipJuryDAO {
 		jury.setSupervisorScore(rs.getDouble("supervisorScore"));
 		jury.setSupervisorFillJuryForm(rs.getInt("supervisorFillJuryForm") == 1);
 		jury.setJuryFormat(JuryFormat.valueOf(rs.getInt("juryformat")));
+		jury.setSei(rs.getString("sei"));
 		
 		return jury;
 	}

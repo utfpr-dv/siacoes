@@ -52,6 +52,7 @@ public class EditSigetWindow extends EditWindow {
 	private final Checkbox checkSupervisorAssignsGrades;
 	private final Checkbox checkUseDigitalSignature;
 	private final Checkbox checkAppraiserFillsGrades;
+	private final Checkbox checkUseSei;
 	
 	private final Tabs tab;
 	
@@ -125,6 +126,8 @@ public class EditSigetWindow extends EditWindow {
 		
 		this.checkUseDigitalSignature = new Checkbox("Usar assinatura digital");
 		
+		this.checkUseSei = new Checkbox("Indicar processo no SEI");
+		
 		VerticalLayout vl1 = new VerticalLayout(this.comboSupervisorFilter, this.textMaxTutoredStage1);
 		vl1.setSpacing(false);
 		vl1.setMargin(false);
@@ -159,7 +162,7 @@ public class EditSigetWindow extends EditWindow {
 		h4.setSpacing(true);
 		h4.setPadding(false);
 		h4.setMargin(false);
-		VerticalLayout v1 = new VerticalLayout(h1, h4, this.checkShowGradesToStudent, this.checkSupervisorJuryAgreement, this.checkSupervisorJuryRequest, this.checkAppraiserFillsGrades, this.checkSupervisorAssignsGrades);
+		VerticalLayout v1 = new VerticalLayout(h1, h4, this.checkShowGradesToStudent, this.checkSupervisorJuryAgreement, this.checkSupervisorJuryRequest, this.checkAppraiserFillsGrades, this.checkSupervisorAssignsGrades, this.checkUseSei);
 		v1.setSpacing(false);
 		v1.setMargin(false);
 		v1.setPadding(false);
@@ -207,7 +210,7 @@ public class EditSigetWindow extends EditWindow {
 		
 		VerticalLayout layout = new VerticalLayout(this.tab, pages);
 		layout.setWidth("900px");
-		layout.setHeight("370px");
+		layout.setHeight("410px");
 		layout.setSpacing(false);
 		layout.setMargin(false);
 		layout.setPadding(false);
@@ -241,6 +244,7 @@ public class EditSigetWindow extends EditWindow {
 		this.checkSupervisorAssignsGrades.setValue(this.config.isSupervisorAssignsGrades());
 		this.checkUseDigitalSignature.setValue(this.config.isUseDigitalSignature());
 		this.checkAppraiserFillsGrades.setValue(this.config.isAppraiserFillsGrades());
+		this.checkUseSei.setValue(this.config.isUseSei());
 	}
 
 	@Override
@@ -271,6 +275,7 @@ public class EditSigetWindow extends EditWindow {
 			this.config.setSupervisorAssignsGrades(this.checkSupervisorAssignsGrades.getValue());
 			this.config.setUseDigitalSignature(this.checkUseDigitalSignature.getValue());
 			this.config.setAppraiserFillsGrades(this.checkAppraiserFillsGrades.getValue());
+			this.config.setUseSei(this.checkUseSei.getValue());
 			
 			bo.save(Session.getIdUserLog(), this.config);
 			

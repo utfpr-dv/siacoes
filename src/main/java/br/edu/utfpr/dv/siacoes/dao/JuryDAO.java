@@ -257,7 +257,7 @@ public class JuryDAO {
 			boolean insert = (jury.getIdJury() == 0);
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO jury(date, local, idProject, idThesis, comments, startTime, endTime, minimumScore, supervisorAbsenceReason, supervisorAssignsGrades) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO jury(date, local, idProject, idThesis, comments, startTime, endTime, minimumScore, supervisorAbsenceReason, supervisorAssignsGrades, sei) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 				
 				jury.setMinimumScore(10);
 				
@@ -285,7 +285,7 @@ public class JuryDAO {
 				
 				rs.close();
 			}else{
-				stmt = conn.prepareStatement("UPDATE jury SET date=?, local=?, idProject=?, idThesis=?, comments=?, startTime=?, endTime=?, minimumScore=?, supervisorAbsenceReason=?, supervisorAssignsGrades=? WHERE idJury=?");
+				stmt = conn.prepareStatement("UPDATE jury SET date=?, local=?, idProject=?, idThesis=?, comments=?, startTime=?, endTime=?, minimumScore=?, supervisorAbsenceReason=?, supervisorAssignsGrades=?, sei=? WHERE idJury=?");
 			}
 			
 			stmt.setTimestamp(1, new java.sql.Timestamp(jury.getDate().getTime()));
@@ -306,9 +306,10 @@ public class JuryDAO {
 			stmt.setDouble(8, jury.getMinimumScore());
 			stmt.setString(9, jury.getSupervisorAbsenceReason());
 			stmt.setInt(10, (jury.isSupervisorAssignsGrades() ? 1 : 0));
+			stmt.setString(11, jury.getSei());
 			
 			if(!insert){
-				stmt.setInt(11, jury.getIdJury());
+				stmt.setInt(12, jury.getIdJury());
 			}
 			
 			stmt.execute();
@@ -406,6 +407,7 @@ public class JuryDAO {
 		jury.setMinimumScore(rs.getDouble("minimumScore"));
 		jury.setSupervisorAbsenceReason(rs.getString("supervisorAbsenceReason"));
 		jury.setSupervisorAssignsGrades(rs.getInt("supervisorAssignsGrades") == 1);
+		jury.setSei(rs.getString("sei"));
 		
 		return jury;
 	}
