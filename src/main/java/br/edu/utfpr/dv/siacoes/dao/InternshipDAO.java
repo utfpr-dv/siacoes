@@ -411,9 +411,9 @@ public class InternshipDAO {
 		
 		try{
 			if(insert){
-				stmt = this.conn.prepareStatement("INSERT INTO internship(iddepartment, idcompany, idcompanysupervisor, idsupervisor, idstudent, type, comments, startDate, endDate, totalHours, internshipPlan, finalReport, reportTitle, requiredType, term, weekHours, weekDays, fillOnlyTotalHours) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = this.conn.prepareStatement("INSERT INTO internship(iddepartment, idcompany, idcompanysupervisor, idsupervisor, idstudent, type, comments, startDate, endDate, totalHours, internshipPlan, finalReport, reportTitle, requiredType, term, weekHours, weekDays, fillOnlyTotalHours, sei) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = this.conn.prepareStatement("UPDATE internship SET iddepartment=?, idcompany=?, idcompanysupervisor=?, idsupervisor=?, idstudent=?, type=?, comments=?, startDate=?, endDate=?, totalHours=?, internshipPlan=?, finalReport=?, reportTitle=?, requiredType=?, term=?, weekHours=?, weekDays=?, fillOnlyTotalHours=? WHERE idinternship=?");
+				stmt = this.conn.prepareStatement("UPDATE internship SET iddepartment=?, idcompany=?, idcompanysupervisor=?, idsupervisor=?, idstudent=?, type=?, comments=?, startDate=?, endDate=?, totalHours=?, internshipPlan=?, finalReport=?, reportTitle=?, requiredType=?, term=?, weekHours=?, weekDays=?, fillOnlyTotalHours=?, sei=? WHERE idinternship=?");
 			}
 			
 			stmt.setInt(1, internship.getDepartment().getIdDepartment());
@@ -442,9 +442,10 @@ public class InternshipDAO {
 			stmt.setDouble(16, internship.getWeekHours());
 			stmt.setInt(17, internship.getWeekDays());
 			stmt.setInt(18, (internship.isFillOnlyTotalHours() ? 1 : 0));
+			stmt.setString(19, internship.getSei());
 			
 			if(!insert){
-				stmt.setInt(19, internship.getIdInternship());
+				stmt.setInt(20, internship.getIdInternship());
 			}
 			
 			stmt.execute();
@@ -493,6 +494,7 @@ public class InternshipDAO {
 		internship.setTotalHours(rs.getInt("totalHours"));
 		internship.setReportTitle(rs.getString("reportTitle"));
 		internship.setFillOnlyTotalHours(rs.getInt("fillOnlyTotalHours") == 1);
+		internship.setSei(rs.getString("sei"));
 		
 		if(loadFiles) {
 			internship.setInternshipPlan(rs.getBytes("internshipPlan"));

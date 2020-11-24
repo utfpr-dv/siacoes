@@ -58,6 +58,7 @@ public class SigesConfig implements Serializable {
 	private boolean useDigitalSignature;
 	private int minimumJuryMembers;
 	private int minimumJurySubstitutes;
+	private boolean useSei;
 	
 	public SigesConfig(){
 		this.setDepartment(new Department());
@@ -75,6 +76,7 @@ public class SigesConfig implements Serializable {
 		this.setAppraiserFillsGrades(false);
 		this.setMinimumJuryMembers(0);
 		this.setMinimumJurySubstitutes(0);
+		this.setUseSei(false);
 	}
 	
 	public Department getDepartment() {
@@ -173,6 +175,12 @@ public class SigesConfig implements Serializable {
 	}
 	public void setMinimumJurySubstitutes(int minimumJurySubstitutes) {
 		this.minimumJurySubstitutes = minimumJurySubstitutes;
+	}
+	public boolean isUseSei() {
+		return useSei;
+	}
+	public void setUseSei(boolean useSei) {
+		this.useSei = useSei;
 	}
 	
 }

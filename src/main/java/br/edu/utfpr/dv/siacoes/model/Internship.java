@@ -151,6 +151,7 @@ public class Internship implements Serializable {
 	private transient byte[] finalReport;
 	private List<InternshipReport> reports;
 	private boolean fillOnlyTotalHours;
+	private String sei;
 	
 	public Internship(){
 		this.setIdInternship(0);
@@ -173,6 +174,7 @@ public class Internship implements Serializable {
 		this.setFinalReport(null);
 		this.setFillOnlyTotalHours(false);
 		this.setReports(new ArrayList<InternshipReport>());
+		this.setSei("");
 	}
 	
 	public int getIdInternship() {
@@ -301,6 +303,12 @@ public class Internship implements Serializable {
 		}else{
 			return InternshipStatus.FINISHED;
 		}
+	}
+	public String getSei() {
+		return sei;
+	}
+	public void setSei(String sei) {
+		this.sei = sei;
 	}
 
 }

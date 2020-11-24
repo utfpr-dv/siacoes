@@ -70,6 +70,7 @@ public class EditInternshipWindow extends EditWindow {
 	private final TextField textWeekHours;
 	private final TextField textWeekDays;
 	private final TextField textTerm;
+	private final TextField textSei;
 	private final TextField textReportTitle;
 	private final FileUploader uploadInternshipPlan;
 	private final Button buttonDownloadInternshipPlan;
@@ -142,7 +143,7 @@ public class EditInternshipWindow extends EditWindow {
 		});
 		
 		this.comboType = new NativeSelect("Tipo de Estágio");
-		this.comboType.setWidth("200px");
+		this.comboType.setWidth("170px");
 		this.comboType.addItem(InternshipType.NONREQUIRED);
 		this.comboType.addItem(InternshipType.REQUIRED);
 		this.comboType.select(InternshipType.NONREQUIRED);
@@ -150,7 +151,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.comboType.setRequired(true);
 		
 		this.comboRequiredType = new NativeSelect("Categorização do Estágio");
-		this.comboRequiredType.setWidth("200px");
+		this.comboRequiredType.setWidth("170px");
 		this.comboRequiredType.addItem(InternshipRequiredType.UNIVERSITY);
 		this.comboRequiredType.addItem(InternshipRequiredType.EXTERNAL);
 		this.comboRequiredType.addItem(InternshipRequiredType.SCHOLARSHIP);
@@ -180,7 +181,10 @@ public class EditInternshipWindow extends EditWindow {
 		this.textWeekDays.setRequired(true);
 		
 		this.textTerm = new TextField("Termo");
-		this.textTerm.setWidth("200px");
+		this.textTerm.setWidth("150px");
+		
+		this.textSei = new TextField("Processo no SEI");
+		this.textSei.setWidth("200px");
 		
 		this.textReportTitle = new TextField("Título do Relatório Final");
 		this.textReportTitle.setWidth("810px");
@@ -241,7 +245,7 @@ public class EditInternshipWindow extends EditWindow {
 		HorizontalLayout h3 = new HorizontalLayout(this.comboCompany, this.comboCompanySupervisor);
 		h3.setSpacing(true);
 		
-		HorizontalLayout h4 = new HorizontalLayout(this.comboType, this.comboRequiredType, this.textTerm);
+		HorizontalLayout h4 = new HorizontalLayout(this.comboType, this.comboRequiredType, this.textTerm, this.textSei);
 		h4.setSpacing(true);
 		
 		HorizontalLayout h9 = new HorizontalLayout(this.startDate, this.endDate, this.textWeekHours, this.textWeekDays, this.textTotalHours);
@@ -474,6 +478,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.textTerm.setValue(this.internship.getTerm());
 		this.textWeekHours.setValue(String.valueOf(this.internship.getWeekHours()));
 		this.textWeekDays.setValue(String.valueOf(this.internship.getWeekDays()));
+		this.textSei.setValue(this.internship.getSei());
 		
 		this.internship.setReports(null);
 		
@@ -490,6 +495,10 @@ public class EditInternshipWindow extends EditWindow {
 			this.textWeekDays.setVisible(false);
 		} else {
 			this.textTotalHours.setVisible(false);
+		}
+		
+		if(!this.config.isUseSei() && this.internship.getSei().trim().isEmpty()) {
+			this.textSei.setVisible(false);
 		}
 	}
 	
@@ -743,6 +752,7 @@ public class EditInternshipWindow extends EditWindow {
 			this.internship.setWeekDays(Integer.parseInt(this.textWeekDays.getValue()));
 			this.internship.setComments(this.textComments.getValue());
 			this.internship.setReportTitle(this.textReportTitle.getValue());
+			this.internship.setSei(this.textSei.getValue());
 			
 			bo.save(Session.getIdUserLog(), this.internship);
 			

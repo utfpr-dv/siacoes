@@ -32,6 +32,7 @@ public class InternshipJury implements Serializable {
 	private boolean supervisorFillJuryForm;
 	private JuryFormat juryFormat;
 	private InternshipPosterRequest posterRequest;
+	private String sei;
 
 	public InternshipJury(){
 		this.setIdInternshipJury(0);
@@ -52,6 +53,7 @@ public class InternshipJury implements Serializable {
 		this.setSupervisorFillJuryForm(false);
 		this.setJuryFormat(JuryFormat.INDIVIDUAL);
 		this.setPosterRequest(null);
+		this.setSei("");
 	}
 	
 	public int getIdInternshipJury() {
@@ -198,6 +200,13 @@ public class InternshipJury implements Serializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public String getSei() {
+		return sei;
+	}
+	public void setSei(String sei) {
+		this.sei = sei;
 	}
 
 }

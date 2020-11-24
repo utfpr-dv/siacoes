@@ -36,6 +36,7 @@ public class EditSigesWindow extends EditWindow {
 	private final CheckBox checkAppraiserFillsGrades;
 	private final TextField textMinimumJuryMembers;
 	private final TextField textMinimumJurySubstitutes;
+	private final CheckBox checkUseSei;
 	
 	private final TabSheet tab;
 	
@@ -87,13 +88,15 @@ public class EditSigesWindow extends EditWindow {
 		
 		this.checkUseDigitalSignature = new CheckBox("Usar assinatura digital");
 		
+		this.checkUseSei = new CheckBox("Indicar processo no SEI");
+		
 		this.textMinimumJuryMembers = new TextField("Número mínimo de membros titulares na banca (exceto o presidente)");
 		this.textMinimumJuryMembers.setWidth("100px");
 		
 		this.textMinimumJurySubstitutes = new TextField("Número mínimo de suplentes na banca");
 		this.textMinimumJurySubstitutes.setWidth("100px");
 		
-		VerticalLayout v1 = new VerticalLayout(this.comboSupervisorFilter, this.checkFillOnlyTotalHours);
+		VerticalLayout v1 = new VerticalLayout(this.comboSupervisorFilter, this.checkFillOnlyTotalHours, this.checkUseSei);
 		v1.setSpacing(true);
 		v1.setMargin(true);
 		
@@ -143,6 +146,7 @@ public class EditSigesWindow extends EditWindow {
 		this.checkAppraiserFillsGrades.setValue(this.config.isAppraiserFillsGrades());
 		this.textMinimumJuryMembers.setValue(String.valueOf(this.config.getMinimumJuryMembers()));
 		this.textMinimumJurySubstitutes.setValue(String.valueOf(this.config.getMinimumJurySubstitutes()));
+		this.checkUseSei.setValue(this.config.isUseSei());
 	}
 
 	@Override
@@ -164,6 +168,7 @@ public class EditSigesWindow extends EditWindow {
 			this.config.setAppraiserFillsGrades(this.checkAppraiserFillsGrades.getValue());
 			this.config.setMinimumJuryMembers(Integer.parseInt(this.textMinimumJuryMembers.getValue()));
 			this.config.setMinimumJurySubstitutes(Integer.parseInt(this.textMinimumJurySubstitutes.getValue()));
+			this.config.setUseSei(this.checkUseSei.getValue());
 			
 			bo.save(Session.getIdUserLog(), this.config);
 			

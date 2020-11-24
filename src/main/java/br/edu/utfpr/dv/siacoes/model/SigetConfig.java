@@ -110,6 +110,7 @@ public class SigetConfig implements Serializable {
 	private boolean supervisorAssignsGrades;
 	private boolean appraiserFillsGrades;
 	private boolean useDigitalSignature;
+	private boolean useSei;
 	
 	public SigetConfig(){
 		this.setDepartment(new Department());
@@ -136,6 +137,7 @@ public class SigetConfig implements Serializable {
 		this.setSupervisorAssignsGrades(false);
 		this.setUseDigitalSignature(false);
 		this.setAppraiserFillsGrades(false);
+		this.setUseSei(false);
 	}
 	
 	public Department getDepartment() {
@@ -288,6 +290,12 @@ public class SigetConfig implements Serializable {
 	}
 	public void setAppraiserFillsGrades(boolean appraiserFillsGrades) {
 		this.appraiserFillsGrades = appraiserFillsGrades;
+	}
+	public boolean isUseSei() {
+		return useSei;
+	}
+	public void setUseSei(boolean useSei) {
+		this.useSei = useSei;
 	}
 
 }

@@ -103,6 +103,7 @@ CREATE  TABLE sigesconfig (
   usedigitalsignature smallint NOT NULL ,
   minimumjurymembers SMALLINT NOT NULL ,
   minimumjurysubstitutes SMALLINT NOT NULL ,
+  usesei smallint NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigesconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -132,6 +133,7 @@ CREATE  TABLE sigetconfig (
   supervisorassignsgrades SMALLINT NOT NULL ,
   appraiserfillsgrades smallint NOT NULL ,
   usedigitalsignature smallint NOT NULL ,
+  usesei smallint NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigetconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -277,6 +279,7 @@ CREATE TABLE internship (
   internshipPlan BYTEA NOT NULL,
   finalReport BYTEA,
   fillonlytotalhours SMALLINT NOT NULL,
+  sei VARCHAR(255) NOT NULL,
   PRIMARY KEY (idinternship),
   CONSTRAINT fk_internship_company FOREIGN KEY (idcompany) REFERENCES company (idcompany) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_internship_companysupervisor FOREIGN KEY (idcompanysupervisor) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -336,6 +339,7 @@ CREATE  TABLE internshipjury (
   supervisorScore REAL NOT NULL ,
   supervisorFillJuryForm SMALLINT NOT NULL ,
   juryformat SMALLINT NOT NULL ,
+  sei VARCHAR(255) NOT NULL,
   PRIMARY KEY (idinternshipjury) ,
   CONSTRAINT fk_internshipjury_idinternship FOREIGN KEY (idinternship) REFERENCES internship (idinternship) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -701,6 +705,7 @@ CREATE TABLE jury (
   minimumScore REAL NOT NULL,
   supervisorabsencereason TEXT NOT NULL,
   supervisorassignsgrades SMALLINT NOT NULL ,
+  sei VARCHAR(255) NOT NULL,
   PRIMARY KEY (idjury),
   CONSTRAINT fk_jury_project FOREIGN KEY (idproject) REFERENCES project (idproject) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_jury_thesis FOREIGN KEY (idthesis) REFERENCES thesis (idthesis) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -891,7 +896,7 @@ CREATE INDEX fk_internshipposterappraiserrequest_appraiser_idx ON internshippost
 CREATE OR REPLACE VIEW internshipview AS
 	SELECT internship.idinternship, internship.iddepartment, internship.idcompany, internship.idcompanysupervisor, internship.idsupervisor, internship.idstudent,
 	internship.type, internship.comments, internship.reporttitle, internship.startdate, internship.enddate, internship.totalhours, internship.requiredtype, 
-	internship.term, internship.weekhours, internship.weekdays, internship.fillonlytotalhours, internship.finalreport IS NOT NULL AS hasfinalreport
+	internship.term, internship.weekhours, internship.weekdays, internship.fillonlytotalhours, internship.sei, internship.finalreport IS NOT NULL AS hasfinalreport
 	FROM internship;
 
 CREATE OR REPLACE FUNCTION year(timestamp) RETURNS integer AS $$
