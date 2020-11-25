@@ -13,6 +13,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
@@ -33,6 +34,7 @@ import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
+import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipReportBO;
 import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
@@ -40,6 +42,8 @@ import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipRequiredType;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
+import br.edu.utfpr.dv.siacoes.model.InternshipJury;
+import br.edu.utfpr.dv.siacoes.model.InternshipJuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.ui.components.CampusComboBox;
@@ -52,6 +56,7 @@ import br.edu.utfpr.dv.siacoes.ui.components.StudentComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploader.AcceptedDocumentType;
 import br.edu.utfpr.dv.siacoes.ui.grid.InternshipReportDataSource;
+import br.edu.utfpr.dv.siacoes.ui.grid.JuryGradeDataSource;
 import br.edu.utfpr.dv.siacoes.ui.views.ListView;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportFeedback;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportType;
@@ -99,6 +104,14 @@ public class EditInternshipWindow extends EditWindow {
 	private final Button buttonValidateStudentReport;
 	private final Button buttonValidateSupervisorReport;
 	private final Button buttonValidateCompanySupervisorReport;
+	private final Button buttonJury;
+
+	private final VerticalLayout layoutJury;
+	private final VerticalLayout layoutGrades;
+	private final DateTimePicker textJuryDate;
+	private final TextField textJuryLocal;
+	private final TextField textJurySei;
+	private final Tab tabJury;
 	
 	private SigesConfig config;
 	
@@ -200,6 +213,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.buttonDownloadInternshipPlan = new Button("Baixar Plano de Estágio", event -> {
             downloadInternshipPlan();
         });
+		this.buttonDownloadInternshipPlan.setIcon(new Icon(VaadinIcon.FILE_O));
 		
 		this.uploadFinalReport = new FileUploader("(Formato PDF, " + this.config.getMaxFileSizeAsString() + ")");
 		this.uploadFinalReport.setAcceptedType(AcceptedDocumentType.PDF);
@@ -219,11 +233,31 @@ public class EditInternshipWindow extends EditWindow {
 		this.buttonDownloadFinalReport = new Button("Baixar Relatório Final", event -> {
             downloadFinalReport();
         });
+		this.buttonDownloadFinalReport.setIcon(new Icon(VaadinIcon.FILE_O));
 		
 		this.textComments = new TextArea();
 		this.textComments.setWidth("820px");
 		this.textComments.setHeight("500px");
 		this.textComments.setVisible(false);
+		
+		this.textJuryDate = new DateTimePicker("Data e Hora");
+
+		this.textJuryLocal = new TextField("Local");
+		this.textJuryLocal.setWidth("300px");
+
+		this.textJurySei = new TextField("Processo no SEI");
+		this.textJurySei.setWidth("200px");
+
+		HorizontalLayout hJury = new HorizontalLayout(this.textJuryDate, this.textJuryLocal, this.textJurySei);
+		hJury.setSpacing(true);
+
+		this.layoutGrades = new VerticalLayout();
+		this.layoutGrades.setSpacing(false);
+		this.layoutGrades.setWidth("100%");
+
+		this.layoutJury = new VerticalLayout(hJury, this.layoutGrades);
+		this.layoutJury.setSpacing(true);
+		this.layoutJury.setVisible(false);
 		
 		HorizontalLayout h1 = new HorizontalLayout(this.comboCampus, this.comboDepartment);
 		h1.setSpacing(true);
@@ -395,6 +429,7 @@ public class EditInternshipWindow extends EditWindow {
 		Tab t3 = new Tab("Orientador");
 		Tab t4 = new Tab("Supervisor");
 		Tab t5 = new Tab("Observações");
+		this.tabJury = new Tab("Banca");
 		
 		Map<Tab, Component> tabsToPages = new HashMap<>();
 		tabsToPages.put(t1, tab1);
@@ -402,7 +437,8 @@ public class EditInternshipWindow extends EditWindow {
 		tabsToPages.put(t3, tab3);
 		tabsToPages.put(t4, tab4);
 		tabsToPages.put(t5, this.textComments);
-		Div pages = new Div(tab1, tab2, tab3, tab4, this.textComments);
+		tabsToPages.put(this.tabJury, this.layoutJury);
+		Div pages = new Div(tab1, tab2, tab3, tab4, this.textComments, this.layoutJury);
 		
 		this.tabContainer = new Tabs(t1, t2, t3, t4, t5);
 		this.tabContainer.setWidthFull();
@@ -425,14 +461,20 @@ public class EditInternshipWindow extends EditWindow {
 		
 		this.addField(layout);
 		
+		this.buttonJury = new Button("Banca", new Icon(VaadinIcon.CALENDAR_CLOCK), event -> {
+			viewJury();
+        });
+		
 		this.addButton(this.buttonDownloadInternshipPlan);
 		this.addButton(this.buttonDownloadFinalReport);
+		this.addButton(this.buttonJury);
 		
 		this.buttonDownloadInternshipPlan.setWidth("250px");
 		this.buttonDownloadFinalReport.setWidth("250px");
 		
 		if(!Session.isUserManager(SystemModule.SIGES)){
 			this.setSaveButtonEnabled(false);
+			this.buttonJury.setVisible(false);
 			this.buttonUploadStudentReport.setVisible(false);
 			this.buttonUploadSupervisorReport.setVisible(false);
 			this.buttonValidateStudentReport.setVisible(false);
@@ -496,6 +538,8 @@ public class EditInternshipWindow extends EditWindow {
 		this.internship.setReports(null);
 		
 		this.loadReports();
+		this.loadJuryInfo();
+		
 		this.buttonDownloadInternshipPlan.setVisible(this.internship.getInternshipPlan() != null);
 		this.buttonDownloadFinalReport.setVisible(this.internship.getFinalReport() != null);
 		
@@ -533,6 +577,70 @@ public class EditInternshipWindow extends EditWindow {
 			this.gridStudentReport.setItems(InternshipReportDataSource.load(this.internship.getReports(), ReportType.STUDENT));
 			this.gridSupervisorReport.setItems(InternshipReportDataSource.load(this.internship.getReports(), ReportType.SUPERVISOR));
 			this.gridCompanySupervisorReport.setItems(InternshipReportDataSource.load(this.internship.getReports(), ReportType.COMPANY));
+		}
+	}
+	
+	private void loadJuryInfo() {
+		InternshipJury jury = new InternshipJury();
+
+		if((this.internship.getIdInternship() != 0) && (this.internship.getType() == InternshipType.REQUIRED)) {
+			try {
+				jury = new InternshipJuryBO().findByInternship(this.internship.getIdInternship());
+			} catch (Exception e) {
+				Logger.log(Level.SEVERE, e.getMessage(), e);
+			}
+		}
+		
+		if(jury.getIdInternshipJury() != 0) {
+			try {
+				this.textJuryDate.setValue(DateUtils.convertToLocalDateTime(jury.getDate()));
+				this.textJuryLocal.setValue(jury.getLocal());
+				this.textJurySei.setValue(jury.getSei());
+
+				if(!this.config.isUseSei() && jury.getSei().trim().isEmpty()) {
+					this.textJurySei.setVisible(false);
+				}
+				
+				this.textJuryDate.setReadOnly(true);
+				this.textJuryLocal.setReadOnly(true);
+				this.textJurySei.setReadOnly(true);
+				
+				InternshipJuryFormReport report = new InternshipJuryBO().getJuryFormReport(jury.getIdInternshipJury());
+				
+				Grid<JuryGradeDataSource> gridGeneral = new Grid<JuryGradeDataSource>();
+				gridGeneral.setWidth("100%");
+				gridGeneral.setHeight("245px");
+				gridGeneral.addColumn(JuryGradeDataSource::getDescription).setHeader("");
+				gridGeneral.addColumn(JuryGradeDataSource::getAppraiser).setHeader("Avaliador");
+				gridGeneral.addColumn(JuryGradeDataSource::getPonderosity).setHeader("Peso");
+				gridGeneral.addColumn(JuryGradeDataSource::getTotal).setHeader("Nota");
+				
+				gridGeneral.setItems(JuryGradeDataSource.load(report));
+				
+				this.layoutGrades.removeAll();
+				this.layoutGrades.add(gridGeneral);
+			} catch (Exception e) {
+				Logger.log(Level.SEVERE, e.getMessage(), e);
+				
+				this.tabJury.setVisible(false);
+				this.buttonJury.setVisible(false);
+			}
+		} else {
+			this.tabJury.setVisible(false);
+			this.buttonJury.setVisible(false);
+		}
+	}
+	
+	private void viewJury() {
+		try {
+			InternshipJury jury = new InternshipJuryBO().findByInternship(this.internship.getIdInternship());
+			
+			EditInternshipJuryWindow window = new EditInternshipJuryWindow(jury, null);
+			window.open();
+		} catch(Exception e) {
+			Logger.log(Level.SEVERE, e.getMessage(), e);
+
+			this.showErrorNotification("Banca de Estágio", e.getMessage());
 		}
 	}
 	
