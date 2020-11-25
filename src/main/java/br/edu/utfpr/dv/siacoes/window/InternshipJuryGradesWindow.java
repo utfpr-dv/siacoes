@@ -128,6 +128,9 @@ public class InternshipJuryGradesWindow extends BasicWindow {
 			h4.addComponent(this.buildLabel(String.format("%.1f", report.getCompanySupervisorPonderosity()), "75px", true, true, false));
 			h4.addComponent(this.buildLabel(String.format("%.2f", report.getCompanySupervisorScore()), "150px", true, true, false));
 			h4.setExpandRatio(h4.getComponent(0), 1f);
+			if(this.jury.getCompanySupervisorPonderosity() <= 0) {
+				h4.setVisible(false);
+			}
 			
 			HorizontalLayout h5 = new HorizontalLayout();
 			h5.setWidth("100%");
