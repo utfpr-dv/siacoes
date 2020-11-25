@@ -94,6 +94,7 @@ import br.edu.utfpr.dv.siacoes.view.InternshipEvaluationItemView;
 import br.edu.utfpr.dv.siacoes.view.InternshipFinalDocumentView;
 import br.edu.utfpr.dv.siacoes.view.InternshipJuryGradesReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipJuryParticipantsReportView;
+import br.edu.utfpr.dv.siacoes.view.InternshipJuryRequestView;
 import br.edu.utfpr.dv.siacoes.view.InternshipLibraryView;
 import br.edu.utfpr.dv.siacoes.view.InternshipMissingDocumentsReportView;
 import br.edu.utfpr.dv.siacoes.view.InternshipPosterRequestView;
@@ -864,10 +865,12 @@ public class SideMenu extends CustomComponent {
 		}
 		
 		layout.addComponent(new MenuEntry("Bancas", 0));
-		if((this.sigesConfig.getJuryFormat() == JuryFormat.SESSION) && (Session.isUserManager(SystemModule.SIGES) || Session.isUserDepartmentManager())) {
-			layout.addComponent(new MenuEntry("Solicitações de Bancas", 1, InternshipPosterRequestView.NAME));
-		} else if(this.sigesConfig.getJuryFormat() == JuryFormat.INDIVIDUAL) {
-			
+		if((Session.isUserManager(SystemModule.SIGES) || Session.isUserDepartmentManager())) {
+			if(this.sigesConfig.getJuryFormat() == JuryFormat.SESSION) {
+				layout.addComponent(new MenuEntry("Solicitações de Bancas", 1, InternshipPosterRequestView.NAME));
+			} else if(this.sigesConfig.getJuryFormat() == JuryFormat.INDIVIDUAL) {
+				layout.addComponent(new MenuEntry("Solicitações de Bancas", 1, InternshipJuryRequestView.NAME));
+			}
 		}
 		layout.addComponent(new MenuEntry("Agenda de Bancas", 1, InternshipJuryView.NAME + "/1"));
 		if(Session.isUserStudent()) {

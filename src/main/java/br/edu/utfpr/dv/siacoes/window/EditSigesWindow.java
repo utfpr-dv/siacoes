@@ -37,6 +37,7 @@ public class EditSigesWindow extends EditWindow {
 	private final TextField textMinimumJuryMembers;
 	private final TextField textMinimumJurySubstitutes;
 	private final CheckBox checkUseSei;
+	private final CheckBox checkStudentRequestJury;
 	
 	private final TabSheet tab;
 	
@@ -46,7 +47,7 @@ public class EditSigesWindow extends EditWindow {
 		this.config = config;
 		
 		this.tab = new TabSheet();
-		this.tab.setHeight("320px");
+		this.tab.setHeight("360px");
 		this.tab.setWidth("900px");
 		
 		this.textMinimumScore = new TextField("Pontuação Mínima");
@@ -90,6 +91,8 @@ public class EditSigesWindow extends EditWindow {
 		
 		this.checkUseSei = new CheckBox("Indicar processo no SEI");
 		
+		this.checkStudentRequestJury = new CheckBox("Acadêmico pode solicitar banca");
+		
 		this.textMinimumJuryMembers = new TextField("Número mínimo de membros titulares na banca (exceto o presidente)");
 		this.textMinimumJuryMembers.setWidth("100px");
 		
@@ -108,7 +111,7 @@ public class EditSigesWindow extends EditWindow {
 		h2.setSpacing(true);
 		HorizontalLayout h3 = new HorizontalLayout(this.textMinimumJuryMembers, this.textMinimumJurySubstitutes);
 		h3.setSpacing(true);
-		VerticalLayout v2 = new VerticalLayout(h1, h2, h3, this.checkSupervisorFillJuryForm, this.checkShowGradesToStudent, this.checkAppraiserFillsGrades);
+		VerticalLayout v2 = new VerticalLayout(h1, h2, h3, this.checkSupervisorFillJuryForm, this.checkShowGradesToStudent, this.checkAppraiserFillsGrades, this.checkStudentRequestJury);
 		v2.setSpacing(true);
 		v2.setMargin(true);
 		
@@ -147,6 +150,7 @@ public class EditSigesWindow extends EditWindow {
 		this.textMinimumJuryMembers.setValue(String.valueOf(this.config.getMinimumJuryMembers()));
 		this.textMinimumJurySubstitutes.setValue(String.valueOf(this.config.getMinimumJurySubstitutes()));
 		this.checkUseSei.setValue(this.config.isUseSei());
+		this.checkStudentRequestJury.setValue(this.config.isStudentRequestJury());
 	}
 
 	@Override
@@ -169,6 +173,7 @@ public class EditSigesWindow extends EditWindow {
 			this.config.setMinimumJuryMembers(Integer.parseInt(this.textMinimumJuryMembers.getValue()));
 			this.config.setMinimumJurySubstitutes(Integer.parseInt(this.textMinimumJurySubstitutes.getValue()));
 			this.config.setUseSei(this.checkUseSei.getValue());
+			this.config.setStudentRequestJury(this.checkStudentRequestJury.getValue());
 			
 			bo.save(Session.getIdUserLog(), this.config);
 			

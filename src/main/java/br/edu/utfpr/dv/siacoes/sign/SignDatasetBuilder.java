@@ -15,6 +15,7 @@ import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.Attendance;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipJury;
+import br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipJuryRequest;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipPosterRequest;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.Jury;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.JuryRequest;
@@ -61,6 +62,36 @@ public class SignDatasetBuilder {
 		
 		dataset.setStage(jury.getStage());
 		dataset.setTitle(jury.getTitle());
+		dataset.setDate(jury.getDate());
+		dataset.setLocal(jury.getLocal());
+		dataset.setIdStudent(jury.getIdStudent());
+		dataset.setIdSupervisor(jury.getIdSupervisor());
+		dataset.setComments(jury.getComments());
+		
+		boolean findSupervisor = false;
+		
+		for(JuryFormAppraiserReport appraiser : jury.getAppraisers()) {
+			dataset.addAppraiser(appraiser.getIdUser(), appraiser.getDescription());
+			dataset.addSignature(appraiser.getIdUser(), appraiser.getName());
+			
+			if(appraiser.getIdUser() == jury.getIdSupervisor()) {
+				findSupervisor = true;
+			}
+		}
+		
+		dataset.addSignature(jury.getIdStudent(), jury.getStudent());
+		
+		if(!findSupervisor) {
+			dataset.addSignature(jury.getIdSupervisor(), jury.getSupervisor());
+		}
+		
+		return dataset;
+	}
+	
+	public static InternshipJuryRequest buildRequest(InternshipJuryFormReport jury) {
+		InternshipJuryRequest dataset = new InternshipJuryRequest();
+		
+		dataset.setCompany(jury.getCompany());
 		dataset.setDate(jury.getDate());
 		dataset.setLocal(jury.getLocal());
 		dataset.setIdStudent(jury.getIdStudent());

@@ -27,6 +27,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import br.edu.utfpr.dv.siacoes.bo.AttendanceBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
+import br.edu.utfpr.dv.siacoes.bo.InternshipJuryRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipPosterRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryRequestBO;
@@ -49,7 +50,7 @@ import net.sf.jasperreports.engine.JasperReport;
 public class Document {
 	
 	public enum DocumentType{
-		NONE(0), SUPERVISORAGREEMENT(1), APPRAISERFEEDBACK(2), JURYREQUEST(3), SUPERVISORCHANGE(4), ATTENDANCE(5), JURY(6), INTERNSHIPPOSTERREQUEST(7), INTERNSHIPJURY(8);
+		NONE(0), SUPERVISORAGREEMENT(1), APPRAISERFEEDBACK(2), JURYREQUEST(3), SUPERVISORCHANGE(4), ATTENDANCE(5), JURY(6), INTERNSHIPPOSTERREQUEST(7), INTERNSHIPJURY(8), INTERNSHIPJURYREQUEST(9);
 		
 		private final int value; 
 		DocumentType(int value){ 
@@ -90,6 +91,8 @@ public class Document {
 					return "Ficha de Inscrição para Evento de Avaliação de Estágio Curricular Obrigatório";
 				case INTERNSHIPJURY:
 					return "Banca de Estágio";
+				case INTERNSHIPJURYREQUEST:
+					return "Formulário de Agendamento de Banca de Estágio";
 				default:
 					return "Nenhum";
 			}
@@ -334,6 +337,8 @@ public class Document {
 				return new ReportUtils().getJasperData("InternshipPosterRequest");
 			case INTERNSHIPJURY:
 				return new ReportUtils().getJasperData("InternshipJuryForm");
+			case INTERNSHIPJURYREQUEST:
+				return new ReportUtils().getJasperData("InternshipJuryFormRequest");
 			default:
 				return null;
 		}
@@ -390,6 +395,8 @@ public class Document {
 					throw new Exception("Todas as notas devem ser lançadas para que a ficha de avaliação possa ser assinada.");
 				}
 				
+				break;
+			case INTERNSHIPJURYREQUEST:
 				break;
 			default:
 				throw new Exception("O tipo de documento é inválido.");
@@ -1139,6 +1146,9 @@ public class Document {
 			case INTERNSHIPJURY:
 				new InternshipJuryBO().sendJuryFormSignedMessage(idRegister);
 				return;
+			case INTERNSHIPJURYREQUEST:
+				new InternshipJuryRequestBO().sendRequestSignedMessage(idRegister);
+				return;
 		}
 	}
 	
@@ -1159,6 +1169,9 @@ public class Document {
 				return;
 			case INTERNSHIPJURY:
 				new InternshipJuryBO().sendRequestSignJuryFormMessage(idRegister, users);
+				return;
+			case INTERNSHIPJURYREQUEST:
+				new InternshipJuryRequestBO().sendRequestSignJuryRequestMessage(idRegister, users);
 				return;
 		}
 	}

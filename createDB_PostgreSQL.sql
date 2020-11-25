@@ -103,7 +103,8 @@ CREATE  TABLE sigesconfig (
   usedigitalsignature smallint NOT NULL ,
   minimumjurymembers SMALLINT NOT NULL ,
   minimumjurysubstitutes SMALLINT NOT NULL ,
-  usesei smallint NOT NULL ,
+  usesei SMALLINT NOT NULL ,
+  studentrequestjury SMALLINT NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigesconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -893,6 +894,33 @@ CREATE TABLE internshipposterappraiserrequest (
 CREATE INDEX fk_internshipposterappraiserrequest_internshipposterrequest_idx ON internshipposterappraiserrequest (idinternshipposterrequest);
 CREATE INDEX fk_internshipposterappraiserrequest_appraiser_idx ON internshipposterappraiserrequest (idappraiser);
 
+CREATE TABLE internshipjuryrequest (
+  idinternshipjuryrequest SERIAL NOT NULL,
+  date TIMESTAMP NOT NULL,
+  local VARCHAR(100) NOT NULL,
+  idinternship INT NOT NULL,
+  comments text NOT NULL,
+  idinternshipjury INT DEFAULT NULL,
+  PRIMARY KEY (idinternshipjuryrequest),
+  CONSTRAINT fk_internshipjuryrequest_internship FOREIGN KEY (idinternship) REFERENCES internship (idinternship) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT fk_internshipjuryrequest_internshipjury FOREIGN KEY (idinternshipjury) REFERENCES internshipjury (idinternshipjury) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+CREATE INDEX fk_internshipjuryrequest_internship_idx ON internshipjuryrequest (idinternship);
+CREATE INDEX fk_internshipjuryrequest_internshipjury_idx ON internshipjuryrequest (idinternshipjury);
+
+CREATE TABLE internshipjuryappraiserrequest (
+  idinternshipjuryappraiserrequest SERIAL NOT NULL,
+  idinternshipjuryrequest INT NOT NULL,
+  idappraiser INT NOT NULL,
+  chair SMALLINT NOT NULL,
+  substitute SMALLINT NOT NULL,
+  PRIMARY KEY (idinternshipjuryappraiserrequest),
+  CONSTRAINT fk_internshipjuryappraiserrequest_appraiser FOREIGN KEY (idappraiser) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT fk_internshipjuryappraiserrequest_internshipjuryrequest FOREIGN KEY (idinternshipjuryrequest) REFERENCES internshipjuryrequest (idinternshipjuryrequest) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+CREATE INDEX fk_internshipjuryappraiserrequest_appraiser_idx ON internshipjuryappraiserrequest (idappraiser);
+CREATE INDEX fk_internshipjuryappraiserrequest_internshipjuryrequest_idx ON internshipjuryappraiserrequest (idinternshipjuryrequest);
+
 CREATE OR REPLACE VIEW internshipview AS
 	SELECT internship.idinternship, internship.iddepartment, internship.idcompany, internship.idcompanysupervisor, internship.idsupervisor, internship.idstudent,
 	internship.type, internship.comments, internship.reporttitle, internship.startdate, internship.enddate, internship.totalhours, internship.requiredtype, 
@@ -984,3 +1012,5 @@ INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) V
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(56, 1, '', '', '{student};{supervisor};{title};{stage}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(57, 3, '', '', '{student};{supervisor};{company}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(58, 3, '', '', '{student};{supervisor};{manager};{company};{type}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(59, 3, '', '', '{student};{supervisor};{manager};{company}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(60, 3, '', '', '{student};{supervisor};{manager};{company}');

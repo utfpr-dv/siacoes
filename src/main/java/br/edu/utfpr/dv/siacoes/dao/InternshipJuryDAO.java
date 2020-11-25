@@ -323,6 +323,17 @@ public class InternshipJuryDAO {
 						(ids.isEmpty() ? "" : " AND idInternshipJuryStudent NOT IN(" + ids.substring(0, ids.lastIndexOf(",")) + ")"));
 			}
 			
+			if((jury.getJuryRequest() != null) && (jury.getJuryRequest().getIdInternshipJuryRequest() != 0)) {
+				Statement st = conn.createStatement();
+				st.execute("UPDATE internshipjuryrequest SET idInternshipJury=" + String.valueOf(jury.getIdInternshipJury()) + " WHERE idInternshipJuryRequest=" + String.valueOf(jury.getJuryRequest().getIdInternshipJuryRequest()));
+				st.close();
+			} 
+			if((jury.getPosterRequest() != null) && (jury.getPosterRequest().getIdInternshipPosterRequest() != 0)) {
+				Statement st = conn.createStatement();
+				st.execute("UPDATE internshipposterrequest SET idInternshipJury=" + String.valueOf(jury.getIdInternshipJury()) + " WHERE idInternshipPosterRequest=" + String.valueOf(jury.getPosterRequest().getIdInternshipPosterRequest()));
+				st.close();
+			}
+			
 			conn.commit();
 			
 			return jury.getIdInternshipJury();
