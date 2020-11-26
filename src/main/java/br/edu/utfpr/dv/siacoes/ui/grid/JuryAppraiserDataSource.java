@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
+import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.InternshipPosterAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
@@ -35,6 +36,20 @@ public class JuryAppraiserDataSource extends BasicDataSource {
 	
 	public JuryAppraiserDataSource(InternshipPosterAppraiserRequest appraiser) {
 		this.setId(appraiser.getIdInternshipPosterAppraiserRequest());
+		this.setIdUser(appraiser.getAppraiser().getIdUser());
+		this.setAppraiser(appraiser.getAppraiser().getName());
+		this.setFileType(DocumentType.UNDEFINED);
+		this.setAdditionalFileType(DocumentType.UNDEFINED);
+		
+		if (appraiser.isSubstitute()) {
+			this.setMember("Substituto");
+		} else {
+			this.setMember("Membro");
+		}
+	}
+	
+	public JuryAppraiserDataSource(InternshipJuryAppraiserRequest appraiser) {
+		this.setId(appraiser.getIdInternshipJuryAppraiserRequest());
 		this.setIdUser(appraiser.getAppraiser().getIdUser());
 		this.setAppraiser(appraiser.getAppraiser().getName());
 		this.setFileType(DocumentType.UNDEFINED);
@@ -111,6 +126,33 @@ public class JuryAppraiserDataSource extends BasicDataSource {
 		int substitute = 1, member = 1;
 		
 		for(InternshipPosterAppraiserRequest appraiser : list) {
+			JuryAppraiserDataSource a = new JuryAppraiserDataSource(appraiser);
+			
+			if(appraiser.isSubstitute()) {
+				a.setMember("Substituto " + String.valueOf(substitute));
+				substitute++;
+			} else {
+				a.setMember("Membro " + String.valueOf(member));
+				member++;
+			}
+			
+			if((!appraiser.isSubstitute() && includeMember) || (appraiser.isSubstitute() && includeSubstitute)) {
+				ret.add(a);
+			}
+		}
+		
+		return ret;
+	}
+	
+	public static List<JuryAppraiserDataSource> loadInternshipJuryRequest(List<InternshipJuryAppraiserRequest> list) {
+		return JuryAppraiserDataSource.loadInternshipJuryRequest(list, true, true);
+	}
+	
+	public static List<JuryAppraiserDataSource> loadInternshipJuryRequest(List<InternshipJuryAppraiserRequest> list, boolean includeMember, boolean includeSubstitute) {
+		List<JuryAppraiserDataSource> ret = new ArrayList<JuryAppraiserDataSource>();
+		int substitute = 1, member = 1;
+		
+		for(InternshipJuryAppraiserRequest appraiser : list) {
 			JuryAppraiserDataSource a = new JuryAppraiserDataSource(appraiser);
 			
 			if(appraiser.isSubstitute()) {

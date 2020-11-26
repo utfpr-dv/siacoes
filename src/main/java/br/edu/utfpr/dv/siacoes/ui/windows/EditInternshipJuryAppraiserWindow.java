@@ -8,6 +8,7 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
+import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.InternshipPosterAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 import br.edu.utfpr.dv.siacoes.ui.components.SupervisorComboBox;
@@ -85,6 +86,24 @@ public class EditInternshipJuryAppraiserWindow extends EditWindow {
 		this.addField(this.comboProfessor);
 	}
 	
+	public EditInternshipJuryAppraiserWindow(EditInternshipJuryRequestWindow parentWindow, boolean substitute) {
+		super("Editar Membro", null);
+
+		this.parentWindow = parentWindow;
+		this.edit = false;
+
+		this.comboProfessor = new SupervisorComboBox("Membro", Session.getSelectedDepartment().getDepartment().getIdDepartment(), SupervisorFilter.EVERYONE);
+		this.comboProfessor.setRequired(true);
+
+		this.optionAppraiserType = new RadioButtonGroup<String>();
+		this.optionAppraiserType.setItems(MEMBER, SUBSTITUTE);
+		this.optionAppraiserType.setValue(substitute ? SUBSTITUTE : MEMBER);
+
+		this.checkChair = new Checkbox("Presidente da Banca");
+
+		this.addField(this.comboProfessor);
+	}
+	
 	@Override
 	public void save() {
 		try{
@@ -113,6 +132,13 @@ public class EditInternshipJuryAppraiserWindow extends EditWindow {
 				a.setSubstitute(appraiser.isSubstitute());
 				
 				((EditInternshipPosterRequestWindow)this.parentWindow).addAppraiser(a);
+			} else if(this.parentWindow instanceof EditInternshipJuryRequestWindow) {
+				InternshipJuryAppraiserRequest a = new InternshipJuryAppraiserRequest();
+
+				a.setAppraiser(appraiser.getAppraiser());
+				a.setSubstitute(appraiser.isSubstitute());
+
+				((EditInternshipJuryRequestWindow)this.parentWindow).addAppraiser(a);
 			}
 			
 			this.close();

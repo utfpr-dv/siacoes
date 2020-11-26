@@ -43,6 +43,7 @@ public class EditSigesWindow extends EditWindow {
 	private final IntegerField textMinimumJuryMembers;
 	private final IntegerField textMinimumJurySubstitutes;
 	private final Checkbox checkUseSei;
+	private final Checkbox checkStudentRequestJury;
 	
 	private final Tabs tab;
 	
@@ -88,6 +89,8 @@ public class EditSigesWindow extends EditWindow {
 		
 		this.checkUseSei = new Checkbox("Indicar processo no SEI");
 		
+		this.checkStudentRequestJury = new Checkbox("Acadêmico pode solicitar banca");
+		
 		this.textMinimumJuryMembers = new IntegerField("Número mínimo de membros titulares na banca (exceto o presidente)");
 		this.textMinimumJuryMembers.setWidth("450px");
 		
@@ -111,7 +114,7 @@ public class EditSigesWindow extends EditWindow {
 		h3.setSpacing(true);
 		h3.setMargin(false);
 		h3.setPadding(false);
-		VerticalLayout v2 = new VerticalLayout(h1, h2, h3, this.checkSupervisorFillJuryForm, this.checkShowGradesToStudent, this.checkAppraiserFillsGrades);
+		VerticalLayout v2 = new VerticalLayout(h1, h2, h3, this.checkSupervisorFillJuryForm, this.checkShowGradesToStudent, this.checkAppraiserFillsGrades, this.checkStudentRequestJury);
 		v2.setSpacing(false);
 		v2.setMargin(false);
 		v2.setPadding(false);
@@ -155,7 +158,7 @@ public class EditSigesWindow extends EditWindow {
 		
 		VerticalLayout layout = new VerticalLayout(this.tab, pages);
 		layout.setWidth("900px");
-		layout.setHeight("400px");
+		layout.setHeight("440px");
 		layout.setSpacing(false);
 		layout.setMargin(false);
 		layout.setPadding(false);
@@ -181,6 +184,7 @@ public class EditSigesWindow extends EditWindow {
 		this.textMinimumJuryMembers.setValue(this.config.getMinimumJuryMembers());
 		this.textMinimumJurySubstitutes.setValue(this.config.getMinimumJurySubstitutes());
 		this.checkUseSei.setValue(this.config.isUseSei());
+		this.checkStudentRequestJury.setValue(this.config.isStudentRequestJury());
 	}
 
 	@Override
@@ -203,6 +207,7 @@ public class EditSigesWindow extends EditWindow {
 			this.config.setMinimumJuryMembers(this.textMinimumJuryMembers.getValue());
 			this.config.setMinimumJurySubstitutes(this.textMinimumJurySubstitutes.getValue());
 			this.config.setUseSei(this.checkUseSei.getValue());
+			this.config.setStudentRequestJury(this.checkStudentRequestJury.getValue());
 			
 			bo.save(Session.getIdUserLog(), this.config);
 			

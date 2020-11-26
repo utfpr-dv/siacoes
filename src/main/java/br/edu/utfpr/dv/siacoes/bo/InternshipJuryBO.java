@@ -29,6 +29,8 @@ import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiserScore;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryFormReport;
+import br.edu.utfpr.dv.siacoes.model.InternshipJuryRequest;
+import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryStudent;
 import br.edu.utfpr.dv.siacoes.model.InternshipPosterAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.InternshipPosterRequest;
@@ -116,36 +118,16 @@ public class InternshipJuryBO {
 				SigesConfig config = new SigesConfigBO().findByDepartment(new InternshipBO().findIdDepartment(idInternship));
 				
 				if(config.getJuryFormat() == JuryFormat.SESSION) {
-					InternshipPosterRequest request = new InternshipPosterRequestBO().findByInternship(idInternship);
+					jury = this.findByPosterRequest(idInternship, config);
 					
-					if((request != null) && (request.getIdInternshipPosterRequest() != 0)) {
-						request.setAppraisers(new InternshipPosterAppraiserRequestBO().listAppraisers(request.getIdInternshipPosterRequest()));
-						
-						jury = new InternshipJury();
-						
-						jury.setInternship(new InternshipBO().findById(idInternship));
-						
-						jury.setSupervisorFillJuryForm(config.isSupervisorFillJuryForm());
-						jury.setJuryFormat(config.getJuryFormat());
-						jury.setCompanySupervisorPonderosity(config.getCompanySupervisorPonderosity());
-						jury.setPosterRequest(request);
-						
-						InternshipJuryAppraiser appraiser = new InternshipJuryAppraiser();
-						appraiser.setChair(true);
-						appraiser.setAppraiser(jury.getInternship().getSupervisor());
-						
-						jury.setAppraisers(new ArrayList<InternshipJuryAppraiser>());
-						jury.getAppraisers().add(appraiser);
-						
-						for(InternshipPosterAppraiserRequest a : request.getAppraisers()) {
-							InternshipJuryAppraiser app = new InternshipJuryAppraiser();
-							app.setChair(false);
-							app.setSubstitute(a.isSubstitute());
-							app.setAppraiser(a.getAppraiser());
-							jury.getAppraisers().add(app);
-						}
-						
-						jury.setParticipants(new ArrayList<InternshipJuryStudent>());
+					if(jury == null) {
+						jury = this.findByJuryRequest(idInternship, config);
+					}
+				} else {
+					jury = this.findByJuryRequest(idInternship, config);
+
+					if(jury == null) {
+						jury = this.findByPosterRequest(idInternship, config);
 					}
 				}
 				
@@ -174,6 +156,90 @@ public class InternshipJuryBO {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			throw new Exception(e.getMessage());
+		}
+	}
+	
+	private InternshipJury findByPosterRequest(int idInternship, SigesConfig config) throws Exception {
+		InternshipPosterRequest request = new InternshipPosterRequestBO().findByInternship(idInternship);
+
+		if((request != null) && (request.getIdInternshipPosterRequest() != 0)) {
+			request.setAppraisers(new InternshipPosterAppraiserRequestBO().listAppraisers(request.getIdInternshipPosterRequest()));
+
+			InternshipJury jury = new InternshipJury();
+
+			jury.setInternship(new InternshipBO().findById(idInternship));
+
+			jury.setSupervisorFillJuryForm(config.isSupervisorFillJuryForm());
+			jury.setJuryFormat(config.getJuryFormat());
+			jury.setCompanySupervisorPonderosity(config.getCompanySupervisorPonderosity());
+			jury.setPosterRequest(request);
+
+			InternshipJuryAppraiser appraiser = new InternshipJuryAppraiser();
+			appraiser.setChair(true);
+			appraiser.setAppraiser(jury.getInternship().getSupervisor());
+
+			jury.setAppraisers(new ArrayList<InternshipJuryAppraiser>());
+			jury.getAppraisers().add(appraiser);
+
+			for(InternshipPosterAppraiserRequest a : request.getAppraisers()) {
+				if(a.getAppraiser().getIdUser() != jury.getInternship().getSupervisor().getIdUser()) {
+					InternshipJuryAppraiser app = new InternshipJuryAppraiser();
+					app.setChair(false);
+					app.setSubstitute(a.isSubstitute());
+					app.setAppraiser(a.getAppraiser());
+					jury.getAppraisers().add(app);
+				}
+			}
+
+			jury.setParticipants(new ArrayList<InternshipJuryStudent>());
+
+			return jury;
+		} else {
+			return null;
+		}
+	}
+
+	private InternshipJury findByJuryRequest(int idInternship, SigesConfig config) throws Exception {
+		InternshipJuryRequest request = new InternshipJuryRequestBO().findByInternship(idInternship);
+
+		if((request != null) && (request.getIdInternshipJuryRequest() != 0)) {
+			request.setAppraisers(new InternshipJuryAppraiserRequestBO().listAppraisers(request.getIdInternshipJuryRequest()));
+
+			InternshipJury jury = new InternshipJury();
+
+			jury.setInternship(new InternshipBO().findById(idInternship));
+
+			jury.setSupervisorFillJuryForm(config.isSupervisorFillJuryForm());
+			jury.setJuryFormat(config.getJuryFormat());
+			jury.setCompanySupervisorPonderosity(config.getCompanySupervisorPonderosity());
+			jury.setJuryRequest(request);
+
+			jury.setDate(request.getDate());
+			jury.setLocal(request.getLocal());
+			jury.setComments(request.getComments());
+
+			InternshipJuryAppraiser appraiser = new InternshipJuryAppraiser();
+			appraiser.setChair(true);
+			appraiser.setAppraiser(jury.getInternship().getSupervisor());
+
+			jury.setAppraisers(new ArrayList<InternshipJuryAppraiser>());
+			jury.getAppraisers().add(appraiser);
+
+			for(InternshipJuryAppraiserRequest a : request.getAppraisers()) {
+				if(a.getAppraiser().getIdUser() != jury.getInternship().getSupervisor().getIdUser()) {
+					InternshipJuryAppraiser app = new InternshipJuryAppraiser();
+					app.setChair(false);
+					app.setSubstitute(a.isSubstitute());
+					app.setAppraiser(a.getAppraiser());
+					jury.getAppraisers().add(app);
+				}
+			}
+
+			jury.setParticipants(new ArrayList<InternshipJuryStudent>());
+
+			return jury;
+		} else {
+			return null;
 		}
 	}
 	
@@ -278,13 +344,13 @@ public class InternshipJuryBO {
 				} else if(jury.getSupervisorAbsenceReason().trim().isEmpty()) {
 					throw new Exception("Informe o motivo do Professor Orientador não estar presidindo a banca.");
 				}
-				if(jury.getJuryFormat() == JuryFormat.INDIVIDUAL) {
+				//if(jury.getJuryFormat() == JuryFormat.INDIVIDUAL) {
 					if(countChair == 0) {
 						throw new Exception("É preciso indicar o presidente da banca.");
 					} else if(countChair > 1) {
 						throw new Exception("Apenas um membro pode ser presidente da banca.");
 					}
-				}
+				//}
 			}
 			if(Document.hasSignature(DocumentType.INTERNSHIPJURY, jury.getIdInternshipJury())) {
 				throw new Exception("A banca não pode ser alterada pois a ficha de avaliação já foi assinada.");

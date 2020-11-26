@@ -25,6 +25,7 @@ import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipFinalDocumentBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
+import br.edu.utfpr.dv.siacoes.bo.InternshipJuryRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipPosterRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
@@ -33,6 +34,7 @@ import br.edu.utfpr.dv.siacoes.model.Internship.InternshipStatus;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
 import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
+import br.edu.utfpr.dv.siacoes.model.InternshipJuryRequest;
 import br.edu.utfpr.dv.siacoes.model.InternshipPosterRequest;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
@@ -48,6 +50,7 @@ import br.edu.utfpr.dv.siacoes.ui.components.YearField;
 import br.edu.utfpr.dv.siacoes.ui.grid.InternshipDataSource;
 import br.edu.utfpr.dv.siacoes.ui.windows.DownloadInternshipFeedbackWindow;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditInternshipFinalDocumentWindow;
+import br.edu.utfpr.dv.siacoes.ui.windows.EditInternshipJuryRequestWindow;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditInternshipJuryWindow;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditInternshipPosterRequestWindow;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditInternshipReportWindow;
@@ -191,12 +194,20 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 		this.addActionButton(this.buttonFinalReport);
 		
 		this.buttonPosterRequest = new Button("Solicitar Banca", new Icon(VaadinIcon.CALENDAR_CLOCK), event -> {
-            posterRequestClick();
+			if(config.getJuryFormat() == JuryFormat.SESSION) {
+        		posterRequestClick();
+        	} else {
+        		juryRequestClick();
+        	}
         });
 		this.addActionButton(this.buttonPosterRequest);
 		
 		this.buttonPrintPosterRequest = new Button("Imp. Solic. de Banca", event -> {
-            downloadPosterRequest();
+			if(config.getJuryFormat() == JuryFormat.SESSION) {
+        		downloadPosterRequest();
+        	} else {
+        		downloadJuryRequest();
+        	}
         });
 		this.addActionButton(this.buttonPrintPosterRequest);
 		
@@ -231,8 +242,8 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 			this.buttonFinalReport.setVisible(this.profile == UserProfile.STUDENT);
 			this.buttonJuryFeedback.setVisible(this.profile == UserProfile.STUDENT || this.profile == UserProfile.PROFESSOR);
 			this.buttonFinalDocument.setVisible(this.profile == UserProfile.STUDENT || this.profile == UserProfile.PROFESSOR);
-			this.buttonPosterRequest.setVisible((this.profile == UserProfile.STUDENT) && (this.config.getJuryFormat() == JuryFormat.SESSION));
-			this.buttonPrintPosterRequest.setVisible((this.profile == UserProfile.STUDENT) && (this.config.getJuryFormat() == JuryFormat.SESSION));
+			this.buttonPosterRequest.setVisible(((this.profile == UserProfile.STUDENT) && this.config.isStudentRequestJury()) || (this.profile == UserProfile.PROFESSOR));
+			//this.buttonPrintPosterRequest.setVisible((this.profile == UserProfile.STUDENT) && (this.config.getJuryFormat() == JuryFormat.SESSION));
 			this.buttonJuryGrades.setVisible(((this.profile == UserProfile.STUDENT) || (this.profile == UserProfile.PROFESSOR)) && (this.config.isShowGradesToStudent()));
 			
 			if(this.profile == UserProfile.PROFESSOR){
@@ -573,12 +584,59 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
     	}
 	}
 	
+	private void juryRequestClick() {
+		Object id = getIdSelected();
+    	
+    	if(id == null) {
+    		this.showWarningNotification("Selecionar Registro", "Selecione o registro para efetuar a solicitação de banca.");
+    	} else {
+    		try {
+				InternshipJury jury = new InternshipJuryBO().findByInternship((int)id);
+				
+				if((jury != null) && (jury.getIdInternshipJury() != 0)) {
+					this.showWarningNotification("Solicitar Banca", "Não é possível efetuar a solicitação pois a banca já foi agendada.");
+				} else {
+					Internship internship = new InternshipBO().findById((int)id);
+	    			
+	    			if(internship.getType() == InternshipType.REQUIRED) {
+	    				InternshipJuryRequest request = new InternshipJuryRequestBO().prepareInternshipJuryRequest((int)id);
+	    				
+	    				EditInternshipJuryRequestWindow window = new EditInternshipJuryRequestWindow(request, this);
+	    				window.open();
+	    			} else {
+	    				this.showWarningNotification("Solicitar Banca", "A solicitação de banca só pode ser efetuada para o estágio obrigatório");
+	    			}
+				}
+    		} catch(Exception e) {
+    			Logger.log(Level.SEVERE, e.getMessage(), e);
+    			
+    			this.showErrorNotification("Solicitar Banca", e.getMessage());
+    		}
+    	}
+	}
+	
 	private void downloadPosterRequest() {
 		Object value = getIdSelected();
 		
 		if(value != null) {
 			try {
 				this.showReport(new InternshipPosterRequestBO().getPosterRequestForm(new InternshipPosterRequestBO().preparePosterRequest((int)value).getIdInternshipPosterRequest()));
+			} catch (Exception e) {
+            	Logger.log(Level.SEVERE, e.getMessage(), e);
+            	
+            	this.showErrorNotification("Imprimir Solicitação de Banca", e.getMessage());
+			}
+		} else {
+			this.showWarningNotification("Imprimir Solicitação de Banca", "Selecione um registro para imprimir a Solicitação de Banca.");
+		}
+	}
+	
+	private void downloadJuryRequest() {
+		Object value = getIdSelected();
+		
+		if(value != null) {
+			try {
+				this.showReport(new InternshipJuryRequestBO().getInternshipJuryRequestForm(new InternshipJuryRequestBO().prepareInternshipJuryRequest((int)value).getIdInternshipJuryRequest()));
 			} catch (Exception e) {
             	Logger.log(Level.SEVERE, e.getMessage(), e);
             	
