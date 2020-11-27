@@ -13,11 +13,13 @@ import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
+import br.edu.utfpr.dv.siacoes.bo.InternshipJuryRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
+import br.edu.utfpr.dv.siacoes.model.InternshipJuryRequest;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryRequest;
 import br.edu.utfpr.dv.siacoes.model.Semester;
@@ -60,8 +62,9 @@ public class ProfessorScheculeWindow extends BasicWindow {
 			List<Jury> list = new JuryBO().listByAppraiser(professor.getIdUser(), semester.getSemester(), semester.getYear());
 			List<JuryRequest> list3 = new JuryRequestBO().listByAppraiser(professor.getIdUser(), semester.getSemester(), semester.getYear());
 			List<InternshipJury> list2 = new InternshipJuryBO().listByAppraiser(professor.getIdUser(), semester.getSemester(), semester.getYear());
+			List<InternshipJuryRequest> list4 = new InternshipJuryRequestBO().listByAppraiser(professor.getIdUser(), semester.getSemester(), semester.getYear());
 			
-			this.gridSchedule.setItems(ProfessorScheduleDataSource.load(list, list3, list2));
+			this.gridSchedule.setItems(ProfessorScheduleDataSource.load(list, list3, list2, list4));
 		} catch (Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 			

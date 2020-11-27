@@ -189,6 +189,7 @@ public class JuryAppraiserRequestDAO {
 		
 		try{
 			stmt = this.conn.prepareStatement(
+					"SELECT SUM(total) AS total FROM (" +
 					"SELECT COUNT(*) AS total FROM juryrequest INNER JOIN juryappraiserrequest ON juryappraiserrequest.idJuryRequest=juryrequest.idJuryRequest " +
 					"WHERE juryrequest.idJuryRequest <> ? AND juryappraiserrequest.idAppraiser = ? " +
 					"AND juryrequest.date BETWEEN ?::TIMESTAMP - INTERVAL '1 minute' * ( " +
@@ -197,12 +198,23 @@ public class JuryAppraiserRequestDAO {
 					"WHERE proposal.idproposal=juryrequest.idproposal) AND ?::TIMESTAMP + INTERVAL '1 minute' * ( " +
 					"SELECT CASE WHEN juryrequest.stage = 2 THEN sigetconfig.jurytimestage2 ELSE sigetconfig.jurytimestage1 END - 1 " +
 					"FROM sigetconfig INNER JOIN proposal ON proposal.iddepartment=sigetconfig.iddepartment " +
-					"WHERE proposal.idproposal=juryrequest.idproposal)");
+					"WHERE proposal.idproposal=juryrequest.idproposal)" + 
+					" UNION ALL " +
+					"SELECT COUNT(*) AS total FROM internshipjuryrequest INNER JOIN internshipjuryappraiserrequest ON internshipjuryappraiserrequest.idInternshipJuryRequest=internshipjuryrequest.idInternshipJuryRequest " +
+					"WHERE internshipjuryappraiserrequest.idAppraiser = ? AND internshipjuryrequest.date BETWEEN ?::TIMESTAMP - INTERVAL '1 minute' * ( " +
+					"SELECT sigesconfig.jurytime - 1 FROM sigesconfig INNER JOIN internship ON internship.iddepartment=sigesconfig.iddepartment " +
+					"WHERE internship.idInternship=internshipjuryrequest.idInternship) AND ?::TIMESTAMP + INTERVAL '1 minute' * ( " +
+					"SELECT sigesconfig.jurytime - 1 FROM sigesconfig INNER JOIN internship ON internship.iddepartment=sigesconfig.iddepartment " +
+					"WHERE internship.idInternship=internshipjuryrequest.idInternship)" +
+					") AS teste");
 			
 			stmt.setInt(1, idJuryRequest);
 			stmt.setInt(2, idUser);
 			stmt.setTimestamp(3, new java.sql.Timestamp(juryDate.getTime()));
 			stmt.setTimestamp(4, new java.sql.Timestamp(juryDate.getTime()));
+			stmt.setInt(5, idUser);
+			stmt.setTimestamp(6, new java.sql.Timestamp(juryDate.getTime()));
+			stmt.setTimestamp(7, new java.sql.Timestamp(juryDate.getTime()));
 			
 			rs = stmt.executeQuery();
 			rs.next();

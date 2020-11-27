@@ -31,7 +31,9 @@ import com.vaadin.flow.router.Route;
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserBO;
+import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
+import br.edu.utfpr.dv.siacoes.bo.InternshipJuryRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
@@ -43,6 +45,8 @@ import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.model.AppConfig;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
+import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiserRequest;
+import br.edu.utfpr.dv.siacoes.model.InternshipJuryRequest;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
@@ -195,6 +199,7 @@ public class EventCalendarView extends LoggedView {
 			List<Jury> listThesis = new ArrayList<Jury>();
 			List<JuryRequest> listRequest = new ArrayList<JuryRequest>();
 			List<InternshipJury> listInternship = new ArrayList<InternshipJury>();
+			List<InternshipJuryRequest> listInternshipRequest = new ArrayList<InternshipJuryRequest>();
 			LocalDateTime firstDate = null;
 			
 			this.calendar.removeAllEntries();
@@ -220,6 +225,16 @@ public class EventCalendarView extends LoggedView {
 			if(this.optionFilterType.getValue().equals(ONLYINTERNSHIP) || this.optionFilterType.getValue().equals(LISTALL)) {
 				if(this.checkListOnlyMy.getValue()) {
 					listInternship = new InternshipJuryBO().listByAppraiser(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
+					
+					if(this.checkListPreScheculing.getValue()) {
+						List<InternshipJuryRequest> list = new InternshipJuryRequestBO().listByAppraiser(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
+						
+						for(InternshipJuryRequest request : list) {
+							if((request.getInternshipJury() == null) || (request.getInternshipJury().getIdInternshipJury() == 0)) {
+								listInternshipRequest.add(request);
+							}
+						}
+					}
 				} else {
 					listInternship = new InternshipJuryBO().listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 				}
@@ -227,7 +242,7 @@ public class EventCalendarView extends LoggedView {
 			
 			this.calendar.today();
 			
-			if((listThesis.size() == 0) && (listRequest.size() == 0) && (listInternship.size() == 0)) {
+			if((listThesis.size() == 0) && (listRequest.size() == 0) && (listInternship.size() == 0) && (listInternshipRequest.size() == 0)) {
 				this.showWarningNotification("Listar Eventos", "Não há bancas agendadas para este semestre.");
 				this.calendar.today();
 			} else {
@@ -278,7 +293,7 @@ public class EventCalendarView extends LoggedView {
 				}
 				
 				for(JuryRequest request : listRequest) {
-					String title = "Banca de TCC " + String.valueOf(request.getStage());
+					String title = "Solicitação de Banca de TCC " + String.valueOf(request.getStage());
 					String student = "Acadêmico(a): " + request.getStudent();
 					String local = "Local: " + request.getLocal();
 					String appraisers = "Membros da banca: ";
@@ -351,8 +366,48 @@ public class EventCalendarView extends LoggedView {
 					this.calendar.addEntry(entry);
 				}
 				
-				if(firstDate != null) {
+				if(listInternshipRequest.size() > 0) {
+					if((firstDate == null) || (firstDate.isAfter(DateUtils.convertToLocalDateTime(listInternshipRequest.get(0).getDate())))) {
+						firstDate = DateUtils.convertToLocalDateTime(listInternshipRequest.get(0).getDate());
+					}
+				}
+				
+				for(InternshipJuryRequest request : listInternshipRequest) {
+					String title = "Solicitação de Banca de Estágio";
+					String student = "Acadêmico(a): " + request.getInternship().getStudent();
+					String local = "Local: " + request.getLocal();
+					String appraisers = "Membros da banca: ";
+					Date endTime;
+					
+					request.setAppraisers(new InternshipJuryAppraiserRequestBO().listAppraisers(request.getIdInternshipJuryRequest()));
+					
+					for(InternshipJuryAppraiserRequest appraiser : request.getAppraisers()) {
+						appraisers += appraiser.getAppraiser().getName() + (appraiser.isSubstitute() ? " (suplente)" : (appraiser.isChair() ? " (presidente)" : "")) + "; ";
+					}
+					
+					try {
+						SigesConfig config = new SigesConfigBO().findByDepartment(new InternshipBO().findIdDepartment(request.getInternship().getIdInternship()));
+						
+						endTime = DateUtils.addMinute(request.getDate(), config.getJuryTime());
+					} catch (Exception e) {
+						endTime = DateUtils.addMinute(request.getDate(), 60);
+					}
+					
+					Entry entry = new Entry();
+					entry.setTitle(title);
+					entry.setStart(DateUtils.convertToLocalDateTime(request.getDate()));
+					entry.setEnd(DateUtils.convertToLocalDateTime(endTime));
+					entry.setDescription(student + "\n" + local + "\n" + appraisers);
+					entry.setColor("yellow");
+					entry.setEditable(false);
+					
+					this.calendar.addEntry(entry);
+				}
+				
+				if((firstDate != null) && (firstDate.isAfter(LocalDateTime.now()))) {
 					this.calendar.gotoDate(firstDate.toLocalDate());
+				} else {
+					this.calendar.today();
 				}
 			}
 		} catch (Exception e) {

@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
+import br.edu.utfpr.dv.siacoes.model.InternshipJuryRequest;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryRequest;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
@@ -57,7 +58,16 @@ public class ProfessorScheduleDataSource extends BasicDataSource {
 		this.setDescription("Banca de Estágio - " + jury.getStudent());
 	}
 	
-	public static List<ProfessorScheduleDataSource> load(List<Jury> listJury, List<JuryRequest> listJuryRequest, List<InternshipJury> listInternshipJury) {
+	public ProfessorScheduleDataSource(InternshipJuryRequest jury) {
+		this.setId(jury.getIdInternshipJuryRequest());
+		this.setType(4);
+		this.setDate(DateUtils.convertToLocalDate(jury.getDate()));
+		this.setStart(DateUtils.convertToLocalDateTime(jury.getDate()));
+		this.setEnd(DateUtils.convertToLocalDateTime(jury.getDate()).plusHours(1));
+		this.setDescription("* Banca de Estágio - " + jury.getStudent());
+	}
+	
+	public static List<ProfessorScheduleDataSource> load(List<Jury> listJury, List<JuryRequest> listJuryRequest, List<InternshipJury> listInternshipJury, List<InternshipJuryRequest> listInternshipJuryRequest) {
 		List<ProfessorScheduleDataSource> ret = new ArrayList<ProfessorScheduleDataSource>();
 		
 		for(Jury jury : listJury) {
@@ -69,6 +79,10 @@ public class ProfessorScheduleDataSource extends BasicDataSource {
 		}
 		
 		for(InternshipJury jury : listInternshipJury) {
+			ret.add(new ProfessorScheduleDataSource(jury));
+		}
+		
+		for(InternshipJuryRequest jury : listInternshipJuryRequest) {
 			ret.add(new ProfessorScheduleDataSource(jury));
 		}
 		

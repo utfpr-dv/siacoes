@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryRequest;
+import br.edu.utfpr.dv.siacoes.model.InternshipPosterRequest;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class InternshipJuryRequestDataSource extends BasicDataSource {
@@ -23,6 +24,15 @@ public class InternshipJuryRequestDataSource extends BasicDataSource {
 		this.setStudent(jury.getInternship().getStudent().getName());
 		this.setSupervisor(jury.getInternship().getSupervisor().getName());
 		this.setCompany(jury.getInternship().getCompany().getName());
+		this.setConfirmed(jury.isConfirmed() ? "Sim" : "Não");
+	}
+	
+	public InternshipJuryRequestDataSource(InternshipPosterRequest request) {
+		this.setId(request.getIdInternshipPosterRequest());
+		this.setStudent(request.getInternship().getStudent().getName());
+		this.setCompany(request.getInternship().getCompany().getName());
+		this.setSupervisor(request.getInternship().getSupervisor().getName());
+		this.setConfirmed(request.isConfirmed() ? "Sim" : "Não");
 	}
 	
 	public static List<InternshipJuryRequestDataSource> load(List<InternshipJuryRequest> list) {
@@ -30,6 +40,20 @@ public class InternshipJuryRequestDataSource extends BasicDataSource {
 		
 		for(InternshipJuryRequest jury : list) {
 			ret.add(new InternshipJuryRequestDataSource(jury));
+		}
+		
+		return ret;
+	}
+	
+	public static List<InternshipJuryRequestDataSource> load(List<InternshipJuryRequest> list, List<InternshipPosterRequest> list2) {
+		List<InternshipJuryRequestDataSource> ret = new ArrayList<InternshipJuryRequestDataSource>();
+		
+		for(InternshipJuryRequest jury : list) {
+			ret.add(new InternshipJuryRequestDataSource(jury));
+		}
+		
+		for(InternshipPosterRequest request : list2) {
+			ret.add(new InternshipJuryRequestDataSource(request));
 		}
 		
 		return ret;

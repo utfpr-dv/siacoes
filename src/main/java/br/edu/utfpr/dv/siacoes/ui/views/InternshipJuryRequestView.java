@@ -13,7 +13,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import br.edu.utfpr.dv.siacoes.Session;
-import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipPosterRequestBO;
@@ -31,7 +30,6 @@ import br.edu.utfpr.dv.siacoes.ui.components.YearField;
 import br.edu.utfpr.dv.siacoes.ui.grid.InternshipJuryRequestDataSource;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditInternshipJuryRequestWindow;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditInternshipJuryWindow;
-import br.edu.utfpr.dv.siacoes.ui.windows.EditInternshipPosterRequestWindow;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 @PageTitle("Requisições de Bancas de Estágio")
@@ -89,12 +87,9 @@ public class InternshipJuryRequestView extends ListView<InternshipJuryRequestDat
 	protected void loadGrid() {
 		try {
 			List<InternshipJuryRequest> list = new InternshipJuryRequestBO().listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
+			List<InternshipPosterRequest> list2 = new InternshipPosterRequestBO().listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 			
-			for(InternshipJuryRequest request : list) {
-				request.setInternship(new InternshipBO().findById(request.getInternship().getIdInternship()));
-			}
-			
-			this.getGrid().setItems(InternshipJuryRequestDataSource.load(list));
+			this.getGrid().setItems(InternshipJuryRequestDataSource.load(list, list2));
 		} catch (Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 			

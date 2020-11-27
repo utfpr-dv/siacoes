@@ -12,13 +12,14 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import br.edu.utfpr.dv.siacoes.Session;
-import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
+import br.edu.utfpr.dv.siacoes.bo.InternshipJuryRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipPosterRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
+import br.edu.utfpr.dv.siacoes.model.InternshipJuryRequest;
 import br.edu.utfpr.dv.siacoes.model.InternshipPosterRequest;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
@@ -84,12 +85,9 @@ public class InternshipPosterRequestView extends ListView<InternshipPosterReques
 	protected void loadGrid() {
 		try {
 			List<InternshipPosterRequest> list = new InternshipPosterRequestBO().listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
+			List<InternshipJuryRequest> list2 = new InternshipJuryRequestBO().listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 			
-			for(InternshipPosterRequest request : list) {
-				request.setInternship(new InternshipBO().findById(request.getInternship().getIdInternship()));
-			}
-			
-			this.getGrid().setItems(InternshipPosterRequestDataSource.load(list));
+			this.getGrid().setItems(InternshipPosterRequestDataSource.load(list, list2));
 		} catch (Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 			
