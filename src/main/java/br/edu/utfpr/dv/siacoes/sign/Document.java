@@ -606,7 +606,8 @@ public class Document {
 			rs = stmt.executeQuery("SELECT signdocument.*, (SELECT COUNT(signature.*) FROM signature WHERE signature.signature IS NULL AND signature.iddocument=signdocument.iddocument) AS published, " +
 					"(SELECT MAX(signaturedate) FROM signature WHERE signature.iddocument=signdocument.iddocument) AS publisheddate " +
 					"FROM signdocument INNER JOIN signature sign ON sign.iddocument=signdocument.iddocument " +
-					"WHERE sign.signature IS NOT NULL AND sign.iduser=" + String.valueOf(idUser) + " AND signdocument.iddepartment=" + String.valueOf(idDepartment));
+					"WHERE sign.signature IS NOT NULL AND sign.iduser=" + String.valueOf(idUser) + 
+					(idDepartment == 0 ? "" : " AND signdocument.iddepartment=" + String.valueOf(idDepartment)));
 			
 			List<Document> list = new ArrayList<Document>();
 			
@@ -637,7 +638,8 @@ public class Document {
 			rs = stmt.executeQuery("SELECT signdocument.*, (SELECT COUNT(signature.*) FROM signature WHERE signature.signature IS NULL AND signature.iddocument=signdocument.iddocument) AS published, " +
 					"(SELECT MAX(signaturedate) FROM signature WHERE signature.iddocument=signdocument.iddocument) AS publisheddate " +
 					"FROM signdocument INNER JOIN signature sign ON sign.iddocument=signdocument.iddocument " +
-					"WHERE sign.signature IS NULL AND sign.revoked=0 AND sign.iduser=" + String.valueOf(idUser) + " AND signdocument.iddepartment=" + String.valueOf(idDepartment));
+					"WHERE sign.signature IS NULL AND sign.revoked=0 AND sign.iduser=" + String.valueOf(idUser) + 
+					(idDepartment == 0 ? "" : " AND signdocument.iddepartment=" + String.valueOf(idDepartment)));
 			
 			List<Document> list = new ArrayList<Document>();
 			
@@ -703,7 +705,8 @@ public class Document {
 			
 			rs = stmt.executeQuery("SELECT COUNT(DISTINCT signdocument.iddocument) AS total " +
 					"FROM signdocument INNER JOIN signature sign ON sign.iddocument=signdocument.iddocument " +
-					"WHERE sign.signature IS NULL AND sign.revoked=0 AND sign.iduser=" + String.valueOf(idUser) + " AND signdocument.iddepartment=" + String.valueOf(idDepartment));
+					"WHERE sign.signature IS NULL AND sign.revoked=0 AND sign.iduser=" + String.valueOf(idUser) + 
+					(idDepartment == 0 ? "" : " AND signdocument.iddepartment=" + String.valueOf(idDepartment)));
 			
 			if(rs.next()) {
 				return rs.getInt("total");
