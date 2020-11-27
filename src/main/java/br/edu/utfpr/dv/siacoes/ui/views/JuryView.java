@@ -214,7 +214,7 @@ public class JuryView extends ListView<JuryDataSource> implements HasUrlParamete
 			this.buttonSchedule.setVisible(Session.isUserSupervisor());
 			this.buttonGrades.setVisible(false);
 			this.comboStage.setVisible(false);
-			this.buttonFillGrades.setVisible(Session.isUserSupervisor() && this.config.isAppraiserFillsGrades());
+			this.buttonFillGrades.setVisible(Session.isUserSupervisor() && ((this.config.getDepartment().getIdDepartment() == 0) || this.config.isAppraiserFillsGrades()));
 			this.buttonSign.setVisible(Session.isUserProfessor() && this.config.isUseDigitalSignature());
 		}
 	}
@@ -588,6 +588,15 @@ public class JuryView extends ListView<JuryDataSource> implements HasUrlParamete
 			this.showWarningNotification("Lançar Notas", "Selecione uma banca para lançar as notas.");
 		} else {
 			try {
+				if(this.config.getDepartment().getIdDepartment() == 0) {
+					SigetConfig c = new SigetConfigBO().findByDepartment(new JuryBO().findIdDepartment((int)value));
+
+					if(!c.isAppraiserFillsGrades()) {
+						this.showWarningNotification("Lançar Notas", "As notas devem ser encaminhadas ao Professor Responsável pelo TCC.");
+						return;
+					}
+				}
+				
 				JuryAppraiser appraiser = new JuryAppraiserBO().findByAppraiser((int)value, Session.getUser().getIdUser());
 				
 				if((appraiser == null) || (appraiser.getIdJuryAppraiser() == 0)) {
