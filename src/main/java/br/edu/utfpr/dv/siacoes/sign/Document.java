@@ -38,6 +38,7 @@ import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.dao.ConnectionDAO;
 import br.edu.utfpr.dv.siacoes.model.AppConfig;
 import br.edu.utfpr.dv.siacoes.model.Department;
+import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser.ProposalFeedback;
@@ -348,7 +349,11 @@ public class Document {
 	}
 	
 	private static int getReportVersion(DocumentType type) {
-		return 1;
+		if(type == DocumentType.INTERNSHIPJURY) {
+			return 2;
+		} else {
+			return 1;
+		}
 	}
 	
 	public static int insertSigned(int idDepartment, DocumentType type, int idRegister, Object dataset, List<User> users, String login, String password) throws Exception {
@@ -396,6 +401,9 @@ public class Document {
 			case INTERNSHIPJURY:
 				if(!new InternshipJuryBO().hasAllScores(document.getIdRegister())) {
 					throw new Exception("Todas as notas devem ser lançadas para que a ficha de avaliação possa ser assinada.");
+				}
+				if(new InternshipJuryBO().findById(document.getIdRegister()).getResult() == JuryResult.NONE) {
+					throw new Exception("É necessário informar o resultado final da banca.");
 				}
 				
 				break;

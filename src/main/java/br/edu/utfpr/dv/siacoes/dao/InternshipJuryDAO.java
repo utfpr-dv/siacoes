@@ -201,16 +201,17 @@ public class InternshipJuryDAO {
 		}
 	}
 	
-	public boolean saveSupervisorScore(int idUser, int idInternshipJury, double score) throws SQLException {
+	public boolean saveSupervisorScore(int idUser, int idInternshipJury, double score, JuryResult result) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		
 		try {
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("UPDATE internshipjury SET supervisorscore=? WHERE idinternshipjury=?");
+			stmt = conn.prepareStatement("UPDATE internshipjury SET supervisorscore=?, result=? WHERE idinternshipjury=?");
 			
 			stmt.setDouble(1, score);
-			stmt.setInt(2, idInternshipJury);
+			stmt.setInt(2, result.getValue());
+			stmt.setInt(3, idInternshipJury);
 			
 			return stmt.execute();
 		} finally {
@@ -232,7 +233,7 @@ public class InternshipJuryDAO {
 			boolean insert = (jury.getIdInternshipJury() == 0);
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO internshipjury(date, local, idInternship, comments, startTime, endTime, minimumScore, supervisorPonderosity, companySupervisorPonderosity, companySupervisorScore, result, supervisorAbsenceReason, supervisorScore, supervisorFillJuryForm, juryformat, sei) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO internshipjury(date, local, idInternship, comments, startTime, endTime, minimumScore, supervisorPonderosity, companySupervisorPonderosity, companySupervisorScore, result, supervisorAbsenceReason, supervisorScore, supervisorFillJuryForm, juryformat, sei, useEvaluationItems) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 				
 				jury.setMinimumScore(10);
 				
@@ -253,7 +254,7 @@ public class InternshipJuryDAO {
 					}
 				}
 			}else{
-				stmt = conn.prepareStatement("UPDATE internshipjury SET date=?, local=?, idInternship=?, comments=?, startTime=?, endTime=?, minimumScore=?, supervisorPonderosity=?, companySupervisorPonderosity=?, companySupervisorScore=?, result=?, supervisorAbsenceReason=?, supervisorScore=?, supervisorFillJuryForm=?, juryformat=?, sei=? WHERE idInternshipJury=?");
+				stmt = conn.prepareStatement("UPDATE internshipjury SET date=?, local=?, idInternship=?, comments=?, startTime=?, endTime=?, minimumScore=?, supervisorPonderosity=?, companySupervisorPonderosity=?, companySupervisorScore=?, result=?, supervisorAbsenceReason=?, supervisorScore=?, supervisorFillJuryForm=?, juryformat=?, sei=?, useEvaluationItems=? WHERE idInternshipJury=?");
 			}
 			
 			stmt.setTimestamp(1, new java.sql.Timestamp(jury.getDate().getTime()));
@@ -272,9 +273,10 @@ public class InternshipJuryDAO {
 			stmt.setInt(14, jury.isSupervisorFillJuryForm() ? 1 : 0);
 			stmt.setInt(15, jury.getJuryFormat().getValue());
 			stmt.setString(16, jury.getSei());
+			stmt.setInt(17, jury.isUseEvaluationItems() ? 1 : 0);
 			
 			if(!insert){
-				stmt.setInt(17, jury.getIdInternshipJury());
+				stmt.setInt(18, jury.getIdInternshipJury());
 			}
 			
 			stmt.execute();
@@ -372,26 +374,49 @@ public class InternshipJuryDAO {
 		jury.setSupervisorFillJuryForm(rs.getInt("supervisorFillJuryForm") == 1);
 		jury.setJuryFormat(JuryFormat.valueOf(rs.getInt("juryformat")));
 		jury.setSei(rs.getString("sei"));
+		jury.setUseEvaluationItems(rs.getInt("useEvaluationItems") == 1);
 		
 		return jury;
 	}
 	
-	public boolean hasScores(int idInternshipJury) throws SQLException{
+	public boolean hasScores(int idInternshipJury) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		
-		try{
+		try {
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT COUNT(*) AS total FROM internshipjuryappraiser " + 
-					"INNER JOIN internshipjuryappraiserscore ON internshipjuryappraiserscore.idinternshipjuryappraiser=internshipjuryappraiser.idinternshipjuryappraiser " + 
-					"WHERE internshipjuryappraiser.idinternshipjury=?");
+			stmt = conn.prepareStatement("SELECT supervisorFillJuryForm, supervisorScore, companySupervisorPonderosity, companySupervisorScore, useEvaluationItems FROM internshipJury WHERE idInternshipJury=?");
 			stmt.setInt(1, idInternshipJury);
 			
 			rs = stmt.executeQuery();
 			rs.next();
-			return rs.getInt("total") > 0;
-		}finally{
+			if((rs.getDouble("companySupervisorPonderosity") > 0) && (rs.getDouble("companySupervisorScore") > 0)) {
+				return true;
+			}
+			if((rs.getInt("supervisorFillJuryForm") == 0) && (rs.getDouble("supervisorScore") > 0)) {
+				return true;
+			}
+			
+			if(rs.getInt("useEvaluationItems") == 0) {
+				rs.close();
+				
+				stmt.close();
+				stmt = conn.prepareStatement("SELECT COUNT(DISTINCT idInternshipJuryAppraiser) AS total FROM internshipjuryappraiser WHERE score > 0 AND  idInternshipJury=?");
+				stmt.setInt(1, idInternshipJury);
+			} else {
+				rs.close();
+				
+				stmt.close();
+				stmt = conn.prepareStatement("SELECT COUNT(DISTINCT internshipjuryappraiser.idInternshipJuryAppraiser) AS total FROM internshipjuryappraiserscore INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJuryAppraiser=internshipjuryappraiserscore.idInternshipJuryAppraiser WHERE idInternshipJury=?");
+				stmt.setInt(1, idInternshipJury);
+			}
+			
+			rs = stmt.executeQuery();
+			rs.next();
+			
+			return (rs.getInt("total") > 0);
+		} finally {
 			if((rs != null) && !rs.isClosed())
 				rs.close();
 			if((stmt != null) && !stmt.isClosed())
@@ -401,14 +426,14 @@ public class InternshipJuryDAO {
 		}
 	}
 	
-	public boolean hasAllScores(int idInternshipJury) throws SQLException{
+	public boolean hasAllScores(int idInternshipJury) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		
-		try{
+		try {
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT COUNT(*) AS total FROM internshipjuryappraiser WHERE idInternshipJury=?");
+			stmt = conn.prepareStatement("SELECT COUNT(*) AS total FROM internshipjuryappraiser WHERE substitute=0 AND idInternshipJury=?");
 			stmt.setInt(1, idInternshipJury);
 			
 			rs = stmt.executeQuery();
@@ -417,29 +442,38 @@ public class InternshipJuryDAO {
 			rs.close();
 			
 			stmt.close();
-			stmt = conn.prepareStatement("SELECT supervisorFillJuryForm, supervisorScore, companySupervisorScore FROM internshipJury WHERE idInternshipJury=?");
+			stmt = conn.prepareStatement("SELECT supervisorFillJuryForm, supervisorScore, companySupervisorPonderosity, companySupervisorScore, useEvaluationItems FROM internshipJury WHERE idInternshipJury=?");
 			stmt.setInt(1, idInternshipJury);
 			
 			rs = stmt.executeQuery();
 			rs.next();
-			if(rs.getInt("companySupervisorScore") <= 0) {
+			if((rs.getDouble("companySupervisorPonderosity") > 0) && (rs.getDouble("companySupervisorScore") <= 0)) {
 				return false;
 			}
 			if((rs.getInt("supervisorFillJuryForm") == 0) && (rs.getDouble("supervisorScore") > 0)) {
 				numAppraisers = numAppraisers - 1;
 			}
-			rs.close();
 			
-			stmt.close();
-			stmt = conn.prepareStatement("SELECT COUNT(DISTINCT internshipjuryappraiser.idInternshipJuryAppraiser) AS total FROM internshipjuryappraiserscore INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJuryAppraiser=internshipjuryappraiserscore.idInternshipJuryAppraiser WHERE idInternshipJury=?");
-			stmt.setInt(1, idInternshipJury);
+			if(rs.getInt("useEvaluationItems") == 0) {
+				rs.close();
+				
+				stmt.close();
+				stmt = conn.prepareStatement("SELECT COUNT(DISTINCT idInternshipJuryAppraiser) AS total FROM internshipjuryappraiser WHERE score > 0 AND  idInternshipJury=?");
+				stmt.setInt(1, idInternshipJury);
+			} else {
+				rs.close();
+				
+				stmt.close();
+				stmt = conn.prepareStatement("SELECT COUNT(DISTINCT internshipjuryappraiser.idInternshipJuryAppraiser) AS total FROM internshipjuryappraiserscore INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJuryAppraiser=internshipjuryappraiserscore.idInternshipJuryAppraiser WHERE idInternshipJury=?");
+				stmt.setInt(1, idInternshipJury);
+			}
 			
 			rs = stmt.executeQuery();
 			rs.next();
 			int numScores = rs.getInt("total");
 			
 			return (numScores >= numAppraisers);
-		}finally{
+		} finally {
 			if((rs != null) && !rs.isClosed())
 				rs.close();
 			if((stmt != null) && !stmt.isClosed())

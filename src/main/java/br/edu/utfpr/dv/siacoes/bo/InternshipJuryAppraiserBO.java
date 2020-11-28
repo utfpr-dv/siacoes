@@ -67,6 +67,11 @@ public class InternshipJuryAppraiserBO {
 	public int save(int idUser, InternshipJuryAppraiser appraiser) throws Exception{
 		try {
 			InternshipJuryAppraiserDAO dao = new InternshipJuryAppraiserDAO();
+			
+			if((appraiser.getScore() < 0) || (appraiser.getScore() > 10)) {
+				throw new Exception("A nota deve estar entre 0 e 10.");
+			}
+			
 			SigesConfig config = new SigesConfigBO().findByDepartment(new InternshipJuryBO().findIdDepartment(appraiser.getInternshipJury().getIdInternshipJury()));
 			
 			if((config.getMaxFileSize() > 0) && (appraiser.getFile() != null) && ((appraiser.getIdInternshipJuryAppraiser() == 0) || !Arrays.equals(appraiser.getFile(), dao.getFile(appraiser.getIdInternshipJuryAppraiser()))) && (appraiser.getFile().length > config.getMaxFileSize())) {
@@ -81,6 +86,25 @@ public class InternshipJuryAppraiserBO {
 			}
 			
 			return dao.save(idUser, appraiser);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public int updateScore(int idUser, InternshipJuryAppraiser appraiser) throws Exception {
+		try {
+			InternshipJuryAppraiserDAO dao = new InternshipJuryAppraiserDAO();
+			
+			if(appraiser.getIdInternshipJuryAppraiser() == 0) {
+				throw new Exception("A nota não pode ser lançada pois o avaliador ainda não foi incluído na banca");
+			}
+			if((appraiser.getScore() < 0) || (appraiser.getScore() > 10)) {
+				throw new Exception("A nota deve estar entre 0 e 10.");
+			}
+			
+			return dao.updateScore(idUser, appraiser);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			

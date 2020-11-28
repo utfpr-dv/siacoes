@@ -51,6 +51,7 @@ import br.edu.utfpr.dv.siacoes.ui.views.InternshipEvaluationItemView;
 import br.edu.utfpr.dv.siacoes.ui.views.InternshipFinalDocumentView;
 import br.edu.utfpr.dv.siacoes.ui.views.InternshipJuryGradesReportView;
 import br.edu.utfpr.dv.siacoes.ui.views.InternshipJuryParticipantsReportView;
+import br.edu.utfpr.dv.siacoes.ui.views.InternshipJuryRequestView;
 import br.edu.utfpr.dv.siacoes.ui.views.InternshipJuryView;
 import br.edu.utfpr.dv.siacoes.ui.views.InternshipLibraryView;
 import br.edu.utfpr.dv.siacoes.ui.views.InternshipMissingDocumentsReportView;
@@ -339,7 +340,7 @@ public class MainLayout extends FlexBoxLayout implements RouterLayout, AfterNavi
 			if(this.sigesConfig.getJuryFormat() == JuryFormat.SESSION) {
 				menu.addNaviItem(siges3, "Solicitações de Bancas", InternshipPosterRequestView.class);
 			} else if(this.sigesConfig.getJuryFormat() == JuryFormat.INDIVIDUAL) {
-				
+				menu.addNaviItem(siges3, "Solicitações de Bancas", InternshipJuryRequestView.class);
 			}
 		}
 		NaviItem ijv = menu.addNaviItem(siges3, "Agenda de Bancas", InternshipJuryView.class);
@@ -364,7 +365,9 @@ public class MainLayout extends FlexBoxLayout implements RouterLayout, AfterNavi
 			history.addClickListener(event -> {
 				this.getUI().ifPresent(ui -> ui.navigate(StudentHistoryView.class, String.valueOf(SystemModule.SIGES.getValue())));
 			});
-			menu.addNaviItem(siges4, "Quesitos de Avaliação", InternshipEvaluationItemView.class);
+			if(this.sigesConfig.isUseEvaluationItems()) {
+				menu.addNaviItem(siges4, "Quesitos de Avaliação", InternshipEvaluationItemView.class);
+			}
 			NaviItem config = menu.addNaviItem(siges4, "Configurações", null);
 			config.addClickListener(event -> {
 				try {

@@ -525,8 +525,13 @@ public class EditInternshipJuryWindow extends EditWindow {
 			} else if(appraiser.isSubstitute()) {
 				this.showWarningNotification("Lançar Notas", "A nota somente pode ser atribuída por membros titulares da banca.");
 			} else {
-				EditInternshipJuryAppraiserScoreWindow window = new EditInternshipJuryAppraiserScoreWindow(appraiser);
-				window.open();
+				if(this.jury.isUseEvaluationItems()) {
+					EditInternshipJuryAppraiserScoreWindow window = new EditInternshipJuryAppraiserScoreWindow(appraiser);
+					window.open();
+				} else {
+					EditInternshipJuryAppraiserSingleScoreWindow window = new EditInternshipJuryAppraiserSingleScoreWindow(appraiser);
+					window.open();
+				}
 			}
 		}
 	}

@@ -118,16 +118,16 @@ public class InternshipJuryBO {
 				SigesConfig config = new SigesConfigBO().findByDepartment(new InternshipBO().findIdDepartment(idInternship));
 				
 				if(config.getJuryFormat() == JuryFormat.SESSION) {
-					jury = this.findByPosterRequest(idInternship, config);
+					jury = this.findByPosterRequest(idInternship);
 					
 					if(jury == null) {
-						jury = this.findByJuryRequest(idInternship, config);
+						jury = this.findByJuryRequest(idInternship);
 					}
 				} else {
-					jury = this.findByJuryRequest(idInternship, config);
+					jury = this.findByJuryRequest(idInternship);
 
 					if(jury == null) {
-						jury = this.findByPosterRequest(idInternship, config);
+						jury = this.findByPosterRequest(idInternship);
 					}
 				}
 				
@@ -149,6 +149,11 @@ public class InternshipJuryBO {
 					
 					jury.setParticipants(new ArrayList<InternshipJuryStudent>());
 				}
+				
+				jury.setSupervisorFillJuryForm(config.isSupervisorFillJuryForm());
+				jury.setJuryFormat(config.getJuryFormat());
+				jury.setCompanySupervisorPonderosity(config.getCompanySupervisorPonderosity());
+				jury.setUseEvaluationItems(config.isUseEvaluationItems());
 			}
 			
 			return jury;
@@ -159,7 +164,7 @@ public class InternshipJuryBO {
 		}
 	}
 	
-	private InternshipJury findByPosterRequest(int idInternship, SigesConfig config) throws Exception {
+	private InternshipJury findByPosterRequest(int idInternship) throws Exception {
 		InternshipPosterRequest request = new InternshipPosterRequestBO().findByInternship(idInternship);
 
 		if((request != null) && (request.getIdInternshipPosterRequest() != 0)) {
@@ -169,9 +174,6 @@ public class InternshipJuryBO {
 
 			jury.setInternship(new InternshipBO().findById(idInternship));
 
-			jury.setSupervisorFillJuryForm(config.isSupervisorFillJuryForm());
-			jury.setJuryFormat(config.getJuryFormat());
-			jury.setCompanySupervisorPonderosity(config.getCompanySupervisorPonderosity());
 			jury.setPosterRequest(request);
 
 			InternshipJuryAppraiser appraiser = new InternshipJuryAppraiser();
@@ -199,7 +201,7 @@ public class InternshipJuryBO {
 		}
 	}
 
-	private InternshipJury findByJuryRequest(int idInternship, SigesConfig config) throws Exception {
+	private InternshipJury findByJuryRequest(int idInternship) throws Exception {
 		InternshipJuryRequest request = new InternshipJuryRequestBO().findByInternship(idInternship);
 
 		if((request != null) && (request.getIdInternshipJuryRequest() != 0)) {
@@ -209,9 +211,6 @@ public class InternshipJuryBO {
 
 			jury.setInternship(new InternshipBO().findById(idInternship));
 
-			jury.setSupervisorFillJuryForm(config.isSupervisorFillJuryForm());
-			jury.setJuryFormat(config.getJuryFormat());
-			jury.setCompanySupervisorPonderosity(config.getCompanySupervisorPonderosity());
 			jury.setJuryRequest(request);
 
 			jury.setDate(request.getDate());
@@ -255,7 +254,7 @@ public class InternshipJuryBO {
 		}
 	}
 	
-	public boolean saveSupervisorScore(int idUser, int idInternshipJury, double score) throws Exception {
+	public boolean saveSupervisorScore(int idUser, int idInternshipJury, double score, JuryResult result) throws Exception {
 		try {
 			if(score < 0) {
 				throw new Exception("A nota deve ser maior ou igual a zero.");
@@ -272,7 +271,7 @@ public class InternshipJuryBO {
 				hasAllScores = false;
 			}
 			
-			boolean ret = new InternshipJuryDAO().saveSupervisorScore(idUser, idInternshipJury, score);
+			boolean ret = new InternshipJuryDAO().saveSupervisorScore(idUser, idInternshipJury, score, result);
 			
 			try {
 				if(!hasAllScores && this.hasAllScores(idInternshipJury)) {
@@ -531,9 +530,9 @@ public class InternshipJuryBO {
 		if(Document.hasSignature(DocumentType.INTERNSHIPJURY, idJury)) {
 			return Document.getSignedDocument(DocumentType.INTERNSHIPJURY, idJury);
 		} else {
-			br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipJury dataset = SignDatasetBuilder.build(this.getJuryFormReport(idJury));
+			br.edu.utfpr.dv.siacoes.report.dataset.v2.InternshipJury dataset = SignDatasetBuilder.build(this.getJuryFormReport(idJury));
 			
-			List<br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipJury> list = new ArrayList<br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipJury>();
+			List<br.edu.utfpr.dv.siacoes.report.dataset.v2.InternshipJury> list = new ArrayList<br.edu.utfpr.dv.siacoes.report.dataset.v2.InternshipJury>();
 			list.add(dataset);
 			
 			return new ReportUtils().createPdfStream(list, "InternshipJuryForm", this.findIdDepartment(idJury)).toByteArray();
@@ -553,6 +552,7 @@ public class InternshipJuryBO {
 			report.setAppraisersPonderosity(10 - jury.getSupervisorPonderosity() - jury.getCompanySupervisorPonderosity());
 			report.setCompanySupervisorScore(jury.getCompanySupervisorScore());
 			report.setResult(jury.getResult());
+			report.setUseEvaluationItems(jury.isUseEvaluationItems());
 			
 			InternshipBO ibo = new InternshipBO();
 			Internship internship = ibo.findById(jury.getInternship().getIdInternship());
@@ -572,11 +572,7 @@ public class InternshipJuryBO {
 			
 			for(InternshipJuryAppraiser appraiser : appraisers) {
 				if(!appraiser.isSubstitute()) {
-					InternshipJuryAppraiserScoreBO bo = new InternshipJuryAppraiserScoreBO();
-					List<InternshipJuryAppraiserScore> list = bo.listScores(appraiser.getIdInternshipJuryAppraiser());
 					JuryFormAppraiserReport appraiserReport = new JuryFormAppraiserReport();
-					JuryFormAppraiserScoreReport scoreReport = new JuryFormAppraiserScoreReport();
-					double scoreSum = 0, writingPonderosity = 0, oralPonderosity = 0, argumentationPonderosity = 0;
 					boolean isSupervisor = false;
 					
 					appraiserReport.setIdUser(appraiser.getAppraiser().getIdUser());
@@ -588,53 +584,66 @@ public class InternshipJuryBO {
 					appraiserReport.setTitle(report.getTitle());
 					appraiserReport.setCompany(report.getCompany());
 					
-					for(InternshipJuryAppraiserScore score : list) {
-						JuryFormAppraiserDetailReport appraiserDetail = new JuryFormAppraiserDetailReport();
+					if(jury.isUseEvaluationItems()) {
+						InternshipJuryAppraiserScoreBO bo = new InternshipJuryAppraiserScoreBO();
+						List<InternshipJuryAppraiserScore> list = bo.listScores(appraiser.getIdInternshipJuryAppraiser());
+						JuryFormAppraiserScoreReport scoreReport = new JuryFormAppraiserScoreReport();
+						double scoreSum = 0, writingPonderosity = 0, oralPonderosity = 0, argumentationPonderosity = 0;
 						
-						appraiserDetail.setEvaluationItemType(score.getInternshipEvaluationItem().getType().toString());
-						appraiserDetail.setEvaluationItem(score.getInternshipEvaluationItem().getDescription());
-						appraiserDetail.setPonderosity(score.getInternshipEvaluationItem().getPonderosity());
-						appraiserDetail.setScore(this.round(score.getScore()));
-						appraiserDetail.setOrder(appraiserReport.getDetail().size() + 1);
-						
-						appraiserReport.getDetail().add(appraiserDetail);
-						
-						switch(score.getInternshipEvaluationItem().getType()){
-							case WRITING:
-								scoreReport.setScoreWriting(scoreReport.getScoreWriting() + score.getScore());
-								writingPonderosity = writingPonderosity + score.getInternshipEvaluationItem().getPonderosity();
-								break;
-							case ORAL:
-								scoreReport.setScoreOral(scoreReport.getScoreOral() + score.getScore());
-								oralPonderosity = oralPonderosity + score.getInternshipEvaluationItem().getPonderosity();
-								break;
-							case ARGUMENTATION:
-								scoreReport.setScoreArgumentation(scoreReport.getScoreArgumentation() + score.getScore());
-								argumentationPonderosity = argumentationPonderosity + score.getInternshipEvaluationItem().getPonderosity();
-								break;
+						for(InternshipJuryAppraiserScore score : list) {
+							JuryFormAppraiserDetailReport appraiserDetail = new JuryFormAppraiserDetailReport();
+							
+							appraiserDetail.setEvaluationItemType(score.getInternshipEvaluationItem().getType().toString());
+							appraiserDetail.setEvaluationItem(score.getInternshipEvaluationItem().getDescription());
+							appraiserDetail.setPonderosity(score.getInternshipEvaluationItem().getPonderosity());
+							appraiserDetail.setScore(this.round(score.getScore()));
+							appraiserDetail.setOrder(appraiserReport.getDetail().size() + 1);
+							
+							appraiserReport.getDetail().add(appraiserDetail);
+							
+							switch(score.getInternshipEvaluationItem().getType()){
+								case WRITING:
+									scoreReport.setScoreWriting(scoreReport.getScoreWriting() + score.getScore());
+									writingPonderosity = writingPonderosity + score.getInternshipEvaluationItem().getPonderosity();
+									break;
+								case ORAL:
+									scoreReport.setScoreOral(scoreReport.getScoreOral() + score.getScore());
+									oralPonderosity = oralPonderosity + score.getInternshipEvaluationItem().getPonderosity();
+									break;
+								case ARGUMENTATION:
+									scoreReport.setScoreArgumentation(scoreReport.getScoreArgumentation() + score.getScore());
+									argumentationPonderosity = argumentationPonderosity + score.getInternshipEvaluationItem().getPonderosity();
+									break;
+							}
 						}
-					}
-					
-					for(JuryFormAppraiserDetailReport appraiserDetail : appraiserReport.getDetail()){
-						switch(EvaluationItemType.fromString(appraiserDetail.getEvaluationItemType())){
-							case WRITING:
-								appraiserDetail.setPonderositySum(writingPonderosity);
-								appraiserDetail.setScoreSum(scoreReport.getScoreWriting());
-								break;
-							case ORAL:
-								appraiserDetail.setPonderositySum(oralPonderosity);
-								appraiserDetail.setScoreSum(scoreReport.getScoreOral());
-								break;
-							case ARGUMENTATION:
-								appraiserDetail.setPonderositySum(argumentationPonderosity);
-								appraiserDetail.setScoreSum(scoreReport.getScoreArgumentation());
-								break;
+						
+						for(JuryFormAppraiserDetailReport appraiserDetail : appraiserReport.getDetail()){
+							switch(EvaluationItemType.fromString(appraiserDetail.getEvaluationItemType())){
+								case WRITING:
+									appraiserDetail.setPonderositySum(writingPonderosity);
+									appraiserDetail.setScoreSum(scoreReport.getScoreWriting());
+									break;
+								case ORAL:
+									appraiserDetail.setPonderositySum(oralPonderosity);
+									appraiserDetail.setScoreSum(scoreReport.getScoreOral());
+									break;
+								case ARGUMENTATION:
+									appraiserDetail.setPonderositySum(argumentationPonderosity);
+									appraiserDetail.setScoreSum(scoreReport.getScoreArgumentation());
+									break;
+							}
 						}
+						
+						scoreSum = scoreReport.getScoreWriting() + scoreReport.getScoreOral() + scoreReport.getScoreArgumentation();
+						
+						appraiserReport.setScore(this.round(scoreSum));
+						
+						scoreReport.setIdUser(appraiserReport.getIdUser());
+						scoreReport.setName(appraiserReport.getName());
+						scoreReport.setDescription(appraiserReport.getDescription());
+					} else {
+						appraiserReport.setScore(appraiser.getScore());
 					}
-					
-					scoreSum = scoreReport.getScoreWriting() + scoreReport.getScoreOral() + scoreReport.getScoreArgumentation();
-					
-					appraiserReport.setScore(this.round(scoreSum));
 					
 					if(appraiser.getAppraiser().getIdUser() != supervisor.getIdUser()) {
 						appraiserReport.setDescription("Aval. " + String.valueOf(member));
@@ -656,10 +665,6 @@ public class InternshipJuryBO {
 							report.setSupervisorScore(jury.getSupervisorScore());
 						}
 					}
-					
-					scoreReport.setIdUser(appraiserReport.getIdUser());
-					scoreReport.setName(appraiserReport.getName());
-					scoreReport.setDescription(appraiserReport.getDescription());
 					
 					JuryFormAppraiserReport signature = new JuryFormAppraiserReport();
 					signature.setName(appraiserReport.getName());

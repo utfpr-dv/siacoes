@@ -41,6 +41,7 @@ import br.edu.utfpr.dv.siacoes.ui.components.YearField;
 import br.edu.utfpr.dv.siacoes.ui.grid.InternshipJuryDataSource;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditInternshipJuryAppraiserFeedbackWindow;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditInternshipJuryAppraiserScoreWindow;
+import br.edu.utfpr.dv.siacoes.ui.windows.EditInternshipJuryAppraiserSingleScoreWindow;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditInternshipJurySupervisorScoreWindow;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditInternshipJuryWindow;
 import br.edu.utfpr.dv.siacoes.ui.windows.InternshipJuryAppraiserChangeWindow;
@@ -507,8 +508,13 @@ public class InternshipJuryView extends ListView<InternshipJuryDataSource> imple
 					} else if(appraiser.isSubstitute()) {
 						this.showWarningNotification("Lançar Notas", "Apenas membros titulares da banca podem lançar notas.");
 					} else {
-						EditInternshipJuryAppraiserScoreWindow window = new EditInternshipJuryAppraiserScoreWindow(appraiser);
-						window.open();
+						if(jury.isUseEvaluationItems()) {
+							EditInternshipJuryAppraiserScoreWindow window = new EditInternshipJuryAppraiserScoreWindow(appraiser);
+							window.open();
+						} else {
+							EditInternshipJuryAppraiserSingleScoreWindow window = new EditInternshipJuryAppraiserSingleScoreWindow(appraiser);
+							window.open();
+						}
 					}
 				}
 			} catch(Exception e) {

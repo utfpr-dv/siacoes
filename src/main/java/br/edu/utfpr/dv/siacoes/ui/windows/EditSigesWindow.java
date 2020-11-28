@@ -44,6 +44,7 @@ public class EditSigesWindow extends EditWindow {
 	private final IntegerField textMinimumJurySubstitutes;
 	private final Checkbox checkUseSei;
 	private final Checkbox checkStudentRequestJury;
+	private final Checkbox checkUseEvaluationItems;
 	
 	private final Tabs tab;
 	
@@ -91,6 +92,8 @@ public class EditSigesWindow extends EditWindow {
 		
 		this.checkStudentRequestJury = new Checkbox("Acadêmico pode solicitar banca");
 		
+		this.checkUseEvaluationItems = new Checkbox("Utilizar quesitos de avaliação para compor a nota");
+		
 		this.textMinimumJuryMembers = new IntegerField("Número mínimo de membros titulares na banca (exceto o presidente)");
 		this.textMinimumJuryMembers.setWidth("450px");
 		
@@ -114,7 +117,7 @@ public class EditSigesWindow extends EditWindow {
 		h3.setSpacing(true);
 		h3.setMargin(false);
 		h3.setPadding(false);
-		VerticalLayout v2 = new VerticalLayout(h1, h2, h3, this.checkSupervisorFillJuryForm, this.checkShowGradesToStudent, this.checkAppraiserFillsGrades, this.checkStudentRequestJury);
+		VerticalLayout v2 = new VerticalLayout(h1, h2, h3, this.checkUseEvaluationItems, this.checkSupervisorFillJuryForm, this.checkAppraiserFillsGrades, this.checkShowGradesToStudent, this.checkStudentRequestJury);
 		v2.setSpacing(false);
 		v2.setMargin(false);
 		v2.setPadding(false);
@@ -158,7 +161,7 @@ public class EditSigesWindow extends EditWindow {
 		
 		VerticalLayout layout = new VerticalLayout(this.tab, pages);
 		layout.setWidth("900px");
-		layout.setHeight("440px");
+		layout.setHeight("460px");
 		layout.setSpacing(false);
 		layout.setMargin(false);
 		layout.setPadding(false);
@@ -185,6 +188,7 @@ public class EditSigesWindow extends EditWindow {
 		this.textMinimumJurySubstitutes.setValue(this.config.getMinimumJurySubstitutes());
 		this.checkUseSei.setValue(this.config.isUseSei());
 		this.checkStudentRequestJury.setValue(this.config.isStudentRequestJury());
+		this.checkUseEvaluationItems.setValue(this.config.isUseEvaluationItems());
 	}
 
 	@Override
@@ -208,6 +212,7 @@ public class EditSigesWindow extends EditWindow {
 			this.config.setMinimumJurySubstitutes(this.textMinimumJurySubstitutes.getValue());
 			this.config.setUseSei(this.checkUseSei.getValue());
 			this.config.setStudentRequestJury(this.checkStudentRequestJury.getValue());
+			this.config.setUseEvaluationItems(this.checkUseEvaluationItems.getValue());
 			
 			bo.save(Session.getIdUserLog(), this.config);
 			

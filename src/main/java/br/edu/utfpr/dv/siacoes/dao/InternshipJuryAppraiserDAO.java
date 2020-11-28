@@ -252,7 +252,7 @@ public class InternshipJuryAppraiserDAO {
 		
 		try{
 			if(insert){
-				stmt = this.conn.prepareStatement("INSERT INTO internshipjuryappraiser(idInternshipJury, idAppraiser, chair, substitute, file, additionalFile, comments) VALUES(?, ?, ?, ?, NULL, NULL, '')", Statement.RETURN_GENERATED_KEYS);
+				stmt = this.conn.prepareStatement("INSERT INTO internshipjuryappraiser(idInternshipJury, idAppraiser, chair, substitute, file, additionalFile, comments, score) VALUES(?, ?, ?, ?, NULL, NULL, '', 0)", Statement.RETURN_GENERATED_KEYS);
 			}else{
 				stmt = this.conn.prepareStatement("UPDATE internshipjuryappraiser SET idInternshipJury=?, idAppraiser=?, chair=?, substitute=?, file=?, additionalFile=?, comments=? WHERE idInternshipJuryAppraiser=?");
 			}
@@ -292,6 +292,25 @@ public class InternshipJuryAppraiserDAO {
 		}
 	}
 	
+	public int updateScore(int idUser, InternshipJuryAppraiser appraiser) throws SQLException {
+		PreparedStatement stmt = null;
+		
+		try {
+			stmt = this.conn.prepareStatement("UPDATE internshipjuryappraiser SET score=?, comments=? WHERE idInternshipJuryAppraiser=?");
+			
+			stmt.setDouble(1, appraiser.getScore());
+			stmt.setString(2, appraiser.getComments());
+			stmt.setInt(3, appraiser.getIdInternshipJuryAppraiser());
+			
+			stmt.execute();
+			
+			return appraiser.getIdInternshipJuryAppraiser();
+		} finally {
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+		}
+	}
+	
 	private InternshipJuryAppraiser loadObject(ResultSet rs) throws SQLException{
 		InternshipJuryAppraiser p = new InternshipJuryAppraiser();
 		
@@ -307,6 +326,7 @@ public class InternshipJuryAppraiserDAO {
 		p.setComments(rs.getString("comments"));
 		p.setSubstitute(rs.getInt("substitute") == 1);
 		p.setChair(rs.getInt("chair") == 1);
+		p.setScore(rs.getDouble("score"));
 		p.getInternshipJury().setInternship(new Internship());
 		p.getInternshipJury().getInternship().setIdInternship(rs.getInt("idInternship"));
 		p.getInternshipJury().getInternship().getStudent().setName(rs.getString("studentName"));

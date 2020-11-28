@@ -125,6 +125,8 @@ public class EditJuryAppraiserScoreWindow extends EditWindow {
 				
 				NumberField textScore = new NumberField();
 				textScore.setValue(score.getScore());
+				textScore.setMin(0);
+				textScore.setMax(score.getEvaluationItem().getPonderosity());
 				textScore.setWidth("100px");
 				textScore.setId("ei" + String.valueOf(score.getEvaluationItem().getIdEvaluationItem()));
 				

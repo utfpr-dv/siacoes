@@ -78,18 +78,40 @@ public class InternshipJuryAppraiserScoreDAO {
 				if((rs.getInt("supervisorFillJuryForm") == 0)) {
 					return (rs.getDouble("supervisorScore") > 0);
 				}
+			} else {
+				stmt.close();
+				stmt = this.conn.prepareStatement("SELECT useEvaluationItems FROM internshipJury WHERE idInternshipJury=?");
+				stmt.setInt(1, idInternshipJury);
+				
+				rs.close();
+				rs = stmt.executeQuery();
+				rs.next();
+				
+				if((rs.getInt("useEvaluationItems") == 0)) {
+					stmt.close();
+					stmt = this.conn.prepareStatement("SELECT score FROM internshipJuryAppraiser WHERE idInternshipJury=? AND idAppraiser=?");
+					stmt.setInt(1, idInternshipJury);
+					stmt.setInt(2, idUser);
+					
+					rs.close();
+					rs = stmt.executeQuery();
+					
+					return rs.getDouble("score") > 0;
+				} else {
+					stmt.close();
+					stmt = this.conn.prepareStatement("SELECT internshipjuryappraiserscore.idInternshipJuryAppraiserScore FROM internshipjuryappraiserscore INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJuryAppraiser=internshipjuryappraiserscore.idInternshipJuryAppraiser WHERE idInternshipJury=? AND idAppraiser=?");
+					
+					stmt.setInt(1, idInternshipJury);
+					stmt.setInt(2, idUser);
+					
+					rs.close();
+					rs = stmt.executeQuery();
+					
+					return rs.next();
+				}
 			}
 			
-			stmt.close();
-			stmt = this.conn.prepareStatement("SELECT internshipjuryappraiserscore.idInternshipJuryAppraiserScore FROM internshipjuryappraiserscore INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJuryAppraiser=internshipjuryappraiserscore.idInternshipJuryAppraiser WHERE idInternshipJury=? AND idAppraiser=?");
-			
-			stmt.setInt(1, idInternshipJury);
-			stmt.setInt(2, idUser);
-			
-			rs.close();
-			rs = stmt.executeQuery();
-			
-			return rs.next();
+			return false;
 		}finally{
 			if((rs != null) && !rs.isClosed())
 				rs.close();

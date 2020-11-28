@@ -107,9 +107,11 @@ public class JuryAppraiserDataSource extends BasicDataSource {
 			} else if(!appraiser.isChair()) {
 				a.setMember("Membro " + String.valueOf(member));
 				member++;
+			} else {
+				a.setMember("Presidente");
 			}
 			
-			if((appraiser.isChair() && includeChair) || (!appraiser.isSubstitute() && includeMember) || (appraiser.isSubstitute() && includeSubstitute)) {
+			if((appraiser.isChair() && includeChair) || (!appraiser.isChair() && !appraiser.isSubstitute() && includeMember) || (appraiser.isSubstitute() && includeSubstitute)) {
 				ret.add(a);
 			}
 		}
@@ -134,7 +136,7 @@ public class JuryAppraiserDataSource extends BasicDataSource {
 			} else {
 				a.setMember("Membro " + String.valueOf(member));
 				member++;
-			}
+			} 
 			
 			if((!appraiser.isSubstitute() && includeMember) || (appraiser.isSubstitute() && includeSubstitute)) {
 				ret.add(a);
@@ -145,10 +147,10 @@ public class JuryAppraiserDataSource extends BasicDataSource {
 	}
 	
 	public static List<JuryAppraiserDataSource> loadInternshipJuryRequest(List<InternshipJuryAppraiserRequest> list) {
-		return JuryAppraiserDataSource.loadInternshipJuryRequest(list, true, true);
+		return JuryAppraiserDataSource.loadInternshipJuryRequest(list, true, true, true);
 	}
 	
-	public static List<JuryAppraiserDataSource> loadInternshipJuryRequest(List<InternshipJuryAppraiserRequest> list, boolean includeMember, boolean includeSubstitute) {
+	public static List<JuryAppraiserDataSource> loadInternshipJuryRequest(List<InternshipJuryAppraiserRequest> list, boolean includeChair, boolean includeMember, boolean includeSubstitute) {
 		List<JuryAppraiserDataSource> ret = new ArrayList<JuryAppraiserDataSource>();
 		int substitute = 1, member = 1;
 		
@@ -158,12 +160,14 @@ public class JuryAppraiserDataSource extends BasicDataSource {
 			if(appraiser.isSubstitute()) {
 				a.setMember("Substituto " + String.valueOf(substitute));
 				substitute++;
-			} else {
+			} else if(!appraiser.isChair()) {
 				a.setMember("Membro " + String.valueOf(member));
 				member++;
+			} else {
+				a.setMember("Presidente");
 			}
 			
-			if((!appraiser.isSubstitute() && includeMember) || (appraiser.isSubstitute() && includeSubstitute)) {
+			if((appraiser.isChair() && includeChair) || (!appraiser.isChair() && !appraiser.isSubstitute() && includeMember) || (appraiser.isSubstitute() && includeSubstitute)) {
 				ret.add(a);
 			}
 		}
@@ -196,7 +200,7 @@ public class JuryAppraiserDataSource extends BasicDataSource {
 		return ret;
 	}
 	
-	public static List<JuryAppraiserDataSource> loadJuryRequest(List<JuryAppraiserRequest> list, boolean includeMember, boolean includeSubstitute) {
+	public static List<JuryAppraiserDataSource> loadJuryRequest(List<JuryAppraiserRequest> list, boolean includeChair, boolean includeMember, boolean includeSubstitute) {
 		List<JuryAppraiserDataSource> ret = new ArrayList<JuryAppraiserDataSource>();
 		int substitute = 1, member = 1;
 		
@@ -211,7 +215,7 @@ public class JuryAppraiserDataSource extends BasicDataSource {
 				member++;
 			}
 			
-			if((!appraiser.isSubstitute() && includeMember) || (appraiser.isSubstitute() && includeSubstitute)) {
+			if((appraiser.isChair() && includeChair) || (!appraiser.isSubstitute() && includeMember) || (appraiser.isSubstitute() && includeSubstitute)) {
 				ret.add(a);
 			}
 		}
@@ -220,7 +224,7 @@ public class JuryAppraiserDataSource extends BasicDataSource {
 	}
 	
 	public static List<JuryAppraiserDataSource> loadJuryRequest(List<JuryAppraiserRequest> list) {
-		return JuryAppraiserDataSource.loadJuryRequest(list, true, true);
+		return JuryAppraiserDataSource.loadJuryRequest(list, true, true, true);
 	}
 	
 	public int getIdUser() {

@@ -148,18 +148,18 @@ public class EditJuryRequestWindow extends EditWindow {
             addAppraiser();
         });
 		this.buttonAddAppraiser.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
-		this.buttonAddAppraiser.setWidth("100px");
+		this.buttonAddAppraiser.setWidth("150px");
 		
 		this.buttonAppraiserSchedule = new Button("Agenda", new Icon(VaadinIcon.CALENDAR_O), event -> {
             appraiserSchedule();
         });
-		this.buttonAppraiserSchedule.setWidth("100px");
+		this.buttonAppraiserSchedule.setWidth("150px");
 		
 		this.buttonRemoveAppraiser = new Button("Remover", new Icon(VaadinIcon.TRASH), event -> {
             removeAppraiser();
         });
 		this.buttonRemoveAppraiser.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
-		this.buttonRemoveAppraiser.setWidth("100px");
+		this.buttonRemoveAppraiser.setWidth("150px");
 		
 		VerticalLayout v1 = new VerticalLayout(this.buttonAddAppraiser, this.buttonAppraiserSchedule, this.buttonRemoveAppraiser);
 		v1.setSpacing(false);
@@ -172,7 +172,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		h2.setMargin(false);
 		h2.setPadding(false);
 		h2.expand(this.gridAppraisers);
-		h2.setHeight("120px");
+		h2.setHeight("150px");
 		h2.setWidth("100%");
 		Details panelAppraisers = new Details();
 		panelAppraisers.setSummaryText("Membros Titulares");
@@ -192,18 +192,18 @@ public class EditJuryRequestWindow extends EditWindow {
             addSubstitute();
         });
 		this.buttonAddSubstitute.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
-		this.buttonAddSubstitute.setWidth("100px");
+		this.buttonAddSubstitute.setWidth("150px");
 		
 		this.buttonSubstituteSchedule = new Button("Agenda", new Icon(VaadinIcon.CALENDAR_O), event -> {
             substituteSchedule();
         });
-		this.buttonSubstituteSchedule.setWidth("100px");
+		this.buttonSubstituteSchedule.setWidth("150px");
 		
 		this.buttonRemoveSubstitute = new Button("Remover", new Icon(VaadinIcon.TRASH), event -> {
             removeSubstitute();
         });
 		this.buttonRemoveSubstitute.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
-		this.buttonRemoveSubstitute.setWidth("100px");
+		this.buttonRemoveSubstitute.setWidth("150px");
 		
 		VerticalLayout v2 = new VerticalLayout(this.buttonAddSubstitute, this.buttonSubstituteSchedule, this.buttonRemoveSubstitute);
 		v2.setSpacing(false);
@@ -216,7 +216,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		h3.setMargin(false);
 		h3.setPadding(false);
 		h3.expand(this.gridSubstitutes);
-		h3.setHeight("120px");
+		h3.setHeight("150px");
 		h3.setWidth("100%");
 		Details panelSubstitutes = new Details();
 		panelSubstitutes.setSummaryText("Suplentes");
@@ -400,7 +400,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		this.gridAppraisers.setItems(new ArrayList<JuryAppraiserDataSource>());
 		
 		if(this.jury.getAppraisers() != null) {
-			this.gridAppraisers.setItems(JuryAppraiserDataSource.loadJuryRequest(this.jury.getAppraisers(), true, false));
+			this.gridAppraisers.setItems(JuryAppraiserDataSource.loadJuryRequest(this.jury.getAppraisers(), false, true, false));
 		}
 	}
 	
@@ -408,7 +408,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		this.gridSubstitutes.setItems(new ArrayList<JuryAppraiserDataSource>());
 		
 		if(this.jury.getAppraisers() != null) {
-			this.gridSubstitutes.setItems(JuryAppraiserDataSource.loadJuryRequest(this.jury.getAppraisers(), false, true));
+			this.gridSubstitutes.setItems(JuryAppraiserDataSource.loadJuryRequest(this.jury.getAppraisers(), false, false, true));
 		}
 	}
 	

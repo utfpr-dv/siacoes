@@ -105,6 +105,7 @@ CREATE  TABLE sigesconfig (
   minimumjurysubstitutes SMALLINT NOT NULL ,
   usesei smallint NOT NULL ,
   studentrequestjury SMALLINT NOT NULL ,
+  useevaluationitems SMALLINT NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigesconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -341,6 +342,7 @@ CREATE  TABLE internshipjury (
   supervisorFillJuryForm SMALLINT NOT NULL ,
   juryformat SMALLINT NOT NULL ,
   sei VARCHAR(255) NOT NULL,
+  useevaluationitems SMALLINT NOT NULL ,
   PRIMARY KEY (idinternshipjury) ,
   CONSTRAINT fk_internshipjury_idinternship FOREIGN KEY (idinternship) REFERENCES internship (idinternship) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -355,6 +357,7 @@ CREATE  TABLE internshipjuryappraiser (
   comments TEXT NOT NULL ,
   substitute SMALLINT NOT NULL ,
   chair SMALLINT NOT NULL ,
+  score REAL NOT NULL ,
   PRIMARY KEY (idinternshipjuryappraiser) ,
   CONSTRAINT fk_internshipjuryappraiser_idinternshipjury FOREIGN KEY (idinternshipjury) REFERENCES internshipjury (idinternshipjury) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_internshipjuryappraiser_idappraiser FOREIGN KEY (idappraiser) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION

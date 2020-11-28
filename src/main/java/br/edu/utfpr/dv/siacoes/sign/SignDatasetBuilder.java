@@ -14,7 +14,7 @@ import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.Attendance;
-import br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipJury;
+import br.edu.utfpr.dv.siacoes.report.dataset.v2.InternshipJury;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipJuryRequest;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipPosterRequest;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.Jury;
@@ -268,6 +268,7 @@ public class SignDatasetBuilder {
 		dataset.setCompanySupervisorScore(jury.getCompanySupervisorScore());
 		dataset.setSupervisorScore(jury.getSupervisorScore());
 		dataset.setFinalScore(jury.getFinalScore());
+		dataset.setUseEvaluationItems(jury.isUseEvaluationItems());
 		
 		int app = 1;
 		boolean findSupervisor = false;

@@ -16,6 +16,7 @@ public class InternshipJuryAppraiser implements Serializable {
 	private String comments;
 	private boolean chair;
 	private boolean substitute;
+	private double score;
 	
 	public InternshipJuryAppraiser(){
 		this.setIdInternshipJuryAppraiser(0);
@@ -27,6 +28,7 @@ public class InternshipJuryAppraiser implements Serializable {
 		this.setComments("");
 		this.setChair(false);
 		this.setSubstitute(false);
+		this.setScore(0);
 	}
 	
 	public int getIdInternshipJuryAppraiser() {
@@ -82,6 +84,12 @@ public class InternshipJuryAppraiser implements Serializable {
 	}
 	public void setSubstitute(boolean substitute) {
 		this.substitute = substitute;
+	}
+	public double getScore() {
+		return score;
+	}
+	public void setScore(double score) {
+		this.score = score;
 	}
 	
 }

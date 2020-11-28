@@ -60,6 +60,7 @@ public class SigesConfig implements Serializable {
 	private int minimumJurySubstitutes;
 	private boolean useSei;
 	private boolean studentRequestJury;
+	private boolean useEvaluationItems;
 	
 	public SigesConfig(){
 		this.setDepartment(new Department());
@@ -79,6 +80,7 @@ public class SigesConfig implements Serializable {
 		this.setMinimumJurySubstitutes(0);
 		this.setUseSei(false);
 		this.setStudentRequestJury(false);
+		this.setUseEvaluationItems(true);
 	}
 	
 	public Department getDepartment() {
@@ -189,6 +191,12 @@ public class SigesConfig implements Serializable {
 	}
 	public void setStudentRequestJury(boolean studentRequestJury) {
 		this.studentRequestJury = studentRequestJury;
+	}
+	public boolean isUseEvaluationItems() {
+		return useEvaluationItems;
+	}
+	public void setUseEvaluationItems(boolean useEvaluationItems) {
+		this.useEvaluationItems = useEvaluationItems;
 	}
 	
 }

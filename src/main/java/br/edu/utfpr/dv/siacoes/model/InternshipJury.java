@@ -34,6 +34,7 @@ public class InternshipJury implements Serializable {
 	private InternshipPosterRequest posterRequest;
 	private InternshipJuryRequest juryRequest;
 	private String sei;
+	private boolean useEvaluationItems;
 
 	public InternshipJury(){
 		this.setIdInternshipJury(0);
@@ -56,6 +57,7 @@ public class InternshipJury implements Serializable {
 		this.setPosterRequest(null);
 		this.setJuryRequest(null);
 		this.setSei("");
+		this.setUseEvaluationItems(true);
 	}
 	
 	public int getIdInternshipJury() {
@@ -184,6 +186,13 @@ public class InternshipJury implements Serializable {
 	public void setSei(String sei) {
 		this.sei = sei;
 	}
+	public boolean isUseEvaluationItems() {
+		return useEvaluationItems;
+	}
+	public void setUseEvaluationItems(boolean useEvaluationItems) {
+		this.useEvaluationItems = useEvaluationItems;
+	}
+
 	public User getSupervisor(){
 		if((this.getInternship().getSupervisor() == null) || (this.getInternship().getSupervisor().getIdUser() == 0)){
 			this.loadInternship();

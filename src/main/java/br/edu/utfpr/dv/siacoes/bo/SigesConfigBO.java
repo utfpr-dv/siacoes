@@ -54,6 +54,9 @@ public class SigesConfigBO {
 		if(config.getMinimumJurySubstitutes() < 0) {
 			config.setMinimumJurySubstitutes(0);
 		}
+		if(!config.isUseEvaluationItems()) {
+			config.setSupervisorFillJuryForm(false);
+		}
 		
 		try{
 			SigesConfigDAO dao = new SigesConfigDAO();

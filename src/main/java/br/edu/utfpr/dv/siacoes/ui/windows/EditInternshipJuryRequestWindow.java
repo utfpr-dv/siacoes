@@ -1,12 +1,15 @@
 package br.edu.utfpr.dv.siacoes.ui.windows;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.claspina.confirmdialog.ButtonOption;
 import org.claspina.confirmdialog.ConfirmDialog;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
@@ -15,10 +18,13 @@ import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextField;
 
 import br.edu.utfpr.dv.siacoes.Session;
@@ -44,6 +50,7 @@ public class EditInternshipJuryRequestWindow extends EditWindow {
 	private final List<InternshipJuryAppraiserRequest> substitutes;
 	private SigesConfig config;
 	
+	private final Tabs tabContainer;
 	private final DateTimePicker textDate;
 	private final TextField textLocal;
 	private final TextField textStudent;
@@ -52,9 +59,11 @@ public class EditInternshipJuryRequestWindow extends EditWindow {
 	private Grid<JuryAppraiserDataSource> gridAppraisers;
 	private final Button buttonAddAppraiser;
 	private final Button buttonRemoveAppraiser;
+	private final Button buttonAppraiserSchedule;
 	private Grid<JuryAppraiserDataSource> gridSubstitutes;
 	private final Button buttonAddSubstitute;
 	private final Button buttonRemoveSubstitute;
+	private final Button buttonSubstituteSchedule;
 	
 	public EditInternshipJuryRequestWindow(InternshipJuryRequest request, ListView parentView) {
 		this(request, true, parentView);
@@ -82,7 +91,7 @@ public class EditInternshipJuryRequestWindow extends EditWindow {
 		}
 		
 		this.textLocal = new TextField("Local");
-		this.textLocal.setWidth("600px");
+		this.textLocal.setWidth("400px");
 		this.textLocal.setMaxLength(100);
 		this.textLocal.setRequired(true);
 		
@@ -111,15 +120,20 @@ public class EditInternshipJuryRequestWindow extends EditWindow {
             addAppraiser();
         });
 		this.buttonAddAppraiser.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
-		this.buttonAddAppraiser.setWidth("100px");
+		this.buttonAddAppraiser.setWidth("150px");
+		
+		this.buttonAppraiserSchedule = new Button("Agenda", new Icon(VaadinIcon.CALENDAR_O), event -> {
+            appraiserSchedule();
+        });
+		this.buttonAppraiserSchedule.setWidth("150px");
 		
 		this.buttonRemoveAppraiser = new Button("Remover", new Icon(VaadinIcon.TRASH), event -> {
             removeAppraiser();
         });
 		this.buttonRemoveAppraiser.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
-		this.buttonRemoveAppraiser.setWidth("100px");
+		this.buttonRemoveAppraiser.setWidth("150px");
 		
-		VerticalLayout v1 = new VerticalLayout(this.buttonAddAppraiser, this.buttonRemoveAppraiser);
+		VerticalLayout v1 = new VerticalLayout(this.buttonAddAppraiser, this.buttonAppraiserSchedule, this.buttonRemoveAppraiser);
 		v1.setSpacing(false);
 		v1.setMargin(false);
 		v1.setPadding(false);
@@ -130,7 +144,7 @@ public class EditInternshipJuryRequestWindow extends EditWindow {
 		h2.setMargin(false);
 		h2.setPadding(false);
 		h2.expand(this.gridAppraisers);
-		h2.setHeight("120px");
+		h2.setHeight("150px");
 		h2.setWidth("100%");
 		Details panelAppraisers = new Details();
 		panelAppraisers.setSummaryText("Membros Titulares");
@@ -150,15 +164,20 @@ public class EditInternshipJuryRequestWindow extends EditWindow {
             addSubstitute();
         });
 		this.buttonAddSubstitute.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
-		this.buttonAddSubstitute.setWidth("100px");
+		this.buttonAddSubstitute.setWidth("150px");
+		
+		this.buttonSubstituteSchedule = new Button("Agenda", new Icon(VaadinIcon.CALENDAR_O), event -> {
+            substituteSchedule();
+        });
+		this.buttonSubstituteSchedule.setWidth("150px");
 		
 		this.buttonRemoveSubstitute = new Button("Remover", new Icon(VaadinIcon.TRASH), event -> {
             removeSubstitute();
         });
-		this.buttonAddSubstitute.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
-		this.buttonRemoveSubstitute.setWidth("100px");
+		this.buttonRemoveSubstitute.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
+		this.buttonRemoveSubstitute.setWidth("150px");
 		
-		VerticalLayout v2 = new VerticalLayout(this.buttonAddSubstitute, this.buttonRemoveSubstitute);
+		VerticalLayout v2 = new VerticalLayout(this.buttonAddSubstitute, this.buttonSubstituteSchedule, this.buttonRemoveSubstitute);
 		v2.setSpacing(false);
 		v2.setMargin(false);
 		v2.setPadding(false);
@@ -169,7 +188,7 @@ public class EditInternshipJuryRequestWindow extends EditWindow {
 		h3.setMargin(false);
 		h3.setPadding(false);
 		h3.expand(this.gridSubstitutes);
-		h3.setHeight("120px");
+		h3.setHeight("150px");
 		h3.setWidth("100%");
 		Details panelSubstitutes = new Details();
 		panelSubstitutes.setSummaryText("Suplentes");
@@ -183,12 +202,45 @@ public class EditInternshipJuryRequestWindow extends EditWindow {
 		h4.setMargin(false);
 		h4.setPadding(false);
 		
-		this.addField(this.textStudent);
-		this.addField(this.textCompany);
-		this.addField(this.textSupervisor);
-		this.addField(h4);
-		this.addField(panelAppraisers);
-		this.addField(panelSubstitutes);
+		VerticalLayout tab1 = new VerticalLayout(this.textStudent, this.textCompany, this.textSupervisor, h4);
+		tab1.setSpacing(false);
+		tab1.setMargin(false);
+		tab1.setPadding(false);
+		
+		VerticalLayout tab2 = new VerticalLayout(panelAppraisers, panelSubstitutes);
+		tab2.setSpacing(false);
+		tab2.setMargin(false);
+		tab2.setPadding(false);
+		tab2.setVisible(false);
+		
+		Tab t1 = new Tab("Informações da Banca");
+		Tab t2 = new Tab("Membros");
+		
+		Map<Tab, Component> tabsToPages = new HashMap<>();
+		tabsToPages.put(t1, tab1);
+		tabsToPages.put(t2, tab2);
+		Div pages = new Div(tab1, tab2);
+		
+		this.tabContainer = new Tabs(t1, t2);
+		this.tabContainer.setWidthFull();
+		this.tabContainer.setFlexGrowForEnclosedTabs(1);
+		
+		this.tabContainer.addSelectedChangeListener(event -> {
+		    tabsToPages.values().forEach(page -> page.setVisible(false));
+		    Component selectedPage = tabsToPages.get(this.tabContainer.getSelectedTab());
+		    selectedPage.setVisible(true);
+		});
+		
+		this.tabContainer.setSelectedTab(t1);
+		
+		VerticalLayout layout = new VerticalLayout(this.tabContainer, pages);
+		layout.setWidth("820px");
+		layout.setHeight("470px");
+		layout.setSpacing(false);
+		layout.setMargin(false);
+		layout.setPadding(false);
+		
+		this.addField(layout);
 		
 		if(allowEdit && this.config.isUseDigitalSignature()) {
 			this.setSignButtonVisible(true);
@@ -302,7 +354,7 @@ public class EditInternshipJuryRequestWindow extends EditWindow {
 		this.gridAppraisers.setItems(new ArrayList<JuryAppraiserDataSource>());
 		
 		if(this.request.getAppraisers() != null) {
-			this.gridAppraisers.setItems(JuryAppraiserDataSource.loadInternshipJuryRequest(this.request.getAppraisers(), true, false));
+			this.gridAppraisers.setItems(JuryAppraiserDataSource.loadInternshipJuryRequest(this.request.getAppraisers(), false, true, false));
 		}
 	}
 	
@@ -310,7 +362,7 @@ public class EditInternshipJuryRequestWindow extends EditWindow {
 		this.gridSubstitutes.setItems(new ArrayList<JuryAppraiserDataSource>());
 		
 		if(this.request.getAppraisers() != null) {
-			this.gridSubstitutes.setItems(JuryAppraiserDataSource.loadInternshipJuryRequest(this.request.getAppraisers(), false, true));
+			this.gridSubstitutes.setItems(JuryAppraiserDataSource.loadInternshipJuryRequest(this.request.getAppraisers(), false, false, true));
 		}
 	}
 	
@@ -333,6 +385,17 @@ public class EditInternshipJuryRequestWindow extends EditWindow {
 			
 			this.loadGridAppraisers();
 			this.loadGridSubstitutes();
+		}
+	}
+	
+	private void appraiserSchedule() {
+		int index = this.getAppraiserSelectedIndex();
+		
+		if(index == -1){
+			this.showWarningNotification("Selecionar Membro", "Selecione o membro para visualizar a agenda.");
+		}else{
+			ProfessorScheculeWindow window = new ProfessorScheculeWindow(members.get(index).getAppraiser());
+			window.open();
 		}
 	}
 	
@@ -381,6 +444,17 @@ public class EditInternshipJuryRequestWindow extends EditWindow {
 	private void addSubstitute() {
 		EditInternshipJuryAppraiserWindow window = new EditInternshipJuryAppraiserWindow(this, true);
 		window.open();
+	}
+	
+	private void substituteSchedule() {
+		int index = this.getSubstituteSelectedIndex();
+		
+		if(index == -1){
+			this.showWarningNotification("Selecionar Suplente", "Selecione o suplente para visualizar a agenda.");
+		}else{
+			ProfessorScheculeWindow window = new ProfessorScheculeWindow(substitutes.get(index).getAppraiser());
+			window.open();
+		}
 	}
 	
 	private void removeSubstitute() {

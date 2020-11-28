@@ -28,6 +28,7 @@ public class InternshipJuryFormReport implements Serializable {
 	private double supervisorScore;
 	private double companySupervisorScore;
 	private double finalScore;
+	private boolean useEvaluationItems;
 	private JuryResult result;
 	private List<JuryFormAppraiserReport> appraisers;
 	private List<JuryFormAppraiserReport> appraisersSignatures;
@@ -52,6 +53,7 @@ public class InternshipJuryFormReport implements Serializable {
 		this.setIdStudent(0);
 		this.setIdSupervisor(0);
 		this.setSupervisor("");
+		this.setUseEvaluationItems(true);
 	}
 	
 	public String getTitle() {
@@ -173,6 +175,12 @@ public class InternshipJuryFormReport implements Serializable {
 	}
 	public void setSupervisor(String supervisor) {
 		this.supervisor = supervisor;
+	}
+	public boolean isUseEvaluationItems() {
+		return useEvaluationItems;
+	}
+	public void setUseEvaluationItems(boolean useEvaluationItems) {
+		this.useEvaluationItems = useEvaluationItems;
 	}
 
 }
