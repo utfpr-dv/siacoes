@@ -53,15 +53,19 @@ public class EditInternshipJuryAppraiserScoreWindow extends EditWindow {
 		this.layoutEvaluationItems.setPadding(false);
 		this.layoutEvaluationItems.setWidth("800px");
 		this.layoutEvaluationItems.setHeight("300px");
+		this.layoutEvaluationItems.getStyle().set("overflow", "auto");
 		
 		Label labelDescription = new Label("Quesito");
 		labelDescription.setWidth("600px");
+		labelDescription.getStyle().set("font-weight", "bold");
 		
 		Label labelPonderosity = new Label("Peso");
-		labelPonderosity.setWidth("100px");
+		labelPonderosity.setWidth("50px");
+		labelPonderosity.getStyle().set("font-weight", "bold");
 		
 		Label labelScore = new Label("Nota");
 		labelScore.setWidth("100px");
+		labelScore.getStyle().set("font-weight", "bold");
 		
 		this.textComments = new TextArea("Observações");
 		this.textComments.setWidth("800px");
@@ -118,7 +122,7 @@ public class EditInternshipJuryAppraiserScoreWindow extends EditWindow {
 			
 			for(InternshipJuryAppraiserScore score : this.appraiser.getScores()){
 				Label labelDescription = new Label(score.getInternshipEvaluationItem().getDescription());
-				labelDescription.setWidth("650px");
+				labelDescription.setWidth("600px");
 				
 				Label labelPonderosity = new Label(String.valueOf(score.getInternshipEvaluationItem().getPonderosity()));
 				labelPonderosity.setWidth("50px");
