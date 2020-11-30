@@ -330,9 +330,9 @@ public class InternshipJuryBO {
 						findSupervisor = true;
 					}
 					
-					if(appraiser.isSubstitute() || (jury.getJuryFormat() == JuryFormat.SESSION)) {
+					/*if(appraiser.isSubstitute() || (jury.getJuryFormat() == JuryFormat.SESSION)) {
 						appraiser.setChair(false);
-					}
+					}*/
 					
 					if(appraiser.isChair()) {
 						countChair++;
