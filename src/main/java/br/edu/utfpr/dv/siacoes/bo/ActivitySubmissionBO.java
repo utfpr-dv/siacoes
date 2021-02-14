@@ -49,6 +49,18 @@ public class ActivitySubmissionBO {
 		}
 	}
 	
+	public List<ActivitySubmission> list(int idDepartment, int idStudent, int feedback, String description) throws Exception {
+		try {
+			ActivitySubmissionDAO dao = new ActivitySubmissionDAO();
+			
+			return dao.list(idDepartment, idStudent, feedback, description);
+		} catch(SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
+	}
+	
 	public List<ActivitySubmission> listByStudent(int idStudent, int idDepartment, int feedback, boolean loadFiles) throws Exception{
 		try{
 			ActivitySubmissionDAO dao = new ActivitySubmissionDAO();

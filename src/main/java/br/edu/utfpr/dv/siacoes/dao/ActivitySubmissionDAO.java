@@ -116,6 +116,55 @@ public class ActivitySubmissionDAO {
 		}
 	}
 	
+	public List<ActivitySubmission> list(int idDepartment, int idStudent, int feedback, String description) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+		
+			String sql = "SELECT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
+					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, activitygroup.idactivitygroup, " +
+					"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester " + 
+					"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
+					"INNER JOIN activity ON activity.idActivity=activitysubmission.idActivity " + 
+					"INNER JOIN activitygroup ON activitygroup.idActivityGroup=activity.idActivityGroup " +
+					"INNER JOIN activityunit ON activityunit.idActivityUnit=activity.idActivityUnit " +
+					"LEFT JOIN \"user\" feedbackUser ON feedbackUser.idUser=activitysubmission.idfeedbackuser " +
+					"WHERE activitysubmission.iddepartment=" + String.valueOf(idDepartment) +
+					((idStudent <= 0) ? "" : " AND activitysubmission.idStudent=" + String.valueOf(idStudent)) +
+					((feedback < 0) ? "" : " AND activitysubmission.feedback=" + String.valueOf(feedback)) +
+					(!description.trim().isEmpty() ? " AND activitysubmission.description ILIKE ? " : "") +
+					" ORDER BY activitysubmission.year DESC, activitysubmission.semester DESC";
+			
+			stmt = conn.prepareStatement(sql);
+			int p = 1;
+			
+			if(!description.trim().isEmpty()){
+				stmt.setString(p, "%" + description.trim() + "%");
+				p++;
+			}
+			
+			rs = stmt.executeQuery();
+			
+			List<ActivitySubmission> list = new ArrayList<ActivitySubmission>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs, false));
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public List<ActivitySubmission> listByStudent(int idStudent, int idDepartment, int feedback, boolean loadFiles) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;

@@ -22,6 +22,7 @@ import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 import br.edu.utfpr.dv.siacoes.util.StringUtils;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
+import br.edu.utfpr.dv.siacoes.model.InternshipListReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipMissingDocumentsReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
@@ -55,6 +56,22 @@ public class InternshipBO {
 			
 			throw new Exception(e);
 		}
+	}
+	
+	public byte[] getInternshipReport(int idDepartment, int year, int idStudent, int idSupervisor, int idCompany, int type, int status, Date startDate1, Date startDate2, Date endDate1, Date endDate2, int companyStatus) throws Exception {
+		List<Internship> list = this.list(idDepartment, year, idStudent, idSupervisor, idCompany, type, status, startDate1, startDate2, endDate1, endDate2, companyStatus);
+		
+		return this.getInternshipReport(idDepartment, list);
+	}
+	
+	public byte[] getInternshipReport(int idDepartment, List<Internship> list) throws Exception {
+		List<InternshipListReport> list2 = new ArrayList<InternshipListReport>();
+		
+		for(Internship i : list) {
+			list2.add(new InternshipDAO().completeReport(i));
+		}
+		
+		return new ReportUtils().createPdfStream(list2, "Internship", idDepartment).toByteArray();
 	}
 	
 	public List<Internship> listByCompany(int idCompany) throws Exception{

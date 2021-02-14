@@ -9,13 +9,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.github.appreciated.css.grid.GridLayoutComponent.AutoFlow;
-import com.github.appreciated.css.grid.GridLayoutComponent.Overflow;
-import com.github.appreciated.css.grid.sizes.Flex;
-import com.github.appreciated.css.grid.sizes.Length;
-import com.github.appreciated.css.grid.sizes.MinMax;
-import com.github.appreciated.css.grid.sizes.Repeat.RepeatMode;
-import com.github.appreciated.layout.FlexibleGridLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.details.Details;
@@ -155,7 +148,7 @@ public class LoginView extends ViewFrame implements HasUrlParameter<String> {
     }
     
     private Component loadStats() {
-    	FlexibleGridLayout layout = new FlexibleGridLayout();
+    	VerticalLayout layout = new VerticalLayout();
     	
     	try {
     		UserBO ubo = new UserBO();
@@ -190,13 +183,42 @@ public class LoginView extends ViewFrame implements HasUrlParameter<String> {
 			
 			Details card11 = this.createPanelStat("Bancas Realizadas (Estágio Obrigatório e TCC)", String.valueOf(jbo.getTotalJury()));
 			
-			layout.withColumns(RepeatMode.AUTO_FILL, new MinMax(new Length("300px"), new Flex(1)))
-	                .withAutoRows(new Length("190px"))
-	                .withItems(card1, card2, card3, card4, card5, card6, card7, card8, card9, card10, card11)
-	                .withPadding(true)
-	                .withSpacing(true)
-	                .withAutoFlow(AutoFlow.ROW_DENSE)
-	                .withOverflow(Overflow.AUTO);
+			HorizontalLayout h1 = new HorizontalLayout();
+			h1.setWidthFull();
+			h1.setSpacing(true);
+			h1.setMargin(false);
+			h1.setPadding(false);
+			h1.addAndExpand(card1);
+			h1.addAndExpand(card2);
+			h1.addAndExpand(card3);
+			
+			HorizontalLayout h2 = new HorizontalLayout();
+			h2.setWidthFull();
+			h2.setSpacing(true);
+			h2.setMargin(false);
+			h2.setPadding(false);
+			h2.addAndExpand(card4);
+			h2.addAndExpand(card5);
+			h2.addAndExpand(card6);
+			
+			HorizontalLayout h3 = new HorizontalLayout();
+			h3.setWidthFull();
+			h3.setSpacing(true);
+			h3.setMargin(false);
+			h3.setPadding(false);
+			h3.addAndExpand(card7);
+			h3.addAndExpand(card8);
+			h3.addAndExpand(card9);
+			
+			HorizontalLayout h4 = new HorizontalLayout();
+			h4.setWidthFull();
+			h4.setSpacing(true);
+			h4.setMargin(false);
+			h4.setPadding(false);
+			h4.addAndExpand(card10);
+			h4.addAndExpand(card11);
+			
+			layout.add(h1, h2, h3, h4);
 			layout.setSizeFull();
 		} catch (Exception e) {
 			e.printStackTrace();

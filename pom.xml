@@ -242,6 +242,18 @@
       		<artifactId>commons-dbcp2</artifactId>
       		<version>2.1.1</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
+		<dependency>
+		    <groupId>commons-beanutils</groupId>
+		    <artifactId>commons-beanutils</artifactId>
+		    <version>1.9.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
+		<dependency>
+		    <groupId>commons-logging</groupId>
+		    <artifactId>commons-logging</artifactId>
+		    <version>1.2</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-jdbc -->
 		<dependency>
       		<groupId>org.apache.tomcat</groupId>
@@ -494,6 +506,18 @@
             </dependencies>
             <build>
                 <plugins>
+                	<plugin>
+		                <groupId>com.vaadin</groupId>
+		                <artifactId>vaadin-maven-plugin</artifactId>
+		                <version>${vaadin.version}</version>
+		                <executions>
+		                    <execution>
+		                        <goals>
+		                            <goal>prepare-frontend</goal>
+		                        </goals>
+		                    </execution>
+		                </executions>
+		            </plugin>
                     <plugin>
                         <groupId>com.vaadin</groupId>
                         <artifactId>vaadin-maven-plugin</artifactId>

@@ -134,7 +134,8 @@ public class EditUserWindow extends EditWindow {
 		
 		this.gridProfiles = new Grid<UserProfile>();
     	this.gridProfiles.setSelectionMode(SelectionMode.SINGLE);
-		this.gridProfiles.setSizeFull();
+    	this.gridProfiles.setWidth("820px");
+		this.gridProfiles.setHeight("250px");
 		this.gridProfiles.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
 		this.gridProfiles.addItemDoubleClickListener(event -> {
 			if(this.buttonEditProfile.isVisible()){
@@ -174,7 +175,8 @@ public class EditUserWindow extends EditWindow {
 		
 		this.gridDepartments = new Grid<UserDepartmentDataSource>();
     	this.gridDepartments.setSelectionMode(SelectionMode.SINGLE);
-		this.gridDepartments.setSizeFull();
+		this.gridDepartments.setWidth("820px");
+		this.gridDepartments.setHeight("250px");
 		this.gridDepartments.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
 		this.gridDepartments.addItemDoubleClickListener(event -> {
 			if(this.buttonEditDepartment.isVisible()){

@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
 import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.InternshipByCompany;
+import br.edu.utfpr.dv.siacoes.model.InternshipListReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipMissingDocumentsReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipReport.ReportType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
@@ -793,6 +795,67 @@ public class InternshipDAO {
 			if((conn != null) && !conn.isClosed())
 				conn.close();
 		}
+	}
+	
+	public InternshipListReport completeReport(Internship internship) throws Exception {
+		InternshipListReport report = new InternshipListReport();
+		
+		report.setStudent(internship.getStudent().getName());
+		report.setSupervisor(internship.getSupervisor().getName());
+		report.setCompany(internship.getCompany().getName());
+		report.setCompanySupervisor(internship.getCompanySupervisor().getName());
+		report.setStartDate(internship.getStartDate());
+		report.setEndDate(internship.getEndDate());
+		report.setSei(internship.getSei());
+		report.setType(internship.getType().toString());
+		report.setStatus(internship.getStatus().toString());
+		
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT student.studentcode, CASE WHEN internshipplan IS NULL THEN 0 ELSE 1 END AS internshiplan, CASE WHEN finalreport IS NULL THEN 0 ELSE 1 END AS finalreport, " +
+					"(SELECT COUNT(*) FROM internshipreport WHERE internshipreport.idinternship=internship.idinternship AND internshipreport.type=0) AS studentreport, " +
+					"(SELECT COUNT(*) FROM internshipreport WHERE internshipreport.idinternship=internship.idinternship AND internshipreport.type=1) AS supervisorreport, " + 
+					"(SELECT COUNT(*) FROM internshipreport WHERE internshipreport.idinternship=internship.idinternship AND internshipreport.type=2) AS companysupervisorreport " + 
+					"FROM internship INNER JOIN \"user\" student ON student.iduser=internship.idstudent WHERE idinternship=" + String.valueOf(internship.getIdInternship()));
+			
+			if(rs.next()) {
+				report.setStudentCode(rs.getString("studentcode"));
+				report.setInternshipPlan(rs.getInt("internshiplan") == 1);
+				report.setFinalReport(rs.getInt("finalreport") == 1);
+				report.setStudentReport(rs.getInt("studentreport"));
+				report.setSupervisorReport(rs.getInt("supervisorreport"));
+				report.setCompanySupervisorReport(rs.getInt("companysupervisorreport"));
+			}
+			
+			rs.close();
+			stmt.close();
+			
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT idinternshipjury, date, sei FROM internshipjury WHERE idinternship=" + String.valueOf(internship.getIdInternship()));
+			
+			if(rs.next()) {
+				report.setJurySei(rs.getString("sei"));
+				report.setJuryDate(rs.getTimestamp("date"));
+				
+				report.setJuryScore(new InternshipJuryBO().getJuryFormReport(rs.getInt("idinternshipjury")).getFinalScore());
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+		
+		return report;
 	}
 
 }

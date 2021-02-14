@@ -20,8 +20,8 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
-import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -48,6 +48,7 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 	private final RadioButtonGroup<String> optionFilterType;
 	private final StudentComboBox comboStudent;
 	private final Select<String> comboFeedback;
+	private final TextField textDescription;
 	private final Button buttonFinalReport;
 	private final Button buttonFinalSubmission;
 	
@@ -58,7 +59,7 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 	private final Details panelLabel;
 	
 	private static final String SUBMISSIONS_WITHOUT_FEEDBACK = "Listar submissões sem parecer";
-	private static final String SUBMISSIONS_BY_STUDENT = "Listar submissões por acadêmico";
+	private static final String SUBMISSIONS_BY_STUDENT = "Filtro personalizado";
 	
 	public ActivitySubmissionView(){
 		super(SystemModule.SIGAC);
@@ -75,7 +76,7 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 		this.optionFilterType = new RadioButtonGroup<String>();
 		this.optionFilterType.setItems(SUBMISSIONS_WITHOUT_FEEDBACK, SUBMISSIONS_BY_STUDENT);
 		this.optionFilterType.setValue(SUBMISSIONS_WITHOUT_FEEDBACK);
-		this.optionFilterType.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+		//this.optionFilterType.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
 		
 		this.comboStudent = new StudentComboBox("Acadêmico");
 		
@@ -84,6 +85,9 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 		this.comboFeedback.setWidth("200px");
 		this.comboFeedback.setItems(ActivityFeedback.NONE.toString(), ActivityFeedback.APPROVED.toString(), ActivityFeedback.DISAPPROVED.toString(), "(Todos)");
 		this.comboFeedback.setValue("(Todos)");
+		
+		this.textDescription = new TextField("Descrição da Atividade");
+		this.textDescription.setWidth("300px");
 		
 		this.buttonFinalReport = new Button("Relatório Final");
 		this.buttonFinalReport.setDisableOnClick(true);
@@ -125,6 +129,8 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 			imageRedWarning.setWidth("16px");
 			
 			HorizontalLayout h1 = new HorizontalLayout(imageRedWarning, new Label("Provável formando"));
+			h1.setMargin(false);
+			h1.setPadding(false);
 			h1.setSpacing(true);
 			
 			Image imageYellowWarning = new Image();
@@ -133,6 +139,8 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 			imageYellowWarning.setWidth("16px");
 			
 			HorizontalLayout h2 = new HorizontalLayout(imageYellowWarning, new Label("Períodos finais"));
+			h2.setMargin(false);
+			h2.setPadding(false);
 			h2.setSpacing(true);
 			
 			this.layoutLabel.add(h1, h2);
@@ -140,7 +148,12 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 			this.panelLabel = new Details("Legenda", this.layoutLabel);
 			this.addActionPanel(this.panelLabel);
 			
-			this.addFilterField(new HorizontalLayout(this.optionFilterType, this.comboStudent, this.comboFeedback));
+			HorizontalLayout h3 = new HorizontalLayout(this.comboStudent, this.comboFeedback, this.textDescription);
+			h3.setMargin(false);
+			h3.setPadding(false);
+			h3.setSpacing(true);
+			
+			this.addFilterField(new VerticalLayout(this.optionFilterType, h3));
 		}else{
 			boolean allowAdd = false;
 			
@@ -209,9 +222,10 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 		this.getGrid().getColumns().get(0).setVisible(true);
 		this.getGrid().getColumns().get(4).setVisible(true);
 		
-		if((Session.isUserManager(this.getModule()) || Session.isUserDepartmentManager()) && (this.optionFilterType.getValue().equals(SUBMISSIONS_WITHOUT_FEEDBACK))) {
+		if((Session.isUserManager(this.getModule()) || Session.isUserDepartmentManager()) && this.optionFilterType.getValue().equals(SUBMISSIONS_WITHOUT_FEEDBACK)) {
 			this.getGrid().getColumns().get(4).setVisible(false);
-		} else {
+		}
+		if(Session.isUserStudent() || ((this.comboStudent.getStudent() != null) && (this.comboStudent.getStudent().getIdUser() != 0))) {
 			this.getGrid().getColumns().get(0).setVisible(false);
 		}
 		
@@ -227,17 +241,18 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 			int feedback = -1;
 			
 			if(!this.comboFeedback.getValue().equals("(Todos)")) {
-				feedback = ActivityFeedback.valueOf(this.comboFeedback.getValue()).getValue();
+				feedback = ActivityFeedback.fromDescription(this.comboFeedback.getValue()).getValue();
 			}
 			
 			if(Session.isUserManager(this.getModule()) || Session.isUserDepartmentManager()) {
+				this.buttonFinalReport.setEnabled(false);
+				this.buttonFinalSubmission.setEnabled(false);
+				this.panelScore.setVisible(false);
+				this.panelLabel.setVisible(true);
+				
 				if(this.optionFilterType.getValue().equals(SUBMISSIONS_WITHOUT_FEEDBACK)) {
 					list = bo.listWithNoFeedback2(Session.getSelectedDepartment().getDepartment().getIdDepartment());
-					this.buttonFinalReport.setEnabled(false);
-					this.buttonFinalSubmission.setEnabled(false);
-					this.panelScore.setVisible(false);
-					this.panelLabel.setVisible(true);
-				} else {
+				} else if((this.comboStudent.getStudent() != null) && (this.comboStudent.getStudent().getIdUser() != 0) && this.textDescription.getValue().trim().isEmpty()) {
 					list = bo.listByStudent(this.comboStudent.getStudent().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), feedback, (feedback == ActivityFeedback.APPROVED.getValue()));
 					List<ActivitySubmission> listReport;
 					
@@ -248,6 +263,13 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 					}
 					
 					scores = bo.getFooterReport(listReport);
+					
+					this.buttonFinalReport.setEnabled(true);
+					this.buttonFinalSubmission.setEnabled(true);
+					this.panelScore.setVisible(true);
+					this.panelLabel.setVisible(false);
+				} else {
+					list = bo.list(Session.getSelectedDepartment().getDepartment().getIdDepartment(), ((this.comboStudent.getStudent() != null) ? this.comboStudent.getStudent().getIdUser() : 0), feedback, this.textDescription.getValue());
 				}
 			} else {
 				list = bo.listByStudent(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), feedback, (feedback == ActivityFeedback.APPROVED.getValue()));
@@ -365,8 +387,8 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 	@Override
 	public void filterClick() throws Exception {
 		if(!this.optionFilterType.getValue().equals(SUBMISSIONS_WITHOUT_FEEDBACK)){
-			if((this.comboStudent.getStudent() == null) || (this.comboStudent.getStudent().getIdUser() == 0)){
-				throw new Exception("Selecione um acadêmico");	
+			if(((this.comboStudent.getStudent() == null) || (this.comboStudent.getStudent().getIdUser() == 0)) && this.comboFeedback.getValue().equals("(Todos)") && this.textDescription.getValue().trim().isEmpty()){
+				throw new Exception("Selecione ao menos um filtro.");	
 			}
 		}
 	}

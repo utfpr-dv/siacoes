@@ -89,6 +89,7 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 	private final Button buttonPosterRequest;
 	private final Button buttonPrintPosterRequest;
 	private final Button buttonJuryGrades;
+	private final Button buttonReport;
 	
 	private SigesConfig config;
 	
@@ -225,6 +226,11 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
             finalDocumentClick();
         });
 		this.addActionButton(this.buttonFinalDocument);
+		
+		this.buttonReport = new Button("Relatório", new Icon(VaadinIcon.FILE_TEXT_O), event -> {
+            internshipReport();
+        });
+		this.addActionButton(this.buttonReport);
 	}
 	
 	private void configureProfile(){
@@ -236,6 +242,7 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 			this.setEditIcon(new Icon(VaadinIcon.SEARCH));
 			
 			this.buttonJury.setVisible(false);
+			this.buttonReport.setVisible(false);
 			this.buttonProfessorStatement.setVisible(this.profile == UserProfile.PROFESSOR);
 			this.buttonStudentStatement.setVisible(this.profile == UserProfile.STUDENT);
 			this.buttonParcialReport.setVisible(this.profile == UserProfile.STUDENT || this.profile == UserProfile.PROFESSOR);
@@ -270,21 +277,7 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 			List<Internship> list;
 			
 			if(this.profile == UserProfile.MANAGER){
-				int type = -1, status = -1, companyStatus = -1;
-				
-				if(!this.comboType.getValue().equals(ALL)){
-					type = InternshipType.fromDescription(this.comboType.getValue()).getValue();
-				}
-				
-				if(!this.comboStatus.getValue().equals(ALL)){
-					status = InternshipStatus.fromDescription(this.comboStatus.getValue()).getValue();
-				}
-				
-				if(!this.comboCompanyStatus.getValue().equals(ALL)){
-					companyStatus = InternshipStatus.fromDescription(this.comboCompanyStatus.getValue()).getValue();
-				}
-				
-				list = bo.list(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status, DateUtils.convertToDate(this.textStartDate1.getValue()), DateUtils.convertToDate(this.textStartDate2.getValue()), DateUtils.convertToDate(this.textEndDate1.getValue()), DateUtils.convertToDate(this.textEndDate2.getValue()), companyStatus);
+				list = this.getInternshipList();
 			}else if(this.profile == UserProfile.PROFESSOR){
 				list = bo.listBySupervisor(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			}else if(this.profile == UserProfile.COMPANYSUPERVISOR){
@@ -299,6 +292,24 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 			
 			this.showErrorNotification("Listar Estágios", e.getMessage());
 		}
+	}
+	
+	private List<Internship> getInternshipList() throws Exception {
+		int type = -1, status = -1, companyStatus = -1;
+		
+		if(!this.comboType.getValue().equals(ALL)){
+			type = InternshipType.fromDescription(this.comboType.getValue()).getValue();
+		}
+		
+		if(!this.comboStatus.getValue().equals(ALL)){
+			status = InternshipStatus.fromDescription(this.comboStatus.getValue()).getValue();
+		}
+		
+		if(!this.comboCompanyStatus.getValue().equals(ALL)){
+			companyStatus = InternshipStatus.fromDescription(this.comboCompanyStatus.getValue()).getValue();
+		}
+		
+		return new InternshipBO().list(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status, DateUtils.convertToDate(this.textStartDate1.getValue()), DateUtils.convertToDate(this.textStartDate2.getValue()), DateUtils.convertToDate(this.textEndDate1.getValue()), DateUtils.convertToDate(this.textEndDate2.getValue()), companyStatus);
 	}
 
 	@Override
@@ -667,6 +678,18 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 			}
 		} else {
 			this.showWarningNotification("Notas da Banca", "Selecione um registro para visualizar as notas atribuídas pela banca.");
+		}
+	}
+	
+	private void internshipReport() {
+		try {
+			List<Internship> list = this.getInternshipList();
+			
+			this.showReport(new InternshipBO().getInternshipReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), list));
+		} catch (Exception e) {
+        	Logger.log(Level.SEVERE, e.getMessage(), e);
+        	
+        	this.showErrorNotification("Relatório", e.getMessage());
 		}
 	}
 	

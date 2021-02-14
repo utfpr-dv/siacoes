@@ -31,6 +31,16 @@ public class ActivitySubmission implements Serializable {
 			return null;
 		}
 		
+		public static ActivityFeedback fromDescription(String value){
+			for(ActivityFeedback p : ActivityFeedback.values()){
+				if(value.equals(p.toString())){
+					return p;
+				}
+			}
+			
+			return null;
+		}
+		
 		public String toString(){
 			switch(this){
 			case NONE:
