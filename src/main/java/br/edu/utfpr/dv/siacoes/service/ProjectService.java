@@ -45,7 +45,8 @@ public class ProjectService {
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 
-			return Response.status(Status.INTERNAL_SERVER_ERROR.ordinal(), e.getMessage()).build();
+			//return Response.status(Status.INTERNAL_SERVER_ERROR.ordinal(), e.getMessage()).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR.ordinal()).build();
 		}
 	}
 
