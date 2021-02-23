@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.ui.windows;
+package br.edu.utfpr.dv.siacoes.ui.windows;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;

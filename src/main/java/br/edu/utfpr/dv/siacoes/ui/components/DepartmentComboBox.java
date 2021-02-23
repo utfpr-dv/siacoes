@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.ui.components;
+package br.edu.utfpr.dv.siacoes.ui.components;
 
 import java.util.ArrayList;
 import java.util.List;

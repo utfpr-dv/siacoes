@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.ui.windows;
+package br.edu.utfpr.dv.siacoes.ui.windows;
 
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;

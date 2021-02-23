@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.ui.views;
+package br.edu.utfpr.dv.siacoes.ui.views;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

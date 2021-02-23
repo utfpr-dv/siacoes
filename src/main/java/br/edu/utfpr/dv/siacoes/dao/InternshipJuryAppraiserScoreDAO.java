@@ -96,7 +96,11 @@ public class InternshipJuryAppraiserScoreDAO {
 					rs.close();
 					rs = stmt.executeQuery();
 					
-					return rs.getDouble("score") > 0;
+					if(rs.next()) {
+						return rs.getDouble("score") > 0;
+					} else {
+						return false;
+					}
 				} else {
 					stmt.close();
 					stmt = this.conn.prepareStatement("SELECT internshipjuryappraiserscore.idInternshipJuryAppraiserScore FROM internshipjuryappraiserscore INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJuryAppraiser=internshipjuryappraiserscore.idInternshipJuryAppraiser WHERE idInternshipJury=? AND idAppraiser=?");

@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.ui.windows;
+package br.edu.utfpr.dv.siacoes.ui.windows;
 
 import java.util.HashMap;
 import java.util.Map;

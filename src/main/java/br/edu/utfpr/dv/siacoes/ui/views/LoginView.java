@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.ui.views;
+package br.edu.utfpr.dv.siacoes.ui.views;
 
 import java.util.Date;
 import java.util.logging.Level;

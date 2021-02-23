@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.util;
+package br.edu.utfpr.dv.siacoes.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -334,7 +334,7 @@ public class DateUtils {
 		if (dateToConvert instanceof java.sql.Timestamp)
 			return ((java.sql.Timestamp) dateToConvert).toLocalDateTime();
 		else
-			return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+			return new java.sql.Timestamp(dateToConvert.getTime()).toLocalDateTime();
 	}
 	
 	public static LocalTime convertToLocalTime(Date dateToConvert) {

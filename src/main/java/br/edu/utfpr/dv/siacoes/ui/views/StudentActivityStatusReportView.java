@@ -1,4 +1,4 @@
-﻿package br.edu.utfpr.dv.siacoes.ui.views;
+package br.edu.utfpr.dv.siacoes.ui.views;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.select.Select;
