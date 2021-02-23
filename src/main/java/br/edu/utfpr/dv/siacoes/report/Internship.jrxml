@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2021-02-16T09:49:37 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Internship" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="730" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="3d913f38-4ce2-4b6a-be5a-ab11a4791d3f">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -329,7 +330,7 @@
 				</textElement>
 				<text><![CDATA[RA]]></text>
 			</staticText>
-			<textField textAdjust="StretchHeight">
+			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="160" y="16" width="50" height="15" uuid="99783bb2-3943-4bd1-9aac-0b3f77db408a">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -393,7 +394,7 @@
 				<textElement textAlignment="Left">
 					<font fontName="Arial"/>
 				</textElement>
-				<textFieldExpression><![CDATA[DATEFORMAT($F{juryDate}, "dd/MM/yyyy HH:mm")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[IF($F{juryDate} == null, "", DATEFORMAT($F{juryDate}, "dd/MM/yyyy HH:mm"))]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="210" y="47" width="80" height="15" uuid="4ab1d73b-c569-4a0e-85e7-78cbc0cc0f08">

@@ -56,6 +56,7 @@ import br.edu.utfpr.dv.siacoes.ui.views.InternshipJuryView;
 import br.edu.utfpr.dv.siacoes.ui.views.InternshipLibraryView;
 import br.edu.utfpr.dv.siacoes.ui.views.InternshipMissingDocumentsReportView;
 import br.edu.utfpr.dv.siacoes.ui.views.InternshipPosterRequestView;
+import br.edu.utfpr.dv.siacoes.ui.views.InternshipReportView;
 import br.edu.utfpr.dv.siacoes.ui.views.InternshipView;
 import br.edu.utfpr.dv.siacoes.ui.views.JuryGradesReportView;
 import br.edu.utfpr.dv.siacoes.ui.views.JuryParticipantsReportView;
@@ -384,6 +385,7 @@ public class MainLayout extends FlexBoxLayout implements RouterLayout, AfterNavi
 		}
 		if(Session.isUserManager(SystemModule.SIGES) || Session.isUserDepartmentManager()) {
 			NaviItem siges6 = menu.addNaviItem(siges, "Relatórios", null);
+			menu.addNaviItem(siges6, "Estágios", InternshipReportView.class);
 			menu.addNaviItem(siges6, "Documentos Faltantes", InternshipMissingDocumentsReportView.class);
 			menu.addNaviItem(siges6, "Participação em Bancas", InternshipJuryParticipantsReportView.class);
 			menu.addNaviItem(siges6, "Notas da Banca", InternshipJuryGradesReportView.class);
