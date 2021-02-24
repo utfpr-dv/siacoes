@@ -44,7 +44,7 @@ public class InternshipJuryGradesReportView extends ReportView {
 	
 	@Override
 	public byte[] generateReport() throws Exception {
-		return new InternshipJuryBO().getJuryGradesReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), true);
+		return new InternshipJuryBO().getJuryGradesReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear(), false);
 	}
 	
 }
