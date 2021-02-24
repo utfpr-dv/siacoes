@@ -105,8 +105,10 @@ public class EditInternshipJuryWindow extends EditWindow {
 		this.textSupervisorScore.setWidth("170px");
 		
 		this.textStartTime = new TimePicker("Horário Inicial");
+		this.textStartTime.setWidth("150px");
 		
 		this.textEndTime = new TimePicker("Horário Final");
+		this.textEndTime.setWidth("150px");
 		
 		this.textSei = new TextField("Processo no SEI");
 		this.textSei.setWidth("200px");

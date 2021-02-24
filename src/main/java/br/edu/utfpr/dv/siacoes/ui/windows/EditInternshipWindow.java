@@ -241,6 +241,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.textComments.setVisible(false);
 		
 		this.textJuryDate = new DateTimePicker("Data e Hora");
+		this.textJuryDate.setWidth("250px");
 
 		this.textJuryLocal = new TextField("Local");
 		this.textJuryLocal.setWidth("300px");
@@ -440,7 +441,7 @@ public class EditInternshipWindow extends EditWindow {
 		tabsToPages.put(this.tabJury, this.layoutJury);
 		Div pages = new Div(tab1, tab2, tab3, tab4, this.textComments, this.layoutJury);
 		
-		this.tabContainer = new Tabs(t1, t2, t3, t4, t5);
+		this.tabContainer = new Tabs(t1, t2, t3, t4, t5, this.tabJury);
 		this.tabContainer.setWidthFull();
 		this.tabContainer.setFlexGrowForEnclosedTabs(1);
 		
@@ -610,10 +611,10 @@ public class EditInternshipWindow extends EditWindow {
 				Grid<JuryGradeDataSource> gridGeneral = new Grid<JuryGradeDataSource>();
 				gridGeneral.setWidth("100%");
 				gridGeneral.setHeight("245px");
-				gridGeneral.addColumn(JuryGradeDataSource::getDescription).setHeader("");
+				gridGeneral.addColumn(JuryGradeDataSource::getDescription).setHeader("").setFlexGrow(0).setWidth("150px");
 				gridGeneral.addColumn(JuryGradeDataSource::getAppraiser).setHeader("Avaliador");
-				gridGeneral.addColumn(JuryGradeDataSource::getPonderosity).setHeader("Peso");
-				gridGeneral.addColumn(JuryGradeDataSource::getTotal).setHeader("Nota");
+				gridGeneral.addColumn(JuryGradeDataSource::getPonderosity).setHeader("Peso").setFlexGrow(0).setWidth("100px");
+				gridGeneral.addColumn(JuryGradeDataSource::getTotal).setHeader("Nota").setFlexGrow(0).setWidth("100px");
 				
 				gridGeneral.setItems(JuryGradeDataSource.load(report));
 				

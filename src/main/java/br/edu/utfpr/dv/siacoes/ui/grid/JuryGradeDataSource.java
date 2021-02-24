@@ -93,6 +93,13 @@ public class JuryGradeDataSource {
 		supervisor.setPonderosity(report.getSupervisorPonderosity());
 		ret.add(supervisor);
 		
+		JuryGradeDataSource finalScore = new JuryGradeDataSource();
+		finalScore.setDescription("Média Final");
+		finalScore.setAppraiser("Média Final");
+		finalScore.setTotal(report.getFinalScore());
+		finalScore.setPonderosity(10);
+		ret.add(finalScore);
+		
 		return ret;
 	}
 	
