@@ -164,6 +164,40 @@ public class ProposalDAO {
 		}
 	}
 	
+	public Proposal findByProposalAppraiserId(int id) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT proposal.*, student.name AS studentName, supervisor.name AS supervisorName, cosupervisor.name AS cosupervisorName, department.name AS departmentName, department.idCampus " +
+					"FROM proposal INNER JOIN \"user\" student ON student.idUser=proposal.idStudent " +
+					"INNER JOIN proposalappraiser ON proposalappraiser.idproposal=proposal.idproposal " +
+					"INNER JOIN department ON department.idDepartment=proposal.idDepartment " +
+					"INNER JOIN \"user\" supervisor ON supervisor.idUser=proposal.idSupervisor " +
+					"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=proposal.idCosupervisor " +
+					"WHERE idProposalAppraiser = ?");
+		
+			stmt.setInt(1, id);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()){
+				return this.loadObject(rs, true);
+			}else{
+				return null;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public byte[] findProposalFile(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;

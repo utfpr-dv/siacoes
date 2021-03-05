@@ -104,7 +104,7 @@ public class ProposalFeedbackView extends ListView<ProposalAppraiserDataSource> 
 		
 		if(value != null) {
 			try {
-            	Proposal proposal = new ProposalBO().findById((int)value);
+            	Proposal proposal = new ProposalBO().findByProposalAppraiserId((int)value);
             	SigetConfig config = new SigetConfigBO().findByDepartment(proposal.getDepartment().getIdDepartment());
             	
             	if(config.isSupervisorAgreement() && (proposal.getSupervisorFeedback() != ProposalFeedback.APPROVED)) {
@@ -130,7 +130,7 @@ public class ProposalFeedbackView extends ListView<ProposalAppraiserDataSource> 
 		if(value != null){
 			try {
 				ProposalAppraiserBO bo = new ProposalAppraiserBO();
-				ProposalAppraiser appraiser = bo.findByAppraiser((int)value, Session.getUser().getIdUser());
+				ProposalAppraiser appraiser = bo.findById((int)value);
 				
 				if(appraiser.getFeedback() == ProposalFeedback.NONE) {
 					this.showWarningNotification("Imprimir Parecer", "É necessário preencher o parecer antes de imprimir.");
@@ -157,7 +157,7 @@ public class ProposalFeedbackView extends ListView<ProposalAppraiserDataSource> 
 	public void editClick(int id) {
 		try {
 			ProposalAppraiserBO bo = new ProposalAppraiserBO();
-			ProposalAppraiser appraiser = bo.findByAppraiser((int)id, Session.getUser().getIdUser());
+			ProposalAppraiser appraiser = bo.findById((int)id);
 			
 			EditProposalAppraiserWindow window = new EditProposalAppraiserWindow(appraiser, this);
 			window.open();

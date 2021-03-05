@@ -25,6 +25,7 @@ import br.edu.utfpr.dv.siacoes.dao.CertificateDAO;
 import br.edu.utfpr.dv.siacoes.model.AppConfig;
 import br.edu.utfpr.dv.siacoes.model.Certificate;
 import br.edu.utfpr.dv.siacoes.model.Internship;
+import br.edu.utfpr.dv.siacoes.model.Internship.InternshipRequiredType;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipStatus;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
@@ -208,13 +209,15 @@ public class CertificateBO {
 			throw new Exception("É necessário informar o estágio antes de gerar a declaração.");
 		}
 		if(internship.getStatus() == InternshipStatus.FINISHED){
-			InternshipReportBO bo = new InternshipReportBO();
-			
 			if((internship.getType() == InternshipType.REQUIRED) && (internship.getFinalReport() == null)){
 				throw new Exception("O acadêmico precisa entregar o relatório final de estágio para gerar a declaração.");	
 			}
-			if(!bo.hasReport(internship.getIdInternship(), ReportType.SUPERVISOR, ReportFeedback.APPROVED)){
-				throw new Exception("O professor precisa entregar o relatório de orientação para gerar a declaração.");
+			if((internship.getRequiredType() != InternshipRequiredType.PROFESSIONAL) && (internship.getRequiredType() != InternshipRequiredType.VALIDATION)){
+				InternshipReportBO bo = new InternshipReportBO();
+				
+				if(!bo.hasReport(internship.getIdInternship(), ReportType.SUPERVISOR, ReportFeedback.APPROVED)){
+					throw new Exception("O professor precisa entregar o relatório de orientação para gerar a declaração.");
+				}
 			}
 		}
 		
@@ -248,14 +251,15 @@ public class CertificateBO {
 		if((internship == null) || (internship.getIdInternship() == 0)){
 			throw new Exception("É necessário informar o estágio antes de gerar a declaração.");
 		}
-		if((internship.getStatus() == InternshipStatus.FINISHED) && (internship.getFinalReport() == null)){
-			if(internship.getType() == InternshipType.REQUIRED){
+		if(internship.getStatus() == InternshipStatus.FINISHED){
+			if((internship.getType() == InternshipType.REQUIRED) && (internship.getFinalReport() == null)){
 				throw new Exception("O acadêmico precisa entregar o relatório final de estágio para gerar a declaração.");	
-			}else{
+			}
+			if((internship.getRequiredType() != InternshipRequiredType.PROFESSIONAL) && (internship.getRequiredType() != InternshipRequiredType.VALIDATION)){
 				InternshipReportBO bo = new InternshipReportBO();
 				
-				if(!bo.hasReport(internship.getIdInternship(), ReportType.STUDENT, ReportFeedback.APPROVED)){
-					throw new Exception("O acadêmico precisa entregar o relatório de estágio para gerar a declaração.");
+				if((internship.getFinalReport() == null) && !bo.hasReport(internship.getIdInternship(), ReportType.STUDENT, ReportFeedback.APPROVED)){
+					throw new Exception("O acadêmico precisa entregar o relatório parcial de estágio para gerar a declaração.");
 				}
 			}
 		}

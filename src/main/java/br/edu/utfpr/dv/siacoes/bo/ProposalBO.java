@@ -357,6 +357,18 @@ public class ProposalBO {
 		}
 	}
 	
+	public Proposal findByProposalAppraiserId(int id) throws Exception{
+		try {
+			ProposalDAO dao = new ProposalDAO();
+			
+			return dao.findByProposalAppraiserId(id);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public Proposal findByProject(int idProject) throws Exception{
 		try {
 			ProposalDAO dao = new ProposalDAO();
