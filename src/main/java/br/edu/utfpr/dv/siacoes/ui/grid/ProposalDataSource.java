@@ -26,7 +26,7 @@ public class ProposalDataSource extends BasicDataSource {
 		this.setStudent(proposal.getStudent().getName());
 		this.setSupervisor(proposal.getSupervisor().getName());
 		this.setSubmission(DateUtils.convertToLocalDate(proposal.getSubmissionDate()));
-		this.setHasFile(proposal.getFile() != null ? "Sim" : "Não");
+		this.setHasFile(proposal.isFileUploaded() ? "Sim" : "Não");
 		this.setSupervisorFeedback(proposal.getSupervisorFeedback().toString());
 	}
 	
