@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2021-04-15T19:07:42 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Attendances" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="730" leftMargin="56" rightMargin="56" topMargin="42" bottomMargin="42" uuid="3d913f38-4ce2-4b6a-be5a-ab11a4791d3f">
 	<parameter name="logo_utfpr" class="java.io.InputStream"/>
 	<parameter name="brasao_republica" class="java.io.InputStream"/>
@@ -267,7 +268,7 @@
 				<imageExpression><![CDATA[$F{supervisorSignature}]]></imageExpression>
 			</image>
 			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" isUsingCache="true" onErrorType="Blank">
-				<reportElement x="370" y="0" width="360" height="30" uuid="d781648b-181a-47a7-96f7-c8442e66a34b">
+				<reportElement positionType="FixRelativeToBottom" x="370" y="0" width="360" height="30" uuid="d781648b-181a-47a7-96f7-c8442e66a34b">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>

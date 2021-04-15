@@ -68,7 +68,9 @@ public class EmailMessage implements Serializable {
 		REQUESTSUPERVISORSIGNINTERNSHIPJURYFORM(57),
 		INTERNSHIPCOMPANYSUPERVISORREPORTSUBMITTED(58),
 		SIGNEDINTERNSHIPJURYREQUEST(59),
-		REQUESTSIGNINTERNSHIPJURYREQUEST(60);
+		REQUESTSIGNINTERNSHIPJURYREQUEST(60),
+		SIGNEDACTIVITYFINALSUBMISSION(61),
+		REQUESTSIGNACTIVITYFINALSUBMISSION(62);
 		
 		private final int value; 
 		MessageType(int value){ 
@@ -211,6 +213,10 @@ public class EmailMessage implements Serializable {
 					return "Formulário de Solicitação de Banca de Estágio Assinado";
 				case REQUESTSIGNINTERNSHIPJURYREQUEST:
 					return "Assinatura Requisitada no Formulário de Solicitação de Banca de Estágio";
+				case SIGNEDACTIVITYFINALSUBMISSION:
+					return "Relatório de Atividades Complementares Assinado";
+				case REQUESTSIGNACTIVITYFINALSUBMISSION:
+					return "Assinatura Requisitada no Relatório de Atividades Complementares";
 				default:
 					return "";
 			}

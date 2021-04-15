@@ -8,6 +8,7 @@ public class ActivitySubmissionDetailReport implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
+	private int idActivitySubmission;
 	private String activity;
 	private int group;
 	private String unit;
@@ -18,6 +19,7 @@ public class ActivitySubmissionDetailReport implements Serializable {
 	private int year;
 	
 	public ActivitySubmissionDetailReport(){
+		this.setIdActivitySubmission(0);
 		this.setActivity("");
 		this.setGroup(0);
 		this.setUnit("");
@@ -28,6 +30,12 @@ public class ActivitySubmissionDetailReport implements Serializable {
 		this.setYear(DateUtils.getYear());
 	}
 	
+	public int getIdActivitySubmission() {
+		return idActivitySubmission;
+	}
+	public void setIdActivitySubmission(int idActivitySubmission) {
+		this.idActivitySubmission = idActivitySubmission;
+	}
 	public String getActivity() {
 		return activity;
 	}

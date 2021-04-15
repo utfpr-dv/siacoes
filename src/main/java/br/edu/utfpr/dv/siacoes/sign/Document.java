@@ -26,6 +26,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import br.edu.utfpr.dv.siacoes.bo.AttendanceBO;
+import br.edu.utfpr.dv.siacoes.bo.FinalSubmissionBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipPosterRequestBO;
@@ -51,7 +52,7 @@ import net.sf.jasperreports.engine.JasperReport;
 public class Document {
 	
 	public enum DocumentType{
-		NONE(0), SUPERVISORAGREEMENT(1), APPRAISERFEEDBACK(2), JURYREQUEST(3), SUPERVISORCHANGE(4), ATTENDANCE(5), JURY(6), INTERNSHIPPOSTERREQUEST(7), INTERNSHIPJURY(8), INTERNSHIPJURYREQUEST(9);
+		NONE(0), SUPERVISORAGREEMENT(1), APPRAISERFEEDBACK(2), JURYREQUEST(3), SUPERVISORCHANGE(4), ATTENDANCE(5), JURY(6), INTERNSHIPPOSTERREQUEST(7), INTERNSHIPJURY(8), INTERNSHIPJURYREQUEST(9), ACTIVITYFINALSUBMISSION(10);
 		
 		private final int value; 
 		DocumentType(int value){ 
@@ -94,6 +95,8 @@ public class Document {
 					return "Banca de Estágio";
 				case INTERNSHIPJURYREQUEST:
 					return "Formulário de Agendamento de Banca de Estágio";
+				case ACTIVITYFINALSUBMISSION:
+					return "Relatório Final de Atividades Complementares";
 				default:
 					return "Nenhum";
 			}
@@ -343,6 +346,8 @@ public class Document {
 				return new ReportUtils().getJasperData("InternshipJuryForm");
 			case INTERNSHIPJURYREQUEST:
 				return new ReportUtils().getJasperData("InternshipJuryFormRequest");
+			case ACTIVITYFINALSUBMISSION:
+				return new ReportUtils().getJasperData("ActivitySubmission");
 			default:
 				return null;
 		}
@@ -408,6 +413,8 @@ public class Document {
 				
 				break;
 			case INTERNSHIPJURYREQUEST:
+				break;
+			case ACTIVITYFINALSUBMISSION:
 				break;
 			default:
 				throw new Exception("O tipo de documento é inválido.");
@@ -498,6 +505,16 @@ public class Document {
 			}
 			
 			conn.commit();
+			
+			if(document.getType() == DocumentType.ACTIVITYFINALSUBMISSION) {
+				List<User> users = new ArrayList<User>();
+				
+				for(Signature sign : document.getSignatures()) {
+					users.add(sign.getUser());
+				}
+				
+				Document.sendRequestSignatureNotification(document.getType(), document.getIdRegister(), users);
+			}
 			
 			return document.getIdDocument();
 		} catch(SQLException ex) {
@@ -995,12 +1012,11 @@ public class Document {
 				return false;
 			}
 			
-			rs.beforeFirst();
-			while(rs.next()) {
+			do {
 				if(rs.getBytes("signature") == null) {
 					return false;
 				}
-			}
+			} while(rs.next());
 			
 			return true;
 		} finally {
@@ -1163,6 +1179,9 @@ public class Document {
 			case INTERNSHIPJURYREQUEST:
 				new InternshipJuryRequestBO().sendRequestSignedMessage(idRegister);
 				return;
+			case ACTIVITYFINALSUBMISSION:
+				new FinalSubmissionBO().sendFinalSubmissionSignedMessage(idRegister);
+				return;
 		}
 	}
 	
@@ -1186,6 +1205,9 @@ public class Document {
 				return;
 			case INTERNSHIPJURYREQUEST:
 				new InternshipJuryRequestBO().sendRequestSignJuryRequestMessage(idRegister, users);
+				return;
+			case ACTIVITYFINALSUBMISSION:
+				new FinalSubmissionBO().sendRequestSignFinalSubmissionMessage(idRegister, users);
 				return;
 		}
 	}

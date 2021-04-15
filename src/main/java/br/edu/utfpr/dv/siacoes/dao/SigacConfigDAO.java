@@ -47,14 +47,16 @@ public class SigacConfigDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO sigacconfig(minimumScore, maxfilesize, idDepartment) VALUES(?, ?, ?)");
+				stmt = conn.prepareStatement("INSERT INTO sigacconfig(minimumScore, maxfilesize, useDigitalSignature, notifyActivityFeedback, idDepartment) VALUES(?, ?, ?, ?, ?)");
 			}else{
-				stmt = conn.prepareStatement("UPDATE sigacconfig SET minimumScore=?, maxfilesize=? WHERE idDepartment=?");
+				stmt = conn.prepareStatement("UPDATE sigacconfig SET minimumScore=?, maxfilesize=?, useDigitalSignature=?, notifyActivityFeedback=? WHERE idDepartment=?");
 			}
 			
 			stmt.setDouble(1, config.getMinimumScore());
 			stmt.setInt(2, config.getMaxFileSize());
-			stmt.setInt(3, config.getDepartment().getIdDepartment());
+			stmt.setInt(3, config.isUseDigitalSignature() ? 1 : 0);
+			stmt.setInt(4, config.isNotifyActivityFeedback() ? 1 : 0);
+			stmt.setInt(5, config.getDepartment().getIdDepartment());
 			
 			stmt.execute();
 			
@@ -75,6 +77,8 @@ public class SigacConfigDAO {
 		config.getDepartment().setIdDepartment(rs.getInt("idDepartment"));
 		config.setMinimumScore(rs.getDouble("minimumScore"));
 		config.setMaxFileSize(rs.getInt("maxfilesize"));
+		config.setUseDigitalSignature(rs.getInt("useDigitalSignature") == 1);
+		config.setNotifyActivityFeedback(rs.getInt("notifyActivityFeedback") == 1);
 		
 		return config;
 	}

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.beta-v201607260811 using JasperReports Library version 6.3.1  -->
-<!-- 2017-09-27T19:32:44 -->
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2021-04-15T19:08:11 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ActivitySubmissionReport" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" isFloatColumnFooter="true" uuid="e6e81bb8-16d7-4e24-8afe-fe15e90c33dc">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -19,6 +19,9 @@
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
+	<field name="date" class="java.util.Date">
+		<fieldDescription><![CDATA[date]]></fieldDescription>
+	</field>
 	<field name="footer" class="java.util.List">
 		<fieldDescription><![CDATA[footer]]></fieldDescription>
 	</field>
@@ -42,6 +45,24 @@
 	</field>
 	<field name="situation" class="java.lang.String">
 		<fieldDescription><![CDATA[situation]]></fieldDescription>
+	</field>
+	<field name="studentSignature" class="java.io.InputStream">
+		<fieldDescription><![CDATA[studentSignature]]></fieldDescription>
+	</field>
+	<field name="useDigitalSignature" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[useDigitalSignature]]></fieldDescription>
+	</field>
+	<field name="guid" class="java.lang.String">
+		<fieldDescription><![CDATA[guid]]></fieldDescription>
+	</field>
+	<field name="validateUrl" class="java.lang.String">
+		<fieldDescription><![CDATA[validateUrl]]></fieldDescription>
+	</field>
+	<field name="legalText" class="java.lang.String">
+		<fieldDescription><![CDATA[legalText]]></fieldDescription>
+	</field>
+	<field name="qrCode" class="java.io.InputStream">
+		<fieldDescription><![CDATA[qrCode]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -398,7 +419,7 @@
 				<textElement>
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Data da Entrega: " + DATEFORMAT(new java.util.Date(), "dd/MM/yyyy")]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Data da Entrega: " + DATEFORMAT($F{date}, "dd/MM/yyyy")]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="190" y="90" width="290" height="16" uuid="4d1fb1e2-ee66-4006-928d-8a3e59ec67cc"/>
@@ -412,10 +433,18 @@
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 			</line>
+			<image hAlign="Center" vAlign="Middle" isUsingCache="true" onErrorType="Blank">
+				<reportElement key="" stretchType="RelativeToTallestObject" x="190" y="60" width="287" height="25" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" uuid="ecce7968-06aa-451d-b04c-4757115eeb73">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{studentSignature}]]></imageExpression>
+			</image>
 		</band>
 	</columnFooter>
 	<pageFooter>
-		<band height="21" splitType="Stretch">
+		<band height="66" splitType="Stretch">
 			<textField>
 				<reportElement x="280" y="0" width="100" height="20" uuid="ea9a8adf-8f82-4a75-8f44-c6b790ffa42c"/>
 				<textElement textAlignment="Right"/>
@@ -426,6 +455,27 @@
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[" de " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="70" y="0" width="410" height="66" uuid="03bec130-9e99-4057-8b10-1e5ea293e7f6">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{legalText}]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center" vAlign="Middle" isUsingCache="true" onErrorType="Blank">
+				<reportElement x="0" y="0" width="66" height="66" uuid="e39b3d0c-b346-467b-bcb0-1facf54f0d92">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<printWhenExpression><![CDATA[$F{useDigitalSignature} == true]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$F{qrCode}]]></imageExpression>
+			</image>
 		</band>
 	</pageFooter>
 </jasperReport>

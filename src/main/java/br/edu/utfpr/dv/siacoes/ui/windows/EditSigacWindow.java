@@ -2,6 +2,7 @@ package br.edu.utfpr.dv.siacoes.ui.windows;
 
 import java.util.logging.Level;
 
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.textfield.TextField;
 
 import br.edu.utfpr.dv.siacoes.Session;
@@ -17,6 +18,8 @@ public class EditSigacWindow extends EditWindow {
 	
 	private final TextField textMinimumScore;
 	private final ByteSizeField textMaxFileSize;
+	private final Checkbox checkUseDigitalSignature;
+	private final Checkbox checkNotifyActivityFeedback;
 	
 	public EditSigacWindow(SigacConfig config, ListView parentView){
 		super("Configurações SIGAC", parentView);
@@ -28,8 +31,14 @@ public class EditSigacWindow extends EditWindow {
 		
 		this.textMaxFileSize = new ByteSizeField("Tamanho máximo para submissão de arquivos");
 		
+		this.checkNotifyActivityFeedback = new Checkbox("Notificar os acadêmicos a cada atividade validada");
+		
+		this.checkUseDigitalSignature = new Checkbox("Usar assinatura digital");
+		
 		this.addField(this.textMinimumScore);
 		this.addField(this.textMaxFileSize);
+		this.addField(this.checkNotifyActivityFeedback);
+		this.addField(this.checkUseDigitalSignature);
 		
 		this.loadConfigurations();
 	}
@@ -37,6 +46,8 @@ public class EditSigacWindow extends EditWindow {
 	private void loadConfigurations(){
 		this.textMinimumScore.setValue(String.valueOf(this.config.getMinimumScore()));
 		this.textMaxFileSize.setValue(this.config.getMaxFileSize());
+		this.checkUseDigitalSignature.setValue(this.config.isUseDigitalSignature());
+		this.checkNotifyActivityFeedback.setValue(this.config.isNotifyActivityFeedback());
 	}
 
 	@Override
@@ -46,6 +57,8 @@ public class EditSigacWindow extends EditWindow {
 			
 			this.config.setMinimumScore(Double.parseDouble(this.textMinimumScore.getValue().replace(",", ".")));
 			this.config.setMaxFileSize((int)this.textMaxFileSize.getValue());
+			this.config.setUseDigitalSignature(this.checkUseDigitalSignature.getValue());
+			this.config.setNotifyActivityFeedback(this.checkNotifyActivityFeedback.getValue());
 			
 			bo.save(Session.getIdUserLog(), this.config);
 			

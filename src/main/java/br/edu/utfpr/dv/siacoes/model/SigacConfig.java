@@ -11,11 +11,14 @@ public class SigacConfig implements Serializable {
 	private Department department;
 	private double minimumScore;
 	private int maxFileSize;
+	private boolean useDigitalSignature;
+	private boolean notifyActivityFeedback;
 	
 	public SigacConfig(){
 		this.setDepartment(new Department());
 		this.setMinimumScore(70);
 		this.setMaxFileSize(0);
+		this.setUseDigitalSignature(false);
 	}
 	
 	public Department getDepartment() {
@@ -42,6 +45,18 @@ public class SigacConfig implements Serializable {
 		} else {
 			return "Tam. Máx. " + StringUtils.getFormattedBytes(this.getMaxFileSize());
 		}
+	}
+	public boolean isUseDigitalSignature() {
+		return useDigitalSignature;
+	}
+	public void setUseDigitalSignature(boolean useDigitalSignature) {
+		this.useDigitalSignature = useDigitalSignature;
+	}
+	public boolean isNotifyActivityFeedback() {
+		return notifyActivityFeedback;
+	}
+	public void setNotifyActivityFeedback(boolean notifyActivityFeedback) {
+		this.notifyActivityFeedback = notifyActivityFeedback;
 	}
 
 }

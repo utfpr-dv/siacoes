@@ -25,10 +25,14 @@ import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionReport;
 import br.edu.utfpr.dv.siacoes.model.ActivityValidationReport;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
+import br.edu.utfpr.dv.siacoes.model.FinalSubmission;
 import br.edu.utfpr.dv.siacoes.model.SigacConfig;
 import br.edu.utfpr.dv.siacoes.model.StudentActivityStatusReport;
 import br.edu.utfpr.dv.siacoes.model.StudentActivityStatusReport.StudentStage;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.UserDepartment;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
@@ -187,7 +191,7 @@ public class ActivitySubmissionBO {
 			
 			if(isInsert) {
 				bo.sendEmail(submission.getStudent().getIdUser(), MessageType.ACTIVITYSUBMITTED, keys);
-			} else if(feedback != submission.getFeedback()){
+			} else if((feedback != submission.getFeedback()) && config.isNotifyActivityFeedback()){
 				bo.sendEmail(submission.getStudent().getIdUser(), MessageType.ACTIVITYFEEDBACK, keys);
 			}
 		}catch(Exception e){
@@ -236,32 +240,30 @@ public class ActivitySubmissionBO {
 		return this.buildFooter(activities);
 	}
 	
-	public ByteArrayOutputStream getReport(int idStudent, int idDepartment) throws Exception{
+	public ActivitySubmissionReport getReportData(int idStudent, int idDepartment) throws Exception{
 		List<ActivitySubmission> list = this.listByStudent(idStudent, idDepartment, ActivityFeedback.APPROVED.getValue(), true);
 		UserBO bo = new UserBO();
 		User student = bo.findById(idStudent);
 		
-		return this.getReport(list, student, idDepartment);
+		return this.getReportData(list, student, idDepartment);
 	}
 	
-	public ByteArrayOutputStream getReport(List<ActivitySubmission> list, User student, int idDepartment) throws Exception{
+	public ActivitySubmissionReport getReportData(List<ActivitySubmission> list, User student, int idDepartment) throws Exception{
 		ActivitySubmissionReport report = new ActivitySubmissionReport();
 		List<ReportActivity> activities = new ArrayList<ReportActivity>();
-		List<byte[]> documents = new ArrayList<byte[]>();
 		UserDepartment department = new UserDepartmentBO().find(student.getIdUser(), UserProfile.STUDENT, idDepartment);
 		
 		if(department == null) {
 			department = new UserDepartment();
 		}
 		
+		report.setIdStudent(student.getIdUser());
 		report.setStudent(student.getName());
 		report.setRegisterSemester(department.getRegisterSemester());
 		report.setRegisterYear(department.getRegisterYear());
 		report.setStudentCode(student.getStudentCode());
 		
 		report.setDetails(this.loadSubmissionDetailReport(list));
-		
-		documents = this.loadDocuments(list);
 		
 		activities = this.loadActivities(list);
 		
@@ -280,24 +282,51 @@ public class ActivitySubmissionBO {
 			report.setSituation("Pontuação insuficiente");
 		}
 		
-		List<ActivitySubmissionReport> list2 = new ArrayList<ActivitySubmissionReport>();
-		list2.add(report);
+		return report;
+	}
+	
+	public byte[] getPdfReport(int idStudent, int idDepartment, boolean attachDocuments) throws Exception{
+		FinalSubmission submission = new FinalSubmissionBO().findByStudent(idStudent, idDepartment);
+		byte[] report = null;
+		ActivitySubmissionReport reportData = null;
 		
-		ByteArrayOutputStream rep = new ReportUtils().createPdfStream(list2, "ActivitySubmission", idDepartment);
-		
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		PDFMergerUtility pdfMerge = new PDFMergerUtility();
-		
-		pdfMerge.setDestinationStream(output);
-		
-		pdfMerge.addSource(new ByteArrayInputStream(rep.toByteArray()));
-		for(byte[] d : documents){
-			pdfMerge.addSource(new ByteArrayInputStream(d));
+		if(Document.hasSignature(DocumentType.ACTIVITYFINALSUBMISSION, submission.getIdFinalSubmission())) {
+			report = Document.getSignedDocument(DocumentType.ACTIVITYFINALSUBMISSION, submission.getIdFinalSubmission());
+		} else {
+			reportData = this.getReportData(idStudent, idDepartment);
+			
+			br.edu.utfpr.dv.siacoes.report.dataset.v1.ActivityFinalSubmission dataset = SignDatasetBuilder.build(reportData);
+			
+			List<br.edu.utfpr.dv.siacoes.report.dataset.v1.ActivityFinalSubmission> list = new ArrayList<br.edu.utfpr.dv.siacoes.report.dataset.v1.ActivityFinalSubmission>();
+			list.add(dataset);
+			
+			report = new ReportUtils().createPdfStream(list, "ActivitySubmission", idDepartment).toByteArray();
 		}
 		
-		pdfMerge.mergeDocuments(null);
-		
-		return output;
+		if(attachDocuments) {
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			PDFMergerUtility pdfMerge = new PDFMergerUtility();
+			
+			pdfMerge.setDestinationStream(output);
+			
+			pdfMerge.addSource(new ByteArrayInputStream(report));
+			
+			if(reportData == null) {
+				reportData = this.getReportData(idStudent, idDepartment);
+			}
+			
+			for(ActivitySubmissionDetailReport d : reportData.getDetails()){
+				ActivitySubmission sub = new ActivitySubmissionBO().findById(d.getIdActivitySubmission());
+				
+				pdfMerge.addSource(new ByteArrayInputStream(sub.getFile()));
+			}
+			
+			pdfMerge.mergeDocuments(null);
+			
+			return output.toByteArray();
+		} else {
+			return report;
+		}
 	}
 	
 	private boolean hasMinimalScores(List<ActivitySubmissionFooterReport> list){
@@ -329,6 +358,7 @@ public class ActivitySubmissionBO {
 			if(submission.getFeedback() == ActivityFeedback.APPROVED){
 				ActivitySubmissionDetailReport detailReport = new ActivitySubmissionDetailReport();
 				
+				detailReport.setIdActivitySubmission(submission.getIdActivitySubmission());
 				detailReport.setActivity(submission.getActivity().getDescription());
 				detailReport.setGroup(submission.getActivity().getGroup().getSequence());
 				detailReport.setScore(this.round(submission.getActivity().getScore()));

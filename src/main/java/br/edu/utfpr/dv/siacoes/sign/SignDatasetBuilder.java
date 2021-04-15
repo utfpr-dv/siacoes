@@ -3,6 +3,9 @@ package br.edu.utfpr.dv.siacoes.sign;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionDetailReport;
+import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionFooterReport;
+import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionReport;
 import br.edu.utfpr.dv.siacoes.model.AttendanceReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipPosterAppraiserRequest;
@@ -13,6 +16,7 @@ import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.Proposal;
 import br.edu.utfpr.dv.siacoes.model.ProposalAppraiser;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.report.dataset.v1.ActivityFinalSubmission;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.Attendance;
 import br.edu.utfpr.dv.siacoes.report.dataset.v2.InternshipJury;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipJuryRequest;
@@ -358,6 +362,42 @@ public class SignDatasetBuilder {
 		
 		student.setIdUser(jury.getIdStudent());
 		student.setName(jury.getStudent());
+		
+		users.add(student);
+		
+		return users;
+	}
+	
+	public static ActivityFinalSubmission build(ActivitySubmissionReport report) {
+		ActivityFinalSubmission dataset = new ActivityFinalSubmission();
+		
+		dataset.setIdStudent(report.getIdStudent());
+		dataset.setStudentCode(report.getStudentCode());
+		dataset.setRegisterSemester(report.getRegisterSemester());
+		dataset.setRegisterYear(report.getRegisterYear());
+		dataset.setTotalScore(report.getTotalScore());
+		dataset.setSituation(report.getSituation());
+		dataset.setDate(report.getDate());
+		
+		for(ActivitySubmissionDetailReport detail : report.getDetails()) {
+			dataset.addDetail(detail);
+		}
+		
+		for(ActivitySubmissionFooterReport footer : report.getFooter()) {
+			dataset.addFooter(footer);
+		}
+		
+		dataset.addSignature(report.getIdStudent(), report.getStudent());
+		
+		return dataset;
+	}
+	
+	public static List<User> getSignaturesList(ActivitySubmissionReport report) {
+		List<User> users = new ArrayList<User>();
+		User student = new User();
+		
+		student.setIdUser(report.getIdStudent());
+		student.setName(report.getStudent());
 		
 		users.add(student);
 		

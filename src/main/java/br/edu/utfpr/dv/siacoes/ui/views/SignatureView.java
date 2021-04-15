@@ -163,6 +163,9 @@ public class SignatureView extends LoggedView implements BeforeLeaveObserver {
 	}
 	
 	private void loadGridPending() {
+		this.buttonSign.setEnabled(false);
+		this.layoutFramePending.removeAll();
+		
 		try {
 			this.listPending = Document.listPending(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			
@@ -179,7 +182,6 @@ public class SignatureView extends LoggedView implements BeforeLeaveObserver {
 			this.listSigned = Document.listSigned(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			
 			this.gridSigned.setItems(SignedDocumentDataSource.load(this.listSigned, true));
-	    	
 		} catch (Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 			
@@ -222,6 +224,7 @@ public class SignatureView extends LoggedView implements BeforeLeaveObserver {
 			viewer.setHeight("100%");
 			
 			this.layoutFramePending.addAndExpand(viewer);
+			this.buttonSign.setEnabled(true);
 		} catch (Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 			

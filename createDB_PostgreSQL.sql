@@ -83,6 +83,7 @@ CREATE  TABLE sigacconfig (
   minimumScore REAL NOT NULL ,
   maxfilesize INT NOT NULL ,
   usedigitalsignature smallint NOT NULL ,
+  notifyactivityfeedback smallint NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigacconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -1017,3 +1018,5 @@ INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) V
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(58, 3, '', '', '{student};{supervisor};{manager};{company};{type}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(59, 3, '', '', '{student};{supervisor};{manager};{company}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(60, 3, '', '', '{student};{supervisor};{manager};{company}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(61, 2, '', '', '{student};{manager}');
+INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(62, 2, '', '', '{name}');

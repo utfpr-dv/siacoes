@@ -1,6 +1,5 @@
 package br.edu.utfpr.dv.siacoes.ui.views;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -225,7 +224,7 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 		if((Session.isUserManager(this.getModule()) || Session.isUserDepartmentManager()) && this.optionFilterType.getValue().equals(SUBMISSIONS_WITHOUT_FEEDBACK)) {
 			this.getGrid().getColumns().get(4).setVisible(false);
 		}
-		if(Session.isUserStudent() || ((this.comboStudent.getStudent() != null) && (this.comboStudent.getStudent().getIdUser() != 0))) {
+		if(Session.isUserStudent() || (!this.optionFilterType.getValue().equals(SUBMISSIONS_WITHOUT_FEEDBACK) && (this.comboStudent.getStudent() != null) && (this.comboStudent.getStudent().getIdUser() != 0))) {
 			this.getGrid().getColumns().get(0).setVisible(false);
 		}
 		
@@ -315,10 +314,7 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 				student = Session.getUser();
 			}
 			
-			List<ActivitySubmission> listReport = new ActivitySubmissionBO().listByStudent(student.getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), ActivityFeedback.APPROVED.getValue(), true);
-			ByteArrayOutputStream report = new ActivitySubmissionBO().getReport(listReport, student, Session.getSelectedDepartment().getDepartment().getIdDepartment());
-			
-			this.showReport(report.toByteArray());
+			this.showReport(new ActivitySubmissionBO().getPdfReport(student.getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), true));
 		} catch (Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 			
