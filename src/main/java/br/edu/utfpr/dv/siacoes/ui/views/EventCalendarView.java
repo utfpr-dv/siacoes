@@ -224,7 +224,7 @@ public class EventCalendarView extends LoggedView {
 			
 			if(this.optionFilterType.getValue().equals(ONLYINTERNSHIP) || this.optionFilterType.getValue().equals(LISTALL)) {
 				if(this.checkListOnlyMy.getValue()) {
-					listInternship = new InternshipJuryBO().listByAppraiser(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
+					listInternship = new InternshipJuryBO().listByAppraiser(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 					
 					if(this.checkListPreScheculing.getValue()) {
 						List<InternshipJuryRequest> list = new InternshipJuryRequestBO().listByAppraiser(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());

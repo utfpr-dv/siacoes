@@ -65,11 +65,11 @@ public class InternshipJuryBO {
 		}
 	}
 	
-	public List<InternshipJury> listByAppraiser(int idUser, int semester, int year) throws Exception{
+	public List<InternshipJury> listByAppraiser(int idUser, int idDepartment, int semester, int year) throws Exception{
 		try {
 			InternshipJuryDAO dao = new InternshipJuryDAO();
 			
-			return dao.listByAppraiser(idUser, semester, year);
+			return dao.listByAppraiser(idUser, idDepartment, semester, year);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -77,11 +77,11 @@ public class InternshipJuryBO {
 		}
 	}
 	
-	public List<InternshipJury> listByStudent(int idUser, int semester, int year) throws Exception{
+	public List<InternshipJury> listByStudent(int idUser, int idDepartment, int semester, int year) throws Exception{
 		try {
 			InternshipJuryDAO dao = new InternshipJuryDAO();
 			
-			List<InternshipJury> list = dao.listByStudent(idUser, semester, year);
+			List<InternshipJury> list = dao.listByStudent(idUser, idDepartment, semester, year);
 			
 			for(InternshipJury jury : list) {
 				jury.getInternship().setFinalReport(null);
@@ -721,9 +721,9 @@ public class InternshipJuryBO {
 			User user = bo.findById(idUser);
 			
 			if(user.hasProfile(UserProfile.PROFESSOR)){
-				list = this.listByAppraiser(idUser, semester, year);	
+				list = this.listByAppraiser(idUser, idDepartment, semester, year);	
 			}else{
-				list = this.listByStudent(idUser, semester, year);
+				list = this.listByStudent(idUser, idDepartment, semester, year);
 			}
 		}
 		

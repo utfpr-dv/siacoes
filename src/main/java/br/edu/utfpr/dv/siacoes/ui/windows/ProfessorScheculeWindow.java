@@ -61,7 +61,7 @@ public class ProfessorScheculeWindow extends BasicWindow {
 			Semester semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
 			List<Jury> list = new JuryBO().listByAppraiser(professor.getIdUser(), semester.getSemester(), semester.getYear());
 			List<JuryRequest> list3 = new JuryRequestBO().listByAppraiser(professor.getIdUser(), semester.getSemester(), semester.getYear());
-			List<InternshipJury> list2 = new InternshipJuryBO().listByAppraiser(professor.getIdUser(), semester.getSemester(), semester.getYear());
+			List<InternshipJury> list2 = new InternshipJuryBO().listByAppraiser(professor.getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 			List<InternshipJuryRequest> list4 = new InternshipJuryRequestBO().listByAppraiser(professor.getIdUser(), semester.getSemester(), semester.getYear());
 			
 			this.gridSchedule.setItems(ProfessorScheduleDataSource.load(list, list3, list2, list4));

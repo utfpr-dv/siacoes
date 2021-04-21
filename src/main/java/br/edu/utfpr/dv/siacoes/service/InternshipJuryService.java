@@ -26,7 +26,7 @@ public class InternshipJuryService {
 	public Response listByStudent(@Context SecurityContext securityContext) {
 		try {
 			InternshipJuryBO bo = new InternshipJuryBO();
-			List<InternshipJury> list = bo.listByStudent(new LoginService().getUser(securityContext).getIdUser(), 0, 0);
+			List<InternshipJury> list = bo.listByStudent(new LoginService().getUser(securityContext).getIdUser(), 0, 0, 0);
 			
 			return Response.ok(list).build();
 		} catch (Exception e) {

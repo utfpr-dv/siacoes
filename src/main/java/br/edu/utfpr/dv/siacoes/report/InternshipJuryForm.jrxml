@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2021-04-20T13:05:16 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="JuryForm2" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="56" rightMargin="56" topMargin="56" bottomMargin="56" uuid="aaaa9f03-6de2-4449-a217-db75b3350ee7">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -396,22 +397,6 @@
 				<text><![CDATA[Peso]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="338" width="300" height="40" uuid="f68d0028-38e0-4612-88f7-16c0b168c609">
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<box leftPadding="2" rightPadding="2">
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Justified" verticalAlignment="Middle">
-					<font fontName="Arial" size="10" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Banca examinadora – avaliação do relatório e da apresentação da defesa (esta última se houver), com notas atribuídas seguindo os critérios descritos na ficha de avalição individual.]]></text>
-			</staticText>
-			<staticText>
 				<reportElement positionType="Float" x="0" y="378" width="300" height="20" uuid="68208538-71db-4b3a-a098-693f6cef582a">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
@@ -587,6 +572,19 @@
 				</reportElement>
 				<imageExpression><![CDATA[$F{studentRubric}]]></imageExpression>
 			</image>
+			<textField>
+				<reportElement positionType="Float" x="0" y="338" width="300" height="40" uuid="83bc42d3-8de6-4c4d-a95b-c6a0957c5ed3"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Banca examinadora – avaliação do relatório e da apresentação da defesa (esta última se houver)" + IF($F{useEvaluationItems}, ", com notas atribuídas seguindo os critérios descritos na ficha de avalição individual.", ".")]]></textFieldExpression>
+			</textField>
 		</band>
 		<band height="25">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>

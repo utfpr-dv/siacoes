@@ -14,7 +14,9 @@ import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryStudent;
 import br.edu.utfpr.dv.siacoes.model.JuryStudentReport;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig.JuryFormat;
+import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
 
 public class InternshipJuryDAO {
@@ -77,16 +79,21 @@ public class InternshipJuryDAO {
 	
 	public List<InternshipJury> listBySemester(int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
+		Semester s = new SemesterDAO().findBySemester(new CampusDAO().findByDepartment(idDepartment).getIdCampus(), semester, year);
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.createStatement();
-		
-			rs = stmt.executeQuery("SELECT internshipjury.* " + 
+			stmt = conn.prepareStatement("SELECT internshipjury.* " + 
 					"FROM internshipjury INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " +
-					"WHERE internship.idDepartment=" + String.valueOf(idDepartment) + " AND MONTH(internshipjury.date) " + (semester == 1 ? "<= 7 " : " > 7") + " AND YEAR(internshipjury.date)=" + String.valueOf(year) + " ORDER BY internshipjury.date");
+					"WHERE internship.idDepartment=? AND internshipjury.date BETWEEN ? AND ? ORDER BY internshipjury.date");
+		
+			stmt.setInt(1, idDepartment);
+			stmt.setTimestamp(2, new java.sql.Timestamp(DateUtils.getDayBegin(s.getStartDate()).getTime()));
+			stmt.setTimestamp(3, new java.sql.Timestamp(DateUtils.getDayEnd(s.getEndDate()).getTime()));
+			
+			rs = stmt.executeQuery();
 			
 			List<InternshipJury> list = new ArrayList<InternshipJury>();
 			
@@ -105,21 +112,28 @@ public class InternshipJuryDAO {
 		}
 	}
 	
-	public List<InternshipJury> listByAppraiser(int idUser, int semester, int year) throws SQLException{
+	public List<InternshipJury> listByAppraiser(int idUser, int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
+		Semester s = new SemesterDAO().findBySemester(new CampusDAO().findByDepartment(idDepartment).getIdCampus(), semester, year);
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.createStatement();
-		
-			rs = stmt.executeQuery("SELECT internshipjury.* " +
+			stmt = conn.prepareStatement("SELECT internshipjury.* " +
 					"FROM internshipjury INNER JOIN internshipjuryappraiser ON internshipjuryappraiser.idInternshipJury=internshipjury.idInternshipJury " +
 					"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " +
-					"WHERE internshipjuryappraiser.idAppraiser=" + String.valueOf(idUser) + 
-					(((semester > 0) && (year > 0)) ? " AND MONTH(internshipjury.date) " + (semester == 1 ? "<= 7 " : " > 7") + " AND YEAR(internshipjury.date)=" + String.valueOf(year) : "" ) + 
+					"WHERE internshipjuryappraiser.idAppraiser=?" + 
+					(((semester > 0) && (year > 0)) ? " AND internshipjury.date BETWEEN ? AND ? " : "" ) + 
 					" ORDER BY internshipjury.date");
+			
+			stmt.setInt(1, idUser);
+			if((semester > 0) && (year > 0)) {
+				stmt.setTimestamp(2, new java.sql.Timestamp(DateUtils.getDayBegin(s.getStartDate()).getTime()));
+				stmt.setTimestamp(3, new java.sql.Timestamp(DateUtils.getDayEnd(s.getEndDate()).getTime()));
+			}
+		
+			rs = stmt.executeQuery();
 			
 			List<InternshipJury> list = new ArrayList<InternshipJury>();
 			
@@ -138,21 +152,28 @@ public class InternshipJuryDAO {
 		}
 	}
 	
-	public List<InternshipJury> listByStudent(int idUser, int semester, int year) throws SQLException{
+	public List<InternshipJury> listByStudent(int idUser, int idDepartment, int semester, int year) throws SQLException{
 		Connection conn = null;
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
+		Semester s = new SemesterDAO().findBySemester(new CampusDAO().findByDepartment(idDepartment).getIdCampus(), semester, year);
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.createStatement();
-		
-			rs = stmt.executeQuery("SELECT internshipjury.* " +
+			stmt = conn.prepareStatement("SELECT internshipjury.* " +
 					"FROM internshipjury INNER JOIN internshipjurystudent ON internshipjurystudent.idInternshipJury=internshipjury.idInternshipJury " +
 					"INNER JOIN internship ON internship.idInternship=internshipjury.idInternship " +
-					"WHERE internshipjurystudent.idStudent=" + String.valueOf(idUser) + 
-					(((semester > 0) && (year > 0)) ? " AND MONTH(internshipjury.date) " + (semester == 1 ? "<= 7 " : " > 7") + " AND YEAR(internshipjury.date)=" + String.valueOf(year) : "" ) + 
+					"WHERE internshipjurystudent.idStudent=? " + 
+					(((semester > 0) && (year > 0)) ? " AND internshipjury.date BETWEEN ? AND ? " : "" ) + 
 					" ORDER BY internshipjury.date");
+			
+			stmt.setInt(1, idDepartment);
+			if((semester > 0) && (year > 0)) {
+				stmt.setTimestamp(2, new java.sql.Timestamp(DateUtils.getDayBegin(s.getStartDate()).getTime()));
+				stmt.setTimestamp(3, new java.sql.Timestamp(DateUtils.getDayEnd(s.getEndDate()).getTime()));
+			}
+		
+			rs = stmt.executeQuery();
 			
 			List<InternshipJury> list = new ArrayList<InternshipJury>();
 			

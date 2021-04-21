@@ -88,7 +88,7 @@ public class InternshipJuryView extends ListView<InternshipJuryDataSource> imple
 			this.config = new SigesConfig();
 		}
 		
-		this.getGrid().addColumn(new LocalDateTimeRenderer<>(InternshipJuryDataSource::getDate, "dd/MM/yyyy HH:mm"), "Date").setHeader("Data e Hora").setFlexGrow(0).setWidth("150px");
+		this.getGrid().addColumn(new LocalDateTimeRenderer<>(InternshipJuryDataSource::getDate, "dd/MM/yyyy HH:mm"), "Date").setHeader("Data e Hora").setFlexGrow(0).setWidth("175px");
 		this.getGrid().addColumn(InternshipJuryDataSource::getLocal).setHeader("Local").setFlexGrow(0).setWidth("200px");
 		this.getGrid().addColumn(InternshipJuryDataSource::getMember).setHeader("Membro").setFlexGrow(0).setWidth("125px");
 		this.getGrid().addColumn(InternshipJuryDataSource::getStudent, "Student").setHeader("Acadêmico");
@@ -216,9 +216,9 @@ public class InternshipJuryView extends ListView<InternshipJuryDataSource> imple
 				list = bo.listBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 			}else{
 				if(Session.isUserProfessor() || Session.isUserSupervisor()){
-					list = bo.listByAppraiser(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
+					list = bo.listByAppraiser(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 				}else{
-					list = bo.listByStudent(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
+					list = bo.listByStudent(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 				}
 			}
 			
