@@ -79,7 +79,9 @@ public class StudentHistoryView extends LoggedView implements HasUrlParameter<St
 		this.tabContainer.addSelectedChangeListener(event -> {
 		    tabsToPages.values().forEach(page -> page.setVisible(false));
 		    Component selectedPage = tabsToPages.get(this.tabContainer.getSelectedTab());
-		    selectedPage.setVisible(true);
+		    if(selectedPage != null) {
+		    	selectedPage.setVisible(true);	
+		    }
 		});
 		
 		VerticalLayout layoutTab = new VerticalLayout(this.tabContainer, pages);
@@ -174,16 +176,14 @@ public class StudentHistoryView extends LoggedView implements HasUrlParameter<St
 				SystemModule module = SystemModule.valueOf(Integer.parseInt(parameter.trim()));
 				
 				this.setModule(module);
-				
-				if(!Session.isUserManager(this.getModule()) && !Session.isUserDepartmentManager()) {
-					event.rerouteTo("403");
-				}
 			} catch(Exception e) {
 				Logger.log(Level.SEVERE, e.getMessage(), e);
 				
 				event.rerouteTo("403");
 			}
-		} else {
+		}
+		
+		if(!Session.isUserManager(this.getModule()) && !Session.isUserDepartmentManager()) {
 			event.rerouteTo("403");
 		}
 	}

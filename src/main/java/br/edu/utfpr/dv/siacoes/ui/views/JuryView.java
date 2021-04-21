@@ -78,7 +78,7 @@ public class JuryView extends ListView<JuryDataSource> implements HasUrlParamete
 	public JuryView(){
 		super(SystemModule.SIGET);
 		
-		this.getGrid().addColumn(new LocalDateTimeRenderer<>(JuryDataSource::getDate, "dd/MM/yyyy HH:mm"), "Date").setHeader("Data e Hora").setFlexGrow(0).setWidth("150px");
+		this.getGrid().addColumn(new LocalDateTimeRenderer<>(JuryDataSource::getDate, "dd/MM/yyyy HH:mm"), "Date").setHeader("Data e Hora").setFlexGrow(0).setWidth("175px");
 		this.getGrid().addColumn(JuryDataSource::getLocal).setHeader("Local").setFlexGrow(0).setWidth("200px");
 		this.getGrid().addColumn(JuryDataSource::getStage, "Stage").setHeader("TCC").setFlexGrow(0).setWidth("50px");
 		this.getGrid().addColumn(JuryDataSource::getMember).setHeader("Membro").setFlexGrow(0).setWidth("125px");
