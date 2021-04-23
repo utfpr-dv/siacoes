@@ -81,7 +81,7 @@ public class InternshipFinalDocumentDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-				"SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, " +
+				"SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, internship.reportTitle, " +
 				"s.name AS student, s2.name AS supervisor, c.name AS company " +
 				"FROM internshipfinaldocument INNER JOIN internship ON internship.idInternship=internshipfinaldocument.idInternship " +
 				"INNER JOIN \"user\" s ON s.idUser=internship.idStudent " +
@@ -116,7 +116,7 @@ public class InternshipFinalDocumentDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-				"SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, " +
+				"SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, internship.reportTitle, " +
 				"s.name AS student, s2.name AS supervisor, c.name AS company " +
 				"FROM internshipfinaldocument INNER JOIN internship ON internship.idInternship=internshipfinaldocument.idInternship " +
 				"INNER JOIN \"user\" s ON s.idUser=internship.idStudent " +
@@ -152,7 +152,7 @@ public class InternshipFinalDocumentDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			rs = stmt.executeQuery("SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, " +
+			rs = stmt.executeQuery("SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, internship.reportTitle, " +
 					"s.name AS student, s2.name AS supervisor, c.name AS company " +
 					"FROM internshipfinaldocument INNER JOIN internship ON internship.idInternship=internshipfinaldocument.idInternship " +
 					"INNER JOIN \"user\" s ON s.idUser=internship.idStudent " +
@@ -185,7 +185,7 @@ public class InternshipFinalDocumentDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-					"SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, " +
+					"SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, internship.reportTitle, " +
 					"s.name AS student, s2.name AS supervisor, c.name AS company " +
 					"FROM internshipfinaldocument INNER JOIN internship ON internship.idInternship=internshipfinaldocument.idInternship " +
 					"INNER JOIN \"user\" s ON s.idUser=internship.idStudent " +
@@ -223,7 +223,7 @@ public class InternshipFinalDocumentDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
-					"SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, " +
+					"SELECT internshipfinaldocument.*, internship.idStudent, internship.idSupervisor, internship.idCompany, internship.reportTitle, " +
 					"s.name AS student, s2.name AS supervisor, c.name AS company " +
 					"FROM internshipfinaldocument INNER JOIN internship ON internship.idInternship=internshipfinaldocument.idInternship " +
 					"INNER JOIN internshipjury ON internshipjury.idinternship=internship.idinternship " +
@@ -323,6 +323,7 @@ public class InternshipFinalDocumentDAO {
 		ft.getInternship().getSupervisor().setName(rs.getString("supervisor"));
 		ft.getInternship().getCompany().setIdCompany(rs.getInt("idCompany"));
 		ft.getInternship().getCompany().setName(rs.getString("company"));
+		ft.getInternship().setReportTitle(rs.getString("reportTitle"));
 		ft.setTitle(rs.getString("title"));
 		ft.setSubmissionDate(rs.getDate("submissionDate"));
 		ft.setComments(rs.getString("comments"));

@@ -28,7 +28,7 @@ public class InternshipLibraryView extends ListView<InternshipLibraryDataSource>
 		super(SystemModule.SIGES);
 		
 		this.getGrid().addColumn(new LocalDateRenderer<>(InternshipLibraryDataSource::getSubmission, "dd/MM/yyyy"), "Submission").setHeader("Submissão").setFlexGrow(0).setWidth("125px");
-		this.getGrid().addColumn(InternshipLibraryDataSource::getTitle, "Title").setHeader("Título");
+		//this.getGrid().addColumn(InternshipLibraryDataSource::getTitle, "Title").setHeader("Título");
 		this.getGrid().addColumn(InternshipLibraryDataSource::getStudent, "Student").setHeader("Acadêmico");
 		this.getGrid().addColumn(InternshipLibraryDataSource::getCompany, "Company").setHeader("Empresa");
 		
@@ -53,7 +53,7 @@ public class InternshipLibraryView extends ListView<InternshipLibraryDataSource>
 		} catch (Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 			
-			this.showErrorNotification("Listar Monografias", e.getMessage());
+			this.showErrorNotification("Listar Relatórios de Estágio", e.getMessage());
 		}
 	}
 	
