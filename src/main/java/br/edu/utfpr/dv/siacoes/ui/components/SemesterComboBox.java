@@ -20,7 +20,7 @@ public class SemesterComboBox extends Select<String> {
 	
 	private void init(boolean showBoth){
 		this.setShowBoth(showBoth);
-		this.setWidth("120px");
+		this.setWidth("100px");
 		this.setSemester(DateUtils.getSemester());
 	}
 	

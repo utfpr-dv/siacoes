@@ -64,7 +64,7 @@ public class EditInternshipJuryAppraiserFeedbackWindow extends EditWindow {
 		});
 		
 		this.uploadAdditionalFile = new FileUploader("Arquivos Complementares (Formato ZIP, " + this.config.getMaxFileSizeAsString() + ")");
-		this.uploadFile.setAcceptedType(AcceptedDocumentType.ZIP);
+		this.uploadAdditionalFile.setAcceptedType(AcceptedDocumentType.ZIP);
 		this.uploadAdditionalFile.setMaxBytesLength(this.config.getMaxFileSize());
 		this.uploadAdditionalFile.setFileUploadListener(new FileUploaderListener() {
 			@Override

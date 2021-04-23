@@ -8,9 +8,10 @@ public class YearField extends IntegerField {
 	
 	public YearField(){
 		super("Ano");
+		this.setHasControls(true);
 		this.setMin(0);
 		this.setMax(9999);
-		this.setWidth("100px");
+		this.setWidth("140px");
 		this.setYear(DateUtils.getYear());
 	}
 	

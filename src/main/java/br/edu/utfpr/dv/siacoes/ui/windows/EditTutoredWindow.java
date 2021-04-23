@@ -201,12 +201,17 @@ public class EditTutoredWindow extends EditWindow {
         });
 		this.buttonProposalFeedback.setVisible(this.buttonProposalDownloadFile.isVisible());
 		
-		HorizontalLayout h3 = new HorizontalLayout(this.textProposalSemester, this.textProposalSubmissionDate, this.buttonProposalDownloadFile, this.buttonProposalFeedback);
+		HorizontalLayout h3 = new HorizontalLayout(this.textProposalSemester, this.textProposalSubmissionDate);
 		h3.setSpacing(true);
 		h3.setMargin(false);
 		h3.setPadding(false);
 		
-		VerticalLayout tab1 = new VerticalLayout(h1, h2, h3);
+		HorizontalLayout h10 = new HorizontalLayout(this.buttonProposalDownloadFile, this.buttonProposalFeedback);
+		h10.setSpacing(true);
+		h10.setMargin(false);
+		h10.setPadding(false);
+		
+		VerticalLayout tab1 = new VerticalLayout(h1, h2, h3, h10);
 		tab1.setSpacing(false);
 		tab1.setMargin(false);
 		tab1.setPadding(false);
@@ -258,17 +263,22 @@ public class EditTutoredWindow extends EditWindow {
         });
 		this.buttonProjectFinalDocument.setVisible((this.projectFinalDocument != null) && (this.projectFinalDocument.getIdFinalDocument() != 0));
 		
-		HorizontalLayout h6 = new HorizontalLayout(this.textProjectSemester, this.textProjectSubmissionDate, this.buttonProjectDownloadFile, this.buttonProjectFeedback, this.buttonProjectFinalDocument);
+		HorizontalLayout h6 = new HorizontalLayout(this.textProjectSemester, this.textProjectSubmissionDate);
 		h6.setSpacing(true);
 		h6.setMargin(false);
 		h6.setPadding(false);
+		
+		HorizontalLayout h11 = new HorizontalLayout(this.buttonProjectDownloadFile, this.buttonProjectFeedback, this.buttonProjectFinalDocument);
+		h11.setSpacing(true);
+		h11.setMargin(false);
+		h11.setPadding(false);
 		
 		this.textProjectAbstract = new TextArea("Resumo");
 		this.textProjectAbstract.setWidth("810px");
 		this.textProjectAbstract.setHeight("100px");
 		this.textProjectAbstract.setEnabled(false);
 		
-		VerticalLayout tab2 = new VerticalLayout(h4, h5, h6, this.textProjectAbstract);
+		VerticalLayout tab2 = new VerticalLayout(h4, h5, h6, this.textProjectAbstract, h11);
 		tab2.setSpacing(false);
 		tab2.setMargin(false);
 		tab2.setPadding(false);
@@ -321,17 +331,22 @@ public class EditTutoredWindow extends EditWindow {
         });
 		this.buttonThesisFinalDocument.setVisible((this.thesisFinalDocument != null) && (this.thesisFinalDocument.getIdFinalDocument() != 0));
 		
-		HorizontalLayout h9 = new HorizontalLayout(this.textThesisSemester, this.textThesisSubmissionDate, this.buttonThesisDownloadFile, this.buttonThesisFeedback, this.buttonThesisFinalDocument);
+		HorizontalLayout h9 = new HorizontalLayout(this.textThesisSemester, this.textThesisSubmissionDate);
 		h9.setSpacing(true);
 		h9.setMargin(false);
 		h9.setPadding(false);
+		
+		HorizontalLayout h12 = new HorizontalLayout(this.buttonThesisDownloadFile, this.buttonThesisFeedback, this.buttonThesisFinalDocument);
+		h12.setSpacing(true);
+		h12.setMargin(false);
+		h12.setPadding(false);
 		
 		this.textThesisAbstract = new TextArea("Resumo");
 		this.textThesisAbstract.setWidth("810px");
 		this.textThesisAbstract.setHeight("100px");
 		this.textThesisAbstract.setEnabled(false);
 		
-		VerticalLayout tab3 = new VerticalLayout(h7, h8, h9, this.textThesisAbstract);
+		VerticalLayout tab3 = new VerticalLayout(h7, h8, h9, this.textThesisAbstract, h12);
 		tab3.setSpacing(false);
 		tab3.setMargin(false);
 		tab3.setPadding(false);
@@ -349,7 +364,6 @@ public class EditTutoredWindow extends EditWindow {
 		
 		this.tab = new Tabs(t1);
 		this.tab.setWidthFull();
-		this.tab.setFlexGrowForEnclosedTabs(1);
 		
 		this.tab.addSelectedChangeListener(event -> {
 		    tabsToPages.values().forEach(page -> page.setVisible(false));
@@ -366,9 +380,11 @@ public class EditTutoredWindow extends EditWindow {
 			this.tab.add(t3);
 		}
 		
+		this.tab.setFlexGrowForEnclosedTabs(1);
+		
 		VerticalLayout layout = new VerticalLayout(this.tab, pages);
 		layout.setWidth("820px");
-		layout.setHeight("370px");
+		layout.setHeight("430px");
 		layout.setSpacing(false);
 		layout.setMargin(false);
 		layout.setPadding(false);

@@ -89,6 +89,7 @@ public class EditInternshipWindow extends EditWindow {
 	private final FileUploader uploadFinalReport;
 	private final Button buttonDownloadFinalReport;
 	private final Tabs tabContainer;
+	private final Tabs tabReport;
 	private Grid<InternshipReportDataSource> gridStudentReport;
 	private Grid<InternshipReportDataSource> gridSupervisorReport;
 	private Grid<InternshipReportDataSource> gridCompanySupervisorReport;
@@ -237,7 +238,7 @@ public class EditInternshipWindow extends EditWindow {
 		
 		this.textComments = new TextArea();
 		this.textComments.setWidth("820px");
-		this.textComments.setHeight("500px");
+		this.textComments.setHeight("370px");
 		this.textComments.setVisible(false);
 		
 		this.textJuryDate = new DateTimePicker("Data e Hora");
@@ -275,6 +276,11 @@ public class EditInternshipWindow extends EditWindow {
 		h3.setMargin(false);
 		h3.setPadding(false);
 		
+		VerticalLayout tab1 = new VerticalLayout(h1, h2, h3);
+		tab1.setSpacing(false);
+		tab1.setMargin(false);
+		tab1.setPadding(false);
+		
 		HorizontalLayout h4 = new HorizontalLayout(this.comboType, this.comboRequiredType, this.textTerm, this.textSei);
 		h4.setSpacing(true);
 		h4.setMargin(false);
@@ -290,13 +296,14 @@ public class EditInternshipWindow extends EditWindow {
 		h5.setMargin(false);
 		h5.setPadding(false);
 		
-		VerticalLayout tab1 = new VerticalLayout(h1, h2, h3, h4, h9, this.textReportTitle);
+		VerticalLayout tab2 = new VerticalLayout(h4, h9, this.textReportTitle);
 		if(Session.isUserManager(SystemModule.SIGES)){
 			tab1.add(h5);
 		}
-		tab1.setSpacing(false);
-		tab1.setMargin(false);
-		tab1.setPadding(false);
+		tab2.setSpacing(false);
+		tab2.setMargin(false);
+		tab2.setPadding(false);
+		tab2.setVisible(false);
 		
 		this.gridStudentReport = new Grid<InternshipReportDataSource>();
 		this.gridStudentReport.setSelectionMode(SelectionMode.SINGLE);
@@ -305,7 +312,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.gridStudentReport.addColumn(new LocalDateRenderer<>(InternshipReportDataSource::getDate, "dd/MM/yyyy")).setHeader("Data de Upload").setFlexGrow(0).setWidth("150px");
 		this.gridStudentReport.addColumn(InternshipReportDataSource::getFeedback).setHeader("Feedback");
 		this.gridStudentReport.setWidth("810px");
-		this.gridStudentReport.setHeight("450px");
+		this.gridStudentReport.setHeight("290px");
 		
 		this.buttonUploadStudentReport = new Button("Enviar", new Icon(VaadinIcon.CLOUD_UPLOAD), event -> {
             addReport(ReportType.STUDENT);
@@ -334,11 +341,10 @@ public class EditInternshipWindow extends EditWindow {
 		h6.setMargin(false);
 		h6.setPadding(false);
 		
-		VerticalLayout tab2 = new VerticalLayout(this.gridStudentReport, h6);
-		tab2.setSpacing(false);
-		tab2.setMargin(false);
-		tab2.setPadding(false);
-		tab2.setVisible(false);
+		VerticalLayout tabStudentReport = new VerticalLayout(this.gridStudentReport, h6);
+		tabStudentReport.setSpacing(false);
+		tabStudentReport.setMargin(false);
+		tabStudentReport.setPadding(false);
 		
 		this.gridSupervisorReport = new Grid<InternshipReportDataSource>();
 		this.gridSupervisorReport.setSelectionMode(SelectionMode.SINGLE);
@@ -347,7 +353,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.gridSupervisorReport.addColumn(new LocalDateRenderer<>(InternshipReportDataSource::getDate, "dd/MM/yyyy")).setHeader("Data de Upload").setFlexGrow(0).setWidth("150px");
 		this.gridSupervisorReport.addColumn(InternshipReportDataSource::getFeedback).setHeader("Feedback");
 		this.gridSupervisorReport.setWidth("810px");
-		this.gridSupervisorReport.setHeight("450px");
+		this.gridSupervisorReport.setHeight("290px");
 		
 		this.buttonUploadSupervisorReport = new Button("Enviar", new Icon(VaadinIcon.CLOUD_UPLOAD), event -> {
             addReport(ReportType.SUPERVISOR);
@@ -376,11 +382,11 @@ public class EditInternshipWindow extends EditWindow {
 		h7.setMargin(false);
 		h7.setPadding(false);
 		
-		VerticalLayout tab3 = new VerticalLayout(this.gridSupervisorReport, h7);
-		tab3.setSpacing(false);
-		tab3.setMargin(false);
-		tab3.setPadding(false);
-		tab3.setVisible(false);
+		VerticalLayout tabSupervisorReport = new VerticalLayout(this.gridSupervisorReport, h7);
+		tabSupervisorReport.setSpacing(false);
+		tabSupervisorReport.setMargin(false);
+		tabSupervisorReport.setPadding(false);
+		tabSupervisorReport.setVisible(false);
 		
 		this.gridCompanySupervisorReport = new Grid<InternshipReportDataSource>();
 		this.gridCompanySupervisorReport.setSelectionMode(SelectionMode.SINGLE);
@@ -389,7 +395,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.gridCompanySupervisorReport.addColumn(new LocalDateRenderer<>(InternshipReportDataSource::getDate, "dd/MM/yyyy")).setHeader("Data de Upload").setFlexGrow(0).setWidth("150px");
 		this.gridCompanySupervisorReport.addColumn(InternshipReportDataSource::getFeedback).setHeader("Feedback");
 		this.gridCompanySupervisorReport.setWidth("810px");
-		this.gridCompanySupervisorReport.setHeight("450px");
+		this.gridCompanySupervisorReport.setHeight("290px");
 		
 		this.buttonUploadCompanySupervisorReport = new Button("Enviar", new Icon(VaadinIcon.CLOUD_UPLOAD), event -> {
             addReport(ReportType.COMPANY);
@@ -419,29 +425,57 @@ public class EditInternshipWindow extends EditWindow {
 		h8.setMargin(false);
 		h8.setPadding(false);
 		
-		VerticalLayout tab4 = new VerticalLayout(this.gridCompanySupervisorReport, h8);
-		tab4.setSpacing(false);
-		tab4.setMargin(false);
-		tab4.setPadding(false);
-		tab4.setVisible(false);
+		VerticalLayout tabCompanySupervisorReport = new VerticalLayout(this.gridCompanySupervisorReport, h8);
+		tabCompanySupervisorReport.setSpacing(false);
+		tabCompanySupervisorReport.setMargin(false);
+		tabCompanySupervisorReport.setPadding(false);
+		tabCompanySupervisorReport.setVisible(false);
 		
-		Tab t1 = new Tab("Estágio");
-		Tab t2 = new Tab("Acadêmico");
-		Tab t3 = new Tab("Orientador");
-		Tab t4 = new Tab("Supervisor");
-		Tab t5 = new Tab("Observações");
+		Tab tStudentReport = new Tab("Acadêmico");
+		Tab tSupervisorReport = new Tab("Orientador");
+		Tab tCompanySupervisorReport = new Tab("Supervisor");
+		
+		Map<Tab, Component> tabsToPages2 = new HashMap<>();
+		tabsToPages2.put(tStudentReport, tabStudentReport);
+		tabsToPages2.put(tSupervisorReport, tabSupervisorReport);
+		tabsToPages2.put(tCompanySupervisorReport, tabCompanySupervisorReport);
+		Div pages2 = new Div(tabStudentReport, tabSupervisorReport, tabCompanySupervisorReport);
+		
+		this.tabReport = new Tabs(tStudentReport, tSupervisorReport, tCompanySupervisorReport);
+		this.tabReport.setWidthFull();
+		this.tabReport.setFlexGrowForEnclosedTabs(1);
+		
+		this.tabReport.addSelectedChangeListener(event -> {
+			tabsToPages2.values().forEach(page -> page.setVisible(false));
+		    Component selectedPage = tabsToPages2.get(this.tabReport.getSelectedTab());
+		    selectedPage.setVisible(true);
+		});
+		
+		this.tabReport.setSelectedTab(tStudentReport);
+		
+		VerticalLayout tab3 = new VerticalLayout(this.tabReport, pages2);
+		tab3.setWidth("810px");
+		tab3.setHeight("400px");
+		tab3.setSpacing(false);
+		tab3.setMargin(false);
+		tab3.setPadding(false);
+		tab3.setVisible(false);
+		
+		Tab t1 = new Tab("Informações Gerais");
+		Tab t2 = new Tab("Plano de Estágio");
+		Tab t3 = new Tab("Relatórios");
+		Tab t4 = new Tab("Observações");
 		this.tabJury = new Tab("Banca");
 		
 		Map<Tab, Component> tabsToPages = new HashMap<>();
 		tabsToPages.put(t1, tab1);
 		tabsToPages.put(t2, tab2);
 		tabsToPages.put(t3, tab3);
-		tabsToPages.put(t4, tab4);
-		tabsToPages.put(t5, this.textComments);
+		tabsToPages.put(t4, this.textComments);
 		tabsToPages.put(this.tabJury, this.layoutJury);
-		Div pages = new Div(tab1, tab2, tab3, tab4, this.textComments, this.layoutJury);
+		Div pages = new Div(tab1, tab2, tab3, this.textComments, this.layoutJury);
 		
-		this.tabContainer = new Tabs(t1, t2, t3, t4, t5, this.tabJury);
+		this.tabContainer = new Tabs(t1, t2, t3, t4, this.tabJury);
 		this.tabContainer.setWidthFull();
 		this.tabContainer.setFlexGrowForEnclosedTabs(1);
 		
@@ -455,7 +489,7 @@ public class EditInternshipWindow extends EditWindow {
 		
 		VerticalLayout layout = new VerticalLayout(this.tabContainer, pages);
 		layout.setWidth("820px");
-		layout.setHeight("630px");
+		layout.setHeight("430px");
 		layout.setSpacing(false);
 		layout.setMargin(false);
 		layout.setPadding(false);

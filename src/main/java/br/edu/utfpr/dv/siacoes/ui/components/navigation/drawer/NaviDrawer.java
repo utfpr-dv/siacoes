@@ -84,7 +84,7 @@ public class NaviDrawer extends Div
 		search = new TextField();
 		search.addValueChangeListener(e -> menu.filter(search.getValue()));
 		search.setClearButtonVisible(true);
-		search.setPlaceholder("Search");
+		search.setPlaceholder("Pesquisar");
 		search.setPrefixComponent(new Icon(VaadinIcon.SEARCH));
 		mainContent.add(search);
 	}
