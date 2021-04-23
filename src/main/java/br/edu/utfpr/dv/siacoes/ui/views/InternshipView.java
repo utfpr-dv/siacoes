@@ -30,6 +30,7 @@ import br.edu.utfpr.dv.siacoes.bo.InternshipPosterRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.Internship;
+import br.edu.utfpr.dv.siacoes.model.Internship.InternshipCompanyStatus;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipStatus;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
 import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
@@ -128,8 +129,8 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 		this.comboCompanyStatus = new Select<String>();
 		this.comboCompanyStatus.setLabel("Situação na Empresa");
 		this.comboCompanyStatus.setWidth("170px");
-		this.comboCompanyStatus.setItems(InternshipStatus.CURRENT.toString(), InternshipStatus.FINISHED.toString(), ALL);
-		this.comboCompanyStatus.setValue(InternshipStatus.CURRENT.toString());
+		this.comboCompanyStatus.setItems(InternshipCompanyStatus.CURRENT.toString(), InternshipCompanyStatus.FINISHED.toString(), InternshipCompanyStatus.TERMINATED.toString(), ALL);
+		this.comboCompanyStatus.setValue(InternshipCompanyStatus.CURRENT.toString());
 		
 		this.comboType = new Select<String>();
 		this.comboType.setLabel("Tipo");
@@ -306,7 +307,7 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 		}
 		
 		if(!this.comboCompanyStatus.getValue().equals(ALL)){
-			companyStatus = InternshipStatus.fromDescription(this.comboCompanyStatus.getValue()).getValue();
+			companyStatus = InternshipCompanyStatus.fromDescription(this.comboCompanyStatus.getValue()).getValue();
 		}
 		
 		return new InternshipBO().list(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status, DateUtils.convertToDate(this.textStartDate1.getValue()), DateUtils.convertToDate(this.textStartDate2.getValue()), DateUtils.convertToDate(this.textEndDate1.getValue()), DateUtils.convertToDate(this.textEndDate2.getValue()), companyStatus);

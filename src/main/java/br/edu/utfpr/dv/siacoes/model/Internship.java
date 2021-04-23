@@ -59,6 +59,56 @@ public class Internship implements Serializable {
 		}
 	}
 	
+	public enum InternshipCompanyStatus{
+		CURRENT(0), FINISHED(1), TERMINATED(2);
+		
+		private final int value; 
+		InternshipCompanyStatus(int value){ 
+			this.value = value; 
+		}
+		
+		public int getValue(){ 
+			return value;
+		}
+		
+		public static InternshipCompanyStatus valueOf(int value){
+			for(InternshipCompanyStatus d : InternshipCompanyStatus.values()){
+				if(d.getValue() == value){
+					return d;
+				}
+			}
+			
+			return null;
+		}
+		
+		public String toString(){
+			return this.getDescription();
+		}
+		
+		public String getDescription(){
+			switch(this){
+				case CURRENT:
+					return "Em Andamento";
+				case FINISHED:
+					return "Finalizado";
+				case TERMINATED:
+					return "Rescindido";
+				default:
+					return "";
+			}
+		}
+		
+		public static InternshipCompanyStatus fromDescription(String value) {
+			for(InternshipCompanyStatus d : InternshipCompanyStatus.values()){
+				if(d.getDescription().equals(value)){
+					return d;
+				}
+			}
+			
+			return null;
+		}
+	}
+	
 	public enum InternshipType{
 		NONREQUIRED(0), REQUIRED(1);
 		
@@ -162,6 +212,7 @@ public class Internship implements Serializable {
 	private String comments;
 	private Date startDate;
 	private Date endDate;
+	private Date terminationDate;
 	private String reportTitle;
 	private String term;
 	private double weekHours;
@@ -186,6 +237,7 @@ public class Internship implements Serializable {
 		this.setReportTitle("");
 		this.setStartDate(DateUtils.getToday().getTime());
 		this.setEndDate(null);
+		this.setTerminationDate(null);
 		this.setTerm("");
 		this.setWeekHours(0);
 		this.setWeekDays(0);
@@ -263,6 +315,12 @@ public class Internship implements Serializable {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
+	public Date getTerminationDate() {
+		return terminationDate;
+	}
+	public void setTerminationDate(Date terminationDate) {
+		this.terminationDate = terminationDate;
+	}
 	public String getTerm() {
 		return term;
 	}
@@ -323,11 +381,13 @@ public class Internship implements Serializable {
 	public void setSei(String sei) {
 		this.sei = sei;
 	}
-	public InternshipStatus getStatus(){
-		if((this.getEndDate() == null) || (this.getEndDate().after(DateUtils.getToday().getTime()))){
-			return InternshipStatus.CURRENT;
-		}else{
-			return InternshipStatus.FINISHED;
+	public InternshipCompanyStatus getStatus(){
+		if(this.getTerminationDate() != null) {
+			return InternshipCompanyStatus.TERMINATED;
+		} else if((this.getEndDate() == null) || (this.getEndDate().after(DateUtils.getToday().getTime()))) {
+			return InternshipCompanyStatus.CURRENT;
+		} else {
+			return InternshipCompanyStatus.FINISHED;
 		}
 	}
 

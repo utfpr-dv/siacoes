@@ -25,6 +25,7 @@ import br.edu.utfpr.dv.siacoes.dao.CertificateDAO;
 import br.edu.utfpr.dv.siacoes.model.AppConfig;
 import br.edu.utfpr.dv.siacoes.model.Certificate;
 import br.edu.utfpr.dv.siacoes.model.Internship;
+import br.edu.utfpr.dv.siacoes.model.Internship.InternshipCompanyStatus;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipRequiredType;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipStatus;
 import br.edu.utfpr.dv.siacoes.model.Internship.InternshipType;
@@ -208,7 +209,7 @@ public class CertificateBO {
 		if((internship == null) || (internship.getIdInternship() == 0)){
 			throw new Exception("É necessário informar o estágio antes de gerar a declaração.");
 		}
-		if(internship.getStatus() == InternshipStatus.FINISHED){
+		if((internship.getStatus() == InternshipCompanyStatus.FINISHED) || (internship.getStatus() == InternshipCompanyStatus.TERMINATED)){
 			if((internship.getType() == InternshipType.REQUIRED) && (internship.getFinalReport() == null)){
 				throw new Exception("O acadêmico precisa entregar o relatório final de estágio para gerar a declaração.");	
 			}
@@ -251,7 +252,7 @@ public class CertificateBO {
 		if((internship == null) || (internship.getIdInternship() == 0)){
 			throw new Exception("É necessário informar o estágio antes de gerar a declaração.");
 		}
-		if(internship.getStatus() == InternshipStatus.FINISHED){
+		if((internship.getStatus() == InternshipCompanyStatus.FINISHED) || (internship.getStatus() == InternshipCompanyStatus.TERMINATED)){
 			if((internship.getType() == InternshipType.REQUIRED) && (internship.getFinalReport() == null)){
 				throw new Exception("O acadêmico precisa entregar o relatório final de estágio para gerar a declaração.");	
 			}
@@ -703,9 +704,11 @@ public class CertificateBO {
 		statement.setName(internship.getSupervisor().getName());
 		statement.setStartTime(internship.getStartDate());
 		
-		if(internship.getStatus() == InternshipStatus.CURRENT){
+		if(internship.getStatus() == InternshipCompanyStatus.CURRENT) {
 			statement.setEndTime(null);
-		}else{
+		} else if(internship.getStatus() == InternshipCompanyStatus.TERMINATED) {
+			statement.setEndTime(internship.getTerminationDate());
+		} else {
 			statement.setEndTime(internship.getEndDate());
 		}
 		
@@ -760,8 +763,10 @@ public class CertificateBO {
 		statement.setName(internship.getSupervisor().getName());
 		statement.setStartTime(internship.getStartDate());
 		
-		if(internship.getStatus() == InternshipStatus.CURRENT){
+		if(internship.getStatus() == InternshipCompanyStatus.CURRENT){
 			statement.setEndTime(null);
+		} else if(internship.getStatus() == InternshipCompanyStatus.TERMINATED) {
+			statement.setEndTime(internship.getTerminationDate());
 		}else{
 			statement.setEndTime(internship.getEndDate());
 		}

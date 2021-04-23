@@ -195,6 +195,11 @@ public class InternshipBO {
 		if((internship.getFinalReport() != null) && (internship.getReportTitle().trim().isEmpty())){
 			throw new Exception("Informe o título do relatório final.");
 		}
+		if((internship.getTerminationDate() != null) && (internship.getEndDate() != null)) {
+			if(!internship.getTerminationDate().before(internship.getEndDate())) {
+				throw new Exception("A data de rescisão do contrato de estágio deve ser anterior à data de término do estágio.");
+			}
+		}
 		
 		boolean isInsert = (internship.getIdInternship() == 0);
 		

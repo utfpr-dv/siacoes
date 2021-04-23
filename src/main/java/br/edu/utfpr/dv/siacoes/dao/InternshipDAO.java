@@ -178,9 +178,11 @@ public class InternshipDAO {
 		}
 		
 		if(companyStatus == 0) {
-			filterStatus = filterStatus + " AND (internship.endDate IS NULL OR internship.endDate >= CURRENT_DATE)";
+			filterStatus = filterStatus + " AND internship.terminationDate IS NULL AND (internship.endDate IS NULL OR internship.endDate >= CURRENT_DATE)";
 		} else if(companyStatus == 1) {
-			filterStatus = filterStatus + " AND internship.endDate < CURRENT_DATE";
+			filterStatus = filterStatus + " AND internship.terminationDate IS NULL AND internship.endDate < CURRENT_DATE";
+		} else if(companyStatus == 2) {
+			filterStatus = filterStatus + " AND internship.terminationDate IS NOT NULL";
 		}
 		
 		try {
@@ -413,9 +415,9 @@ public class InternshipDAO {
 		
 		try{
 			if(insert){
-				stmt = this.conn.prepareStatement("INSERT INTO internship(iddepartment, idcompany, idcompanysupervisor, idsupervisor, idstudent, type, comments, startDate, endDate, totalHours, internshipPlan, finalReport, reportTitle, requiredType, term, weekHours, weekDays, fillOnlyTotalHours, sei) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = this.conn.prepareStatement("INSERT INTO internship(iddepartment, idcompany, idcompanysupervisor, idsupervisor, idstudent, type, comments, startDate, endDate, totalHours, internshipPlan, finalReport, reportTitle, requiredType, term, weekHours, weekDays, fillOnlyTotalHours, sei, terminationDate) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = this.conn.prepareStatement("UPDATE internship SET iddepartment=?, idcompany=?, idcompanysupervisor=?, idsupervisor=?, idstudent=?, type=?, comments=?, startDate=?, endDate=?, totalHours=?, internshipPlan=?, finalReport=?, reportTitle=?, requiredType=?, term=?, weekHours=?, weekDays=?, fillOnlyTotalHours=?, sei=? WHERE idinternship=?");
+				stmt = this.conn.prepareStatement("UPDATE internship SET iddepartment=?, idcompany=?, idcompanysupervisor=?, idsupervisor=?, idstudent=?, type=?, comments=?, startDate=?, endDate=?, totalHours=?, internshipPlan=?, finalReport=?, reportTitle=?, requiredType=?, term=?, weekHours=?, weekDays=?, fillOnlyTotalHours=?, sei=?, terminationDate=? WHERE idinternship=?");
 			}
 			
 			stmt.setInt(1, internship.getDepartment().getIdDepartment());
@@ -445,9 +447,14 @@ public class InternshipDAO {
 			stmt.setInt(17, internship.getWeekDays());
 			stmt.setInt(18, (internship.isFillOnlyTotalHours() ? 1 : 0));
 			stmt.setString(19, internship.getSei());
+			if(internship.getTerminationDate() == null){
+				stmt.setNull(20, Types.DATE);
+			}else{
+				stmt.setDate(20, new java.sql.Date(internship.getTerminationDate().getTime()));
+			}
 			
 			if(!insert){
-				stmt.setInt(20, internship.getIdInternship());
+				stmt.setInt(21, internship.getIdInternship());
 			}
 			
 			stmt.execute();
@@ -490,6 +497,7 @@ public class InternshipDAO {
 		internship.setComments(rs.getString("comments"));
 		internship.setStartDate(rs.getDate("startDate"));
 		internship.setEndDate(rs.getDate("endDate"));
+		internship.setTerminationDate(rs.getDate("terminationDate"));
 		internship.setTerm(rs.getString("term"));
 		internship.setWeekHours(rs.getDouble("weekHours"));
 		internship.setWeekDays(rs.getInt("weekDays"));
