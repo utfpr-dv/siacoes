@@ -75,6 +75,7 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 	private final Select<String> comboStatus;
 	private final Select<String> comboCompanyStatus;
 	private final Select<String> comboType;
+	private final Select<String> comboTag;
 	private final DatePicker textStartDate1;
 	private final DatePicker textStartDate2;
 	private final DatePicker textEndDate1;
@@ -148,6 +149,12 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 		this.textEndDate2 = new DatePicker("E");
 		//this.textEndDate2.setDateFormat("dd/MM/yyyy");
 		
+		this.comboTag = new Select<String>();
+		this.comboTag.setLabel("Apenas com a tag");
+		this.comboTag.setWidth("250px");
+		this.comboTag.setItems(new InternshipBO().getTagsList(Session.getSelectedDepartment().getDepartment().getIdDepartment(), true));
+		this.comboTag.setValue(ALL);
+		
 		HorizontalLayout h1 = new HorizontalLayout(this.comboStudent, this.comboProfessor, this.comboType, this.comboCompanyStatus, this.comboStatus);
 		h1.setSpacing(true);
 		h1.setMargin(false);
@@ -158,7 +165,7 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 		h2.setMargin(false);
 		h2.setPadding(false);
 		
-		VerticalLayout v1 = new VerticalLayout(h1, h2);
+		VerticalLayout v1 = new VerticalLayout(h1, h2, this.comboTag);
 		v1.setSpacing(false);
 		v1.setMargin(false);
 		v1.setPadding(false);
@@ -297,6 +304,7 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 	
 	private List<Internship> getInternshipList() throws Exception {
 		int type = -1, status = -1, companyStatus = -1;
+		String tag = "";
 		
 		if(!this.comboType.getValue().equals(ALL)){
 			type = InternshipType.fromDescription(this.comboType.getValue()).getValue();
@@ -310,7 +318,11 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 			companyStatus = InternshipCompanyStatus.fromDescription(this.comboCompanyStatus.getValue()).getValue();
 		}
 		
-		return new InternshipBO().list(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status, DateUtils.convertToDate(this.textStartDate1.getValue()), DateUtils.convertToDate(this.textStartDate2.getValue()), DateUtils.convertToDate(this.textEndDate1.getValue()), DateUtils.convertToDate(this.textEndDate2.getValue()), companyStatus);
+		if(!this.comboTag.getValue().equals(ALL)) {
+			tag = this.comboTag.getValue();
+		}
+		
+		return new InternshipBO().list(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status, DateUtils.convertToDate(this.textStartDate1.getValue()), DateUtils.convertToDate(this.textStartDate2.getValue()), DateUtils.convertToDate(this.textEndDate1.getValue()), DateUtils.convertToDate(this.textEndDate2.getValue()), companyStatus, tag);
 	}
 
 	@Override

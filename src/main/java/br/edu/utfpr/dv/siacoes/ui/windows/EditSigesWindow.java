@@ -202,7 +202,7 @@ public class EditSigesWindow extends EditWindow {
 			this.config.setShowGradesToStudent(this.checkShowGradesToStudent.getValue());
 			this.config.setSupervisorFilter(this.comboSupervisorFilter.getValue());
 			this.config.setSupervisorFillJuryForm(this.checkSupervisorFillJuryForm.getValue());
-			this.config.setMaxFileSize((int)this.textMaxFileSize.getValue());
+			this.config.setMaxFileSize(this.textMaxFileSize.getValue().intValue());
 			this.config.setJuryTime(this.textJuryTime.getValue());
 			this.config.setFillOnlyTotalHours(this.checkFillOnlyTotalHours.getValue());
 			this.config.setJuryFormat(this.comboJuryFormat.getValue());

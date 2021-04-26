@@ -81,7 +81,7 @@ public class UserDAO {
 			stmt = conn.prepareStatement(
 					"SELECT \"user\".*, company.name AS companyName " +
 					"FROM \"user\" LEFT JOIN company ON \"user\".idcompany=company.idcompany " +
-					"WHERE \"user\".login = ?");
+					"WHERE LOWER(\"user\".login) = LOWER(?)");
 		
 			stmt.setString(1, login);
 			
@@ -255,7 +255,7 @@ public class UserDAO {
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT iduser FROM \"user\" WHERE login = ?");
+			stmt = conn.prepareStatement("SELECT iduser FROM \"user\" WHERE LOWER(login) = LOWER(?)");
 		
 			stmt.setString(1, login);
 			
@@ -283,7 +283,7 @@ public class UserDAO {
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT salt FROM \"user\" WHERE login = ?");
+			stmt = conn.prepareStatement("SELECT salt FROM \"user\" WHERE LOWER(login) = LOWER(?)");
 		
 			stmt.setString(1, login);
 			

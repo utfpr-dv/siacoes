@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -149,11 +150,12 @@ public class InternshipDAO {
 		}
 	}
 	
-	public List<Internship> list(int idDepartment, int year, int idStudent, int idSupervisor, int idCompany, int type, int status, Date startDate1, Date startDate2, Date endDate1, Date endDate2, int companyStatus) throws SQLException {
+	public List<Internship> list(int idDepartment, int year, int idStudent, int idSupervisor, int idCompany, int type, int status, Date startDate1, Date startDate2, Date endDate1, Date endDate2, int companyStatus, String tag) throws SQLException {
 		ResultSet rs = null;
 		Statement stmt = null;
 		String filterDate = "";
 		String filterStatus = "";
+		String filterTag = "";
 		
 		if ((startDate1 != null) && (DateUtils.getYear(startDate1) > 1900) && (startDate2 != null) && (DateUtils.getYear(startDate2) > 1900)) {
 			filterDate = filterDate + " AND internship.startDate BETWEEN '" + DateUtils.format(DateUtils.getDayBegin(startDate1), "yyyy-MM-dd HH:mm:ss") + "' AND '" + DateUtils.format(DateUtils.getDayEnd(startDate2), "yyyy-MM-dd HH:mm:ss") + "'";
@@ -185,6 +187,10 @@ public class InternshipDAO {
 			filterStatus = filterStatus + " AND internship.terminationDate IS NOT NULL";
 		}
 		
+		if((tag != null) && !tag.trim().isEmpty()) {
+			filterTag = " AND internship.tags ILIKE '%|" + tag.replace("\'", "") + "|%'";
+		}
+		
 		try {
 			stmt = this.conn.createStatement();
 			
@@ -197,7 +203,7 @@ public class InternshipDAO {
 					(idStudent > 0 ? " AND internship.idstudent = " + String.valueOf(idStudent) : "") +
 					(idSupervisor > 0 ? " AND internship.idsupervisor = " + String.valueOf(idSupervisor) : "") +
 					(idCompany > 0 ? " AND internship.idcompany = " + String.valueOf(idCompany) : "") +
-					(type >= 0 ? " AND internship.type = " + String.valueOf(type) : "") + filterDate + filterStatus +
+					(type >= 0 ? " AND internship.type = " + String.valueOf(type) : "") + filterDate + filterStatus + filterTag +
 					" ORDER BY internship.startDate DESC");
 			
 			List<Internship> list = new ArrayList<Internship>();
@@ -415,9 +421,9 @@ public class InternshipDAO {
 		
 		try{
 			if(insert){
-				stmt = this.conn.prepareStatement("INSERT INTO internship(iddepartment, idcompany, idcompanysupervisor, idsupervisor, idstudent, type, comments, startDate, endDate, totalHours, internshipPlan, finalReport, reportTitle, requiredType, term, weekHours, weekDays, fillOnlyTotalHours, sei, terminationDate) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = this.conn.prepareStatement("INSERT INTO internship(iddepartment, idcompany, idcompanysupervisor, idsupervisor, idstudent, type, comments, startDate, endDate, totalHours, internshipPlan, finalReport, reportTitle, requiredType, term, weekHours, weekDays, fillOnlyTotalHours, sei, terminationDate, tags) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = this.conn.prepareStatement("UPDATE internship SET iddepartment=?, idcompany=?, idcompanysupervisor=?, idsupervisor=?, idstudent=?, type=?, comments=?, startDate=?, endDate=?, totalHours=?, internshipPlan=?, finalReport=?, reportTitle=?, requiredType=?, term=?, weekHours=?, weekDays=?, fillOnlyTotalHours=?, sei=?, terminationDate=? WHERE idinternship=?");
+				stmt = this.conn.prepareStatement("UPDATE internship SET iddepartment=?, idcompany=?, idcompanysupervisor=?, idsupervisor=?, idstudent=?, type=?, comments=?, startDate=?, endDate=?, totalHours=?, internshipPlan=?, finalReport=?, reportTitle=?, requiredType=?, term=?, weekHours=?, weekDays=?, fillOnlyTotalHours=?, sei=?, terminationDate=?, tags=? WHERE idinternship=?");
 			}
 			
 			stmt.setInt(1, internship.getDepartment().getIdDepartment());
@@ -452,9 +458,10 @@ public class InternshipDAO {
 			}else{
 				stmt.setDate(20, new java.sql.Date(internship.getTerminationDate().getTime()));
 			}
+			stmt.setString(21, this.getTagsString(internship.getTags()));
 			
 			if(!insert){
-				stmt.setInt(21, internship.getIdInternship());
+				stmt.setInt(22, internship.getIdInternship());
 			}
 			
 			stmt.execute();
@@ -477,6 +484,37 @@ public class InternshipDAO {
 				rs.close();
 			if((stmt != null) && !stmt.isClosed())
 				stmt.close();
+		}
+	}
+	
+	private String getTagsString(List<String> tags) {
+		if((tags == null) || (tags.size() == 0)) {
+			return "";
+		} else {
+			String ret = "|";
+			
+			for(String s : tags) {
+				ret = ret + s + "|";
+			}
+			
+			return ret;
+		}
+	}
+	
+	private List<String> getTagsList(String tags) {
+		if((tags == null) || (tags.trim().isEmpty())) {
+			return new ArrayList<String>();	
+		} else {
+			List<String> ret = new ArrayList<String>();
+			String[] list = tags.split("\\|");
+			
+			for(String s : list) {
+				if(!s.isEmpty()) {
+					ret.add(s);
+				}
+			}
+			
+			return ret;
 		}
 	}
 	
@@ -505,6 +543,7 @@ public class InternshipDAO {
 		internship.setReportTitle(rs.getString("reportTitle"));
 		internship.setFillOnlyTotalHours(rs.getInt("fillOnlyTotalHours") == 1);
 		internship.setSei(rs.getString("sei"));
+		internship.setTags(this.getTagsList(rs.getString("tags")));
 		
 		if(loadFiles) {
 			internship.setInternshipPlan(rs.getBytes("internshipPlan"));
@@ -864,6 +903,45 @@ public class InternshipDAO {
 		}
 		
 		return report;
+	}
+	
+	public List<String> getTagsList(int idDepartment, boolean includeAll) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		List<String> ret = new ArrayList<String>();
+		
+		try {
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT tags FROM internship WHERE iddepartment=" + String.valueOf(idDepartment));
+			
+			while(rs.next()) {
+				List<String> l = this.getTagsList(rs.getString("tags"));
+				
+				for(String s : l) {
+					if(!ret.contains(s)) {
+						ret.add(s);
+					}
+				}
+			}
+			
+			Collections.sort(ret);
+		} finally {
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+		
+		if(includeAll) {
+			ret.add(0, "(TODOS)");
+		}
+		
+		return ret;
 	}
 
 }

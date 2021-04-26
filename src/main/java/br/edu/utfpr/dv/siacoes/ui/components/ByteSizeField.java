@@ -1,12 +1,11 @@
 package br.edu.utfpr.dv.siacoes.ui.components;
 
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.NumberField;
 
-public class ByteSizeField extends VerticalLayout {
+public class ByteSizeField extends CustomField<Long> {
 
 	public enum Unit{
 		BYTE(1), KBYTE(1024), MBYTE(1024 * 1024), GBYTE(1024 * 1024 * 1024);
@@ -36,13 +35,10 @@ public class ByteSizeField extends VerticalLayout {
 		}
 	}
 	
-	private final Label labelCaption;
 	private final NumberField textSize;
 	private final Select<Unit> comboUnit;
 	
 	public ByteSizeField() {
-		this.labelCaption = new Label();
-		
 		this.textSize = new NumberField();
 		this.textSize.setWidth("100px");
 		this.textSize.setLabel(null);
@@ -58,16 +54,13 @@ public class ByteSizeField extends VerticalLayout {
 		hl.setMargin(false);
 		hl.setSpacing(false);
 		
-		this.add(this.labelCaption, hl);
-		this.setPadding(false);
-		this.setMargin(false);
-		this.setSpacing(false);
+		this.add(hl);
 	}
 	
-	public ByteSizeField(String caption) {
+	public ByteSizeField(String label) {
 		this();
 		
-		this.labelCaption.setText(caption);
+		this.setLabel(label);
 	}
 	
 	public void setValue(long bytes) {
@@ -91,11 +84,12 @@ public class ByteSizeField extends VerticalLayout {
 		this.comboUnit.setValue(unit);
 	}
 	
-	public long getValue() {
+	@Override
+	public Long getValue() {
 		try{
 			return (long)(this.textSize.getValue() * this.comboUnit.getValue().getValue());
 		}catch(Exception e){
-			return 0;
+			return (long) 0;
 		}
 	}
 	
@@ -113,6 +107,16 @@ public class ByteSizeField extends VerticalLayout {
 		} else {
 			return String.valueOf(bytes) + " " + Unit.BYTE.toString();
 		}
+	}
+
+	@Override
+	protected Long generateModelValue() {
+		return this.getValue();
+	}
+
+	@Override
+	protected void setPresentationValue(Long newPresentationValue) {
+		this.setValue(newPresentationValue);
 	}
 	
 }

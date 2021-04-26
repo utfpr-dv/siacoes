@@ -223,6 +223,7 @@ public class Internship implements Serializable {
 	private List<InternshipReport> reports;
 	private boolean fillOnlyTotalHours;
 	private String sei;
+	private List<String> tags;
 	
 	public Internship(){
 		this.setIdInternship(0);
@@ -247,6 +248,7 @@ public class Internship implements Serializable {
 		this.setFillOnlyTotalHours(false);
 		this.setReports(new ArrayList<InternshipReport>());
 		this.setSei("");
+		this.setTags(new ArrayList<String>());
 	}
 	
 	public int getIdInternship() {
@@ -380,6 +382,12 @@ public class Internship implements Serializable {
 	}
 	public void setSei(String sei) {
 		this.sei = sei;
+	}
+	public List<String> getTags() {
+		return tags;
+	}
+	public void setTags(List<String> tags) {
+		this.tags = tags;
 	}
 	public InternshipCompanyStatus getStatus(){
 		if(this.getTerminationDate() != null) {

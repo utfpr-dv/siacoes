@@ -283,6 +283,8 @@ CREATE TABLE internship (
   finalReport BYTEA,
   fillonlytotalhours SMALLINT NOT NULL,
   sei VARCHAR(255) NOT NULL,
+  terminationdate DATE,
+  tags VARCHAR(1000) NOT NULL,
   PRIMARY KEY (idinternship),
   CONSTRAINT fk_internship_company FOREIGN KEY (idcompany) REFERENCES company (idcompany) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_internship_companysupervisor FOREIGN KEY (idcompanysupervisor) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -926,8 +928,8 @@ CREATE INDEX fk_internshipjuryappraiserrequest_appraiser_idx ON internshipjuryap
 CREATE INDEX fk_internshipjuryappraiserrequest_internshipjuryrequest_idx ON internshipjuryappraiserrequest (idinternshipjuryrequest);
 
 CREATE OR REPLACE VIEW internshipview AS
-	SELECT internship.idinternship, internship.iddepartment, internship.idcompany, internship.idcompanysupervisor, internship.idsupervisor, internship.idstudent,
-	internship.type, internship.comments, internship.reporttitle, internship.startdate, internship.enddate, internship.totalhours, internship.requiredtype, 
+	SELECT internship.idinternship, internship.iddepartment, internship.idcompany, internship.idcompanysupervisor, internship.idsupervisor, internship.idstudent, internship.tags,
+	internship.type, internship.comments, internship.reporttitle, internship.startdate, internship.enddate, internship.terminationdate, internship.totalhours, internship.requiredtype, 
 	internship.term, internship.weekhours, internship.weekdays, internship.fillonlytotalhours, internship.sei, internship.finalreport IS NOT NULL AS hasfinalreport
 	FROM internship;
 

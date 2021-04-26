@@ -267,7 +267,7 @@ public class EditSigetWindow extends EditWindow {
 			this.config.setSupervisorJuryAgreement(this.checkSupervisorJuryAgreement.getValue());
 			this.config.setValidateAttendances(this.checkValidateAttendances.getValue());
 			this.config.setAttendanceFrequency(this.comboAttendanceFrequency.getValue());
-			this.config.setMaxFileSize((int)this.textMaxFileSize.getValue());
+			this.config.setMaxFileSize(this.textMaxFileSize.getValue().intValue());
 			this.config.setMinimumJuryMembers(this.textMinimumJuryMembers.getValue());
 			this.config.setMinimumJurySubstitutes(this.textMinimumJurySubstitutes.getValue());
 			this.config.setJuryTimeStage1(this.textJuryTimeStage1.getValue());

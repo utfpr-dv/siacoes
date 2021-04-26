@@ -35,6 +35,7 @@ public class InternshipReportView extends ReportView {
 	private final Select<String> comboStatus;
 	private final Select<String> comboCompanyStatus;
 	private final Select<String> comboType;
+	private final Select<String> comboTag;
 	private final DatePicker textStartDate1;
 	private final DatePicker textStartDate2;
 	private final DatePicker textEndDate1;
@@ -81,6 +82,12 @@ public class InternshipReportView extends ReportView {
 		this.textEndDate2 = new DatePicker("E");
 		//this.textEndDate2.setDateFormat("dd/MM/yyyy");
 		
+		this.comboTag = new Select<String>();
+		this.comboTag.setLabel("Apenas com a tag");
+		this.comboTag.setWidth("250px");
+		this.comboTag.setItems(new InternshipBO().getTagsList(Session.getSelectedDepartment().getDepartment().getIdDepartment(), true));
+		this.comboTag.setValue(ALL);
+		
 		HorizontalLayout h1 = new HorizontalLayout(this.comboStudent, this.comboProfessor, this.comboCompany);
 		h1.setSpacing(true);
 		h1.setMargin(false);
@@ -99,11 +106,13 @@ public class InternshipReportView extends ReportView {
 		this.addFilterField(h1);
 		this.addFilterField(h2);
 		this.addFilterField(h3);
+		this.addFilterField(this.comboTag);
 	}
 
 	@Override
 	public byte[] generateReport() throws Exception {
 		int type = -1, status = -1, companyStatus = -1;
+		String tag = "";
 		
 		if(!this.comboType.getValue().equals(ALL)){
 			type = InternshipType.fromDescription(this.comboType.getValue()).getValue();
@@ -117,7 +126,11 @@ public class InternshipReportView extends ReportView {
 			companyStatus = InternshipStatus.fromDescription(this.comboCompanyStatus.getValue()).getValue();
 		}
 		
-		return new InternshipBO().getInternshipReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status, DateUtils.convertToDate(this.textStartDate1.getValue()), DateUtils.convertToDate(this.textStartDate2.getValue()), DateUtils.convertToDate(this.textEndDate1.getValue()), DateUtils.convertToDate(this.textEndDate2.getValue()), companyStatus);
+		if(!this.comboTag.getValue().equals(ALL)) {
+			tag = this.comboTag.getValue();
+		}
+		
+		return new InternshipBO().getInternshipReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.textYear.getYear(), (this.comboStudent.getStudent() == null ? 0 : this.comboStudent.getStudent().getIdUser()), (this.comboProfessor.getProfessor() == null ? 0 : this.comboProfessor.getProfessor().getIdUser()), (this.comboCompany.getCompany() == null ? 0 : this.comboCompany.getCompany().getIdCompany()), type, status, DateUtils.convertToDate(this.textStartDate1.getValue()), DateUtils.convertToDate(this.textStartDate2.getValue()), DateUtils.convertToDate(this.textEndDate1.getValue()), DateUtils.convertToDate(this.textEndDate2.getValue()), companyStatus, tag);
 	}
 
 }

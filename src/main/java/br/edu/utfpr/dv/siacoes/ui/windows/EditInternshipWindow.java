@@ -54,6 +54,7 @@ import br.edu.utfpr.dv.siacoes.ui.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploaderListener;
 import br.edu.utfpr.dv.siacoes.ui.components.StudentComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.SupervisorComboBox;
+import br.edu.utfpr.dv.siacoes.ui.components.TokenField;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploader.AcceptedDocumentType;
 import br.edu.utfpr.dv.siacoes.ui.grid.InternshipReportDataSource;
 import br.edu.utfpr.dv.siacoes.ui.grid.JuryGradeDataSource;
@@ -107,6 +108,7 @@ public class EditInternshipWindow extends EditWindow {
 	private final Button buttonValidateSupervisorReport;
 	private final Button buttonValidateCompanySupervisorReport;
 	private final Button buttonJury;
+	private final TokenField tags;
 
 	private final VerticalLayout layoutJury;
 	private final VerticalLayout layoutGrades;
@@ -258,6 +260,8 @@ public class EditInternshipWindow extends EditWindow {
 
 		this.textJurySei = new TextField("Processo no SEI");
 		this.textJurySei.setWidth("200px");
+		
+		this.tags = new TokenField("Tags");
 
 		HorizontalLayout hJury = new HorizontalLayout(this.textJuryDate, this.textJuryLocal, this.textJurySei);
 		hJury.setSpacing(true);
@@ -285,7 +289,7 @@ public class EditInternshipWindow extends EditWindow {
 		h3.setMargin(false);
 		h3.setPadding(false);
 		
-		VerticalLayout tab1 = new VerticalLayout(h1, h2, h3);
+		VerticalLayout tab1 = new VerticalLayout(h1, h2, h3, this.tags);
 		tab1.setSpacing(false);
 		tab1.setMargin(false);
 		tab1.setPadding(false);
@@ -563,6 +567,8 @@ public class EditInternshipWindow extends EditWindow {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 		
+		this.tags.setPredefinedTokens(new InternshipBO().getTagsList(this.internship.getDepartment().getIdDepartment(), false));
+		
 		this.comboStudent.setStudent(this.internship.getStudent());
 		this.comboSupervisor.setProfessor(this.internship.getSupervisor());
 		this.comboCompany.setCompany(this.internship.getCompany());
@@ -579,6 +585,7 @@ public class EditInternshipWindow extends EditWindow {
 		this.textWeekHours.setValue(this.internship.getWeekHours());
 		this.textWeekDays.setValue(String.valueOf(this.internship.getWeekDays()));
 		this.textSei.setValue(this.internship.getSei());
+		this.tags.setValue(this.internship.getTags());
 		
 		this.internship.setReports(null);
 		
@@ -874,6 +881,7 @@ public class EditInternshipWindow extends EditWindow {
 			this.internship.setComments(this.textComments.getValue());
 			this.internship.setReportTitle(this.textReportTitle.getValue());
 			this.internship.setSei(this.textSei.getValue());
+			this.internship.setTags(this.tags.getValue());
 			
 			bo.save(Session.getIdUserLog(), this.internship);
 			

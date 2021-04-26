@@ -56,7 +56,7 @@ public class EditSigacWindow extends EditWindow {
 			SigacConfigBO bo = new SigacConfigBO();
 			
 			this.config.setMinimumScore(Double.parseDouble(this.textMinimumScore.getValue().replace(",", ".")));
-			this.config.setMaxFileSize((int)this.textMaxFileSize.getValue());
+			this.config.setMaxFileSize(this.textMaxFileSize.getValue().intValue());
 			this.config.setUseDigitalSignature(this.checkUseDigitalSignature.getValue());
 			this.config.setNotifyActivityFeedback(this.checkNotifyActivityFeedback.getValue());
 			

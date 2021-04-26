@@ -42,14 +42,14 @@ public class InternshipBO {
 		}
 	}
 	
-	public List<Internship> list(int idDepartment, int year, int idStudent, int idSupervisor, int idCompany, int type, int status, Date startDate1, Date startDate2, Date endDate1, Date endDate2, int companyStatus) throws Exception{
+	public List<Internship> list(int idDepartment, int year, int idStudent, int idSupervisor, int idCompany, int type, int status, Date startDate1, Date startDate2, Date endDate1, Date endDate2, int companyStatus, String tag) throws Exception{
 		try{
 			InternshipDAO dao = new InternshipDAO();
 			
-			if((year == 0) && (idStudent == 0) && (idSupervisor == 0) && (idCompany == 0) && (type == -1) && (status == -1) && (companyStatus == -1) && ((startDate1 == null) || (DateUtils.getYear(startDate1) <= 1900)) && ((startDate2 == null) || (DateUtils.getYear(startDate2) <= 1900)) && ((endDate1 == null) || (DateUtils.getYear(endDate1) <= 1900)) && ((endDate2 == null) || (DateUtils.getYear(endDate2) <= 1900))){
+			if((year == 0) && (idStudent == 0) && (idSupervisor == 0) && (idCompany == 0) && (type == -1) && (status == -1) && (companyStatus == -1) && ((startDate1 == null) || (DateUtils.getYear(startDate1) <= 1900)) && ((startDate2 == null) || (DateUtils.getYear(startDate2) <= 1900)) && ((endDate1 == null) || (DateUtils.getYear(endDate1) <= 1900)) && ((endDate2 == null) || (DateUtils.getYear(endDate2) <= 1900)) && ((tag == null) || tag.trim().isEmpty())){
 				return dao.listByDepartment(idDepartment);
 			}else{
-				return dao.list(idDepartment, year, idStudent, idSupervisor, idCompany, type, status, startDate1, startDate2, endDate1, endDate2, companyStatus);	
+				return dao.list(idDepartment, year, idStudent, idSupervisor, idCompany, type, status, startDate1, startDate2, endDate1, endDate2, companyStatus, tag);	
 			}
 		}catch(SQLException e){
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
@@ -58,8 +58,8 @@ public class InternshipBO {
 		}
 	}
 	
-	public byte[] getInternshipReport(int idDepartment, int year, int idStudent, int idSupervisor, int idCompany, int type, int status, Date startDate1, Date startDate2, Date endDate1, Date endDate2, int companyStatus) throws Exception {
-		List<Internship> list = this.list(idDepartment, year, idStudent, idSupervisor, idCompany, type, status, startDate1, startDate2, endDate1, endDate2, companyStatus);
+	public byte[] getInternshipReport(int idDepartment, int year, int idStudent, int idSupervisor, int idCompany, int type, int status, Date startDate1, Date startDate2, Date endDate1, Date endDate2, int companyStatus, String tag) throws Exception {
+		List<Internship> list = this.list(idDepartment, year, idStudent, idSupervisor, idCompany, type, status, startDate1, startDate2, endDate1, endDate2, companyStatus, tag);
 		
 		return this.getInternshipReport(idDepartment, list);
 	}
@@ -400,6 +400,14 @@ public class InternshipBO {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public List<String> getTagsList(int idDepartment, boolean includeAll) {
+		try {
+			return new InternshipDAO().getTagsList(idDepartment, includeAll);
+		} catch (SQLException e) {
+			return new ArrayList<String>();
 		}
 	}
 	
