@@ -1,6 +1,7 @@
 package br.edu.utfpr.dv.siacoes.ui.components;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.vaadin.flow.component.button.Button;
@@ -23,19 +24,21 @@ public class TokenField extends CustomField<List<String>> {
 	private ComboBox<String> comboBox;
 	
 	private List<String> tokens;
-	
-	//https://vaadin.com/directory/component/advancedtokenfield-add-on/overview
+	private List<String> predefinedTokens;
 	
 	public TokenField() {
 		this.tokensLayout = new HorizontalLayout();
 		this.comboBox = new ComboBox<String>();
 		this.tokens = new ArrayList<String>();
+		this.predefinedTokens = new ArrayList<String>();
 		
 		this.comboBox.addCustomValueSetListener(event -> comboBox.setValue(event.getDetail()));
 		this.comboBox.addValueChangeListener(event -> {
 		    if (event.getValue() != null) {
 		    	this.addToken(event.getValue());
 		    	this.comboBox.setValue(this.comboBox.getEmptyValue());
+		    	this.comboBox.clear();
+		    	this.setComboItems();
 		    }
 		});
 		
@@ -54,6 +57,7 @@ public class TokenField extends CustomField<List<String>> {
 		if((token != null) && !token.trim().isEmpty() && !this.tokens.contains(token)) {
 			this.tokens.add(token);
 			this.buildTokenList();
+			this.setComboItems();
 		}
 	}
 	
@@ -72,19 +76,39 @@ public class TokenField extends CustomField<List<String>> {
 	public void removeToken(String token) {
 		this.tokens.remove(token);
 		this.buildTokenList();
+		this.setComboItems();
 	}
 	
 	public void clearTokens() {
 		this.tokens.clear();
 		this.tokensLayout.removeAll();
+		this.setComboItems();
 	}
 	
 	public void setPredefinedTokens(String... tokens) {
-		this.comboBox.setItems(tokens);
+		this.predefinedTokens = new ArrayList<String>();
+		this.predefinedTokens.addAll(Arrays.asList(tokens));
+		
+		this.setComboItems();
 	}
 	
 	public void setPredefinedTokens(List<String> tokens) {
-		this.comboBox.setItems(tokens);
+		this.predefinedTokens = new ArrayList<String>();
+		this.predefinedTokens.addAll(tokens);
+		
+		this.setComboItems();
+	}
+	
+	private void setComboItems() {
+		List<String> list = new ArrayList<String>();
+		
+		for(String s : this.predefinedTokens) {
+			if(!this.tokens.contains(s)) {
+				list.add(s);
+			}
+		}
+		
+		this.comboBox.setItems(list);
 	}
 	
 	@Override
