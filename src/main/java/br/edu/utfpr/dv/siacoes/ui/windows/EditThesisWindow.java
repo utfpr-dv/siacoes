@@ -76,7 +76,11 @@ public class EditThesisWindow extends EditWindow {
 		}
 		
 		try {
-			this.config = new SigetConfigBO().findByDepartment(new ThesisBO().findIdDepartment(this.thesis.getIdThesis()));
+			if(this.thesis.getIdThesis() > 0) {
+				this.config = new SigetConfigBO().findByDepartment(new ThesisBO().findIdDepartment(this.thesis.getIdThesis()));
+			} else {
+				this.config = new SigetConfigBO().findByDepartment(new ProjectBO().findIdDepartment(this.thesis.getProject().getIdProject()));
+			}
 		} catch (Exception e1) {
 			this.config = new SigetConfig();
 		}

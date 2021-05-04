@@ -74,7 +74,11 @@ public class EditProjectWindow extends EditWindow {
 		}
 		
 		try {
-			this.config = new SigetConfigBO().findByDepartment(new ProjectBO().findIdDepartment(this.project.getIdProject()));
+			if(this.project.getIdProject() > 0) {
+				this.config = new SigetConfigBO().findByDepartment(new ProjectBO().findIdDepartment(this.project.getIdProject()));
+			} else {
+				this.config = new SigetConfigBO().findByDepartment(new ProposalBO().findIdDepartment(this.project.getProposal().getIdProposal()));
+			}
 		} catch (Exception e1) {
 			this.config = new SigetConfig();
 		}
