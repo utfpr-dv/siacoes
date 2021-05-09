@@ -283,7 +283,7 @@ public class EditThesisWindow extends EditWindow {
 				Semester semester = new SemesterBO().findByDate(Session.getSelectedDepartment().getDepartment().getCampus().getIdCampus(), DateUtils.getToday().getTime());
 				Deadline d = dbo.findBySemester(Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 				
-				if(DateUtils.getToday().getTime().after(d.getProjectDeadline())){
+				if(DateUtils.getToday().getTime().after(d.getThesisDeadline())){
 					this.showErrorNotification("Submeter Monografia", "O prazo para a submissão de monografias já foi encerrado.");
 					return;
 				}
