@@ -128,7 +128,7 @@ public class EditJuryAppraiserScoreWindow extends EditWindow {
 				labelPonderosity.setWidth("50px");
 				
 				NumberField textScore = new NumberField();
-				textScore.setValue(score.getScore());
+				textScore.setValue(score.getFormattedScore());
 				textScore.setMin(0);
 				textScore.setMax(score.getEvaluationItem().getPonderosity());
 				textScore.setWidth("100px");

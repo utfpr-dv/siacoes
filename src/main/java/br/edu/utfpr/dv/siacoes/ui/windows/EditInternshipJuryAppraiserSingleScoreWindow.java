@@ -64,7 +64,7 @@ public class EditInternshipJuryAppraiserSingleScoreWindow extends EditWindow {
 		//this.textCompany.setValue(this.appraiser.getInternshipJury().getInternship().getCompany().getName());
 		this.textStudent.setValue(this.appraiser.getInternshipJury().getStudent().getName());
 		this.textAppraiser.setValue(this.appraiser.getAppraiser().getName());
-		this.textScore.setValue(this.appraiser.getScore());
+		this.textScore.setValue(this.appraiser.getFormattedScore());
 		this.textComments.setValue(this.appraiser.getComments());
 	}
 	

@@ -1,6 +1,8 @@
 package br.edu.utfpr.dv.siacoes.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 
@@ -138,6 +140,11 @@ public class InternshipJury implements Serializable {
 	public void setCompanySupervisorScore(double companySupervisorScore) {
 		this.companySupervisorScore = companySupervisorScore;
 	}
+	public double getFormattedCompanySupervisorScore() {
+		BigDecimal bd = new BigDecimal(this.getCompanySupervisorScore());
+	    bd = bd.setScale(2, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
+	}
 	public JuryResult getResult() {
 		return result;
 	}
@@ -155,6 +162,11 @@ public class InternshipJury implements Serializable {
 	}
 	public void setSupervisorScore(double supervisorScore) {
 		this.supervisorScore = supervisorScore;
+	}
+	public double getFormattedSupervisorScore() {
+		BigDecimal bd = new BigDecimal(this.getSupervisorScore());
+	    bd = bd.setScale(2, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
 	}
 	public boolean isSupervisorFillJuryForm() {
 		return supervisorFillJuryForm;

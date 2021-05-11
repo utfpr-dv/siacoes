@@ -1,6 +1,8 @@
 package br.edu.utfpr.dv.siacoes.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 public class InternshipJuryAppraiser implements Serializable {
@@ -90,6 +92,11 @@ public class InternshipJuryAppraiser implements Serializable {
 	}
 	public void setScore(double score) {
 		this.score = score;
+	}
+	public double getFormattedScore() {
+		BigDecimal bd = new BigDecimal(this.getScore());
+	    bd = bd.setScale(2, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
 	}
 	
 }
