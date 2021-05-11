@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import br.edu.utfpr.dv.siacoes.dao.ConnectionDAO;
 import br.edu.utfpr.dv.siacoes.dao.JuryAppraiserScoreDAO;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserScore;
 import br.edu.utfpr.dv.siacoes.sign.Document;
@@ -17,8 +18,8 @@ public class JuryAppraiserScoreBO {
 	
 	private Connection conn;
 	
-	public JuryAppraiserScoreBO(){
-		this.conn = null;
+	public JuryAppraiserScoreBO() throws SQLException{
+		this.conn = ConnectionDAO.getInstance().getConnection();
 	}
 	
 	public JuryAppraiserScoreBO(Connection conn){
