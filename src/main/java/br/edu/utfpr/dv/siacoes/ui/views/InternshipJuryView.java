@@ -562,9 +562,6 @@ public class InternshipJuryView extends ListView<InternshipJuryDataSource> imple
 	
 	@Override
 	public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-		if(this.listAll)
-			return;
-		
 		if((parameter != null) && !parameter.isEmpty()) {
 			try{
 				int i = Integer.parseInt(parameter.trim());

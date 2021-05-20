@@ -339,11 +339,20 @@ public class MainLayout extends FlexBoxLayout implements RouterLayout, AfterNavi
 					menu.addNaviItem(siges2, "Versão Final do Relatório", InternshipFinalDocumentView.class);
 				}
 				if(Session.isUserProfessor()) {
-					menu.addNaviItem(siges2, "Meus Orientados", InternshipView.class);
+					NaviItem internshp = menu.addNaviItem(siges2, "Meus Orientados", InternshipView.class);
+					internshp.addClickListener(event -> {
+						this.getUI().ifPresent(ui -> ui.navigate(InternshipView.class, "0"));
+					});
 				} else if(Session.isUserCompanySupervisor()) {
-					menu.addNaviItem(siges2, "Meus Estagiários", InternshipView.class);
+					NaviItem internshp = menu.addNaviItem(siges2, "Meus Estagiários", InternshipView.class);
+					internshp.addClickListener(event -> {
+						this.getUI().ifPresent(ui -> ui.navigate(InternshipView.class, "0"));
+					});
 				} else if(Session.isUserStudent()) {
-					menu.addNaviItem(siges2, "Meus Estágios", InternshipView.class);
+					NaviItem internshp = menu.addNaviItem(siges2, "Meus Estágios", InternshipView.class);
+					internshp.addClickListener(event -> {
+						this.getUI().ifPresent(ui -> ui.navigate(InternshipView.class, "0"));
+					});
 				}
 			}
 			NaviItem siges3 = menu.addNaviItem(siges, "Bancas", null);
@@ -359,9 +368,15 @@ public class MainLayout extends FlexBoxLayout implements RouterLayout, AfterNavi
 				this.getUI().ifPresent(ui -> ui.navigate(InternshipJuryView.class, "1"));
 			});
 			if(Session.isUserStudent()) {
-				menu.addNaviItem(siges3, "Bancas que Assisti", InternshipJuryView.class);
+				NaviItem ijv1 = menu.addNaviItem(siges3, "Bancas que Assisti", InternshipJuryView.class);
+				ijv1.addClickListener(event -> {
+					this.getUI().ifPresent(ui -> ui.navigate(InternshipJuryView.class, "0"));
+				});
 			} else if(Session.isUserSupervisor()) {
-				menu.addNaviItem(siges3, "Minhas Bancas", InternshipJuryView.class);
+				NaviItem ijv2 = menu.addNaviItem(siges3, "Minhas Bancas", InternshipJuryView.class);
+				ijv2.addClickListener(event -> {
+					this.getUI().ifPresent(ui -> ui.navigate(InternshipJuryView.class, "0"));
+				});
 			}
 			NaviItem siges5 = menu.addNaviItem(siges, "Repositório", null);
 			NaviItem doc2 = menu.addNaviItem(siges5, "Regulamentos e Anexos", DocumentView.class);
@@ -701,9 +716,15 @@ public class MainLayout extends FlexBoxLayout implements RouterLayout, AfterNavi
 				this.getUI().ifPresent(ui -> ui.navigate(JuryView.class, "1"));
 			});
 			if(Session.isUserStudent()) {
-				menu.addNaviItem(siget5, "Bancas que Assisti", JuryView.class);	
+				NaviItem jury3 = menu.addNaviItem(siget5, "Bancas que Assisti", JuryView.class);
+				jury3.addClickListener(event -> {
+					this.getUI().ifPresent(ui -> ui.navigate(JuryView.class, "0"));
+				});
 			} else if(Session.isUserSupervisor()) {
-				menu.addNaviItem(siget5, "Minhas Bancas", JuryView.class);
+				NaviItem jury3 = menu.addNaviItem(siget5, "Minhas Bancas", JuryView.class);
+				jury3.addClickListener(event -> {
+					this.getUI().ifPresent(ui -> ui.navigate(JuryView.class, "0"));
+				});
 			}
 			NaviItem siget7 = menu.addNaviItem(siget, "Repositório", null);
 			NaviItem doc3 = menu.addNaviItem(siget7, "Regulamentos e Anexos", DocumentView.class);
