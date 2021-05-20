@@ -52,6 +52,40 @@ import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class JuryBO {
 	
+	public boolean listHasAppraiserFillsGrades(List<Jury> list) {
+		try {
+			JuryDAO dao = new JuryDAO();
+			String filter = "0";
+			
+			for(Jury jury : list) {
+				filter = filter + "," + String.valueOf(jury.getIdJury());
+			}
+			
+			return dao.listHasAppraiserFillsGrades(filter);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			return false;
+		}
+	}
+	
+	public boolean listHasUseDigitalSignature(List<Jury> list) {
+		try {
+			JuryDAO dao = new JuryDAO();
+			String filter = "0";
+			
+			for(Jury jury : list) {
+				filter = filter + "," + String.valueOf(jury.getIdJury());
+			}
+			
+			return dao.listHasUseDigitalSignature(filter);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			return false;
+		}
+	}
+	
 	public List<Jury> listBySemester(int idDepartment, int semester, int year, int stage) throws Exception{
 		try {
 			JuryDAO dao = new JuryDAO();

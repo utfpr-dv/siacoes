@@ -20,6 +20,68 @@ import br.edu.utfpr.dv.siacoes.model.JuryStudentReport;
 
 public class JuryDAO {
 	
+	public boolean listHasAppraiserFillsGrades(String filter) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT MAX(sigetconfig.appraiserFillsGrades) FROM jury " + 
+					"LEFT JOIN thesis ON thesis.idthesis=jury.idthesis " + 
+					"INNER JOIN project ON (project.idproject=jury.idproject OR project.idproject=thesis.idproject) " + 
+					"INNER JOIN proposal ON proposal.idproposal=project.idproposal " + 
+					"INNER JOIN sigetconfig ON sigetconfig.iddepartment=proposal.iddepartment " + 
+					"WHERE jury.idjury IN (" + filter + ")");
+			
+			if(rs.next()){
+				return (rs.getInt(1) > 0);
+			}else{
+				return false;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public boolean listHasUseDigitalSignature(String filter) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT MAX(sigetconfig.useDigitalSignature) FROM jury " + 
+					"LEFT JOIN thesis ON thesis.idthesis=jury.idthesis " + 
+					"INNER JOIN project ON (project.idproject=jury.idproject OR project.idproject=thesis.idproject) " + 
+					"INNER JOIN proposal ON proposal.idproposal=project.idproposal " + 
+					"INNER JOIN sigetconfig ON sigetconfig.iddepartment=proposal.iddepartment " + 
+					"WHERE jury.idjury IN (" + filter + ")");
+			
+			if(rs.next()){
+				return (rs.getInt(1) > 0);
+			}else{
+				return false;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public Jury findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;

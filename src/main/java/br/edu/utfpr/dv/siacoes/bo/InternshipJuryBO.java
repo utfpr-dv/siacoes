@@ -53,6 +53,40 @@ import br.edu.utfpr.dv.siacoes.util.ReportUtils;
 
 public class InternshipJuryBO {
 	
+	public boolean listHasAppraiserFillsGrades(List<InternshipJury> list) {
+		try {
+			InternshipJuryDAO dao = new InternshipJuryDAO();
+			String filter = "0";
+			
+			for(InternshipJury jury : list) {
+				filter = filter + "," + String.valueOf(jury.getIdInternshipJury());
+			}
+			
+			return dao.listHasAppraiserFillsGrades(filter);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			return false;
+		}
+	}
+	
+	public boolean listHasUseDigitalSignature(List<InternshipJury> list) {
+		try {
+			InternshipJuryDAO dao = new InternshipJuryDAO();
+			String filter = "0";
+			
+			for(InternshipJury jury : list) {
+				filter = filter + "," + String.valueOf(jury.getIdInternshipJury());
+			}
+			
+			return dao.listHasUseDigitalSignature(filter);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			return false;
+		}
+	}
+	
 	public List<InternshipJury> listBySemester(int idDepartment, int semester, int year) throws Exception{
 		try {
 			InternshipJuryDAO dao = new InternshipJuryDAO();

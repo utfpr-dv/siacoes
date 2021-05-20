@@ -176,7 +176,7 @@ public class InternshipJuryView extends ListView<InternshipJuryDataSource> imple
 		}
 	}
 	
-	private void configureButtons(){
+	private void configureButtons(boolean isAppraiserFillsGrades, boolean isUseDigitalSignature){
 		if(this.listAll){
 			this.buttonSendFeedback.setVisible(false);
 			this.buttonChangeAppraiser.setVisible(false);
@@ -197,8 +197,8 @@ public class InternshipJuryView extends ListView<InternshipJuryDataSource> imple
 			this.buttonSendFeedback.setVisible(Session.isUserProfessor());
 			this.buttonStatements.setVisible(false);
 			this.buttonSchedule.setVisible(Session.isUserProfessor() || Session.isUserSupervisor());
-			this.buttonFillGrades.setVisible(Session.isUserSupervisor() && this.config.isAppraiserFillsGrades());
-			this.buttonSign.setVisible(Session.isUserProfessor() && this.config.isUseDigitalSignature());
+			this.buttonFillGrades.setVisible(Session.isUserSupervisor() && isAppraiserFillsGrades);
+			this.buttonSign.setVisible(Session.isUserProfessor() && isUseDigitalSignature);
 		}
 	}
 	
@@ -221,6 +221,8 @@ public class InternshipJuryView extends ListView<InternshipJuryDataSource> imple
 					list = bo.listByStudent(Session.getUser().getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), this.comboSemester.getSemester(), this.textYear.getYear());
 				}
 			}
+			
+			this.configureButtons(bo.listHasAppraiserFillsGrades(list), bo.listHasUseDigitalSignature(list));
 			
 			List<InternshipJuryDataSource> data = InternshipJuryDataSource.load(list);
 			
@@ -575,7 +577,7 @@ public class InternshipJuryView extends ListView<InternshipJuryDataSource> imple
 			}
 		}
 		
-		this.configureButtons();
+		this.configureButtons(this.config.isAppraiserFillsGrades(), this.config.isUseDigitalSignature());
 	}
 
 }

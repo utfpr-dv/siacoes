@@ -189,7 +189,7 @@ public class JuryView extends ListView<JuryDataSource> implements HasUrlParamete
 		}
 	}
 	
-	private void configureButtons(){
+	private void configureButtons(boolean isAppraiserFillsGrades, boolean isUseDigitalSignature){
 		if(this.listAll){
 			this.buttonSendFeedback.setVisible(false);
 			this.buttonChangeAppraiser.setVisible(false);
@@ -214,8 +214,8 @@ public class JuryView extends ListView<JuryDataSource> implements HasUrlParamete
 			this.buttonSchedule.setVisible(Session.isUserSupervisor());
 			this.buttonGrades.setVisible(false);
 			this.comboStage.setVisible(false);
-			this.buttonFillGrades.setVisible(Session.isUserSupervisor() && ((this.config.getDepartment().getIdDepartment() == 0) || this.config.isAppraiserFillsGrades()));
-			this.buttonSign.setVisible(Session.isUserProfessor() && this.config.isUseDigitalSignature());
+			this.buttonFillGrades.setVisible(Session.isUserSupervisor() && isAppraiserFillsGrades);
+			this.buttonSign.setVisible(Session.isUserProfessor() && isUseDigitalSignature);
 		}
 	}
 	
@@ -238,6 +238,8 @@ public class JuryView extends ListView<JuryDataSource> implements HasUrlParamete
 					list = bo.listByStudent(Session.getUser().getIdUser(), this.comboSemester.getSemester(), this.textYear.getYear());
 				}
 			}
+			
+			this.configureButtons(bo.listHasAppraiserFillsGrades(list), bo.listHasUseDigitalSignature(list));
 			
 			List<JuryDataSource> data = JuryDataSource.load(list);
 			
@@ -534,6 +536,13 @@ public class JuryView extends ListView<JuryDataSource> implements HasUrlParamete
 			this.showWarningNotification("Assinar Ficha", "Selecione uma banca para assinar a ficha de avaliação.");
 		} else {
 			try {
+				SigetConfig c = new SigetConfigBO().findByDepartment(new JuryBO().findIdDepartment((int)value));
+
+				if(!c.isUseDigitalSignature()) {
+					this.showWarningNotification("Assinar Ficha", "O recurso de assinatura da ficha de avaliação não está disponível para essa banca.");
+					return;
+				}
+				
 				if(Session.getUser().getIdUser() == new JuryAppraiserBO().findChair((int)value).getAppraiser().getIdUser()) {
 					JuryGradesWindow window = new JuryGradesWindow(new JuryBO().findById((int)value));
 					window.open();
@@ -587,14 +596,12 @@ public class JuryView extends ListView<JuryDataSource> implements HasUrlParamete
 		if(value == null) {
 			this.showWarningNotification("Lançar Notas", "Selecione uma banca para lançar as notas.");
 		} else {
-			try {
-				if(this.config.getDepartment().getIdDepartment() == 0) {
-					SigetConfig c = new SigetConfigBO().findByDepartment(new JuryBO().findIdDepartment((int)value));
+			try {				
+				SigetConfig c = new SigetConfigBO().findByDepartment(new JuryBO().findIdDepartment((int)value));
 
-					if(!c.isAppraiserFillsGrades()) {
-						this.showWarningNotification("Lançar Notas", "As notas devem ser encaminhadas ao Professor Responsável pelo TCC.");
-						return;
-					}
+				if(!c.isAppraiserFillsGrades()) {
+					this.showWarningNotification("Lançar Notas", "As notas devem ser encaminhadas ao Professor Responsável pelo TCC.");
+					return;
 				}
 				
 				JuryAppraiser appraiser = new JuryAppraiserBO().findByAppraiser((int)value, Session.getUser().getIdUser());
@@ -629,7 +636,7 @@ public class JuryView extends ListView<JuryDataSource> implements HasUrlParamete
 			}
 		}
 		
-		this.configureButtons();
+		this.configureButtons(this.config.isAppraiserFillsGrades(), this.config.isUseDigitalSignature());
 	}
 
 }

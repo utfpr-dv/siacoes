@@ -21,6 +21,64 @@ import br.edu.utfpr.dv.siacoes.model.Jury.JuryResult;
 
 public class InternshipJuryDAO {
 	
+	public boolean listHasAppraiserFillsGrades(String filter) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT MAX(sigesconfig.appraiserFillsGrades) FROM internshipjury " + 
+					"INNER JOIN internship ON internship.idinternship=internshipjury.idinternship " + 
+					"INNER JOIN sigesconfig ON sigesconfig.iddepartment=internship.iddepartment " + 
+					"WHERE internshipjury.idinternshipjury IN (" + filter + ")");
+			
+			if(rs.next()){
+				return (rs.getInt(1) > 0);
+			}else{
+				return false;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
+	public boolean listHasUseDigitalSignature(String filter) throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT MAX(sigesconfig.useDigitalSignature) FROM internshipjury " + 
+					"INNER JOIN internship ON internship.idinternship=internshipjury.idinternship " + 
+					"INNER JOIN sigesconfig ON sigesconfig.iddepartment=internship.iddepartment " + 
+					"WHERE internshipjury.idinternshipjury IN (" + filter + ")");
+			
+			if(rs.next()){
+				return (rs.getInt(1) > 0);
+			}else{
+				return false;
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public InternshipJury findById(int id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
