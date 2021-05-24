@@ -26,6 +26,7 @@ import br.edu.utfpr.dv.siacoes.model.ActivityValidationReport;
 import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
 import br.edu.utfpr.dv.siacoes.model.FinalSubmission;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.SigacConfig;
 import br.edu.utfpr.dv.siacoes.model.StudentActivityStatusReport;
 import br.edu.utfpr.dv.siacoes.model.StudentActivityStatusReport.StudentStage;
@@ -158,6 +159,10 @@ public class ActivitySubmissionBO {
 		}
 		if(new FinalSubmissionBO().studentHasSubmission(submission.getStudent().getIdUser(), submission.getDepartment().getIdDepartment())) {
 			throw new Exception("Não é possível incluir ou editar a atividade pois o acadêmico já foi sinalizado como Aprovado.");
+		}
+		Semester semester = new UserBO().getRegisterSemester(submission.getStudent().getIdUser(), submission.getDepartment().getIdDepartment());
+		if((submission.getYear() < semester.getYear()) || ((submission.getYear() == semester.getYear()) && (submission.getSemester() < semester.getSemester()))) {
+			throw new Exception("Não é possível efetuar a submissão de atividades anteriores ao semestre de ingresso do acadêmico no curso.");
 		}
 		
 		ActivityFeedback feedback = dao.getFeedback(submission.getIdActivitySubmission());

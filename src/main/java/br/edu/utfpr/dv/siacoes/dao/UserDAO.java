@@ -14,8 +14,43 @@ import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.model.UserDepartment;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 
 public class UserDAO {
+	
+	public Semester getRegisterSemester(int idUser, int idDepartment) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.prepareStatement("SELECT iddepartment, registersemester, registeryear FROM userdepartment WHERE iduser=? AND iddepartment=?");
+		
+			stmt.setInt(1, idUser);
+			stmt.setInt(2, idDepartment);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				Semester semester = new Semester();
+				
+				semester.setSemester(rs.getInt("registersemester"));
+				semester.setYear(rs.getInt("registeryear"));
+				
+				return semester;
+			} else {
+				return new Semester();
+			}
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
 	
 	public boolean loginExists(String login, int idUser) throws SQLException {
 		Connection conn = null;

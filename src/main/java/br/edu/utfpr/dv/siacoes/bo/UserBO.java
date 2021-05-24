@@ -17,12 +17,25 @@ import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.AppConfig;
 import br.edu.utfpr.dv.siacoes.model.Credential;
 import br.edu.utfpr.dv.siacoes.model.EmailMessageEntry;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.service.LoginService;
 import br.edu.utfpr.dv.siacoes.util.StringUtils;
 
 public class UserBO {
+	
+	public Semester getRegisterSemester(int idUser, int idDepartment) throws Exception{
+		try {
+			UserDAO dao = new UserDAO();
+			
+			return dao.getRegisterSemester(idUser, idDepartment);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
 	
 	public List<User> listAll(boolean onlyActives) throws Exception{
 		try {
