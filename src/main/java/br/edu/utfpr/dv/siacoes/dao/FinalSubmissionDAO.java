@@ -30,7 +30,7 @@ public class FinalSubmissionDAO {
 			List<FinalSubmission> list = new ArrayList<FinalSubmission>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
@@ -54,14 +54,14 @@ public class FinalSubmissionDAO {
 			stmt = conn.createStatement();
 			
 			rs = stmt.executeQuery("SELECT finalsubmission.*, student.name AS studentName, feedbackUser.name AS feedbackUserName " +
-					"FROM finalsubmission INNER JOIN \"user\" student ON student.idUser=finalsubmission.idstudent " +
+					"FROM finalsubmissionview finalsubmission INNER JOIN \"user\" student ON student.idUser=finalsubmission.idstudent " +
 					"INNER JOIN \"user\" feedbackUser ON feedbackUser.idUser=finalsubmission.idFeedbackUser " +
 					"WHERE finalsubmission.iddepartment=" + String.valueOf(idDepartment) + " ORDER BY finalsubmission.date DESC");
 			
 			List<FinalSubmission> list = new ArrayList<FinalSubmission>();
 			
 			while(rs.next()){
-				list.add(this.loadObject(rs));
+				list.add(this.loadObject(rs, false));
 			}
 			
 			return list;
@@ -90,7 +90,7 @@ public class FinalSubmissionDAO {
 					"WHERE finalsubmission.idfinalsubmission=" + String.valueOf(id));
 			
 			if(rs.next()) {
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			} else {
 				return new FinalSubmission();
 			}
@@ -119,7 +119,7 @@ public class FinalSubmissionDAO {
 					"WHERE finalsubmission.idStudent=" + String.valueOf(idStudent) + " AND finalsubmission.iddepartment=" + String.valueOf(idDepartment));
 			
 			if(rs.next()) {
-				return this.loadObject(rs);
+				return this.loadObject(rs, true);
 			} else {
 				return new FinalSubmission();
 			}
@@ -207,7 +207,7 @@ public class FinalSubmissionDAO {
 		}
 	}
 	
-	private FinalSubmission loadObject(ResultSet rs) throws SQLException{
+	private FinalSubmission loadObject(ResultSet rs, boolean loadReport) throws SQLException{
 		FinalSubmission submission = new FinalSubmission();
 
 		submission.setIdFinalSubmission(rs.getInt("idFinalSubmission"));
@@ -218,7 +218,9 @@ public class FinalSubmissionDAO {
 		submission.getFeedbackUser().setName(rs.getString("feedbackUserName"));
 		submission.setFinalScore(rs.getDouble("finalScore"));
 		submission.setDate(rs.getDate("date"));
-		submission.setReport(rs.getBytes("report"));
+		if(loadReport) {
+			submission.setReport(rs.getBytes("report"));
+		}
 		
 		return submission;
 	}

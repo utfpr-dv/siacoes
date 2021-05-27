@@ -43,6 +43,15 @@ CREATE TABLE emailmessage (
   PRIMARY KEY (idemailmessage)
 );
 
+CREATE TABLE remindermessage (
+  idremindermessage SERIAL NOT NULL,
+  subject VARCHAR(255) NOT NULL,
+  message text NOT NULL,
+  datafields text NOT NULL,
+  module SMALLINT NOT NULL,
+  PRIMARY KEY (idremindermessage)
+);
+
 CREATE TABLE campus (
   idcampus SERIAL NOT NULL,
   name VARCHAR(100) NOT NULL,
@@ -932,6 +941,9 @@ CREATE OR REPLACE VIEW internshipview AS
 	internship.type, internship.comments, internship.reporttitle, internship.startdate, internship.enddate, internship.terminationdate, internship.totalhours, internship.requiredtype, 
 	internship.term, internship.weekhours, internship.weekdays, internship.fillonlytotalhours, internship.sei, internship.finalreport IS NOT NULL AS hasfinalreport
 	FROM internship;
+	
+CREATE OR REPLACE VIEW finalsubmissionview AS
+	SELECT idfinalsubmission, iddepartment, idstudent, idfeedbackuser, date, finalscore FROM finalsubmission;
 
 CREATE OR REPLACE FUNCTION year(timestamp) RETURNS integer AS $$
 DECLARE
