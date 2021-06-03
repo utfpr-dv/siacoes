@@ -137,7 +137,7 @@ public class EmailMessageBO {
 		return msg;
 	}
 	
-	private void sendEmail(int users[], String[] to, String subject, String message, SystemModule module, boolean useThread, boolean html, boolean writeMessage) throws Exception{
+	void sendEmail(int users[], String[] to, String subject, String message, SystemModule module, boolean useThread, boolean html, boolean writeMessage) throws Exception{
 		EmailConfigBO bo = new EmailConfigBO();
 		EmailConfig config = bo.loadConfiguration();
 		

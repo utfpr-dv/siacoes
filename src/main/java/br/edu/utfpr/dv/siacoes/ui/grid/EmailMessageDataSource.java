@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.model.EmailMessage;
+import br.edu.utfpr.dv.siacoes.model.ReminderMessage;
 
 public class EmailMessageDataSource extends BasicDataSource {
 
@@ -18,10 +19,27 @@ public class EmailMessageDataSource extends BasicDataSource {
 		this.setMessage(message.getMessage());
 	}
 	
-	public static List<EmailMessageDataSource> load(List<EmailMessage> list) {
+	public EmailMessageDataSource(ReminderMessage message) {
+		this.setId(message.getIdReminderMessage().getValue());
+		this.setType(message.getIdReminderMessage().toString());
+		this.setTitle(message.getSubject());
+		this.setMessage(message.getMessage());
+	}
+	
+	public static List<EmailMessageDataSource> loadMessages(List<EmailMessage> list) {
 		List<EmailMessageDataSource> ret = new ArrayList<EmailMessageDataSource>();
 		
 		for(EmailMessage message : list) {
+			ret.add(new EmailMessageDataSource(message));
+		}
+		
+		return ret;
+	}
+	
+	public static List<EmailMessageDataSource> loadReminders(List<ReminderMessage> list) {
+		List<EmailMessageDataSource> ret = new ArrayList<EmailMessageDataSource>();
+		
+		for(ReminderMessage message : list) {
 			ret.add(new EmailMessageDataSource(message));
 		}
 		

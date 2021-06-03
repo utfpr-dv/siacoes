@@ -77,6 +77,21 @@ CREATE TABLE department (
 );
 CREATE INDEX fk_department_campus_idx ON department (idcampus);
 
+CREATE TABLE reminderconfig (
+  idreminderconfig SERIAL NOT NULL,
+  iddepartment INT NOT NULL,
+  idreminder INT NOT NULL,
+  enabled SMALLINT NOT NULL,
+  startDays INT NOT NULL,
+  startType SMALLINT NOT NULL,
+  frequency SMALLINT NOT NULL,
+  PRIMARY KEY (idreminderconfig),
+  CONSTRAINT fk_reminderconfig_department FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT fk_reminderconfig_remindermessage FOREIGN KEY (idreminder) REFERENCES remindermessage (idremindermessage) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+CREATE INDEX fk_reminderconfig_department_idx ON reminderconfig (iddepartment);
+CREATE INDEX fk_reminderconfig_remindermessage_idx ON reminderconfig (idreminder);
+
 CREATE TABLE semester (
     idcampus INT NOT NULL,
     semester SMALLINT NOT NULL,
@@ -1034,3 +1049,6 @@ INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) V
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(60, 3, '', '', '{student};{supervisor};{manager};{company}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(61, 2, '', '', '{student};{manager}');
 INSERT INTO emailmessage(idemailmessage, module, subject, message, datafields) VALUES(62, 2, '', '', '{name}');
+
+INSERT INTO remindermessage(idremindermessage, module, subject, message, datafields) VALUES(1, 3, '', '', '{student};{company};{supervisor}');
+INSERT INTO remindermessage(idremindermessage, module, subject, message, datafields) VALUES(2, 3, '', '', '{student};{company}');

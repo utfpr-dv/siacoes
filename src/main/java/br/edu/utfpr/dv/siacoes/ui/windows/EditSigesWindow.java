@@ -1,6 +1,7 @@
 package br.edu.utfpr.dv.siacoes.ui.windows;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -16,12 +17,16 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 
 import br.edu.utfpr.dv.siacoes.Session;
+import br.edu.utfpr.dv.siacoes.bo.ReminderConfigBO;
 import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
+import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.model.ReminderConfig;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig.JuryFormat;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 import br.edu.utfpr.dv.siacoes.ui.components.ByteSizeField;
+import br.edu.utfpr.dv.siacoes.ui.components.ReminderConfigField;
 import br.edu.utfpr.dv.siacoes.ui.views.ListView;
 
 public class EditSigesWindow extends EditWindow {
@@ -45,6 +50,7 @@ public class EditSigesWindow extends EditWindow {
 	private final Checkbox checkUseSei;
 	private final Checkbox checkStudentRequestJury;
 	private final Checkbox checkUseEvaluationItems;
+	private final VerticalLayout layoutReminders;
 	
 	private final Tabs tab;
 	
@@ -135,19 +141,27 @@ public class EditSigesWindow extends EditWindow {
 		v4.setPadding(false);
 		v4.setVisible(false);
 		
+		this.layoutReminders = new VerticalLayout();
+		this.layoutReminders.setSpacing(false);
+		this.layoutReminders.setMargin(false);
+		this.layoutReminders.setPadding(false);
+		this.layoutReminders.setVisible(false);
+		
 		Tab tab1 = new Tab("Registro de Estágio");
 		Tab tab2 = new Tab("Banca");
 		Tab tab3 = new Tab("Submissão de Arquivos");
 		Tab tab4 = new Tab("Documentos");
+		Tab tab5 = new Tab("Lembretes");
 		
 		Map<Tab, Component> tabsToPages = new HashMap<>();
 		tabsToPages.put(tab1, v1);
 		tabsToPages.put(tab2, v2);
 		tabsToPages.put(tab3, v3);
 		tabsToPages.put(tab4, v4);
-		Div pages = new Div(v1, v2, v3, v4);
+		tabsToPages.put(tab5, this.layoutReminders);
+		Div pages = new Div(v1, v2, v3, v4, this.layoutReminders);
 		
-		this.tab = new Tabs(tab1, tab2, tab3, tab4);
+		this.tab = new Tabs(tab1, tab2, tab3, tab4, tab5);
 		this.tab.setWidthFull();
 		this.tab.setFlexGrowForEnclosedTabs(1);
 		
@@ -189,6 +203,25 @@ public class EditSigesWindow extends EditWindow {
 		this.checkUseSei.setValue(this.config.isUseSei());
 		this.checkStudentRequestJury.setValue(this.config.isStudentRequestJury());
 		this.checkUseEvaluationItems.setValue(this.config.isUseEvaluationItems());
+		
+		this.loadReminders();
+	}
+	
+	private void loadReminders() {
+		try {
+			List<ReminderConfig> list = new ReminderConfigBO().list(this.config.getDepartment().getIdDepartment(), SystemModule.SIGES);
+			this.layoutReminders.removeAll();
+			
+			for(ReminderConfig config : list) {
+				ReminderConfigField field = new ReminderConfigField(config);
+				
+				this.layoutReminders.add(field);
+			}
+		} catch (Exception e) {
+			Logger.log(Level.SEVERE, e.getMessage(), e);
+			
+			this.showErrorNotification("Carregar Lembretes", e.getMessage());
+		}
 	}
 
 	@Override
@@ -216,6 +249,8 @@ public class EditSigesWindow extends EditWindow {
 			
 			bo.save(Session.getIdUserLog(), this.config);
 			
+			this.saveReminders();
+			
 			this.showSuccessNotification("Salvar Configurações", "Configurações salvas com sucesso.");
 			
 			this.parentViewRefreshGrid();
@@ -224,6 +259,22 @@ public class EditSigesWindow extends EditWindow {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 			
 			this.showErrorNotification("Salvar Configurações", e.getMessage());
+		}
+	}
+	
+	private void saveReminders() throws Exception {
+		Object fields[] = this.layoutReminders.getChildren().filter(child -> {
+			if(child instanceof ReminderConfigField) {
+				return true;
+			} else {
+				return false;
+			}
+		}).toArray();
+		
+		for(Object field : fields) {
+			ReminderConfig config = ((ReminderConfigField)field).getValue();
+			
+			new ReminderConfigBO().save(Session.getIdUserLog(), config);
 		}
 	}
 

@@ -70,6 +70,7 @@ import br.edu.utfpr.dv.siacoes.ui.views.ProjectView;
 import br.edu.utfpr.dv.siacoes.ui.views.ProposalFeedbackReportView;
 import br.edu.utfpr.dv.siacoes.ui.views.ProposalFeedbackView;
 import br.edu.utfpr.dv.siacoes.ui.views.ProposalView;
+import br.edu.utfpr.dv.siacoes.ui.views.ReminderMessageView;
 import br.edu.utfpr.dv.siacoes.ui.views.SemesterView;
 import br.edu.utfpr.dv.siacoes.ui.views.SignatureView;
 import br.edu.utfpr.dv.siacoes.ui.views.SignedDocumentView;
@@ -786,6 +787,7 @@ public class MainLayout extends FlexBoxLayout implements RouterLayout, AfterNavi
 			menu.addNaviItem(admin1, "Departamentos", DepartmentView.class);
 			menu.addNaviItem(admin1, "Semestres", SemesterView.class);
 			menu.addNaviItem(admin1, "Envio de E-mails", EmailMessageView.class);
+			menu.addNaviItem(admin1, "Lembretes", ReminderMessageView.class);
 			menu.addNaviItem(admin1, "Usuários", UserView.class);
 			if(this.sigesConfig.isUseDigitalSignature() || this.sigetConfig.isUseDigitalSignature()) {
 				menu.addNaviItem(admin1, "Assinatura de Documentos", SignedDocumentView.class);	

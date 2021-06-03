@@ -10,27 +10,27 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-import br.edu.utfpr.dv.siacoes.bo.EmailMessageBO;
+import br.edu.utfpr.dv.siacoes.bo.ReminderMessageBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
-import br.edu.utfpr.dv.siacoes.model.EmailMessage;
-import br.edu.utfpr.dv.siacoes.model.EmailMessage.MessageType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.model.ReminderMessage;
+import br.edu.utfpr.dv.siacoes.model.ReminderMessage.ReminderType;
 import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
 import br.edu.utfpr.dv.siacoes.ui.MainLayout;
 import br.edu.utfpr.dv.siacoes.ui.grid.EmailMessageDataSource;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditEmailConfigWindow;
-import br.edu.utfpr.dv.siacoes.ui.windows.EditEmailMessageWindow;
+import br.edu.utfpr.dv.siacoes.ui.windows.EditReminderMessageWindow;
 import br.edu.utfpr.dv.siacoes.ui.windows.TestEmailSendWindow;
 
-@PageTitle("Mensagens de E-mail")
-@Route(value = "emailmessage", layout = MainLayout.class)
-public class EmailMessageView extends ListView<EmailMessageDataSource> {
-	
+@PageTitle("Lembretes via E-mail")
+@Route(value = "remindermessage", layout = MainLayout.class)
+public class ReminderMessageView extends ListView<EmailMessageDataSource> {
+
 	private final Select<String> comboModule;
 	private final Button buttonConfigurations;
 	private final Button buttonTest;
 	
-	public EmailMessageView(){
+	public ReminderMessageView(){
 		super(SystemModule.GENERAL);
 		
 		this.setProfilePerimissions(UserProfile.ADMINISTRATOR);
@@ -67,8 +67,8 @@ public class EmailMessageView extends ListView<EmailMessageDataSource> {
 	@Override
 	protected void loadGrid() {
 		try {
-			EmailMessageBO bo = new EmailMessageBO();
-	    	List<EmailMessage> list;
+			ReminderMessageBO bo = new ReminderMessageBO();
+	    	List<ReminderMessage> list;
 	    	
 	    	if(!this.comboModule.getValue().equals("Todos")){
 	    		list = bo.listByModule(SystemModule.valueOf(this.comboModule.getValue()));
@@ -76,11 +76,11 @@ public class EmailMessageView extends ListView<EmailMessageDataSource> {
 	    		list  = bo.listAll();
 	    	}
 	    	
-	    	this.getGrid().setItems(EmailMessageDataSource.loadMessages(list));
+	    	this.getGrid().setItems(EmailMessageDataSource.loadReminders(list));
 		} catch (Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 			
-			this.showErrorNotification("Listar Mensagens", e.getMessage());
+			this.showErrorNotification("Listar Lembretes", e.getMessage());
 		}
 	}
 
@@ -93,15 +93,15 @@ public class EmailMessageView extends ListView<EmailMessageDataSource> {
 	@Override
 	public void editClick(int id) {
 		try {
-			EmailMessageBO bo = new EmailMessageBO();
-			EmailMessage message = bo.findByMessageType(MessageType.valueOf((int)id));
+			ReminderMessageBO bo = new ReminderMessageBO();
+			ReminderMessage message = bo.findByReminderType(ReminderType.valueOf((int)id));
 			
-			EditEmailMessageWindow window = new EditEmailMessageWindow(message, this);
+			EditReminderMessageWindow window = new EditReminderMessageWindow(message, this);
 			window.open();
 		} catch (Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 			
-			this.showErrorNotification("Editar Mensagem", e.getMessage());
+			this.showErrorNotification("Editar Lembrete", e.getMessage());
 		}
 	}
 
@@ -116,5 +116,5 @@ public class EmailMessageView extends ListView<EmailMessageDataSource> {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 }
