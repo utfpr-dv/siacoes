@@ -193,8 +193,8 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		}else if(Session.isUserManager(SystemModule.SIGAC)){
 			this.uploadFile.setVisible(false);
 			this.textAmount.setEnabled(false);
-			this.comboSemester.setEnabled(false);
-			this.textYear.setEnabled(false);
+			//this.comboSemester.setEnabled(false);
+			//this.textYear.setEnabled(false);
 			this.textComments.setEnabled(false);
 			this.textDescription.setEnabled(false);
 		}else{
@@ -436,9 +436,12 @@ public class EditActivitySubmissionWindow extends EditWindow {
 				}
 			}
 			
-			if(this.submission.getFeedback() == ActivityFeedback.NONE){
+			if((this.submission.getFeedback() == ActivityFeedback.NONE) || (Session.isUserManager(SystemModule.SIGAC))){
 				this.submission.setSemester(this.comboSemester.getSemester());
 				this.submission.setYear(this.textYear.getYear());
+			}
+			
+			if(this.submission.getFeedback() == ActivityFeedback.NONE){
 				this.submission.setAmount(Double.parseDouble(this.textAmount.getValue().replace(",", ".")));
 			}
 			

@@ -52,6 +52,7 @@ public class StudentActivityStatusReport implements Serializable {
 	private int registerSemester;
 	private int registerYear;
 	private int stage;
+	private boolean finalSubmission;
 	private List<ActivitySubmissionFooterReport> scores;
 	private double totalScore;
 	private String situation;
@@ -66,6 +67,7 @@ public class StudentActivityStatusReport implements Serializable {
 		this.setScores(new ArrayList<ActivitySubmissionFooterReport>());
 		this.setTotalScore(0);
 		this.setSituation("");
+		this.setFinalSubmission(false);
 	}
 	
 	public int getIdUser() {
@@ -121,6 +123,12 @@ public class StudentActivityStatusReport implements Serializable {
 	}
 	public void setSituation(String situation) {
 		this.situation = situation;
+	}
+	public boolean hasFinalSubmission() {
+		return finalSubmission;
+	}
+	public void setFinalSubmission(boolean finalSubmission) {
+		this.finalSubmission = finalSubmission;
 	}
 	
 }

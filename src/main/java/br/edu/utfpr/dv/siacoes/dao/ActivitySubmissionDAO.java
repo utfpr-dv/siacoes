@@ -538,11 +538,13 @@ public class ActivitySubmissionDAO {
 			stmt = conn.createStatement();
 		
 			rs = stmt.executeQuery("SELECT \"user\".iduser, \"user\".name AS studentName, userDepartment.registerSemester, userDepartment.registerYear, \"user\".studentCode, " +
-					"CASE WHEN finaldocument.idProject IS NOT NULL THEN 2 WHEN proposal.idProposal IS NOT NULL THEN 1 ELSE 0 END AS stage " +
+					"CASE WHEN finaldocument.idProject IS NOT NULL THEN 2 WHEN proposal.idProposal IS NOT NULL THEN 1 ELSE 0 END AS stage, " +
+					"CASE WHEN finalsubmission.idfinalsubmission IS NOT NULL THEN 1 ELSE 0 END AS hasFinal " +
 					"FROM \"user\" INNER JOIN userDepartment ON \"user\".idUser=userDepartment.idUser " +
 					"LEFT JOIN proposal ON (proposal.idStudent=\"user\".idUser AND proposal.idDepartment=userDepartment.idDepartment AND proposal.invalidated=0) " +
 					"LEFT JOIN project ON project.idProposal=proposal.idProposal " +
 					"LEFT JOIN finaldocument ON (finaldocument.idProject=project.idProject AND finaldocument.supervisorfeedback=" + String.valueOf(DocumentFeedback.APPROVED.getValue()) + ") " +
+					"LEFT JOIN finalsubmission ON (finalsubmission.iddepartment=userdepartment.iddepartment AND finalsubmission.idstudent=\"user\".iduser) " +
 					"WHERE userDepartment.idDepartment=" + String.valueOf(idDepartment) + 
 					" ORDER BY stage DESC, \"user\".name");
 			
@@ -557,6 +559,7 @@ public class ActivitySubmissionDAO {
 				a.setRegisterYear(rs.getInt("registerYear"));
 				a.setStudentCode(rs.getString("studentCode"));
 				a.setStage(rs.getInt("stage"));
+				a.setFinalSubmission(rs.getInt("hasFinal") == 1);
 				
 				list.add(a);
 			}

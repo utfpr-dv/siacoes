@@ -18,6 +18,7 @@ public class StudentActivityStatusReportView extends ReportView {
 	
 	private final Select<StudentStage> comboStage;
 	private final Checkbox checkStudentsWithoutPoints;
+	private final Checkbox checkIncludeWithFinalSubmission;
 
 	public StudentActivityStatusReportView(){
 		super(SystemModule.SIGAC);
@@ -32,14 +33,17 @@ public class StudentActivityStatusReportView extends ReportView {
 		
 		this.checkStudentsWithoutPoints = new Checkbox("Filtrar apenas acadêmicos que ainda não atingiram a pontuação necessária");
 		
+		this.checkIncludeWithFinalSubmission = new Checkbox("Incluir acadêmicos que já foram aprovados");
+		
 		this.addFilterField(this.comboStage);
 		this.addFilterField(this.checkStudentsWithoutPoints);
+		this.addFilterField(this.checkIncludeWithFinalSubmission);
 	}
 	
 	@Override
 	public byte[] generateReport() throws Exception {
 		ActivitySubmissionBO bo = new ActivitySubmissionBO();
-		return bo.getStudentActivityStatusReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), (StudentStage)this.comboStage.getValue(), this.checkStudentsWithoutPoints.getValue());
+		return bo.getStudentActivityStatusReport(Session.getSelectedDepartment().getDepartment().getIdDepartment(), (StudentStage)this.comboStage.getValue(), this.checkStudentsWithoutPoints.getValue(), this.checkIncludeWithFinalSubmission.getValue());
 	}
 
 }
