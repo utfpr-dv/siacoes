@@ -1,5 +1,7 @@
 package br.edu.utfpr.dv.siacoes.ui.grid;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,13 +88,19 @@ public class ActivitySubmissionDataSource extends BasicDataSource {
 		return score;
 	}
 	public void setScore(double score) {
-		this.score = score;
+		this.score = this.round(score);
 	}
 	public int getStage() {
 		return stage;
 	}
 	public void setStage(int stage) {
 		this.stage = stage;
+	}
+	
+	private double round(double value){
+		BigDecimal bd = new BigDecimal(value);
+	    bd = bd.setScale(2, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
 	}
 	
 }

@@ -449,6 +449,8 @@ public class ActivitySubmissionBO {
 				footer.setTotal(footer.getMaximum());
 			}
 			
+			footer.setTotal(this.round(footer.getTotal()));
+			
 			ret.add(footer);
 		}
 		
