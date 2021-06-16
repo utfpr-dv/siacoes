@@ -58,6 +58,9 @@ public class DocumentBO {
 			if(document.getFile() == null){
 				throw new Exception("É necessário enviar o documento.");
 			}
+			if(document.getType() == null) {
+				throw new Exception("Informe o tipo de documento.");
+			}
 			
 			DocumentDAO dao = new DocumentDAO();
 			

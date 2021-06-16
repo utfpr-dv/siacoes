@@ -99,6 +99,7 @@ public class FileUploader extends HorizontalLayout {
 	            }
 	            
 	            uploadedFile = buf;
+	            fileType = DocumentType.fromMimeType(event.getMIMEType());
 	            
 	            if(fileUploadListener != null) {
 	            	fileUploadListener.uploadSucceeded();
