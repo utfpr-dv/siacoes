@@ -115,7 +115,6 @@ public class FileUploader extends HorizontalLayout {
 		this.add(this.uploadFile);
 		
 		this.acceptedDocumentTypes = new ArrayList<DocumentType>();
-		this.setMaxBytesLength(0);
 	}
 	
 	private void updateDropLabel() {

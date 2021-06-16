@@ -29,12 +29,14 @@ import br.edu.utfpr.dv.siacoes.bo.ActivityUnitBO;
 import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.bo.FinalSubmissionBO;
 import br.edu.utfpr.dv.siacoes.bo.SigacConfigBO;
+import br.edu.utfpr.dv.siacoes.bo.UserBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.Activity;
 import br.edu.utfpr.dv.siacoes.model.ActivityGroup;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission;
 import br.edu.utfpr.dv.siacoes.model.ActivityUnit;
 import br.edu.utfpr.dv.siacoes.model.Campus;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.SigacConfig;
@@ -68,6 +70,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 	private final TextArea textComments;
 	private final TextField textFeedbackUser;
 	private final TextField textDescription;
+	private final TextField textRegisterSemester;
 	private final TextArea textFeedbackReason;
 	private final Tabs tabContainer;
 	private final VerticalLayout layoutTab3;
@@ -103,6 +106,10 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		this.textStudent.setWidth("400px");
 		this.textStudent.setEnabled(false);
 		this.textStudent.setRequired(true);
+		
+		this.textRegisterSemester = new TextField("Semestre de Ingresso");
+		this.textRegisterSemester.setWidth("150px");
+		this.textRegisterSemester.setEnabled(false);
 		
 		this.textDescription = new TextField("Descrição da Atividade");
 		this.textDescription.setWidth("400px");
@@ -201,6 +208,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			this.comboFeedback.setEnabled(false);
 			this.textValidatedAmount.setEnabled(false);
 			this.textFeedbackReason.setEnabled(false);
+			this.textRegisterSemester.setVisible(false);
 			
 			if(this.submission.getFeedback() != ActivityFeedback.NONE){
 				this.setSaveButtonEnabled(false);
@@ -214,7 +222,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		HorizontalLayout h4 = new HorizontalLayout(this.textStudent, this.textDescription);
 		h4.setSpacing(true);
 		
-		HorizontalLayout h2 = new HorizontalLayout(this.comboSemester, this.textYear, this.textAmount, this.textSubmissionDate, this.uploadFile);
+		HorizontalLayout h2 = new HorizontalLayout(this.comboSemester, this.textYear, this.textAmount, this.textSubmissionDate, this.uploadFile, this.textRegisterSemester);
 		h2.setSpacing(true);
 		
 		VerticalLayout layoutTab1 = new VerticalLayout(h1, h4, this.comboGroup, this.comboActivity, h2);
@@ -378,6 +386,16 @@ public class EditActivitySubmissionWindow extends EditWindow {
 		
 		if(Session.isUserManager(SystemModule.SIGAC) && (this.submission.getValidatedAmount() <= 0)) {
 			this.textValidatedAmount.setValue(String.format("%.2f", this.submission.getAmount()));
+		}
+		
+		try {
+			Semester semester = new UserBO().getRegisterSemester(submission.getStudent().getIdUser(), submission.getDepartment().getIdDepartment());
+			
+			if(semester != null) {
+				this.textRegisterSemester.setValue(String.valueOf(semester.getSemester()) + "/" + String.valueOf(semester.getYear()));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		boolean allowEdit = false;
