@@ -54,6 +54,9 @@ public class StudentActivityStatusReport implements Serializable {
 	private int stage;
 	private boolean finalSubmission;
 	private List<ActivitySubmissionFooterReport> scores;
+	private double group1Score;
+	private double group2Score;
+	private double group3Score;
 	private double totalScore;
 	private String situation;
 	
@@ -65,6 +68,9 @@ public class StudentActivityStatusReport implements Serializable {
 		this.setRegisterYear(0);
 		this.setStage(0);
 		this.setScores(new ArrayList<ActivitySubmissionFooterReport>());
+		this.setGroup1Score(0);
+		this.setGroup2Score(0);
+		this.setGroup3Score(0);
 		this.setTotalScore(0);
 		this.setSituation("");
 		this.setFinalSubmission(false);
@@ -129,6 +135,24 @@ public class StudentActivityStatusReport implements Serializable {
 	}
 	public void setFinalSubmission(boolean finalSubmission) {
 		this.finalSubmission = finalSubmission;
+	}
+	public double getGroup1Score() {
+		return group1Score;
+	}
+	public void setGroup1Score(double group1Score) {
+		this.group1Score = group1Score;
+	}
+	public double getGroup2Score() {
+		return group2Score;
+	}
+	public void setGroup2Score(double group2Score) {
+		this.group2Score = group2Score;
+	}
+	public double getGroup3Score() {
+		return group3Score;
+	}
+	public void setGroup3Score(double group3Score) {
+		this.group3Score = group3Score;
 	}
 	
 }

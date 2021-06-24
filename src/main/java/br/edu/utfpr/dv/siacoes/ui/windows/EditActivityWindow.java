@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 
 import br.edu.utfpr.dv.siacoes.Session;
@@ -30,7 +31,7 @@ public class EditActivityWindow extends EditWindow {
 	private final DepartmentComboBox comboDepartment;
 	private final Select<ActivityGroup> comboGroup;
 	private final TextField textDescription;
-	private final TextField textScore;
+	private final NumberField textScore;
 	private final Select<ActivityUnit> comboUnit;
 	private final TextField textMaximumInSemester;
 	private final Checkbox checkActive;
@@ -61,9 +62,11 @@ public class EditActivityWindow extends EditWindow {
 		this.textDescription.setMaxLength(255);
 		this.textDescription.setRequired(true);
 		
-		this.textScore = new TextField("Pontuação");
+		this.textScore = new NumberField("Pontuação");
 		this.textScore.setWidth("100px");
-		this.textScore.setRequired(true);
+		this.textScore.setMin(0);
+		this.textScore.setStep(0.01);
+		//this.textScore.setRequired(true);
 		
 		this.comboUnit = new Select<ActivityUnit>();
 		this.comboUnit.setLabel("Unidade");
@@ -127,7 +130,7 @@ public class EditActivityWindow extends EditWindow {
 		
 		this.comboGroup.setValue(this.activity.getGroup());
 		this.textDescription.setValue(this.activity.getDescription());
-		this.textScore.setValue(String.valueOf(this.activity.getScore()));
+		this.textScore.setValue(this.activity.getScore());
 		this.comboUnit.setValue(this.activity.getUnit());
 		this.textMaximumInSemester.setValue(String.valueOf(this.activity.getMaximumInSemester()));
 		this.checkActive.setValue(this.activity.isActive());
@@ -140,7 +143,7 @@ public class EditActivityWindow extends EditWindow {
 			
 			this.activity.setGroup(this.comboGroup.getValue());
 			this.activity.setDescription(this.textDescription.getValue());
-			this.activity.setScore(Double.parseDouble(this.textScore.getValue()));
+			this.activity.setScore(this.textScore.getValue());
 			this.activity.setUnit(this.comboUnit.getValue());
 			this.activity.setMaximumInSemester(Double.parseDouble(this.textMaximumInSemester.getValue()));
 			this.activity.setActive(this.checkActive.getValue());

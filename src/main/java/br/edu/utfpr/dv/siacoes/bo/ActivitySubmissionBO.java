@@ -509,6 +509,18 @@ public class ActivitySubmissionBO {
 					
 					for(ActivitySubmissionFooterReport s : scores) {
 						user.setTotalScore(user.getTotalScore() + s.getTotal());
+						
+						switch(s.getSequence()) {
+							case 1:
+								user.setGroup1Score(s.getTotal());
+								break;
+							case 2:
+								user.setGroup2Score(s.getTotal());
+								break;
+							case 3:
+								user.setGroup3Score(s.getTotal());
+								break;
+						}
 					}
 					
 					if((user.getTotalScore() >= config.getMinimumScore()) && this.hasMinimalScores(scores)) {
@@ -537,7 +549,7 @@ public class ActivitySubmissionBO {
 		try{
 			List<StudentActivityStatusReport> report = this.getStudentActivityStatus(idDepartment, stage, withoutPoints, includeWithFinalSubmission);
 			
-			ByteArrayOutputStream pdfReport = new ReportUtils().createPdfStream(report, "StudentActivityStatus", idDepartment);
+			ByteArrayOutputStream pdfReport = new ReportUtils().createPdfStream(report, "StudentActivityStatus2", idDepartment);
 			
 			return pdfReport.toByteArray();
 		}catch(SQLException e){
