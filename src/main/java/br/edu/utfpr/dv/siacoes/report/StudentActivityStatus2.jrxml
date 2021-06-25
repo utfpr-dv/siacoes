@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2021-06-25T15:07:34 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Attendances" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="730" leftMargin="56" rightMargin="56" topMargin="42" bottomMargin="42" uuid="3d913f38-4ce2-4b6a-be5a-ab11a4791d3f">
+	<style name="AltBackground">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}.intValue() % 2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#EAEAEA"/>
+		</conditionalStyle>
+	</style>
 	<parameter name="logo_utfpr" class="java.io.InputStream"/>
 	<parameter name="brasao_republica" class="java.io.InputStream"/>
 	<parameter name="campus" class="java.lang.String"/>
@@ -166,64 +173,71 @@
 	</columnHeader>
 	<detail>
 		<band height="20" splitType="Stretch">
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField>
-				<reportElement x="0" y="0" width="200" height="20" uuid="dcbbca8f-152b-41c0-87b9-ea754c922075">
+				<reportElement style="AltBackground" x="0" y="0" width="200" height="20" uuid="dcbbca8f-152b-41c0-87b9-ea754c922075">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{studentName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="200" y="0" width="60" height="20" uuid="eb408fbe-21dc-42b9-a446-c2b5d714ae81">
+				<reportElement style="AltBackground" x="200" y="0" width="60" height="20" uuid="eb408fbe-21dc-42b9-a446-c2b5d714ae81">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{studentCode}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="260" y="0" width="50" height="20" uuid="07c36947-6c6f-419c-9ac5-62e151f4051a">
+				<reportElement style="AltBackground" x="260" y="0" width="50" height="20" uuid="07c36947-6c6f-419c-9ac5-62e151f4051a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{registerSemester} + "/" + $F{registerYear}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="310" y="0" width="115" height="20" uuid="9def9d7a-1a7b-4391-95a6-305b52d807cd">
+				<reportElement style="AltBackground" x="310" y="0" width="115" height="20" uuid="9def9d7a-1a7b-4391-95a6-305b52d807cd">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[IF($F{stage} == 0, "Regular", IF($F{stage} == 1, "Períodos Finais", "Provável Formando"))]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="610" y="0" width="120" height="20" uuid="b6b527be-0abd-4638-bcab-08857d078d4d">
+				<reportElement style="AltBackground" x="610" y="0" width="120" height="20" uuid="b6b527be-0abd-4638-bcab-08857d078d4d">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{situation}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="560" y="0" width="45" height="20" uuid="c0429004-5149-4b5c-84da-eb05e70dba9e">
+				<reportElement style="AltBackground" x="560" y="0" width="45" height="20" uuid="c0429004-5149-4b5c-84da-eb05e70dba9e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{totalScore}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="425" y="0" width="45" height="20" uuid="5ea7bd03-c0f6-4f50-99a3-8e263dcbbd5a">
+				<reportElement style="AltBackground" x="425" y="0" width="45" height="20" uuid="5ea7bd03-c0f6-4f50-99a3-8e263dcbbd5a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{group1Score}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="470" y="0" width="45" height="20" uuid="a876bdda-ace1-4075-94fb-84067219b70c">
+				<reportElement style="AltBackground" x="470" y="0" width="45" height="20" uuid="a876bdda-ace1-4075-94fb-84067219b70c">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{group2Score}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="515" y="0" width="45" height="20" uuid="f79eb2f6-245e-415f-a71a-214350c04ba4">
+				<reportElement style="AltBackground" x="515" y="0" width="45" height="20" uuid="f79eb2f6-245e-415f-a71a-214350c04ba4">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{group3Score}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="AltBackground" x="605" y="0" width="5" height="20" uuid="2131f698-9975-468d-b43e-434d3e32e2de">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

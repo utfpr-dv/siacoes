@@ -496,7 +496,7 @@ public class ActivitySubmissionDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			rs = stmt.executeQuery("SELECT activitysubmission.idactivity, activity.description, activitygroup.sequence AS group, COUNT(DISTINCT activitysubmission.idactivity) AS submitted, " +
+			rs = stmt.executeQuery("SELECT activitysubmission.idactivity, activity.description, activitygroup.sequence AS group, COUNT(DISTINCT activitysubmission.idactivitysubmission) AS submitted, " +
 					"SUM(CASE WHEN activitysubmission.feedback=1 THEN 1 ELSE 0 END) AS validated " +
 					"FROM activitysubmission INNER JOIN activity ON activity.idactivity=activitysubmission.idactivity " +
 					"INNER JOIN activitygroup ON activitygroup.idactivitygroup=activity.idactivitygroup " +
