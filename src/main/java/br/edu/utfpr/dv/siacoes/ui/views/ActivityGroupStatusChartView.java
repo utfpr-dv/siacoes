@@ -39,6 +39,7 @@ public class ActivityGroupStatusChartView extends ChartView {
 	
 	private final Select<StudentStage> comboStage;
 	private final Checkbox checkStudentsWithoutPoints;
+	private final Checkbox checkStudentsWithPoints;
 	private final Checkbox checkIncludeWithFinalSubmission;
 	
 	public ActivityGroupStatusChartView() {
@@ -53,16 +54,30 @@ public class ActivityGroupStatusChartView extends ChartView {
 		
 		this.checkStudentsWithoutPoints = new Checkbox("Filtrar apenas acadêmicos que ainda não atingiram a pontuação necessária");
 		
+		this.checkStudentsWithPoints = new Checkbox("Filtrar apenas acadêmicos que já atingiram a pontuação necessária");
+		
+		this.checkStudentsWithoutPoints.addValueChangeListener(event -> {
+			if(this.checkStudentsWithoutPoints.getValue()) {
+				this.checkStudentsWithPoints.setValue(false);
+			}
+		});
+		this.checkStudentsWithPoints.addValueChangeListener(event -> {
+			if(this.checkStudentsWithPoints.getValue()) {
+				this.checkStudentsWithoutPoints.setValue(false);
+			}
+		});
+		
 		this.checkIncludeWithFinalSubmission = new Checkbox("Incluir acadêmicos que já foram aprovados");
 		
 		this.addFilterField(this.comboStage);
 		this.addFilterField(this.checkStudentsWithoutPoints);
+		this.addFilterField(this.checkStudentsWithPoints);
 		this.addFilterField(this.checkIncludeWithFinalSubmission);
 	}
 
 	@Override
 	public ApexCharts generateChart() throws Exception {
-		List<ActivityGroupStatus> list = new ActivitySubmissionBO().getStudentActivityGroupStatus(Session.getSelectedDepartment().getDepartment().getIdDepartment(), (StudentStage)this.comboStage.getValue(), this.checkStudentsWithoutPoints.getValue(), this.checkIncludeWithFinalSubmission.getValue());
+		List<ActivityGroupStatus> list = new ActivitySubmissionBO().getStudentActivityGroupStatus(Session.getSelectedDepartment().getDepartment().getIdDepartment(), (StudentStage)this.comboStage.getValue(), this.checkStudentsWithoutPoints.getValue(), this.checkStudentsWithPoints.getValue(), this.checkIncludeWithFinalSubmission.getValue());
 		
 		List<String> categories = new ArrayList<String>();
 		List<Integer> valuesMin = new ArrayList<Integer>();

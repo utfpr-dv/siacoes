@@ -491,7 +491,7 @@ public class ActivitySubmissionBO {
 		}
 	}
 	
-	public List<StudentActivityStatusReport> getStudentActivityStatus(int idDepartment, StudentStage stage, boolean withoutPoints, boolean includeWithFinalSubmission) throws Exception {
+	public List<StudentActivityStatusReport> getStudentActivityStatus(int idDepartment, StudentStage stage, boolean withoutPoints, boolean withPoints, boolean includeWithFinalSubmission) throws Exception {
 		try {
 			ActivitySubmissionDAO dao = new ActivitySubmissionDAO();
 			List<ActivitySubmission> list = new ArrayList<ActivitySubmission>();
@@ -532,7 +532,9 @@ public class ActivitySubmissionBO {
 					} else {
 						user.setSituation("Pontuação insuficiente");
 						
-						report.add(user);
+						if(!withPoints) {
+							report.add(user);
+						}
 					}
 				}
 			}
@@ -545,9 +547,9 @@ public class ActivitySubmissionBO {
 		}
 	}
 	
-	public byte[] getStudentActivityStatusReport(int idDepartment, StudentStage stage, boolean withoutPoints, boolean includeWithFinalSubmission) throws Exception {
+	public byte[] getStudentActivityStatusReport(int idDepartment, StudentStage stage, boolean withoutPoints, boolean withPoints, boolean includeWithFinalSubmission) throws Exception {
 		try{
-			List<StudentActivityStatusReport> report = this.getStudentActivityStatus(idDepartment, stage, withoutPoints, includeWithFinalSubmission);
+			List<StudentActivityStatusReport> report = this.getStudentActivityStatus(idDepartment, stage, withoutPoints, withPoints, includeWithFinalSubmission);
 			
 			ByteArrayOutputStream pdfReport = new ReportUtils().createPdfStream(report, "StudentActivityStatus2", idDepartment);
 			
@@ -559,10 +561,10 @@ public class ActivitySubmissionBO {
 		}
 	}
 	
-	public List<ActivityGroupStatus> getStudentActivityGroupStatus(int idDepartment, StudentStage stage, boolean withoutPoints, boolean includeWithFinalSubmission) throws Exception {
+	public List<ActivityGroupStatus> getStudentActivityGroupStatus(int idDepartment, StudentStage stage, boolean withoutPoints, boolean withPoints, boolean includeWithFinalSubmission) throws Exception {
 		try{
 			List<ActivityGroup> groups = new ActivityGroupBO().listAll();
-			List<StudentActivityStatusReport> report = this.getStudentActivityStatus(idDepartment, stage, withoutPoints, includeWithFinalSubmission);
+			List<StudentActivityStatusReport> report = this.getStudentActivityStatus(idDepartment, stage, withoutPoints, withPoints, includeWithFinalSubmission);
 			List<ActivityGroupStatus> list = new ArrayList<ActivityGroupStatus>();
 			
 			for(ActivityGroup group : groups) {
