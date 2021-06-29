@@ -97,6 +97,18 @@ public class FinalSubmissionBO {
 		}
 	}
 	
+	public List<FinalSubmission> listByFeedbackUser(int idDepartment, int idUser) throws Exception{
+		try{
+			FinalSubmissionDAO dao = new FinalSubmissionDAO();
+			
+			return dao.listByFeedbackUser(idDepartment, idUser);
+		}catch(SQLException e){
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e);
+		}
+	}
+	
 	public FinalSubmission findById(int id) throws Exception{
 		try{
 			FinalSubmissionDAO dao = new FinalSubmissionDAO();

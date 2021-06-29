@@ -75,6 +75,38 @@ public class FinalSubmissionDAO {
 		}
 	}
 	
+	public List<FinalSubmission> listByFeedbackUser(int idDepartment, int idUser) throws SQLException{
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = ConnectionDAO.getInstance().getConnection();
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT finalsubmission.*, student.name AS studentName, feedbackUser.name AS feedbackUserName " +
+					"FROM finalsubmissionview finalsubmission INNER JOIN \"user\" student ON student.idUser=finalsubmission.idstudent " +
+					"INNER JOIN \"user\" feedbackUser ON feedbackUser.idUser=finalsubmission.idFeedbackUser " +
+					"WHERE finalsubmission.iddepartment=" + String.valueOf(idDepartment) + " AND finalsubmission.idFeedbackUser=" + String.valueOf(idUser) +
+					" ORDER BY finalsubmission.date DESC");
+			
+			List<FinalSubmission> list = new ArrayList<FinalSubmission>();
+			
+			while(rs.next()){
+				list.add(this.loadObject(rs, false));
+			}
+			
+			return list;
+		}finally{
+			if((rs != null) && !rs.isClosed())
+				rs.close();
+			if((stmt != null) && !stmt.isClosed())
+				stmt.close();
+			if((conn != null) && !conn.isClosed())
+				conn.close();
+		}
+	}
+	
 	public FinalSubmission findById(int id) throws SQLException{
 		Connection conn = null;
 		Statement stmt = null;
