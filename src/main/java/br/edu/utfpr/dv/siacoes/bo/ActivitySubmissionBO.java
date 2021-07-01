@@ -245,6 +245,22 @@ public class ActivitySubmissionBO {
 		return this.buildFooter(activities);
 	}
 	
+	public String getSituation(List<ActivitySubmissionFooterReport> scores, int idDepartment) throws Exception {
+		SigacConfigBO dbo = new SigacConfigBO();
+		SigacConfig config = dbo.findByDepartment(idDepartment);
+		double totalScore = 0;
+		
+		for(ActivitySubmissionFooterReport s : scores) {
+			totalScore = totalScore + s.getTotal();
+		}
+		
+		if((totalScore >= config.getMinimumScore()) && this.hasMinimalScores(scores)){
+			return "Pontuação atingida";	
+		}else{
+			return "Pontuação insuficiente";
+		}
+	}
+	
 	public ActivitySubmissionReport getReportData(int idStudent, int idDepartment) throws Exception{
 		List<ActivitySubmission> list = this.listByStudent(idStudent, idDepartment, ActivityFeedback.APPROVED.getValue(), true);
 		UserBO bo = new UserBO();

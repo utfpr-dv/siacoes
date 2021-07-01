@@ -302,6 +302,16 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 			
 			this.layoutScore.add(labelTitle, labelScore);
 		}
+		
+		H5 labelTitle = new H5("Situação");
+		Label labelScore;
+		try {
+			labelScore = new Label(new ActivitySubmissionBO().getSituation(scores, Session.getSelectedDepartment().getDepartment().getIdDepartment()));
+		} catch (Exception e) {
+			labelScore = new Label("-");
+		}
+		
+		this.layoutScore.add(labelTitle, labelScore);
 	}
 	
 	private void finalReport() {
