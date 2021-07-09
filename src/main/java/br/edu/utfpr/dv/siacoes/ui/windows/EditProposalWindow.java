@@ -136,7 +136,11 @@ public class EditProposalWindow extends EditWindow {
 		
 		this.uploadFile = new FileUploader("(Formato PDF, " + this.config.getMaxFileSizeAsString() + ")");
 		this.uploadFile.setAcceptedType(AcceptedDocumentType.PDF);
-		this.uploadFile.setMaxBytesLength(this.config.getMaxFileSize());
+		if(this.config.getMaxFileSize() > 0) {
+			this.uploadFile.setMaxBytesLength(this.config.getMaxFileSize());
+		} else {
+			this.uploadFile.setMaxBytesLength(1024 * 1024);
+		}
 		this.uploadFile.setFileUploadListener(new FileUploaderListener() {
 			@Override
 			public void uploadSucceeded() {

@@ -209,7 +209,11 @@ public class EditInternshipWindow extends EditWindow {
 		
 		this.uploadInternshipPlan = new FileUploader("(Formato PDF, " + this.config.getMaxFileSizeAsString() + ")");
 		this.uploadInternshipPlan.setAcceptedType(AcceptedDocumentType.PDF);
-		this.uploadInternshipPlan.setMaxBytesLength(this.config.getMaxFileSize());
+		if(this.config.getMaxFileSize() > 0) {
+			this.uploadInternshipPlan.setMaxBytesLength(this.config.getMaxFileSize());
+		} else {
+			this.uploadInternshipPlan.setMaxBytesLength(1024 * 1024);
+		}
 		this.uploadInternshipPlan.setDropLabel("Enviar Plano de Estágio");
 		this.uploadInternshipPlan.setFileUploadListener(new FileUploaderListener() {
 			@Override
@@ -229,7 +233,11 @@ public class EditInternshipWindow extends EditWindow {
 		
 		this.uploadFinalReport = new FileUploader("(Formato PDF, " + this.config.getMaxFileSizeAsString() + ")");
 		this.uploadFinalReport.setAcceptedType(AcceptedDocumentType.PDF);
-		this.uploadFinalReport.setMaxBytesLength(this.config.getMaxFileSize());
+		if(this.config.getMaxFileSize() > 0) {
+			this.uploadFinalReport.setMaxBytesLength(this.config.getMaxFileSize());
+		} else {
+			this.uploadFinalReport.setMaxBytesLength(1024 * 1024);
+		}
 		this.uploadFinalReport.setDropLabel("Enviar Relatório Final");
 		this.uploadFinalReport.setFileUploadListener(new FileUploaderListener() {
 			@Override

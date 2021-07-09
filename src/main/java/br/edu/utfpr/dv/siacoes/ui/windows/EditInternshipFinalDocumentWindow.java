@@ -18,6 +18,7 @@ import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipFinalDocumentBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
+import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.FinalDocument.DocumentFeedback;
@@ -25,6 +26,7 @@ import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.InternshipFinalDocument;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.Semester;
+import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.ui.components.CampusComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.DepartmentComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploader;
@@ -52,6 +54,8 @@ public class EditInternshipFinalDocumentWindow extends EditWindow {
 	private final DatePicker textFeedbackDate;
 	private final Button buttonDownloadFile;
 	
+	private SigesConfig config;
+	
 	public EditInternshipFinalDocumentWindow(InternshipFinalDocument d, ListView parentView){
 		super("Versão Final do Relatório de Estágio", parentView);
 		
@@ -59,6 +63,12 @@ public class EditInternshipFinalDocumentWindow extends EditWindow {
 			this.doc = new InternshipFinalDocument();
 		}else{
 			this.doc = d;
+		}
+		
+		try {
+			this.config = new SigesConfigBO().findByDepartment(new InternshipBO().findIdDepartment(this.doc.getInternship().getIdInternship()));
+		} catch (Exception e) {
+			this.config = new SigesConfig();
 		}
 		
 		this.comboCampus = new CampusComboBox();
@@ -85,7 +95,11 @@ public class EditInternshipFinalDocumentWindow extends EditWindow {
 		
 		this.uploadFile = new FileUploader("(Formato PDF, Tam. Máx. 5 MB)");
 		this.uploadFile.setAcceptedType(AcceptedDocumentType.PDFA);
-		this.uploadFile.setMaxBytesLength(6 * 1024 * 1024);
+		if(this.config.getMaxFileSize() > 0) {
+			this.uploadFile.setMaxBytesLength(this.config.getMaxFileSize());
+		} else {
+			this.uploadFile.setMaxBytesLength(1024 * 1024);
+		}
 		this.uploadFile.setFileUploadListener(new FileUploaderListener() {
 			@Override
 			public void uploadSucceeded() {

@@ -187,8 +187,10 @@ public class FileUploader extends HorizontalLayout {
 	}
 
 	public void setMaxBytesLength(int maxBytesLength) {
-		this.uploadFile.setMaxFileSize(maxBytesLength);
-		this.updateDropLabel();
+		if(maxBytesLength > 0) {
+			this.uploadFile.setMaxFileSize(maxBytesLength);
+			this.updateDropLabel();
+		}
 	}
 
 	public AcceptedDocumentType getAcceptedType() {
