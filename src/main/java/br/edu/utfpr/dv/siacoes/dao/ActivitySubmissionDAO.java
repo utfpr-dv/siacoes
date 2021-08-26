@@ -132,7 +132,8 @@ public class ActivitySubmissionDAO {
 					"INNER JOIN activitygroup ON activitygroup.idActivityGroup=activity.idActivityGroup " +
 					"INNER JOIN activityunit ON activityunit.idActivityUnit=activity.idActivityUnit " +
 					"LEFT JOIN \"user\" feedbackUser ON feedbackUser.idUser=activitysubmission.idfeedbackuser " +
-					"WHERE activitysubmission.iddepartment=" + String.valueOf(idDepartment) +
+					"WHERE NOT EXISTS(SELECT idfinalsubmission FROM finalsubmission WHERE activitysubmission.idStudent=finalsubmission.idStudent AND activitysubmission.idDepartment=finalsubmission.idDepartment) " +
+					"AND activitysubmission.iddepartment=" + String.valueOf(idDepartment) +
 					((idStudent <= 0) ? "" : " AND activitysubmission.idStudent=" + String.valueOf(idStudent)) +
 					((feedback < 0) ? "" : " AND activitysubmission.feedback=" + String.valueOf(feedback)) +
 					(!description.trim().isEmpty() ? " AND activitysubmission.description ILIKE ? " : "") +
@@ -253,7 +254,7 @@ public class ActivitySubmissionDAO {
 			rs = stmt.executeQuery("SELECT DISTINCT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
 					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, activitygroup.idactivitygroup, " +
 					"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester, " +
-					"CASE WHEN finaldocument.idProject IS NOT NULL THEN 2 WHEN proposal.idProposal IS NOT NULL THEN 1 ELSE 0 END AS stage " +
+					"CASE WHEN project.idProject IS NOT NULL THEN 2 WHEN proposal.idProposal IS NOT NULL THEN 1 ELSE 0 END AS stage " +
 					"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
 					"INNER JOIN activity ON activity.idActivity=activitysubmission.idActivity " + 
 					"INNER JOIN activitygroup ON activitygroup.idActivityGroup=activity.idActivityGroup " +
@@ -261,7 +262,6 @@ public class ActivitySubmissionDAO {
 					"LEFT JOIN \"user\" feedbackUser ON feedbackUser.idUser=activitysubmission.idfeedbackuser " +
 					"LEFT JOIN proposal ON (proposal.idStudent=activitysubmission.idStudent AND proposal.idDepartment=activitysubmission.idDepartment) " +
 					"LEFT JOIN project ON project.idProposal=proposal.idProposal " +
-					"LEFT JOIN finaldocument ON (finaldocument.idProject=project.idProject AND finaldocument.supervisorfeedback=" + String.valueOf(DocumentFeedback.APPROVED.getValue()) + ") " +
 					"WHERE NOT EXISTS(SELECT idfinalsubmission FROM finalsubmission WHERE activitysubmission.idStudent=finalsubmission.idStudent AND activitysubmission.idDepartment=finalsubmission.idDepartment) " +
 					"AND activitysubmission.feedback=0 AND activitysubmission.idDepartment=" + String.valueOf(idDepartment) + 
 					" ORDER BY stage DESC, activitygroup.sequence, activitysubmission.year DESC, activitysubmission.semester DESC");

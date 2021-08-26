@@ -6,7 +6,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.bo.CampusBO;
+import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.model.FinalSubmission;
+import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class FinalSubmissionDataSource extends BasicDataSource {
@@ -15,6 +18,8 @@ public class FinalSubmissionDataSource extends BasicDataSource {
 	private double finalScore;
 	private LocalDate date;
 	private String feedbackUser;
+	private int semester;
+	private int year;
 	
 	public FinalSubmissionDataSource(FinalSubmission submission) {
 		this.setId(submission.getIdFinalSubmission());
@@ -22,6 +27,17 @@ public class FinalSubmissionDataSource extends BasicDataSource {
 		this.setFinalScore(submission.getFinalScore());
 		this.setDate(DateUtils.convertToLocalDate(submission.getDate()));
 		this.setFeedbackUser(submission.getFeedbackUser().getName());
+		this.setSemester(0);
+		this.setYear(0);
+		
+		try {
+			Semester s = new SemesterBO().findByDate(new CampusBO().findByDepartment(submission.getDepartment().getIdDepartment()).getIdCampus(), submission.getDate());
+			
+			this.setSemester(s.getSemester());
+			this.setYear(s.getYear());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static List<FinalSubmissionDataSource> load(List<FinalSubmission> list) {
@@ -57,6 +73,21 @@ public class FinalSubmissionDataSource extends BasicDataSource {
 	}
 	public void setFeedbackUser(String feedbackUser) {
 		this.feedbackUser = feedbackUser;
+	}
+	public int getSemester() {
+		return semester;
+	}
+	public void setSemester(int semester) {
+		this.semester = semester;
+	}
+	public int getYear() {
+		return year;
+	}
+	public void setYear(int year) {
+		this.year = year;
+	}
+	public String getSemesterYear() {
+		return String.valueOf(this.getSemester()) + "/" + String.valueOf(this.getYear());
 	}
 	
 	private double round(double value){

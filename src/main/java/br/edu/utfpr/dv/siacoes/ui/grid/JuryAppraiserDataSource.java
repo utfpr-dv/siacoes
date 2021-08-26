@@ -101,17 +101,17 @@ public class JuryAppraiserDataSource extends BasicDataSource {
 		for(InternshipJuryAppraiser appraiser : list) {
 			JuryAppraiserDataSource a = new JuryAppraiserDataSource(appraiser);
 			
-			if(appraiser.isSubstitute()) {
-				a.setMember("Substituto " + String.valueOf(substitute));
-				substitute++;
-			} else if(!appraiser.isChair()) {
-				a.setMember("Membro " + String.valueOf(member));
-				member++;
-			} else {
-				a.setMember("Presidente");
-			}
-			
 			if((appraiser.isChair() && includeChair) || (!appraiser.isChair() && !appraiser.isSubstitute() && includeMember) || (appraiser.isSubstitute() && includeSubstitute)) {
+				if(appraiser.isSubstitute()) {
+					a.setMember("Substituto " + String.valueOf(substitute));
+					substitute++;
+				} else if(!appraiser.isChair()) {
+					a.setMember("Membro " + String.valueOf(member));
+					member++;
+				} else {
+					a.setMember("Presidente");
+				}
+				
 				ret.add(a);
 			}
 		}
@@ -157,17 +157,17 @@ public class JuryAppraiserDataSource extends BasicDataSource {
 		for(InternshipJuryAppraiserRequest appraiser : list) {
 			JuryAppraiserDataSource a = new JuryAppraiserDataSource(appraiser);
 			
-			if(appraiser.isSubstitute()) {
-				a.setMember("Substituto " + String.valueOf(substitute));
-				substitute++;
-			} else if(!appraiser.isChair()) {
-				a.setMember("Membro " + String.valueOf(member));
-				member++;
-			} else {
-				a.setMember("Presidente");
-			}
-			
 			if((appraiser.isChair() && includeChair) || (!appraiser.isChair() && !appraiser.isSubstitute() && includeMember) || (appraiser.isSubstitute() && includeSubstitute)) {
+				if(appraiser.isSubstitute()) {
+					a.setMember("Substituto " + String.valueOf(substitute));
+					substitute++;
+				} else if(!appraiser.isChair()) {
+					a.setMember("Membro " + String.valueOf(member));
+					member++;
+				} else {
+					a.setMember("Presidente");
+				}
+				
 				ret.add(a);
 			}
 		}
@@ -207,15 +207,15 @@ public class JuryAppraiserDataSource extends BasicDataSource {
 		for(JuryAppraiserRequest appraiser : list) {
 			JuryAppraiserDataSource a = new JuryAppraiserDataSource(appraiser);
 			
-			if(appraiser.isSubstitute()) {
-				a.setMember("Substituto " + String.valueOf(substitute));
-				substitute++;
-			} else {
-				a.setMember("Membro " + String.valueOf(member));
-				member++;
-			}
-			
-			if((appraiser.isChair() && includeChair) || (!appraiser.isSubstitute() && includeMember) || (appraiser.isSubstitute() && includeSubstitute)) {
+			if((appraiser.isChair() && includeChair) || (!appraiser.isChair() && !appraiser.isSubstitute() && includeMember) || (appraiser.isSubstitute() && includeSubstitute)) {
+				if(appraiser.isSubstitute()) {
+					a.setMember("Substituto " + String.valueOf(substitute));
+					substitute++;
+				} else {
+					a.setMember("Membro " + String.valueOf(member));
+					member++;
+				}
+				
 				ret.add(a);
 			}
 		}

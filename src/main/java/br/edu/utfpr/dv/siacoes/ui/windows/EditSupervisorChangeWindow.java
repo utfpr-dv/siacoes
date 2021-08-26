@@ -10,7 +10,6 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -252,14 +251,18 @@ public class EditSupervisorChangeWindow extends EditWindow {
 			this.comboNewCosupervisor.setEnabled(false);
 			this.textComments.setEnabled(false);
 			
-			if(!Session.isUserManager(SystemModule.SIGET) || (this.supervisorChange.getApproved() != ChangeFeedback.NONE)){
+			if(this.supervisorChange.getApproved() != ChangeFeedback.NONE){
 				this.setSaveButtonEnabled(false);
 			}
 		}
 		
 		try {
 			if(Document.hasSignature(DocumentType.SUPERVISORCHANGE, this.supervisorChange.getIdSupervisorChange())) {
-				this.disableButtons();
+				if(Session.isUserManager(SystemModule.SIGET)) {
+					this.setSignButtonVisible(false);
+				} else {
+					this.disableButtons();	
+				}
 			} else if(this.supervisorChange.isSupervisorRequest()) {
 				this.setSignButtonEnabled(Session.getUser().getIdUser() == this.supervisorChange.getOldSupervisor().getIdUser());
 			} else {

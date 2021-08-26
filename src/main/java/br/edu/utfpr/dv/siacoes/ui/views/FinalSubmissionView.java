@@ -36,6 +36,7 @@ public class FinalSubmissionView extends ListView<FinalSubmissionDataSource> {
 		this.getGrid().addColumn(FinalSubmissionDataSource::getStudent, "Student").setHeader("Acadêmico");
 		this.getGrid().addColumn(FinalSubmissionDataSource::getFinalScore).setHeader("Pont. Final").setFlexGrow(0).setWidth("150px");
 		this.getGrid().addColumn(new LocalDateRenderer<>(FinalSubmissionDataSource::getDate, "dd/MM/yyyy"), "Date").setHeader("Data").setFlexGrow(0).setWidth("150px");
+		this.getGrid().addColumn(FinalSubmissionDataSource::getSemesterYear, "SemesterYear").setHeader("Sem./Ano").setFlexGrow(0).setWidth("150px");
 		this.getGrid().addColumn(FinalSubmissionDataSource::getFeedbackUser, "FeedbackUser").setHeader("Avaliador");
 		
 		this.buttonFinalReport = new Button("Relatório Final", new Icon(VaadinIcon.FILE_TEXT_O), event -> {

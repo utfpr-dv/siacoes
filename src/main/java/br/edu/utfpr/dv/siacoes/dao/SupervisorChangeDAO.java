@@ -83,6 +83,8 @@ public class SupervisorChangeDAO {
 			}
 			
 			if(change.getApproved() == ChangeFeedback.APPROVED){
+				Statement stmt2 = conn.createStatement();
+				
 				ProposalDAO pdao = new ProposalDAO();
 				Proposal proposal = pdao.findById(change.getProposal().getIdProposal());
 				Semester semester = new SemesterDAO().findByDate(proposal.getDepartment().getCampus().getIdCampus(), change.getApprovalDate());
@@ -95,7 +97,7 @@ public class SupervisorChangeDAO {
 					Project project = pdao2.findCurrentProject(proposal.getStudent().getIdUser(), proposal.getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 					
 					if(project != null){
-						stmt.execute("UPDATE project SET idSupervisor = " + String.valueOf(change.getNewSupervisor().getIdUser()) + ", idCosupervisor = " + ((change.getNewCosupervisor() == null) || (change.getNewCosupervisor().getIdUser() == 0) ? "NULL" : String.valueOf(change.getNewCosupervisor().getIdUser())) + " WHERE idProject = " + String.valueOf(project.getIdProject()));
+						stmt2.execute("UPDATE project SET idSupervisor = " + String.valueOf(change.getNewSupervisor().getIdUser()) + ", idCosupervisor = " + ((change.getNewCosupervisor() == null) || (change.getNewCosupervisor().getIdUser() == 0) ? "NULL" : String.valueOf(change.getNewCosupervisor().getIdUser())) + " WHERE idProject = " + String.valueOf(project.getIdProject()));
 						
 						project.getSupervisor().setIdUser(change.getNewSupervisor().getIdUser());
 						project.getCosupervisor().setIdUser(change.getNewCosupervisor().getIdUser());
@@ -103,13 +105,16 @@ public class SupervisorChangeDAO {
 						new UpdateEvent(conn).registerUpdate(idUser, project);
 					}
 				}else{
-					stmt.execute("UPDATE thesis SET idSupervisor = " + String.valueOf(change.getNewSupervisor().getIdUser()) + ", idCosupervisor = " + ((change.getNewCosupervisor() == null) || (change.getNewCosupervisor().getIdUser() == 0) ? "NULL" : String.valueOf(change.getNewCosupervisor().getIdUser())) + " WHERE idThesis = " + String.valueOf(thesis.getIdThesis()));
+					stmt2.execute("UPDATE thesis SET idSupervisor = " + String.valueOf(change.getNewSupervisor().getIdUser()) + ", idCosupervisor = " + ((change.getNewCosupervisor() == null) || (change.getNewCosupervisor().getIdUser() == 0) ? "NULL" : String.valueOf(change.getNewCosupervisor().getIdUser())) + " WHERE idThesis = " + String.valueOf(thesis.getIdThesis()));
 					
 					thesis.getSupervisor().setIdUser(change.getNewSupervisor().getIdUser());
 					thesis.getCosupervisor().setIdUser(change.getNewCosupervisor().getIdUser());
 					
 					new UpdateEvent(conn).registerUpdate(idUser, thesis);
 				}
+				
+				if((stmt2 != null) && !stmt2.isClosed())
+					stmt2.close();
 			}
 			
 			conn.commit();

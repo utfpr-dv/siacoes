@@ -341,7 +341,7 @@ public class JuryRequestBO {
 			}
 			
 			for(JuryAppraiser a : j.getAppraisers()) {
-				if(!a.isChair() && !a.isSubstitute()) {
+				if(!a.isChair() && !a.isSubstitute() && (a.getAppraiser().getIdUser() != chair.getAppraiser().getIdUser())) {
 					JuryAppraiserRequest appraiser = new JuryAppraiserRequest();
 					
 					appraiser.setAppraiser(a.getAppraiser());
@@ -355,13 +355,15 @@ public class JuryRequestBO {
 			List<ProposalAppraiser> appraisers = new ProposalAppraiserBO().listAppraisers(idProposal);
 			
 			for(ProposalAppraiser a : appraisers) {
-				JuryAppraiserRequest appraiser = new JuryAppraiserRequest();
-				
-				appraiser.setAppraiser(a.getAppraiser());
-				appraiser.setSubstitute(false);
-				appraiser.setChair(false);
-				
-				jury.getAppraisers().add(appraiser);
+				if(a.getAppraiser().getIdUser() != chair.getAppraiser().getIdUser()) {
+					JuryAppraiserRequest appraiser = new JuryAppraiserRequest();
+					
+					appraiser.setAppraiser(a.getAppraiser());
+					appraiser.setSubstitute(false);
+					appraiser.setChair(false);
+					
+					jury.getAppraisers().add(appraiser);
+				}
 			}
 		}
 		

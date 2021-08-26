@@ -43,7 +43,17 @@ public class SupervisorChangeBO {
 		}
 		
 		if((change.getIdSupervisorChange() != 0) && Document.hasSignature(DocumentType.SUPERVISORCHANGE, change.getIdSupervisorChange())) {
-			throw new Exception("Não é possível alterar a solicitação pois ela já foi assinada.");
+			SupervisorChange old = this.findById(change.getIdSupervisorChange());
+			
+			if((old.getApproved() == ChangeFeedback.NONE) && (change.getApproved() != ChangeFeedback.NONE)) {
+				old.setApproved(change.getApproved());
+				old.setApprovalComments(change.getApprovalComments());
+				old.setApprovalDate(change.getApprovalDate());
+				
+				change = old;
+			} else {
+				throw new Exception("Não é possível alterar a solicitação pois ela já foi assinada.");	
+			}
 		}
 		
 		try {

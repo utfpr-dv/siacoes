@@ -216,7 +216,7 @@ public class CertificateBO {
 			if((internship.getRequiredType() != InternshipRequiredType.PROFESSIONAL) && (internship.getRequiredType() != InternshipRequiredType.VALIDATION)){
 				InternshipReportBO bo = new InternshipReportBO();
 				
-				if(!bo.hasReport(internship.getIdInternship(), ReportType.SUPERVISOR, ReportFeedback.APPROVED)){
+				if((internship.getType() == InternshipType.REQUIRED) && !bo.hasReport(internship.getIdInternship(), ReportType.SUPERVISOR, ReportFeedback.APPROVED)){
 					throw new Exception("O professor precisa entregar o relatório de orientação para gerar a declaração.");
 				}
 			}

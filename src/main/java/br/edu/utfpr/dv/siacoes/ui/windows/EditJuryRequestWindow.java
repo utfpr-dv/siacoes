@@ -172,7 +172,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		h2.setMargin(false);
 		h2.setPadding(false);
 		h2.expand(this.gridAppraisers);
-		h2.setHeight("150px");
+		h2.setHeight("135px");
 		h2.setWidth("100%");
 		Details panelAppraisers = new Details();
 		panelAppraisers.setSummaryText("Membros Titulares");
@@ -216,7 +216,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		h3.setMargin(false);
 		h3.setPadding(false);
 		h3.expand(this.gridSubstitutes);
-		h3.setHeight("150px");
+		h3.setHeight("135px");
 		h3.setWidth("100%");
 		Details panelSubstitutes = new Details();
 		panelSubstitutes.setSummaryText("Suplentes");
