@@ -54,7 +54,7 @@ public class AttendanceView extends ListView<AttendanceDataSource> {
 		
 		this.getGrid().addColumn(new LocalDateRenderer<>(AttendanceDataSource::getDate, "dd/MM/yyyy")).setHeader("Data").setFlexGrow(0).setWidth("125px");
 		this.getGrid().addColumn(new LocalDateTimeRenderer<>(AttendanceDataSource::getStart, "HH:mm")).setHeader("Horário Inicial").setFlexGrow(0).setWidth("125px");
-		this.getGrid().addColumn(new LocalDateTimeRenderer<>(AttendanceDataSource::getEnd, "HH:MM")).setHeader("Horário Final").setFlexGrow(0).setWidth("125px");
+		this.getGrid().addColumn(new LocalDateTimeRenderer<>(AttendanceDataSource::getEnd, "HH:mm")).setHeader("Horário Final").setFlexGrow(0).setWidth("125px");
 		this.getGrid().addColumn(AttendanceDataSource::getComments).setHeader("Observaçoes");
 		
 		this.comboSupervisor = new Select<User>();

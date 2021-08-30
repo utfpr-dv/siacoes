@@ -131,6 +131,7 @@ public class SystemInfoView extends LoggedView {
 		tabsToPages.put(tabInfo, tab1);
 		tabsToPages.put(tabChart, tab2);
 		Div pages = new Div(tab1, tab2);
+		pages.setSizeFull();
 		
 		this.tab = new Tabs(tabInfo, tabChart);
 		this.tab.setWidthFull();
