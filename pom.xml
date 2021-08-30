@@ -396,7 +396,7 @@
 		<dependency>
 		    <groupId>org.bouncycastle</groupId>
 		    <artifactId>bcprov-ext-jdk15on</artifactId>
-		    <version>1.66</version>
+		    <version>1.67</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
 		<dependency>
