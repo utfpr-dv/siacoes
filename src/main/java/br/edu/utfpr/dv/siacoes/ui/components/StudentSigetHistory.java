@@ -124,9 +124,16 @@ public class StudentSigetHistory extends HorizontalLayout {
 		layoutButtons2.setPadding(false);
 		layoutButtons2.setWidth("100%");
 		
-		VerticalLayout layoutGrid = new VerticalLayout(this.gridProposals, layoutButtons1, layoutButtons2);
+		VerticalLayout vl = new VerticalLayout(this.gridProposals);
+		vl.setSpacing(false);
+		vl.setMargin(false);
+		vl.setPadding(false);
+		
+		VerticalLayout layoutGrid = new VerticalLayout(vl, layoutButtons1, layoutButtons2);
 		layoutGrid.setSpacing(false);
-		layoutGrid.expand(this.gridProposals);
+		layoutGrid.setMargin(false);
+		layoutGrid.setPadding(false);
+		layoutGrid.expand(vl);
 		layoutGrid.setSizeFull();
 		
 		this.tabsToPages = new HashMap<>();
@@ -141,7 +148,9 @@ public class StudentSigetHistory extends HorizontalLayout {
 		this.tabDocuments.addSelectedChangeListener(event -> {
 		    tabsToPages.values().forEach(page -> page.setVisible(false));
 		    Component selectedPage = tabsToPages.get(this.tabDocuments.getSelectedTab());
-		    selectedPage.setVisible(true);
+		    if(selectedPage != null) {
+		    	selectedPage.setVisible(true);
+		    }
 		});
 		
 		this.setSpacing(true);
@@ -313,6 +322,10 @@ public class StudentSigetHistory extends HorizontalLayout {
 					this.pages.add(page);
 					this.tabsToPages.put(tab, page);
 				}
+			}
+			
+			if(this.tabsToPages.size() > 0) {
+				((Component)this.tabsToPages.values().toArray()[0]).setVisible(true);
 			}
 		} catch(Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);

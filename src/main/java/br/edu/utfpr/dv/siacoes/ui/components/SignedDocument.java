@@ -56,9 +56,9 @@ public class SignedDocument extends VerticalLayout {
 		this.panelDocument.setSpacing(false);
 		this.panelDocument.setSizeFull();
 		
-		this.add(new H4("Documento"));
+		//this.add(new H4("Documento"));
 		this.add(this.panelDocument);
-		this.add(new H4("Assinaturas"));
+		//this.add(new H4("Assinaturas"));
 		this.add(this.gridSignatures);
 		if(showRevoke) {
 			this.add(this.buttonRevokeSignatures);

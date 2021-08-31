@@ -66,6 +66,7 @@ public class StudentHistoryView extends LoggedView implements HasUrlParameter<St
     	panelFilter.setContent(layoutFilter);
     	panelFilter.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
 		panelFilter.setOpened(true);
+		panelFilter.getElement().getStyle().set("width", "100%");
 		
 		this.tabsToPages = new HashMap<>();
 		
@@ -90,14 +91,8 @@ public class StudentHistoryView extends LoggedView implements HasUrlParameter<St
 		layoutTab.setMargin(false);
 		layoutTab.setPadding(false);
     	
-		Details panelHistory = new Details();
-		panelHistory.setSummaryText("Histórico");
-    	panelHistory.setContent(layoutTab);
-    	panelHistory.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-    	panelHistory.setOpened(true);
-    	
-    	VerticalLayout layout = new VerticalLayout(panelFilter, panelHistory);
-    	layout.expand(panelHistory);
+    	VerticalLayout layout = new VerticalLayout(panelFilter, layoutTab);
+    	layout.expand(layoutTab);
     	layout.setSizeFull();
     	layout.setSpacing(false);
 		layout.setMargin(false);
