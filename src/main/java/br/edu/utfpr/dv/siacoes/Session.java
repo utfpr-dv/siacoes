@@ -245,7 +245,7 @@ public class Session {
 		}
 		
 		if(module == SystemModule.GENERAL){
-			return true;
+			return false;
 		}else if((module == SystemModule.SIGAC) && Session.getSelectedDepartment().isSigacManager()){
 			return true;
 		}else if((module == SystemModule.SIGES) && Session.getSelectedDepartment().isSigesManager()){

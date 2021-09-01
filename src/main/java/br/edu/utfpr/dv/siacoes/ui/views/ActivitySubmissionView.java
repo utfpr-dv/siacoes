@@ -403,8 +403,10 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 	public void beforeEnter(BeforeEnterEvent event) {
 		super.beforeEnter(event);
 		
-		if(!Session.isUserManager(this.getModule()) && !Session.isUserDepartmentManager() && !Session.isUserStudent()) {
-			event.rerouteTo("403");
+		if(Session.isAuthenticated()) {
+			if(!Session.isUserManager(this.getModule()) && !Session.isUserDepartmentManager() && !Session.isUserStudent()) {
+				event.rerouteTo("403");
+			}
 		}
 	}
 
