@@ -22,7 +22,7 @@ public class CampusView extends ListView<CampusDataSource> {
 	public CampusView(){
 		super(SystemModule.GENERAL);
 		
-		this.setProfilePerimissions(UserProfile.PROFESSOR);
+		this.setProfilePerimissions(UserProfile.ADMINISTRATOR);
 		
 		this.getGrid().addColumn(CampusDataSource::getName, "Name").setHeader("Nome");
 		this.getGrid().addColumn(CampusDataSource::getActive).setHeader("Ativo").setFlexGrow(0).setWidth("100px");
