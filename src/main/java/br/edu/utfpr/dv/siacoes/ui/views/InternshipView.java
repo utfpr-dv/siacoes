@@ -242,7 +242,7 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 	}
 	
 	private void configureProfile(){
-		if((this.profile != UserProfile.MANAGER) || !Session.isUserManager(this.getModule())) {
+		if((this.profile != UserProfile.MANAGER) || (!Session.isUserManager(this.getModule()) && !Session.isUserDepartmentManager())) {
 			this.setFiltersVisible(false);
 			this.setAddVisible(false);
 			this.setDeleteVisible(false);
@@ -723,7 +723,7 @@ public class InternshipView extends ListView<InternshipDataSource> implements Ha
 			try{
 				int p = Integer.parseInt(parameter);
 				
-				if((p == 1) && Session.isUserManager(SystemModule.SIGES) || Session.isUserDepartmentManager()){
+				if((p == 1) && (Session.isUserManager(SystemModule.SIGES) || Session.isUserDepartmentManager())){
 					this.profile = UserProfile.MANAGER;
 				}
 			}catch(Exception e){
