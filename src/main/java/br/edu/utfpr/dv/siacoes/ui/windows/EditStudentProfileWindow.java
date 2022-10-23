@@ -67,6 +67,7 @@ public class EditStudentProfileWindow extends EditWindow {
 		this.textEmail = new TextField("E-mail");
 		this.textEmail.setWidth("400px");
 		this.textEmail.setMaxLength(100);
+		this.textEmail.setEnabled(user.getIdUser() == Session.getUser().getIdUser());
 		
 		this.comboCampus = new CampusComboBox();
 		
@@ -139,6 +140,7 @@ public class EditStudentProfileWindow extends EditWindow {
 		tabCustomization.setVisible(false);
 		
 		Tab tab2 = new Tab("Personalização");
+		tab2.setVisible(user.getIdUser() == Session.getUser().getIdUser());
 		
 		Map<Tab, Component> tabsToPages = new HashMap<>();
 		tabsToPages.put(tab1, tabData);

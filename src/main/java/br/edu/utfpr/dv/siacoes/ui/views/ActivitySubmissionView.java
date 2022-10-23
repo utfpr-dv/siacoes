@@ -28,16 +28,20 @@ import com.vaadin.flow.router.Route;
 import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.ActivitySubmissionBO;
 import br.edu.utfpr.dv.siacoes.bo.FinalSubmissionBO;
+import br.edu.utfpr.dv.siacoes.bo.UserDepartmentBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.ui.components.StudentComboBox;
 import br.edu.utfpr.dv.siacoes.ui.grid.ActivitySubmissionDataSource;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditActivitySubmissionWindow;
+import br.edu.utfpr.dv.siacoes.ui.windows.EditStudentProfileWindow;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionFooterReport;
 import br.edu.utfpr.dv.siacoes.model.FinalSubmission;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission.ActivityFeedback;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.model.User;
+import br.edu.utfpr.dv.siacoes.model.User.UserProfile;
+import br.edu.utfpr.dv.siacoes.model.UserDepartment;
 import br.edu.utfpr.dv.siacoes.ui.MainLayout;
 
 @PageTitle("Submissão de Atividades")
@@ -50,6 +54,7 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 	private final TextField textDescription;
 	private final Button buttonFinalReport;
 	private final Button buttonFinalSubmission;
+	private final Button buttonStudentProfile;
 	
 	private final VerticalLayout layoutScore;
 	private final VerticalLayout layoutLabel;
@@ -99,6 +104,12 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 		this.buttonFinalSubmission = new Button("Finalizar Processo", event -> {
 			finalSubmission();
         });
+		this.buttonFinalSubmission.setIcon(new Icon(VaadinIcon.CLIPBOARD_CHECK));
+		
+		this.buttonStudentProfile = new Button("Perfil do Acadêmico", event -> {
+			studentProfile();
+        });
+		this.buttonStudentProfile.setIcon(new Icon(VaadinIcon.USER));
 		
 		this.layoutScore = new VerticalLayout();
 		this.layoutScore.setSpacing(false);
@@ -179,6 +190,7 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 		
 		if(Session.isUserManager(this.getModule())) {
 			this.addActionButton(this.buttonFinalSubmission);
+			this.addActionButton(this.buttonStudentProfile);
 		}
 		
 		this.panelScore = new Details("Pontuação", this.layoutScore);
@@ -230,6 +242,7 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 		
 		this.buttonFinalReport.setEnabled(true);
 		this.buttonFinalSubmission.setEnabled(true);
+		this.buttonStudentProfile.setEnabled(true);
 		this.panelScore.setVisible(true);
 		this.panelLabel.setVisible(false);
 		
@@ -246,6 +259,7 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 			if(Session.isUserManager(this.getModule()) || Session.isUserDepartmentManager()) {
 				this.buttonFinalReport.setEnabled(false);
 				this.buttonFinalSubmission.setEnabled(false);
+				this.buttonStudentProfile.setEnabled(false);
 				this.panelScore.setVisible(false);
 				this.panelLabel.setVisible(true);
 				
@@ -265,6 +279,7 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 					
 					this.buttonFinalReport.setEnabled(true);
 					this.buttonFinalSubmission.setEnabled(true);
+					this.buttonStudentProfile.setEnabled(true);
 					this.panelScore.setVisible(true);
 					this.panelLabel.setVisible(false);
 				} else {
@@ -329,6 +344,24 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 			
 			this.showErrorNotification("Gerar Relatório", e.getMessage());
+		}
+	}
+	
+	private void studentProfile() {
+		try {
+			User student = this.comboStudent.getStudent();
+			UserDepartment profile = new UserDepartmentBO().find(student.getIdUser(), UserProfile.STUDENT, Session.getSelectedDepartment().getDepartment().getIdDepartment());
+			
+			if((profile != null) && (profile.getIdUserDepartment() != 0)) {
+				EditStudentProfileWindow window = new EditStudentProfileWindow(student, profile);
+				window.open();
+			} else {
+				this.showWarningNotification("Perfil do Acadêmico", "Não foi possível encontrar o perfil do acadêmico.");
+			}
+		} catch (Exception e) {
+			Logger.log(Level.SEVERE, e.getMessage(), e);
+			
+			this.showErrorNotification("Perfil do Acadêmico", e.getMessage());
 		}
 	}
 	
