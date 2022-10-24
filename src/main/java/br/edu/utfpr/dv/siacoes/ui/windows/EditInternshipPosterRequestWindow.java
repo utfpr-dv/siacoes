@@ -21,6 +21,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 
 import br.edu.utfpr.dv.siacoes.Session;
+import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipPosterAppraiserRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipPosterRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
@@ -70,7 +71,7 @@ public class EditInternshipPosterRequestWindow extends EditWindow {
 			if(this.request.getIdInternshipPosterRequest() == 0) {
 				this.config = new SigesConfigBO().findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
 			} else {
-				this.config = new SigesConfigBO().findByDepartment(this.request.getInternship().getDepartment().getIdDepartment());
+				this.config = new SigesConfigBO().findByDepartment(new InternshipBO().findIdDepartment(this.request.getInternship().getIdInternship()));
 			}
 		} catch(Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
@@ -262,7 +263,7 @@ public class EditInternshipPosterRequestWindow extends EditWindow {
 			
 			this.parentViewRefreshGrid();
 			
-			if((Session.getUser().getIdUser() == this.request.getInternship().getStudent().getIdUser()) && this.config.isUseDigitalSignature()) {
+			if(((Session.getUser().getIdUser() == this.request.getInternship().getStudent().getIdUser()) || (Session.getUser().getIdUser() == this.request.getInternship().getSupervisor().getIdUser())) && this.config.isUseDigitalSignature()) {
 				this.sign();
 			} else {
 				this.showReport(new InternshipPosterRequestBO().getPosterRequestForm(this.request.getIdInternshipPosterRequest()));
