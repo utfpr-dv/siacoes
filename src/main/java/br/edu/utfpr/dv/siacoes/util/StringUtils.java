@@ -20,7 +20,7 @@ public class StringUtils {
 		return s.substring(s.lastIndexOf("-") + 1);
 	}
 	
-	public static String getFormattedBytes(int bytes) {
+	public static String getFormattedBytes(long bytes) {
 		String[] units = {"bytes", "KB", "MB", "GB", "TB", "PB", "YB"};
 		int i = 0;
 		float bytes2 = bytes;

@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class SystemDAO {
 	
-	public int getDatabaseSize() throws SQLException {
+	public long getDatabaseSize() throws SQLException {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -21,7 +21,7 @@ public class SystemDAO {
 					"WHERE relkind = 'r'");
 			
 			if(rs.next()) {
-				return rs.getInt("total");
+				return rs.getLong("total");
 			} else {
 				return 0;
 			}
@@ -35,7 +35,7 @@ public class SystemDAO {
 		}
 	}
 	
-	public int getCertificatesSize() throws SQLException {
+	public long getCertificatesSize() throws SQLException {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -49,7 +49,7 @@ public class SystemDAO {
 					"WHERE relkind = 'r' AND relname = 'certificate'");
 			
 			if(rs.next()) {
-				return rs.getInt("total");
+				return rs.getLong("total");
 			} else {
 				return 0;
 			}
@@ -63,7 +63,7 @@ public class SystemDAO {
 		}
 	}
 
-	public int getSigacSize() throws SQLException {
+	public long getSigacSize() throws SQLException {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -77,7 +77,7 @@ public class SystemDAO {
 					"WHERE relkind = 'r' AND relname IN ('activitysubmission', 'finalsubmission')");
 			
 			if(rs.next()) {
-				return rs.getInt("total");
+				return rs.getLong("total");
 			} else {
 				return 0;
 			}
@@ -91,7 +91,7 @@ public class SystemDAO {
 		}
 	}
 	
-	public int getSigesSize() throws SQLException {
+	public long getSigesSize() throws SQLException {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -105,7 +105,7 @@ public class SystemDAO {
 					"WHERE relkind = 'r' AND relname IN ('internship', 'internshipfinaldocument', 'internshipjuryappraiser', 'internshipreport')");
 			
 			if(rs.next()) {
-				return rs.getInt("total");
+				return rs.getLong("total");
 			} else {
 				return 0;
 			}
@@ -119,7 +119,7 @@ public class SystemDAO {
 		}
 	}
 	
-	public int getSigetSize() throws SQLException {
+	public long getSigetSize() throws SQLException {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -133,7 +133,7 @@ public class SystemDAO {
 					"WHERE relkind = 'r' AND relname IN ('finaldocument', 'juryappraiser', 'project', 'proposal', 'proposalappraiser', 'thesis')");
 			
 			if(rs.next()) {
-				return rs.getInt("total");
+				return rs.getLong("total");
 			} else {
 				return 0;
 			}
@@ -147,7 +147,7 @@ public class SystemDAO {
 		}
 	}
 	
-	public int getLogSize() throws SQLException {
+	public long getLogSize() throws SQLException {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -161,7 +161,7 @@ public class SystemDAO {
 					"WHERE relkind = 'r' AND relname IN ('loginlog', 'eventlog')");
 			
 			if(rs.next()) {
-				return rs.getInt("total");
+				return rs.getLong("total");
 			} else {
 				return 0;
 			}
@@ -175,7 +175,7 @@ public class SystemDAO {
 		}
 	}
 	
-	public int getSignatureSize() throws SQLException {
+	public long getSignatureSize() throws SQLException {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -189,7 +189,7 @@ public class SystemDAO {
 					"WHERE relkind = 'r' AND relname IN ('signature', 'signaturekey', 'signdocument')");
 			
 			if(rs.next()) {
-				return rs.getInt("total");
+				return rs.getLong("total");
 			} else {
 				return 0;
 			}

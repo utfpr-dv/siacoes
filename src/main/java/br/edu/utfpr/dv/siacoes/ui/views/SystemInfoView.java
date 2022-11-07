@@ -96,12 +96,14 @@ public class SystemInfoView extends LoggedView {
         });
 		this.buttonLoginFilter.setWidth("150px");
 		
-		HorizontalLayout h1 = new HorizontalLayout(this.textLoginYear, this.comboLoginMonth, this.optionFilterLogin, this.buttonLoginFilter);
+		VerticalLayout v1 = new VerticalLayout(this.buttonLoginFilter);
+		
+		HorizontalLayout h1 = new HorizontalLayout(this.textLoginYear, this.comboLoginMonth, this.optionFilterLogin, v1);
 		h1.setSizeFull();
 		h1.setSpacing(true);
 		h1.setMargin(false);
 		h1.setPadding(false);
-		h1.expand(this.buttonLoginFilter);
+		h1.expand(v1);
 		
 		this.panelLoginFilter = new Details();
 		this.panelLoginFilter.setSummaryText("Filtros");

@@ -9,7 +9,7 @@ import br.edu.utfpr.dv.siacoes.util.StringUtils;
 
 public class SystemBO {
 
-	public int getDatabaseSize() throws Exception {
+	public long getDatabaseSize() throws Exception {
 		try {
 			return new SystemDAO().getDatabaseSize();
 		} catch (SQLException e) {
@@ -19,7 +19,7 @@ public class SystemBO {
 		}
 	}
 	
-	public int getCertificatesSize() throws Exception {
+	public long getCertificatesSize() throws Exception {
 		try {
 			return new SystemDAO().getCertificatesSize();
 		} catch (SQLException e) {
@@ -29,7 +29,7 @@ public class SystemBO {
 		}
 	}
 	
-	public int getSigacSize() throws Exception {
+	public long getSigacSize() throws Exception {
 		try {
 			return new SystemDAO().getSigacSize();
 		} catch (SQLException e) {
@@ -39,7 +39,7 @@ public class SystemBO {
 		}
 	}
 	
-	public int getSigesSize() throws Exception {
+	public long getSigesSize() throws Exception {
 		try {
 			return new SystemDAO().getSigesSize();
 		} catch (SQLException e) {
@@ -49,7 +49,7 @@ public class SystemBO {
 		}
 	}
 	
-	public int getSigetSize() throws Exception {
+	public long getSigetSize() throws Exception {
 		try {
 			return new SystemDAO().getSigetSize();
 		} catch (SQLException e) {
@@ -59,7 +59,7 @@ public class SystemBO {
 		}
 	}
 	
-	public int getLogSize() throws Exception {
+	public long getLogSize() throws Exception {
 		try {
 			return new SystemDAO().getLogSize();
 		} catch (SQLException e) {
@@ -69,7 +69,7 @@ public class SystemBO {
 		}
 	}
 	
-	public int getSignatureSize() throws Exception {
+	public long getSignatureSize() throws Exception {
 		try {
 			return new SystemDAO().getSignatureSize();
 		} catch (SQLException e) {
