@@ -260,7 +260,7 @@ public class ActivitySubmissionDAO {
 					"INNER JOIN activitygroup ON activitygroup.idActivityGroup=activity.idActivityGroup " +
 					"INNER JOIN activityunit ON activityunit.idActivityUnit=activity.idActivityUnit " +
 					"LEFT JOIN \"user\" feedbackUser ON feedbackUser.idUser=activitysubmission.idfeedbackuser " +
-					"LEFT JOIN proposal ON (proposal.idStudent=activitysubmission.idStudent AND proposal.idDepartment=activitysubmission.idDepartment) " +
+					"LEFT JOIN (SELECT idStudent, idDepartment, MAX(idProposal) AS idProposal FROM proposal GROUP BY idStudent, idDepartment) proposal ON (proposal.idStudent=activitysubmission.idStudent AND proposal.idDepartment=activitysubmission.idDepartment) " +
 					"LEFT JOIN project ON project.idProposal=proposal.idProposal " +
 					"WHERE NOT EXISTS(SELECT idfinalsubmission FROM finalsubmission WHERE activitysubmission.idStudent=finalsubmission.idStudent AND activitysubmission.idDepartment=finalsubmission.idDepartment) " +
 					"AND activitysubmission.feedback=0 AND activitysubmission.idDepartment=" + String.valueOf(idDepartment) + 
