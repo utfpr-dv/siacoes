@@ -238,7 +238,7 @@ public class ProjectDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
 					"SELECT project.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName " +
-					"FROM project INNER JOIN proposal ON proposal.idProposal=project.idProject " + 
+					"FROM project INNER JOIN proposal ON proposal.idProposal=project.idProposal " + 
 					"INNER JOIN \"user\" student ON student.idUser=project.idStudent " +
 					"INNER JOIN \"user\" supervisor ON supervisor.idUser=project.idSupervisor " + 
 					"LEFT JOIN \"user\" cosupervisor ON cosupervisor.idUser=project.idCosupervisor " +
@@ -385,7 +385,7 @@ public class ProjectDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
 				"SELECT project.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName " +
-				"FROM project INNER JOIN proposal ON proposal.idProposal=project.idProject " +
+				"FROM project INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
 				"INNER JOIN \"user\" student ON student.idUser=project.idStudent " +
 				"INNER JOIN \"user\" supervisor ON supervisor.idUser=project.idSupervisor " +
 				"LEFT JOIN \"user\" cosupervisor on cosupervisor.idUser=project.idCosupervisor " +
@@ -422,7 +422,7 @@ public class ProjectDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.prepareStatement(
 				"SELECT project.*, student.name as studentName, supervisor.name as supervisorName, cosupervisor.name as cosupervisorName " +
-				"FROM project INNER JOIN proposal ON proposal.idProposal=project.idProject " +
+				"FROM project INNER JOIN proposal ON proposal.idProposal=project.idProposal " +
 				"INNER JOIN \"user\" student ON student.idUser=project.idStudent " +
 				"INNER JOIN \"user\" supervisor ON supervisor.idUser=project.idSupervisor " +
 				"LEFT JOIN \"user\" cosupervisor on cosupervisor.idUser=project.idCosupervisor " +
