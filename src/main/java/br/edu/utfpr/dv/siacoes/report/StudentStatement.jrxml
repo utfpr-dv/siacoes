@@ -114,7 +114,7 @@
 					<font size="12"/>
 					<paragraph lineSpacing="1_1_2"/>
 				</textElement>
-				<textFieldExpression><![CDATA["                                              Declaro para os devidos fins de direito que o(a) acadêmico(a) " + $F{name} + ", registro acadêmico " + $F{studentCode} + ", esteve presente e acompanhou a Defesa Pública de " + $F{event} + " do(a) acadêmico(a) " + $F{student} + IF(FIND($F{event}, "TCC") >= 0, " com tema \"" + $F{title} + "\"", " realizado na empresa " + $F{company}) + ", a qual ocorreu no dia " + DATEFORMAT($F{date}, "dd/MM/yyyy") + ", com início às " + DATEFORMAT($F{startTime}, "HH:mm") + " e término às " + DATEFORMAT($F{endTime}, "HH:mm") + "."]]></textFieldExpression>
+				<textFieldExpression><![CDATA["                                              Declaro para os devidos fins de direito que o(a) acadêmico(a) " + $F{name} + ", registro acadêmico " + $F{studentCode} + ", esteve presente e acompanhou a Defesa Pública de " + $F{event} + " do(a) acadêmico(a) " + $F{student} + IF(FIND($F{event}, "Trabalho de Conclusão de Curso") >= 0, " com tema \"" + $F{title} + "\"", " realizado na empresa " + $F{company}) + ", a qual ocorreu no dia " + DATEFORMAT($F{date}, "dd/MM/yyyy") + ", com início às " + DATEFORMAT($F{startTime}, "HH:mm") + " e término às " + DATEFORMAT($F{endTime}, "HH:mm") + "."]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="416" width="480" height="21" uuid="9ab6c1d1-a15d-42ab-9feb-82f650c117ba"/>

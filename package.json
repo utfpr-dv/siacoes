@@ -60,7 +60,7 @@
     "@fullcalendar/daygrid": "4.4.2",
     "moment-timezone": "0.5.28",
     "@fullcalendar/moment": "4.4.2",
-    "apexcharts": "3.20.2",
+    "apexcharts": "3.26.3",
     "onecolor": "3.1.0"
   },
   "devDependencies": {
@@ -143,7 +143,7 @@
       "@fullcalendar/daygrid": "4.4.2",
       "moment-timezone": "0.5.28",
       "@fullcalendar/moment": "4.4.2",
-      "apexcharts": "3.20.2",
+      "apexcharts": "3.26.3",
       "onecolor": "3.1.0"
     },
     "devDependencies": {
@@ -166,6 +166,6 @@
       "html-webpack-plugin": "3.2.0",
       "typescript": "3.8.3"
     },
-    "hash": "8302e88af7c55d9c6324401fe8bc6a059ad04e2882198933987160c3413c47e5"
+    "hash": "7bded029431522a1fba6210c78b053ef9406ea015ae0037ca5f7e7cf88b67786"
   }
 }

@@ -256,7 +256,7 @@ public class MainLayout extends FlexBoxLayout implements RouterLayout, AfterNavi
 		
 		menu.addNaviItem(VaadinIcon.ENVELOPE, this.getUnreadMessages(), "Mensagens", MessageView.class);
 		
-		if((AppConfig.getInstance().isSigetEnabled() && sigetConfig.isUseDigitalSignature()) || (AppConfig.getInstance().isSigesEnabled() && sigesConfig.isUseDigitalSignature()) || (AppConfig.getInstance().isSigacEnabled() && sigacConfig.isUseDigitalSignature())) {
+		if((AppConfig.getInstance().isSigetEnabled() && (Session.getSelectedDepartment().getDepartment().getIdDepartment() == 0 || sigetConfig.isUseDigitalSignature())) || (AppConfig.getInstance().isSigesEnabled() && (Session.getSelectedDepartment().getDepartment().getIdDepartment() == 0 || sigesConfig.isUseDigitalSignature())) || (AppConfig.getInstance().isSigacEnabled() && (Session.getSelectedDepartment().getDepartment().getIdDepartment() == 0 || sigacConfig.isUseDigitalSignature()))) {
 			menu.addNaviItem(VaadinIcon.EDIT, this.getUnsignedDocuments(), "Central de Assinaturas", SignatureView.class);
 		}
 		

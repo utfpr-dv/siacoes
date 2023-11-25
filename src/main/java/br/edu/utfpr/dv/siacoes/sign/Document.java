@@ -299,8 +299,8 @@ public class Document {
 				for(SignDataset.Signature s : ((SignDataset)dataset).getSignatures()) {
 					if(sign.getUser().getIdUser() == s.getIdUser()) {
 						s.setName(sign.getUser().getName());
-						s.setSignature(new ByteArrayInputStream(com.will.signature.Signature.getSignature(s.getName(), com.will.signature.Signature.SignFont.PECITA, sign.isRevoked())));
-						s.setRubric(new ByteArrayInputStream(com.will.signature.Signature.getSignature(s.getName().substring(0, s.getName().indexOf(" ")).trim(), com.will.signature.Signature.SignFont.PECITA, sign.isRevoked())));
+						s.setSignature(new ByteArrayInputStream(SignatureWriting.getSignature(s.getName(), SignatureWriting.SignFont.PECITA, sign.isRevoked())));
+						s.setRubric(new ByteArrayInputStream(SignatureWriting.getSignature(s.getName().substring(0, s.getName().indexOf(" ")).trim(), SignatureWriting.SignFont.PECITA, sign.isRevoked())));
 					}
 				}
 			}
