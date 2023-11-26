@@ -16,6 +16,7 @@ public class Thesis implements Serializable {
 	private User student;
 	private User supervisor;
 	private User cosupervisor;
+	private ThesisFormat format;
 	private transient byte[] file;
 	private int semester;
 	private int year;
@@ -30,6 +31,7 @@ public class Thesis implements Serializable {
 		this.setStudent(new User());
 		this.setSupervisor(new User());
 		this.setCosupervisor(null);
+		this.setFormat(new ThesisFormat());
 		this.setFile(null);
 		this.setSemester(DateUtils.getSemester());
 		this.setYear(DateUtils.getYear());
@@ -45,6 +47,7 @@ public class Thesis implements Serializable {
 		this.setStudent(student);
 		this.setSupervisor(project.getSupervisor());
 		this.setCosupervisor(project.getCosupervisor());
+		this.setFormat(new ThesisFormat());
 		this.setFile(null);
 		this.setSemester(DateUtils.getSemester());
 		this.setYear(DateUtils.getYear());
@@ -93,6 +96,12 @@ public class Thesis implements Serializable {
 	}
 	public void setCosupervisor(User cosupervisor){
 		this.cosupervisor = cosupervisor;
+	}
+	public ThesisFormat getFormat() {
+		return format;
+	}
+	public void setFormat(ThesisFormat format) {
+		this.format = format;
 	}
 	public byte[] getFile() {
 		return file;

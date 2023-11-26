@@ -643,6 +643,7 @@ CREATE INDEX fk_supervisorchange_proposal_idx ON supervisorchange (idProposal);
 CREATE TABLE project (
   idproject SERIAL NOT NULL,
   idproposal INT NOT NULL,
+  idthesisformat INT NOT NULL,
   title VARCHAR(255) NOT NULL,
   subarea VARCHAR(255) NOT NULL,
   idstudent INT NOT NULL,
@@ -657,16 +658,19 @@ CREATE TABLE project (
   CONSTRAINT fk_project_cosupervisor FOREIGN KEY (idcosupervisor) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_project_proposal FOREIGN KEY (idproposal) REFERENCES proposal (idproposal) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_project_student FOREIGN KEY (idstudent) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT fk_project_supervisor FOREIGN KEY (idsupervisor) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT fk_project_supervisor FOREIGN KEY (idsupervisor) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT fk_project_thesisformat FOREIGN KEY (idthesisformat) REFERENCES thesisformat (idthesisformat) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 CREATE INDEX fk_project_proposal_idx ON project (idproposal);
 CREATE INDEX fk_project_student_idx ON project (idstudent);
 CREATE INDEX fk_project_supervisor_idx ON project (idsupervisor);
 CREATE INDEX fk_project_cosupervisor_idx ON project (idcosupervisor);
+CREATE INDEX fk_project_thesisformat_idx ON project (idthesisformat);
 
 CREATE TABLE thesis (
   idthesis SERIAL NOT NULL,
   idproject INT NOT NULL,
+  idthesisformat INT NOT NULL,
   title VARCHAR(255) NOT NULL,
   subarea VARCHAR(255) NOT NULL,
   idstudent INT NOT NULL,
@@ -681,12 +685,14 @@ CREATE TABLE thesis (
   CONSTRAINT fk_thesis_cosupervisor FOREIGN KEY (idcosupervisor) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_thesis_project FOREIGN KEY (idproject) REFERENCES project (idproject) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_thesis_student FOREIGN KEY (idstudent) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT fk_thesis_supervisor FOREIGN KEY (idsupervisor) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT fk_thesis_supervisor FOREIGN KEY (idsupervisor) REFERENCES "user" (iduser) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT fk_thesis_thesisformat FOREIGN KEY (idthesisformat) REFERENCES thesisformat (idthesisformat) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 CREATE INDEX fk_thesis_project_idx ON thesis (idproject);
 CREATE INDEX fk_thesis_student_idx ON thesis (idstudent);
 CREATE INDEX fk_thesis_supervisor_idx ON thesis (idsupervisor);
 CREATE INDEX fk_thesis_cosupervisor_idx ON thesis (idcosupervisor);
+CREATE INDEX fk_thesis_thesisformat_idx ON thesis (idthesisformat);
 
 CREATE TABLE finaldocument (
   idfinaldocument SERIAL NOT NULL,
@@ -710,9 +716,19 @@ CREATE TABLE finaldocument (
 CREATE INDEX fk_finaldocument_idproject_idx ON finaldocument (idProject);
 CREATE INDEX fk_finaldocument_idthesis_idx ON finaldocument (idThesis);
 
+CREATE TABLE thesisformat (
+  idthesisformat SERIAL NOT NULL,
+  idDepartment INT NOT NULL,
+  description VARCHAR(255) NOT NULL,
+  active SMALLINT NOT NULL,
+  PRIMARY KEY (idthesisformat),
+  CONSTRAINT fk_thesisformat_department FOREIGN KEY (idDepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+CREATE INDEX fk_thesisformat_department_idx ON thesisformat (idDepartment);
+
 CREATE TABLE evaluationitem (
   idevaluationItem SERIAL NOT NULL,
-  idDepartment INT NOT NULL,
+  idthesisformat INT NOT NULL,
   description VARCHAR(255) NOT NULL,
   ponderosity REAL NOT NULL,
   stage SMALLINT NOT NULL,
@@ -720,9 +736,9 @@ CREATE TABLE evaluationitem (
   sequence SMALLINT NOT NULL,
   type SMALLINT NOT NULL,
   PRIMARY KEY (idevaluationItem),
-  CONSTRAINT fk_evaluationitem_department FOREIGN KEY (idDepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT fk_evaluationitem_thesisformat FOREIGN KEY (idthesisformat) REFERENCES thesisformat (idthesisformat) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
-CREATE INDEX fk_evaluationitem_department_idx ON evaluationitem (idDepartment);
+CREATE INDEX fk_evaluationitem_thesisformat_idx ON evaluationitem (idthesisformat);
 
 CREATE TABLE jury (
   idjury SERIAL NOT NULL,

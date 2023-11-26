@@ -23,9 +23,9 @@ public class EvaluationItemBO {
 	}
 	
 	public boolean hasScores(int idEvaluationItem){
-		EvaluationItemDAO dao = new EvaluationItemDAO();
-		
 		try {
+			EvaluationItemDAO dao = new EvaluationItemDAO();
+			
 			return dao.hasScores(idEvaluationItem);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
@@ -34,11 +34,11 @@ public class EvaluationItemBO {
 		}
 	}
 	
-	public List<EvaluationItem> listAll(boolean onlyActives) throws Exception{
+	public List<EvaluationItem> listByFormat(int idFormat, boolean onlyActives) throws Exception{
 		try {
 			EvaluationItemDAO dao = new EvaluationItemDAO();
 			
-			return dao.listAll(onlyActives);
+			return dao.listByFormat(idFormat, onlyActives);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
@@ -46,26 +46,14 @@ public class EvaluationItemBO {
 		}
 	}
 	
-	public List<EvaluationItem> listByDepartment(int idDepartment, boolean onlyActives) throws Exception{
-		try {
-			EvaluationItemDAO dao = new EvaluationItemDAO();
-			
-			return dao.listByDepartment(idDepartment, onlyActives);
-		} catch (SQLException e) {
-			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-			
-			throw new Exception(e.getMessage());
-		}
-	}
-	
-	public List<EvaluationItem> listByStage(int stage, int idDepartment, boolean onlyActives) throws Exception{
+	public List<EvaluationItem> listByStage(int stage, int idFormat, boolean onlyActives) throws Exception{
 		try {
 			EvaluationItemDAO dao = new EvaluationItemDAO();
 			
 			if(stage == 0){
-				return dao.listByDepartment(idDepartment, onlyActives);
+				return dao.listByFormat(idFormat, onlyActives);
 			}else{
-				return dao.listByStage(stage, idDepartment, onlyActives);
+				return dao.listByStage(stage, idFormat, onlyActives);
 			}
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
@@ -76,6 +64,9 @@ public class EvaluationItemBO {
 	
 	public int save(int idUser, EvaluationItem item) throws Exception{
 		try {
+			if(item.getFormat().getIdThesisFormat() == 0) {
+				throw new Exception("Informe o formato de TCC do quesito.");
+			}
 			if(item.getDescription().isEmpty()){
 				throw new Exception("Informe a descrição do quesito.");
 			}
@@ -111,38 +102,6 @@ public class EvaluationItemBO {
 	
 	public boolean delete(int idUser, EvaluationItem item) throws Exception{
 		return this.delete(idUser, item.getIdEvaluationItem());
-	}
-	
-	public void moveUp(int idEvaluationItem) throws Exception{
-		try {
-			EvaluationItemDAO dao = new EvaluationItemDAO();
-			
-			dao.moveUp(idEvaluationItem);
-		} catch (SQLException e) {
-			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-			
-			throw new Exception(e.getMessage());
-		}
-	}
-	
-	public void moveUp(EvaluationItem item) throws Exception{
-		this.moveUp(item.getIdEvaluationItem());
-	}
-	
-	public void moveDown(int idEvaluationItem) throws Exception{
-		try {
-			EvaluationItemDAO dao = new EvaluationItemDAO();
-			
-			dao.moveDown(idEvaluationItem);
-		} catch (SQLException e) {
-			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
-			
-			throw new Exception(e.getMessage());
-		}
-	}
-	
-	public void moveDown(EvaluationItem item) throws Exception{
-		this.moveDown(item.getIdEvaluationItem());
 	}
 
 }

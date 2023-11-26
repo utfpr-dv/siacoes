@@ -112,6 +112,9 @@ public class ThesisBO {
 		if((thesis.getSupervisor() == null) || (thesis.getSupervisor().getIdUser() == 0)){
 			throw new Exception("Informe o Professor Orientador.");
 		}
+		if((thesis.getFormat() == null) || (thesis.getFormat().getIdThesisFormat() == 0)) {
+			throw new Exception("Informe o formato do TCC 2.");
+		}
 		if((thesis.getSemester() == 0) || (thesis.getYear() == 0)){
 			throw new Exception("Informe o ano e semestre da monografia.");
 		}

@@ -459,9 +459,9 @@ public class ProjectDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO project(idProposal, semester, year, title, subarea, idStudent, idSupervisor, idCosupervisor, file, submissionDate, abstract) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO project(idProposal, semester, year, title, subarea, idStudent, idSupervisor, idCosupervisor, file, submissionDate, abstract, idThesisFormat) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?. ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE project SET idProposal=?, semester=?, year=?, title=?, subarea=?, idStudent=?, idSupervisor=?, idCosupervisor=?, file=?, submissionDate=?, abstract=? WHERE idProject=?");
+				stmt = conn.prepareStatement("UPDATE project SET idProposal=?, semester=?, year=?, title=?, subarea=?, idStudent=?, idSupervisor=?, idCosupervisor=?, file=?, submissionDate=?, abstract=?, idThesisFormat=? WHERE idProject=?");
 			}
 			
 			stmt.setInt(1, project.getProposal().getIdProposal());
@@ -479,9 +479,10 @@ public class ProjectDAO {
 			stmt.setBytes(9, project.getFile());
 			stmt.setDate(10, new java.sql.Date(project.getSubmissionDate().getTime()));
 			stmt.setString(11, project.getAbstract());
+			stmt.setInt(12, project.getFormat().getIdThesisFormat());
 			
 			if(!insert){
-				stmt.setInt(12, project.getIdProject());
+				stmt.setInt(13, project.getIdProject());
 			}
 			
 			stmt.execute();
@@ -520,6 +521,7 @@ public class ProjectDAO {
 		p.getStudent().setName(rs.getString("studentname"));
 		p.getSupervisor().setIdUser(rs.getInt("idSupervisor"));
 		p.getSupervisor().setName(rs.getString("supervisorname"));
+		p.getFormat().setIdThesisFormat(rs.getInt("idThesisFormat"));
 		p.setCosupervisor(new User());
 		p.getCosupervisor().setIdUser(rs.getInt("idCosupervisor"));
 		if(p.getCosupervisor().getIdUser() != 0){

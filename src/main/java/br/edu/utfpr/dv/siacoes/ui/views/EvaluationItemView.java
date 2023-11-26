@@ -91,14 +91,14 @@ public class EvaluationItemView extends ListView<EvaluationItemDataSource> {
 	public void addClick() {
 		EvaluationItem item = new EvaluationItem();
 		
-		item.setDepartment(Session.getSelectedDepartment().getDepartment());
+		//item.setDepartment(Session.getSelectedDepartment().getDepartment());
 		
 		if(!this.comboStage.getValue().toString().toLowerCase().equals("ambos")){
 			item.setStage(this.comboStage.getStage());
 		}
 		
-		EditEvaluationItemWindow window = new EditEvaluationItemWindow(item, this);
-		window.open();
+		//EditEvaluationItemWindow window = new EditEvaluationItemWindow(item, this);
+		//window.open();
 	}
 
 	@Override
@@ -107,8 +107,8 @@ public class EvaluationItemView extends ListView<EvaluationItemDataSource> {
 			EvaluationItemBO bo = new EvaluationItemBO();
 			EvaluationItem item = bo.findById((int)id);
 			
-			EditEvaluationItemWindow window = new EditEvaluationItemWindow(item, this);
-			window.open();
+			//EditEvaluationItemWindow window = new EditEvaluationItemWindow(item, this);
+			//window.open();
 		} catch (Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 			
@@ -136,7 +136,7 @@ public class EvaluationItemView extends ListView<EvaluationItemDataSource> {
     		try{
     			EvaluationItemBO bo = new EvaluationItemBO();
     			
-    			bo.moveUp((int)value);
+    			//bo.moveUp((int)value);
     			this.refreshGrid();
     		}catch(Exception e){
     			Logger.log(Level.SEVERE, e.getMessage(), e);
@@ -155,7 +155,7 @@ public class EvaluationItemView extends ListView<EvaluationItemDataSource> {
     		try{
     			EvaluationItemBO bo = new EvaluationItemBO();
     			
-    			bo.moveDown((int)value);
+    			//bo.moveDown((int)value);
     			this.refreshGrid();
     		}catch(Exception e){
     			Logger.log(Level.SEVERE, e.getMessage(), e);

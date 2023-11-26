@@ -13,6 +13,7 @@ public class InternshipDataSource extends BasicDataSource {
 	private String company;
 	private String supervisor;
 	private LocalDate startDate;
+	private LocalDate endDate;
 	private String type;
 	private String status;
 	
@@ -22,6 +23,7 @@ public class InternshipDataSource extends BasicDataSource {
 		this.setCompany(internship.getCompany().getName());
 		this.setSupervisor(internship.getSupervisor().getName());
 		this.setStartDate(DateUtils.convertToLocalDate(internship.getStartDate()));
+		this.setEndDate(DateUtils.convertToLocalDate(internship.getEndDate()));
 		this.setType(internship.getType().toString());
 		this.setStatus(internship.getStatus().toString());
 	}
@@ -59,6 +61,12 @@ public class InternshipDataSource extends BasicDataSource {
 	}
 	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
+	}
+	public LocalDate getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(LocalDate endDate) {
+		this.endDate = endDate;
 	}
 	public String getType() {
 		return type;

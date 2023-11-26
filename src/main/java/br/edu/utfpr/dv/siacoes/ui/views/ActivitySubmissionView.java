@@ -34,6 +34,7 @@ import br.edu.utfpr.dv.siacoes.ui.components.StudentComboBox;
 import br.edu.utfpr.dv.siacoes.ui.grid.ActivitySubmissionDataSource;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditActivitySubmissionWindow;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditStudentProfileWindow;
+import br.edu.utfpr.dv.siacoes.ui.windows.StudentInternshipsWindow;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmission;
 import br.edu.utfpr.dv.siacoes.model.ActivitySubmissionFooterReport;
 import br.edu.utfpr.dv.siacoes.model.FinalSubmission;
@@ -55,6 +56,7 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 	private final Button buttonFinalReport;
 	private final Button buttonFinalSubmission;
 	private final Button buttonStudentProfile;
+	private final Button buttonStudentInternships;
 	
 	private final VerticalLayout layoutScore;
 	private final VerticalLayout layoutLabel;
@@ -110,6 +112,11 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 			studentProfile();
         });
 		this.buttonStudentProfile.setIcon(new Icon(VaadinIcon.USER));
+		
+		this.buttonStudentInternships = new Button("Estágios do Acadêmico", event -> {
+			studentInternships();
+        });
+		//this.buttonStudentInternships.setIcon(new Icon(VaadinIcon.CLIPBOARD_USER));
 		
 		this.layoutScore = new VerticalLayout();
 		this.layoutScore.setSpacing(false);
@@ -191,6 +198,7 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 		if(Session.isUserManager(this.getModule())) {
 			this.addActionButton(this.buttonFinalSubmission);
 			this.addActionButton(this.buttonStudentProfile);
+			this.addActionButton(this.buttonStudentInternships);
 		}
 		
 		this.panelScore = new Details("Pontuação", this.layoutScore);
@@ -243,6 +251,7 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 		this.buttonFinalReport.setEnabled(true);
 		this.buttonFinalSubmission.setEnabled(true);
 		this.buttonStudentProfile.setEnabled(true);
+		this.buttonStudentInternships.setEnabled(true);
 		this.panelScore.setVisible(true);
 		this.panelLabel.setVisible(false);
 		
@@ -260,6 +269,7 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 				this.buttonFinalReport.setEnabled(false);
 				this.buttonFinalSubmission.setEnabled(false);
 				this.buttonStudentProfile.setEnabled(false);
+				this.buttonStudentInternships.setEnabled(false);
 				this.panelScore.setVisible(false);
 				this.panelLabel.setVisible(true);
 				
@@ -280,6 +290,7 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 					this.buttonFinalReport.setEnabled(true);
 					this.buttonFinalSubmission.setEnabled(true);
 					this.buttonStudentProfile.setEnabled(true);
+					this.buttonStudentInternships.setEnabled(true);
 					this.panelScore.setVisible(true);
 					this.panelLabel.setVisible(false);
 				} else {
@@ -362,6 +373,19 @@ public class ActivitySubmissionView extends ListView<ActivitySubmissionDataSourc
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 			
 			this.showErrorNotification("Perfil do Acadêmico", e.getMessage());
+		}
+	}
+	
+	private void studentInternships() {
+		try {
+			User student = this.comboStudent.getStudent();
+			
+			StudentInternshipsWindow window = new StudentInternshipsWindow(student.getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment());
+			window.open();
+		} catch (Exception e) {
+			Logger.log(Level.SEVERE, e.getMessage(), e);
+			
+			this.showErrorNotification("Estágios do Acadêmico", e.getMessage());
 		}
 	}
 	

@@ -57,5 +57,37 @@ public class InternshipJuryStudentBO {
 			throw new Exception(e.getMessage());
 		}
 	}
+	
+	public int save(int idUser, InternshipJuryStudent student) throws Exception{
+		if((student.getInternshipJury() == null) || (student.getInternshipJury().getIdInternshipJury() == 0)){
+			throw new Exception("Informe a banca.");
+		}
+		
+		if((student.getStudent() == null) || (student.getStudent().getIdUser() == 0)){
+			throw new Exception("Informe o acadêmico.");
+		}
+		
+		try {
+			InternshipJuryStudentDAO dao = new InternshipJuryStudentDAO();
+			
+			return dao.save(idUser, student);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public boolean delete(int idUser, int id) throws Exception{
+		try {
+			InternshipJuryStudentDAO dao = new InternshipJuryStudentDAO();
+			
+			return dao.delete(idUser, id);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
 
 }

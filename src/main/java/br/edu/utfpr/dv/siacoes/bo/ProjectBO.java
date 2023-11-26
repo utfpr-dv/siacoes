@@ -138,6 +138,9 @@ public class ProjectBO {
 		if((project.getSupervisor() == null) || (project.getSupervisor().getIdUser() == 0)){
 			throw new Exception("Informe o Professor Orientador.");
 		}
+		if((project.getFormat() == null) || (project.getFormat().getIdThesisFormat() == 0)) {
+			throw new Exception("Informe o formato do TCC 1.");
+		}
 		if((project.getSemester() == 0) || (project.getYear() == 0)){
 			throw new Exception("Informe o ano e semestre do projeto.");
 		}

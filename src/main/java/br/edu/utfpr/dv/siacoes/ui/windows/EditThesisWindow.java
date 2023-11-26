@@ -40,6 +40,7 @@ import br.edu.utfpr.dv.siacoes.ui.components.FileUploader;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploaderListener;
 import br.edu.utfpr.dv.siacoes.ui.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.SupervisorComboBox;
+import br.edu.utfpr.dv.siacoes.ui.components.ThesisFormatComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.YearField;
 import br.edu.utfpr.dv.siacoes.ui.components.FileUploader.AcceptedDocumentType;
 import br.edu.utfpr.dv.siacoes.ui.views.ListView;
@@ -51,6 +52,7 @@ public class EditThesisWindow extends EditWindow {
 	
 	private final CampusComboBox comboCampus;
 	private final DepartmentComboBox comboDepartment;
+	private final ThesisFormatComboBox comboFormat;
 	private final TextField textTitle;
 	private final TextField textSubarea;
 	private final TextField textStudent;
@@ -103,8 +105,10 @@ public class EditThesisWindow extends EditWindow {
 		
 		this.textStudent = new TextField("Acadêmico");
 		this.textStudent.setEnabled(false);
-		this.textStudent.setWidth("800px");
+		this.textStudent.setWidth("400px");
 		this.textStudent.setRequired(true);
+		
+		this.comboFormat = new ThesisFormatComboBox("Tipo de Trabalho", Session.getSelectedDepartment().getDepartment().getIdDepartment());
 		
 		this.comboSupervisor = new SupervisorComboBox("Orientador", Session.getSelectedDepartment().getDepartment().getIdDepartment(), new SigetConfigBO().getSupervisorFilter(Session.getSelectedDepartment().getDepartment().getIdDepartment()));
 		this.comboSupervisor.setEnabled(false);
@@ -156,6 +160,11 @@ public class EditThesisWindow extends EditWindow {
 		h1.setMargin(false);
 		h1.setPadding(false);
 		
+		HorizontalLayout h5 = new HorizontalLayout(this.textStudent, this.comboFormat);
+		h5.setSpacing(true);
+		h5.setMargin(false);
+		h5.setPadding(false);
+		
 		HorizontalLayout h2 = new HorizontalLayout(this.textTitle, this.textSubarea);
 		h2.setSpacing(true);
 		h2.setMargin(false);
@@ -171,7 +180,7 @@ public class EditThesisWindow extends EditWindow {
 		h4.setMargin(false);
 		h4.setPadding(false);
 		
-		v1.add(h1, this.textStudent, h2, h3, h4);
+		v1.add(h1, h5, h2, h3, h4);
 		
 		this.textAbstract = new TextArea();
 		this.textAbstract.setWidth("800px");
@@ -252,6 +261,7 @@ public class EditThesisWindow extends EditWindow {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 		
+		this.comboFormat.setFormat(this.thesis.getFormat());
 		this.textStudent.setValue(this.thesis.getStudent().getName());
 		this.textTitle.setValue(this.thesis.getTitle());
 		this.textSubarea.setValue(this.thesis.getSubarea());
@@ -309,6 +319,7 @@ public class EditThesisWindow extends EditWindow {
 				}
 			}
 			
+			this.thesis.setFormat(this.comboFormat.getFormat());
 			this.thesis.setTitle(this.textTitle.getValue());
 			this.thesis.setSubarea(this.textSubarea.getValue());
 			this.thesis.setAbstract(this.textAbstract.getValue());

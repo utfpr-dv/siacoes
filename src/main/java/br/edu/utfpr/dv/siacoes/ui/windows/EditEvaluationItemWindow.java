@@ -8,45 +8,42 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 
-import br.edu.utfpr.dv.siacoes.Session;
-import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.bo.EvaluationItemBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
-import br.edu.utfpr.dv.siacoes.model.Campus;
 import br.edu.utfpr.dv.siacoes.model.EvaluationItem;
 import br.edu.utfpr.dv.siacoes.model.EvaluationItem.EvaluationItemType;
-import br.edu.utfpr.dv.siacoes.ui.components.CampusComboBox;
-import br.edu.utfpr.dv.siacoes.ui.components.DepartmentComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.StageComboBox;
-import br.edu.utfpr.dv.siacoes.ui.views.ListView;
 
 public class EditEvaluationItemWindow extends EditWindow {
 
 	private final EvaluationItem item;
 	
-	private final CampusComboBox comboCampus;
-	private final DepartmentComboBox comboDepartment;
+	private final EditThesisFormatWindow parentWindow;
+	private final int index;
+	
+	private final TextField textFormat;
 	private final TextField textDescription;
 	private final Select<EvaluationItemType> comboType;
 	private final NumberField textPonderosity;
 	private final StageComboBox comboStage;
 	private final Checkbox checkActive;
 	
-	public EditEvaluationItemWindow(EvaluationItem item, ListView parentView){
-		super("Editar Quesito", parentView);
+	public EditEvaluationItemWindow(EvaluationItem item, EditThesisFormatWindow parentWindow, int index){
+		super("Editar Quesito", null);
+		
+		this.parentWindow = parentWindow;
+		this.index = index;
 		
 		if(item == null){
 			this.item = new EvaluationItem();
-			this.item.setDepartment(Session.getSelectedDepartment().getDepartment());
 		}else{
 			this.item = item;
 		}
 		
-		this.comboCampus = new CampusComboBox();
-		this.comboCampus.setEnabled(false);
-		
-		this.comboDepartment = new DepartmentComboBox(0);
-		this.comboDepartment.setEnabled(false);
+		this.textFormat = new TextField("Formato de TCC");
+		this.textFormat.setWidth("400px");
+		this.textFormat.setMaxLength(255);
+		this.textFormat.setEnabled(false);
 		
 		this.textDescription = new TextField("Descrição");
 		this.textDescription.setWidth("400px");
@@ -63,11 +60,11 @@ public class EditEvaluationItemWindow extends EditWindow {
 		
 		this.comboStage = new StageComboBox();
 		this.comboStage.setShowBoth(false);
+		this.comboStage.setEnabled(false);
 		
 		this.checkActive = new Checkbox("Ativo");
 		
-		this.addField(this.comboCampus);
-		this.addField(this.comboDepartment);
+		this.addField(this.textFormat);
 		this.addField(this.textDescription);
 		this.addField(new HorizontalLayout(this.comboType, this.textPonderosity, this.comboStage));
 		this.addField(this.checkActive);
@@ -77,19 +74,7 @@ public class EditEvaluationItemWindow extends EditWindow {
 	}
 	
 	private void loadEvaluationItem(){
-		try{
-			CampusBO bo = new CampusBO();
-			Campus campus = bo.findByDepartment(this.item.getDepartment().getIdDepartment());
-			
-			this.comboCampus.setCampus(campus);
-			
-			this.comboDepartment.setIdCampus(campus.getIdCampus());
-			
-			this.comboDepartment.setDepartment(this.item.getDepartment());
-		}catch(Exception e){
-			Logger.log(Level.SEVERE, e.getMessage(), e);
-		}
-		
+		this.textFormat.setValue(this.item.getFormat().getDescription());
 		this.textDescription.setValue(this.item.getDescription());
 		this.textPonderosity.setValue(this.item.getPonderosity());
 		this.comboStage.setStage(this.item.getStage());
@@ -109,9 +94,14 @@ public class EditEvaluationItemWindow extends EditWindow {
 	@Override
 	public void save() {
 		try {
-			EvaluationItemBO bo = new EvaluationItemBO();
+			boolean hasScores = false;
 			
-			if(!bo.hasScores(this.item.getIdEvaluationItem())){
+			if(this.item.getIdEvaluationItem() > 0) {
+				EvaluationItemBO bo = new EvaluationItemBO();
+				hasScores = bo.hasScores(this.item.getIdEvaluationItem());
+			}
+			
+			if(!hasScores){
 				this.item.setDescription(this.textDescription.getValue());
 				this.item.setPonderosity(this.textPonderosity.getValue());
 				this.item.setStage(this.comboStage.getStage());
@@ -120,11 +110,8 @@ public class EditEvaluationItemWindow extends EditWindow {
 			
 			this.item.setActive(this.checkActive.getValue());
 			
-			bo.save(Session.getIdUserLog(), this.item);
+			this.parentWindow.saveEvaluationItem(this.item, this.index);
 			
-			this.showSuccessNotification("Salvar Quesito", "Quesito salvo com sucesso.");
-			
-			this.parentViewRefreshGrid();
 			this.close();
 		} catch (Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);

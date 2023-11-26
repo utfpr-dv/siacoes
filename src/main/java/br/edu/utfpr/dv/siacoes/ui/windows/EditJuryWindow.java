@@ -395,6 +395,22 @@ public class EditJuryWindow extends EditWindow {
 		
 		js.setStudent(student);
 		
+		if(this.jury.getIdJury() > 0) {
+			js.setJury(this.jury);
+			
+			try {
+				int id = new JuryStudentBO().save(Session.getIdUserLog(), js);
+				
+				js.setIdJuryStudent(id);
+				
+				this.showSuccessNotification("Salvar Participante", "Participante salvo com sucesso.");
+			} catch (Exception e) {
+				Logger.log(Level.SEVERE, e.getMessage(), e);
+				
+				this.showErrorNotification("Salvar Participante", e.getMessage());
+			}
+		}
+		
 		this.jury.getParticipants().add(js);
 		
 		this.loadGridParticipants();
@@ -472,7 +488,19 @@ public class EditJuryWindow extends EditWindow {
 	    	    	.withCaption("Confirma a Remoção?")
 	    	    	.withMessage("Confirma a remoção do participante?")
 	    	    	.withOkButton(() -> {
-	    	    		this.jury.getParticipants().remove(index);
+                    	if((this.jury.getIdJury() > 0) && (this.jury.getParticipants().get(index).getIdJuryStudent() > 0)) {
+                    		try {
+                    			new JuryStudentBO().delete(Session.getIdUserLog(), this.jury.getParticipants().get(index).getIdJuryStudent());
+                				
+                				this.showSuccessNotification("Remover Participante", "Participante removido com sucesso.");
+                    		} catch (Exception e) {
+                				Logger.log(Level.SEVERE, e.getMessage(), e);
+                				
+                				this.showErrorNotification("Remover Participante", e.getMessage());
+                			}
+                    	}
+                    	
+                    	this.jury.getParticipants().remove(index);
                     	loadGridParticipants();
 	    	    	}, ButtonOption.caption("Remover"), ButtonOption.icon(VaadinIcon.TRASH))
 	    	    	.withCancelButton(ButtonOption.focus(), ButtonOption.caption("Cancelar"), ButtonOption.icon(VaadinIcon.CLOSE))

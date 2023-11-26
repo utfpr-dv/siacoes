@@ -81,6 +81,7 @@ import br.edu.utfpr.dv.siacoes.ui.views.StudentView;
 import br.edu.utfpr.dv.siacoes.ui.views.SupervisorChangeView;
 import br.edu.utfpr.dv.siacoes.ui.views.SystemInfoView;
 import br.edu.utfpr.dv.siacoes.ui.views.ThemeSuggestionView;
+import br.edu.utfpr.dv.siacoes.ui.views.ThesisFormatView;
 import br.edu.utfpr.dv.siacoes.ui.views.ThesisView;
 import br.edu.utfpr.dv.siacoes.ui.views.TutoredSupervisorChartView;
 import br.edu.utfpr.dv.siacoes.ui.views.TutoredView;
@@ -750,7 +751,7 @@ public class MainLayout extends FlexBoxLayout implements RouterLayout, AfterNavi
 				});
 				menu.addNaviItem(siget6, "Alterações de Orientador", SupervisorChangeView.class);
 				menu.addNaviItem(siget6, "Definir Datas", DeadlineView.class);
-				menu.addNaviItem(siget6, "Quesitos de Avaliação", EvaluationItemView.class);
+				menu.addNaviItem(siget6, "Formatos de TCC", ThesisFormatView.class);
 				NaviItem config = menu.addNaviItem(siget6, "Configurações", null);
 				config.addClickListener(event -> {
 					try {

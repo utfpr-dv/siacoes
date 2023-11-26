@@ -80,7 +80,9 @@ public class JuryAppraiserScoreDAO {
 		PreparedStatement stmt = null;
 		
 		try{
-			stmt = this.conn.prepareStatement("SELECT juryappraiserscore.*, evaluationitem.description, evaluationitem.ponderosity, evaluationitem.type FROM juryappraiserscore INNER JOIN evaluationitem ON evaluationitem.idEvaluationItem=juryappraiserscore.idEvaluationItem WHERE idJuryAppraiser=? ORDER BY evaluationitem.type, evaluationitem.sequence");
+			stmt = this.conn.prepareStatement("SELECT juryappraiserscore.*, evaluationitem.description, evaluationitem.ponderosity, evaluationitem.type " +
+						"FROM juryappraiserscore INNER JOIN evaluationitem ON evaluationitem.idEvaluationItem=juryappraiserscore.idEvaluationItem " +
+						"WHERE idJuryAppraiser=? ORDER BY evaluationitem.type, evaluationitem.sequence");
 			
 			stmt.setInt(1, idJuryAppraiser);
 			
@@ -96,12 +98,10 @@ public class JuryAppraiserScoreDAO {
 				rs.close();
 				stmt.close();
 				
-				stmt = this.conn.prepareStatement("SELECT project.idProject, thesis.idThesis, proposal.idDepartment " +
+				stmt = this.conn.prepareStatement("SELECT project.idProject, project.idThesisFormat AS idThesisFormatProject, thesis.idThesis, thesis.idThesisFormat AS idThesisFormatThesis " +
 						"FROM jury INNER JOIN juryappraiser ON juryappraiser.idJury=jury.idJury " +
 						"LEFT JOIN project ON project.idProject=jury.idProject " +
 						"LEFT JOIN thesis ON thesis.idThesis=jury.idThesis " +
-						"LEFT JOIN project project2 ON project2.idProject=thesis.idProject " +
-						"INNER JOIN proposal ON (proposal.idProposal=project.idProposal OR proposal.idProposal=project2.idProposal) " +
 						"WHERE idJuryAppraiser=?");
 				
 				stmt.setInt(1, idJuryAppraiser);
@@ -109,24 +109,26 @@ public class JuryAppraiserScoreDAO {
 				rs = stmt.executeQuery();
 				
 				int stage = 0;
-				int idDepartment = 0;
+				int idThesisFormat = 0;
 				
 				if(rs.next()){
-					idDepartment = rs.getInt("idDepartment");
 					if(rs.getInt("idThesis") != 0){
 						stage = 2;
+						idThesisFormat = rs.getInt("idThesisFormatThesis");
 					}else if(rs.getInt("idProject") != 0){
 						stage = 1;
+						idThesisFormat = rs.getInt("idThesisFormatProject");
 					}
 				}
 				
 				rs.close();
 				stmt.close();
 				
-				stmt = this.conn.prepareStatement("SELECT 0 as idJuryAppraiserScore, " + String.valueOf(idJuryAppraiser) + " as idJuryAppraiser, 0 as score, evaluationitem.* FROM evaluationitem WHERE active=1 AND stage=? AND idDepartment=? ORDER BY type, sequence");
+				stmt = this.conn.prepareStatement("SELECT 0 as idJuryAppraiserScore, " + String.valueOf(idJuryAppraiser) + " as idJuryAppraiser, 0 as score, evaluationitem.* " +
+							"FROM evaluationitem WHERE active=1 AND stage=? AND idThesisFormat=? ORDER BY type, sequence");
 				
 				stmt.setInt(1, stage);
-				stmt.setInt(2, idDepartment);
+				stmt.setInt(2, idThesisFormat);
 				
 				rs = stmt.executeQuery();
 				

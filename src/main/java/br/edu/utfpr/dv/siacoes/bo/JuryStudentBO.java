@@ -58,7 +58,7 @@ public class JuryStudentBO {
 		}
 	}
 	
-	/*public int save(JuryStudent student) throws Exception{
+	public int save(int idUser, JuryStudent student) throws Exception{
 		if((student.getJury() == null) || (student.getJury().getIdJury() == 0)){
 			throw new Exception("Informe a banca.");
 		}
@@ -70,12 +70,24 @@ public class JuryStudentBO {
 		try {
 			JuryStudentDAO dao = new JuryStudentDAO();
 			
-			return dao.save(student);
+			return dao.save(idUser, student);
 		} catch (SQLException e) {
 			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
 			
 			throw new Exception(e.getMessage());
 		}
-	}*/
+	}
+	
+	public boolean delete(int idUser, int id) throws Exception{
+		try {
+			JuryStudentDAO dao = new JuryStudentDAO();
+			
+			return dao.delete(idUser, id);
+		} catch (SQLException e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getMessage(), e);
+			
+			throw new Exception(e.getMessage());
+		}
+	}
 
 }

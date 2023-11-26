@@ -53,23 +53,23 @@ public class EvaluationItem implements Serializable {
 	}
 
 	private int idEvaluationItem;
+	private ThesisFormat format;
 	private String description;
 	private double ponderosity;
 	private int stage;
 	private boolean active;
 	private int sequence;
 	private EvaluationItemType type;
-	private Department department;
 	
 	public EvaluationItem(){
 		this.setIdEvaluationItem(0);
+		this.setFormat(new ThesisFormat());
 		this.setDescription("");
 		this.setPonderosity(0);
 		this.setStage(1);
 		this.setActive(true);
 		this.setSequence(0);
 		this.setType(EvaluationItemType.WRITING);
-		this.setDepartment(new Department());
 	}
 	
 	public int getIdEvaluationItem() {
@@ -77,6 +77,12 @@ public class EvaluationItem implements Serializable {
 	}
 	public void setIdEvaluationItem(int idEvaluationItem) {
 		this.idEvaluationItem = idEvaluationItem;
+	}
+	public ThesisFormat getFormat() {
+		return format;
+	}
+	public void setFormat(ThesisFormat format) {
+		this.format = format;
 	}
 	public String getDescription() {
 		return description;
@@ -113,11 +119,5 @@ public class EvaluationItem implements Serializable {
 	}
 	public void setType(EvaluationItemType type){
 		this.type = type;
-	}
-	public void setDepartment(Department department){
-		this.department = department;
-	}
-	public Department getDepartment(){
-		return department;
 	}
 }
