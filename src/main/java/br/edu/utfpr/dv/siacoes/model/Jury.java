@@ -54,6 +54,44 @@ public class Jury implements Serializable {
 		}
 	}
 	
+	public enum JuryFormat {
+		SYNC(0), ASYNC(1);
+		
+		private final int value;
+		JuryFormat(int value) {
+			this.value = value; 
+		}
+		
+		public int getValue(){ 
+			return value;
+		}
+		
+		public static JuryFormat valueOf(int value){
+			for(JuryFormat d : JuryFormat.values()){
+				if(d.getValue() == value){
+					return d;
+				}
+			}
+			
+			return null;
+		}
+		
+		public String toString(){
+			return this.getDescription();
+		}
+		
+		public String getDescription(){
+			switch(this){
+				case SYNC:
+					return "Síncrona";
+				case ASYNC:
+					return "Assíncrona";
+				default:
+					return "";
+			}
+		}
+	}
+	
 	private int idJury;
 	private Date date;
 	private String local;
@@ -69,6 +107,7 @@ public class Jury implements Serializable {
 	private String supervisorAbsenceReason;
 	private boolean supervisorAssignsGrades;
 	private String sei;
+	private JuryFormat format;
 	
 	public Jury(){
 		this.setIdJury(0);
@@ -85,6 +124,7 @@ public class Jury implements Serializable {
 		this.setSupervisorAbsenceReason("");
 		this.setSupervisorAssignsGrades(false);
 		this.setSei("");
+		this.setFormat(JuryFormat.SYNC);
 	}
 	
 	public int getIdJury() {
@@ -176,6 +216,12 @@ public class Jury implements Serializable {
 	}
 	public void setSei(String sei) {
 		this.sei = sei;
+	}
+	public JuryFormat getFormat() {
+		return format;
+	}
+	public void setFormat(JuryFormat format) {
+		this.format = format;
 	}
 	public int getStage(){
 		if((this.getThesis() != null) && (this.getThesis().getIdThesis() != 0)){

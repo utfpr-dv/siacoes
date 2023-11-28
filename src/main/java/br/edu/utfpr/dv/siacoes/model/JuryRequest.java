@@ -8,6 +8,7 @@ import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
 import br.edu.utfpr.dv.siacoes.bo.ProposalBO;
 import br.edu.utfpr.dv.siacoes.bo.SupervisorChangeBO;
 import br.edu.utfpr.dv.siacoes.bo.ThesisBO;
+import br.edu.utfpr.dv.siacoes.model.Jury.JuryFormat;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class JuryRequest implements Serializable {
@@ -25,6 +26,7 @@ public class JuryRequest implements Serializable {
 	private Jury jury;
 	private String student;
 	private String title;
+	private JuryFormat format;
 	
 	public JuryRequest(){
 		this.setIdJuryRequest(0);
@@ -37,6 +39,7 @@ public class JuryRequest implements Serializable {
 		this.setJury(null);
 		this.student = "";
 		this.title = "";
+		this.setFormat(JuryFormat.SYNC);
 	}
 	
 	public int getIdJuryRequest() {
@@ -92,6 +95,12 @@ public class JuryRequest implements Serializable {
 	}
 	public void setJury(Jury jury) {
 		this.jury = jury;
+	}
+	public JuryFormat getFormat() {
+		return format;
+	}
+	public void setFormat(JuryFormat format) {
+		this.format = format;
 	}
 	public boolean isConfirmed() {
 		return ((this.getJury() != null) && (this.getJury().getIdJury() != 0));

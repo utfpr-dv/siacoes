@@ -48,6 +48,7 @@ import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryRequest;
 import br.edu.utfpr.dv.siacoes.model.Jury;
+import br.edu.utfpr.dv.siacoes.model.Jury.JuryFormat;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.JuryRequest;
@@ -251,39 +252,41 @@ public class EventCalendarView extends LoggedView {
 				}
 				
 				for(Jury jury : listThesis){
-					String title = "Banca de TCC " + String.valueOf(jury.getStage());
-					String student = "Acadêmico(a): " + jury.getStudent().getName();
-					String local = "Local: " + jury.getLocal();
-					String appraisers = "Membros da banca: ";
-					Date endTime;
-					
-					jury.setAppraisers(new JuryAppraiserBO().listAppraisers(jury.getIdJury()));
-					
-					for(JuryAppraiser appraiser : jury.getAppraisers()) {
-						appraisers += appraiser.getAppraiser().getName() + (appraiser.isSubstitute() ? " (suplente)" : (appraiser.isChair() ? " (presidente)" : "")) + "; ";
-					}
-					
-					try {
-						SigetConfig config = new SigetConfigBO().findByDepartment(new JuryBO().findIdDepartment(jury.getIdJury()));
+					if(jury.getFormat() != JuryFormat.ASYNC) {
+						String title = "Banca de TCC " + String.valueOf(jury.getStage());
+						String student = "Acadêmico(a): " + jury.getStudent().getName();
+						String local = "Local: " + jury.getLocal();
+						String appraisers = "Membros da banca: ";
+						Date endTime;
 						
-						if(jury.getStage() == 2) {
-							endTime = DateUtils.addMinute(jury.getDate(), config.getJuryTimeStage2());
-						} else {
-							endTime = DateUtils.addMinute(jury.getDate(), config.getJuryTimeStage1());
+						jury.setAppraisers(new JuryAppraiserBO().listAppraisers(jury.getIdJury()));
+						
+						for(JuryAppraiser appraiser : jury.getAppraisers()) {
+							appraisers += appraiser.getAppraiser().getName() + (appraiser.isSubstitute() ? " (suplente)" : (appraiser.isChair() ? " (presidente)" : "")) + "; ";
 						}
-					} catch (Exception e) {
-						endTime = DateUtils.addMinute(jury.getDate(), 60);
+						
+						try {
+							SigetConfig config = new SigetConfigBO().findByDepartment(new JuryBO().findIdDepartment(jury.getIdJury()));
+							
+							if(jury.getStage() == 2) {
+								endTime = DateUtils.addMinute(jury.getDate(), config.getJuryTimeStage2());
+							} else {
+								endTime = DateUtils.addMinute(jury.getDate(), config.getJuryTimeStage1());
+							}
+						} catch (Exception e) {
+							endTime = DateUtils.addMinute(jury.getDate(), 60);
+						}
+						
+						Entry entry = new Entry();
+						entry.setTitle(title);
+						entry.setStart(DateUtils.convertToLocalDateTime(jury.getDate()));
+						entry.setEnd(DateUtils.convertToLocalDateTime(endTime));
+						entry.setDescription(student + "\n" + local + "\n" + appraisers);
+						entry.setColor("green");
+						entry.setEditable(false);
+						
+						this.calendar.addEntry(entry);
 					}
-					
-					Entry entry = new Entry();
-					entry.setTitle(title);
-					entry.setStart(DateUtils.convertToLocalDateTime(jury.getDate()));
-					entry.setEnd(DateUtils.convertToLocalDateTime(endTime));
-					entry.setDescription(student + "\n" + local + "\n" + appraisers);
-					entry.setColor("green");
-					entry.setEditable(false);
-					
-					this.calendar.addEntry(entry);
 				}
 				
 				if(listRequest.size() > 0) {
@@ -293,39 +296,41 @@ public class EventCalendarView extends LoggedView {
 				}
 				
 				for(JuryRequest request : listRequest) {
-					String title = "Solicitação de Banca de TCC " + String.valueOf(request.getStage());
-					String student = "Acadêmico(a): " + request.getStudent();
-					String local = "Local: " + request.getLocal();
-					String appraisers = "Membros da banca: ";
-					Date endTime;
-					
-					request.setAppraisers(new JuryAppraiserRequestBO().listAppraisers(request.getIdJuryRequest()));
-					
-					for(JuryAppraiserRequest appraiser : request.getAppraisers()) {
-						appraisers += appraiser.getAppraiser().getName() + (appraiser.isSubstitute() ? " (suplente)" : (appraiser.isChair() ? " (presidente)" : "")) + "; ";
-					}
-					
-					try {
-						SigetConfig config = new SigetConfigBO().findByDepartment(new ProposalBO().findIdDepartment(request.getProposal().getIdProposal()));
+					if(request.getFormat() != JuryFormat.ASYNC) {
+						String title = "Solicitação de Banca de TCC " + String.valueOf(request.getStage());
+						String student = "Acadêmico(a): " + request.getStudent();
+						String local = "Local: " + request.getLocal();
+						String appraisers = "Membros da banca: ";
+						Date endTime;
 						
-						if(request.getStage() == 2) {
-							endTime = DateUtils.addMinute(request.getDate(), config.getJuryTimeStage2());
-						} else {
-							endTime = DateUtils.addMinute(request.getDate(), config.getJuryTimeStage1());
+						request.setAppraisers(new JuryAppraiserRequestBO().listAppraisers(request.getIdJuryRequest()));
+						
+						for(JuryAppraiserRequest appraiser : request.getAppraisers()) {
+							appraisers += appraiser.getAppraiser().getName() + (appraiser.isSubstitute() ? " (suplente)" : (appraiser.isChair() ? " (presidente)" : "")) + "; ";
 						}
-					} catch (Exception e) {
-						endTime = DateUtils.addMinute(request.getDate(), 60);
+						
+						try {
+							SigetConfig config = new SigetConfigBO().findByDepartment(new ProposalBO().findIdDepartment(request.getProposal().getIdProposal()));
+							
+							if(request.getStage() == 2) {
+								endTime = DateUtils.addMinute(request.getDate(), config.getJuryTimeStage2());
+							} else {
+								endTime = DateUtils.addMinute(request.getDate(), config.getJuryTimeStage1());
+							}
+						} catch (Exception e) {
+							endTime = DateUtils.addMinute(request.getDate(), 60);
+						}
+						
+						Entry entry = new Entry();
+						entry.setTitle(title);
+						entry.setStart(DateUtils.convertToLocalDateTime(request.getDate()));
+						entry.setEnd(DateUtils.convertToLocalDateTime(endTime));
+						entry.setDescription(student + "\n" + local + "\n" + appraisers);
+						entry.setColor("red");
+						entry.setEditable(false);
+						
+						this.calendar.addEntry(entry);
 					}
-					
-					Entry entry = new Entry();
-					entry.setTitle(title);
-					entry.setStart(DateUtils.convertToLocalDateTime(request.getDate()));
-					entry.setEnd(DateUtils.convertToLocalDateTime(endTime));
-					entry.setDescription(student + "\n" + local + "\n" + appraisers);
-					entry.setColor("red");
-					entry.setEditable(false);
-					
-					this.calendar.addEntry(entry);
 				}
 				
 				if(listInternship.size() > 0) {

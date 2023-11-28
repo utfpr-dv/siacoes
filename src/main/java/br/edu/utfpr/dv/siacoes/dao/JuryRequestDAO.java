@@ -11,6 +11,7 @@ import java.util.List;
 
 import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.Jury;
+import br.edu.utfpr.dv.siacoes.model.Jury.JuryFormat;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.JuryRequest;
 
@@ -246,9 +247,9 @@ public class JuryRequestDAO {
 			boolean insert = (jury.getIdJuryRequest() == 0);
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO juryrequest(date, local, idProposal, stage, comments, supervisorAbsenceReason, idJury) VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO juryrequest(date, local, idProposal, stage, comments, supervisorAbsenceReason, idJury, juryformat) VALUES(?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE juryrequest SET date=?, local=?, idProposal=?, stage=?, comments=?, supervisorAbsenceReason=?, idJury=? WHERE idJuryRequest=?");
+				stmt = conn.prepareStatement("UPDATE juryrequest SET date=?, local=?, idProposal=?, stage=?, comments=?, supervisorAbsenceReason=?, idJury=?, juryformat=? WHERE idJuryRequest=?");
 			}
 			
 			stmt.setTimestamp(1, new java.sql.Timestamp(jury.getDate().getTime()));
@@ -262,9 +263,10 @@ public class JuryRequestDAO {
 			}else{
 				stmt.setInt(7, jury.getJury().getIdJury());
 			}
+			stmt.setInt(8, jury.getFormat().getValue());
 			
 			if(!insert){
-				stmt.setInt(8, jury.getIdJuryRequest());
+				stmt.setInt(9, jury.getIdJuryRequest());
 			}
 			
 			stmt.execute();
@@ -356,6 +358,7 @@ public class JuryRequestDAO {
 		jury.setSupervisorAbsenceReason(rs.getString("supervisorAbsenceReason"));
 		jury.setStage(rs.getInt("stage"));
 		jury.getProposal().setIdProposal(rs.getInt("idProposal"));
+		jury.setFormat(JuryFormat.valueOf(rs.getInt("juryformat")));
 		if(rs.getInt("idJury") > 0) {
 			jury.setJury(new Jury());
 			jury.getJury().setIdJury(rs.getInt("idJury"));

@@ -37,12 +37,14 @@ import br.edu.utfpr.dv.siacoes.model.JuryRequest;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.sign.Document;
 import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
+import br.edu.utfpr.dv.siacoes.ui.components.JuryFormatComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.StageComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.SupervisorComboBox;
 import br.edu.utfpr.dv.siacoes.ui.grid.JuryAppraiserDataSource;
 import br.edu.utfpr.dv.siacoes.ui.views.ListView;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
+import br.edu.utfpr.dv.siacoes.model.Jury.JuryFormat;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiserRequest;
 import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
 
@@ -57,6 +59,7 @@ public class EditJuryRequestWindow extends EditWindow {
 	private final TextField textStudent;
 	private final TextField textTitle;
 	private final StageComboBox comboStage;
+	private final JuryFormatComboBox comboJuryFormat;
 	private final DateTimePicker textDate;
 	private final TextField textLocal;
 	private final TextArea textComments;
@@ -109,6 +112,11 @@ public class EditJuryRequestWindow extends EditWindow {
 		this.comboStage = new StageComboBox();
 		this.comboStage.setEnabled(false);
 		
+		this.comboJuryFormat = new JuryFormatComboBox("Formato da Banca");
+		this.comboJuryFormat.addValueChangeListener(event -> {
+			changeFormat(event.getValue());
+		});
+		
 		this.textDate = new DateTimePicker("Data");
 		
 		this.textLocal = new TextField("Local");
@@ -124,7 +132,7 @@ public class EditJuryRequestWindow extends EditWindow {
 		this.textSupervisorAbsenceReason.setWidth("800px");
 		this.textSupervisorAbsenceReason.setHeight("75px");
 		
-		HorizontalLayout h1 = new HorizontalLayout(this.comboStage, this.textDate);
+		HorizontalLayout h1 = new HorizontalLayout(this.comboStage, this.comboJuryFormat, this.textDate);
 		h1.setSpacing(true);
 		h1.setMargin(false);
 		h1.setPadding(false);
@@ -277,7 +285,10 @@ public class EditJuryRequestWindow extends EditWindow {
 		this.textLocal.setValue(this.jury.getLocal());
 		this.textComments.setValue(this.jury.getComments());
 		this.comboStage.setStage(this.jury.getStage());
+		this.comboJuryFormat.setFormat(this.jury.getFormat());
 		this.textSupervisorAbsenceReason.setValue(this.jury.getSupervisorAbsenceReason());
+		
+		this.changeFormat(this.jury.getFormat());
 		
 		if(this.jury.getAppraisers() == null){
 			try {
@@ -321,6 +332,16 @@ public class EditJuryRequestWindow extends EditWindow {
 		}
 	}
 	
+	private void changeFormat(JuryFormat format) {
+		if(format == JuryFormat.SYNC) {
+			this.textLocal.setLabel("Local");
+			this.textDate.setLabel("Data");
+		} else {
+			this.textLocal.setLabel("Link para o vídeo");
+			this.textDate.setLabel("Disponível em");
+		}
+	}
+	
 	@Override
 	public void disableButtons() {
 		super.disableButtons();
@@ -354,6 +375,7 @@ public class EditJuryRequestWindow extends EditWindow {
 			JuryRequestBO bo = new JuryRequestBO();
 			boolean foundChair = false;
 			
+			this.jury.setFormat(this.comboJuryFormat.getFormat());
 			this.jury.setLocal(this.textLocal.getValue());
 			this.jury.setComments(this.textComments.getValue());
 			this.jury.setDate(DateUtils.convertToDate(this.textDate.getValue()));

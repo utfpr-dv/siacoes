@@ -339,7 +339,7 @@ public class JuryAppraiserDAO {
 					"SELECT SUM(total) AS total FROM (" +
 					"SELECT COUNT(*) AS total FROM jury INNER JOIN juryappraiser ON juryappraiser.idJury=jury.idJury " +
 					"INNER JOIN project ON project.idproject=jury.idproject " +
-					"WHERE jury.idjury <> ? AND juryappraiser.idAppraiser = ? AND jury.date BETWEEN ?::TIMESTAMP - INTERVAL '1 minute' * (" +
+					"WHERE jury.juryformat=0 AND jury.idjury <> ? AND juryappraiser.idAppraiser = ? AND jury.date BETWEEN ?::TIMESTAMP - INTERVAL '1 minute' * (" +
 					"SELECT sigetconfig.jurytimestage1 - 1 FROM sigetconfig INNER JOIN proposal ON proposal.iddepartment=sigetconfig.iddepartment " + 
 					"WHERE proposal.idproposal=project.idproposal) AND ?::TIMESTAMP + INTERVAL '1 minute' * (" +
 					"SELECT sigetconfig.jurytimestage1 - 1 FROM sigetconfig INNER JOIN proposal ON proposal.iddepartment=sigetconfig.iddepartment " + 
@@ -347,7 +347,7 @@ public class JuryAppraiserDAO {
 					" UNION ALL " +
 					"SELECT COUNT(*) AS total FROM jury INNER JOIN juryappraiser ON juryappraiser.idJury=jury.idJury " +
 					"INNER JOIN thesis ON thesis.idthesis=jury.idthesis " +
-					"WHERE jury.idjury <> ? AND juryappraiser.idAppraiser = ? AND jury.date BETWEEN ?::TIMESTAMP - INTERVAL '1 minute' * (" +
+					"WHERE jury.juryformat=0 AND jury.idjury <> ? AND juryappraiser.idAppraiser = ? AND jury.date BETWEEN ?::TIMESTAMP - INTERVAL '1 minute' * (" +
 					"SELECT sigetconfig.jurytimestage2 - 1 FROM sigetconfig INNER JOIN proposal ON proposal.iddepartment=sigetconfig.iddepartment " + 
 					"INNER JOIN project ON project.idproposal=proposal.idproposal " +
 					"WHERE project.idproject=thesis.idproject) AND ?::TIMESTAMP + INTERVAL '1 minute' * (" +

@@ -10,6 +10,8 @@ import br.edu.utfpr.dv.siacoes.bo.CampusBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.model.FinalSubmission;
 import br.edu.utfpr.dv.siacoes.model.Semester;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 public class FinalSubmissionDataSource extends BasicDataSource {
@@ -20,6 +22,7 @@ public class FinalSubmissionDataSource extends BasicDataSource {
 	private String feedbackUser;
 	private int semester;
 	private int year;
+	private String signed;
 	
 	public FinalSubmissionDataSource(FinalSubmission submission) {
 		this.setId(submission.getIdFinalSubmission());
@@ -29,12 +32,15 @@ public class FinalSubmissionDataSource extends BasicDataSource {
 		this.setFeedbackUser(submission.getFeedbackUser().getName());
 		this.setSemester(0);
 		this.setYear(0);
+		this.setSigned("Não");
 		
 		try {
 			Semester s = new SemesterBO().findByDate(new CampusBO().findByDepartment(submission.getDepartment().getIdDepartment()).getIdCampus(), submission.getDate());
 			
 			this.setSemester(s.getSemester());
 			this.setYear(s.getYear());
+			
+			this.setSigned(Document.hasSignature(DocumentType.ACTIVITYFINALSUBMISSION, submission.getIdFinalSubmission()) ? "Sim" : "Não");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -89,7 +95,13 @@ public class FinalSubmissionDataSource extends BasicDataSource {
 	public String getSemesterYear() {
 		return String.valueOf(this.getSemester()) + "/" + String.valueOf(this.getYear());
 	}
-	
+	public String getSigned() {
+		return signed;
+	}
+	public void setSigned(String signed) {
+		this.signed = signed;
+	}
+
 	private double round(double value){
 		BigDecimal bd = new BigDecimal(value);
 	    bd = bd.setScale(2, RoundingMode.HALF_UP);

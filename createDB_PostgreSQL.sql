@@ -753,6 +753,7 @@ CREATE TABLE jury (
   supervisorabsencereason TEXT NOT NULL,
   supervisorassignsgrades SMALLINT NOT NULL ,
   sei VARCHAR(255) NOT NULL,
+  juryformat SMALLINT NOT NULL,
   PRIMARY KEY (idjury),
   CONSTRAINT fk_jury_project FOREIGN KEY (idproject) REFERENCES project (idproject) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_jury_thesis FOREIGN KEY (idthesis) REFERENCES thesis (idthesis) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -785,6 +786,7 @@ CREATE TABLE juryrequest (
   comments text NOT NULL,
   supervisorabsencereason TEXT NOT NULL,
   idjury INT DEFAULT NULL,
+  juryformat SMALLINT NOT NULL,
   PRIMARY KEY (idjuryrequest),
   CONSTRAINT fk_juryrequest_proposal FOREIGN KEY (idproposal) REFERENCES proposal (idproposal) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_juryrequest_jury FOREIGN KEY (idjury) REFERENCES jury (idjury) ON DELETE NO ACTION ON UPDATE NO ACTION

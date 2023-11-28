@@ -60,6 +60,7 @@ public class StudentHistoryView extends LoggedView implements HasUrlParameter<St
     	layoutFilter.setSpacing(true);
     	layoutFilter.setMargin(false);
     	layoutFilter.setPadding(false);
+    	layoutFilter.setWidthFull();
     	
     	Details panelFilter = new Details();
     	panelFilter.setSummaryText("Filtro");

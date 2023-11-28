@@ -55,7 +55,7 @@ public class EditEvaluationItemWindow extends EditWindow {
 		this.comboType.setWidth("150px");
 		this.comboType.setItems(EvaluationItemType.WRITING, EvaluationItemType.ORAL, EvaluationItemType.ARGUMENTATION);
 		
-		this.textPonderosity = new NumberField("Peso");
+		this.textPonderosity = new NumberField("Máximo");
 		this.textPonderosity.setWidth("100px");
 		
 		this.comboStage = new StageComboBox();

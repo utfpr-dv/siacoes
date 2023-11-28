@@ -1,5 +1,6 @@
 package br.edu.utfpr.dv.siacoes.ui.windows;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -21,6 +22,7 @@ import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryRequest;
 import br.edu.utfpr.dv.siacoes.model.Jury;
+import br.edu.utfpr.dv.siacoes.model.Jury.JuryFormat;
 import br.edu.utfpr.dv.siacoes.model.JuryRequest;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.User;
@@ -64,7 +66,21 @@ public class ProfessorScheculeWindow extends BasicWindow {
 			List<InternshipJury> list2 = new InternshipJuryBO().listByAppraiser(professor.getIdUser(), Session.getSelectedDepartment().getDepartment().getIdDepartment(), semester.getSemester(), semester.getYear());
 			List<InternshipJuryRequest> list4 = new InternshipJuryRequestBO().listByAppraiser(professor.getIdUser(), semester.getSemester(), semester.getYear());
 			
-			this.gridSchedule.setItems(ProfessorScheduleDataSource.load(list, list3, list2, list4));
+			List<Jury> listJury = new ArrayList<Jury>();
+			for(Jury jury : list) {
+				if(jury.getFormat() != JuryFormat.ASYNC) {
+					listJury.add(jury);
+				}
+			}
+			
+			List<JuryRequest> listJuryRequest = new ArrayList<JuryRequest>();
+			for(JuryRequest jury : list3) {
+				if(jury.getFormat() != JuryFormat.ASYNC) {
+					listJuryRequest.add(jury);
+				}
+			}
+			
+			this.gridSchedule.setItems(ProfessorScheduleDataSource.load(listJury, listJuryRequest, list2, list4));
 		} catch (Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 			
