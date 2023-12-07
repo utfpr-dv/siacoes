@@ -18,6 +18,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 
 import br.edu.utfpr.dv.siacoes.Session;
+import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserScoreBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
@@ -200,6 +201,10 @@ public class EditInternshipJuryAppraiserScoreWindow extends EditWindow {
 			this.fillScores();
 			
 			new InternshipJuryAppraiserScoreBO().save(Session.getIdUserLog(), this.appraiser.getScores());
+			
+			this.appraiser.setComments(this.textComments.getValue());
+			
+			new InternshipJuryAppraiserBO().save(Session.getIdUserLog(), this.appraiser);
 			
 			this.close();
 		} catch (Exception e) {

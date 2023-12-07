@@ -19,6 +19,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 
 import br.edu.utfpr.dv.siacoes.Session;
+import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserScoreBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.EvaluationItem.EvaluationItemType;
@@ -246,6 +247,10 @@ public class EditJuryAppraiserScoreWindow extends EditWindow {
 			this.fillScores();
 			
 			new JuryAppraiserScoreBO().save(Session.getIdUserLog(), this.appraiser.getScores());
+			
+			this.appraiser.setComments(this.textComments.getValue());
+			
+			new JuryAppraiserBO().save(Session.getIdUserLog(), this.appraiser);
 			
 			this.close();
 		} catch (Exception e) {
