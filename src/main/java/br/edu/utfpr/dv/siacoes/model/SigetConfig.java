@@ -86,6 +86,44 @@ public class SigetConfig implements Serializable {
 		}
 	}
 	
+	public enum AsyncJury {
+		NONE(0), STAGE1(1), STAGE2(2), BOTH(3);
+		
+		private final int value; 
+		AsyncJury(int value){ 
+			this.value = value; 
+		}
+		
+		public int getValue(){ 
+			return value;
+		}
+		
+		public static AsyncJury valueOf(int value){
+			for(AsyncJury u : AsyncJury.values()){
+				if(u.getValue() == value){
+					return u;
+				}
+			}
+			
+			return null;
+		}
+		
+		public String toString(){
+			switch(this){
+				case NONE:
+					return "Não Permitido";
+				case STAGE1:
+					return "TCC 1";
+				case STAGE2:
+					return "TCC 2";
+				case BOTH:
+					return "Ambos";
+				default:
+					return "";
+			}
+		}
+	}
+	
 	private Department department;
 	private double minimumScore;
 	private boolean registerProposal;
@@ -111,6 +149,7 @@ public class SigetConfig implements Serializable {
 	private boolean appraiserFillsGrades;
 	private boolean useDigitalSignature;
 	private boolean useSei;
+	private AsyncJury allowAsyncJury;
 	
 	public SigetConfig(){
 		this.setDepartment(new Department());
@@ -138,6 +177,7 @@ public class SigetConfig implements Serializable {
 		this.setUseDigitalSignature(false);
 		this.setAppraiserFillsGrades(false);
 		this.setUseSei(false);
+		this.setAllowAsyncJury(AsyncJury.NONE);
 	}
 	
 	public Department getDepartment() {
@@ -296,6 +336,12 @@ public class SigetConfig implements Serializable {
 	}
 	public void setUseSei(boolean useSei) {
 		this.useSei = useSei;
+	}
+	public AsyncJury getAllowAsyncJury() {
+		return allowAsyncJury;
+	}
+	public void setAllowAsyncJury(AsyncJury allowAsyncJury) {
+		this.allowAsyncJury = allowAsyncJury;
 	}
 	
 }

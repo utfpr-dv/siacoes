@@ -31,6 +31,7 @@ import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.CertificateBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryBO;
+import br.edu.utfpr.dv.siacoes.bo.JuryRequestBO;
 import br.edu.utfpr.dv.siacoes.bo.JuryStudentBO;
 import br.edu.utfpr.dv.siacoes.bo.ProjectBO;
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
@@ -42,6 +43,7 @@ import br.edu.utfpr.dv.siacoes.model.JuryStudent;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.User;
 import br.edu.utfpr.dv.siacoes.model.Jury.JuryFormat;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig.AsyncJury;
 import br.edu.utfpr.dv.siacoes.sign.Document;
 import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.ui.components.JuryFormatComboBox;
@@ -53,6 +55,7 @@ import br.edu.utfpr.dv.siacoes.util.DateUtils;
 public class EditJuryWindow extends EditWindow {
 
 	private final Jury jury;
+	private SigetConfig config;
 	
 	private final JuryFormatComboBox comboJuryFormat;
 	private final DateTimePicker textDate;
@@ -83,6 +86,17 @@ public class EditJuryWindow extends EditWindow {
 			this.jury = new Jury();
 		}else{
 			this.jury = jury;
+		}
+		
+		try {
+			if(this.jury.getIdJury() == 0) {
+				this.config = new SigetConfigBO().findByDepartment(Session.getSelectedDepartment().getDepartment().getIdDepartment());
+			} else {
+				this.config = new SigetConfigBO().findByDepartment(new JuryRequestBO().findIdDepartment(this.jury.getIdJury()));
+			}
+		} catch(Exception e) {
+			Logger.log(Level.SEVERE, e.getMessage(), e);
+			this.config = new SigetConfig();
 		}
 		
 		this.textLocal = new TextField("Local");
@@ -260,6 +274,8 @@ public class EditJuryWindow extends EditWindow {
 		this.comboJuryFormat.setFormat(this.jury.getFormat());
 		
 		this.changeFormat(this.jury.getFormat());
+		
+		this.comboJuryFormat.setEnabled(this.jury.getFormat() != JuryFormat.SYNC || this.config.getAllowAsyncJury() == AsyncJury.BOTH || (this.jury.getStage() == 1 && this.config.getAllowAsyncJury() == AsyncJury.STAGE1) || (this.jury.getStage() == 2 && this.config.getAllowAsyncJury() == AsyncJury.STAGE2));
 		
 		if(this.jury.getIdJury() == 0) {
 			this.textStartTime.setVisible(false);

@@ -161,6 +161,7 @@ CREATE  TABLE sigetconfig (
   appraiserfillsgrades smallint NOT NULL ,
   usedigitalsignature smallint NOT NULL ,
   usesei smallint NOT NULL ,
+  allowasyncjury smallint NOT NULL ,
   PRIMARY KEY (iddepartment) ,
   CONSTRAINT fk_sigetconfig_iddepartment FOREIGN KEY (iddepartment) REFERENCES department (iddepartment) ON DELETE NO ACTION ON UPDATE NO ACTION
 );

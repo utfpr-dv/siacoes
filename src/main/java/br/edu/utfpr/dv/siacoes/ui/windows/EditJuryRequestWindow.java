@@ -35,6 +35,7 @@ import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.JuryRequest;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig.AsyncJury;
 import br.edu.utfpr.dv.siacoes.sign.Document;
 import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
 import br.edu.utfpr.dv.siacoes.ui.components.JuryFormatComboBox;
@@ -289,6 +290,8 @@ public class EditJuryRequestWindow extends EditWindow {
 		this.textSupervisorAbsenceReason.setValue(this.jury.getSupervisorAbsenceReason());
 		
 		this.changeFormat(this.jury.getFormat());
+		
+		this.comboJuryFormat.setEnabled(this.jury.getFormat() != JuryFormat.SYNC || this.config.getAllowAsyncJury() == AsyncJury.BOTH || (this.jury.getStage() == 1 && this.config.getAllowAsyncJury() == AsyncJury.STAGE1) || (this.jury.getStage() == 2 && this.config.getAllowAsyncJury() == AsyncJury.STAGE2));
 		
 		if(this.jury.getAppraisers() == null){
 			try {

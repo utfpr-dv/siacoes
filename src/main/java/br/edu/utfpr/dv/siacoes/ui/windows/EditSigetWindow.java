@@ -20,9 +20,11 @@ import br.edu.utfpr.dv.siacoes.Session;
 import br.edu.utfpr.dv.siacoes.bo.SigetConfigBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig.AsyncJury;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.AttendanceFrequency;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 import br.edu.utfpr.dv.siacoes.ui.components.ByteSizeField;
+import br.edu.utfpr.dv.siacoes.ui.components.StageComboBox;
 import br.edu.utfpr.dv.siacoes.ui.views.ListView;
 
 public class EditSigetWindow extends EditWindow {
@@ -53,6 +55,8 @@ public class EditSigetWindow extends EditWindow {
 	private final Checkbox checkUseDigitalSignature;
 	private final Checkbox checkAppraiserFillsGrades;
 	private final Checkbox checkUseSei;
+	private final Checkbox checkAllowAsyncJury;
+	private final StageComboBox comboAllowAsyncJury; 
 	
 	private final Tabs tab;
 	
@@ -128,6 +132,12 @@ public class EditSigetWindow extends EditWindow {
 		
 		this.checkUseSei = new Checkbox("Indicar processo no SEI");
 		
+		this.checkAllowAsyncJury = new Checkbox("Permitir bancas assíncronas para TCC");
+		
+		this.comboAllowAsyncJury = new StageComboBox(true);
+		
+		HorizontalLayout layoutAsyncJury = new HorizontalLayout(this.checkAllowAsyncJury, this.comboAllowAsyncJury);
+		
 		VerticalLayout vl1 = new VerticalLayout(this.comboSupervisorFilter, this.textMaxTutoredStage1);
 		vl1.setSpacing(false);
 		vl1.setMargin(false);
@@ -162,7 +172,7 @@ public class EditSigetWindow extends EditWindow {
 		h4.setSpacing(true);
 		h4.setPadding(false);
 		h4.setMargin(false);
-		VerticalLayout v1 = new VerticalLayout(h1, h4, this.checkShowGradesToStudent, this.checkSupervisorJuryAgreement, this.checkSupervisorJuryRequest, this.checkAppraiserFillsGrades, this.checkSupervisorAssignsGrades, this.checkUseSei);
+		VerticalLayout v1 = new VerticalLayout(h1, h4, layoutAsyncJury, this.checkShowGradesToStudent, this.checkSupervisorJuryAgreement, this.checkSupervisorJuryRequest, this.checkAppraiserFillsGrades, this.checkSupervisorAssignsGrades, this.checkUseSei);
 		v1.setSpacing(false);
 		v1.setMargin(false);
 		v1.setPadding(false);
@@ -245,6 +255,18 @@ public class EditSigetWindow extends EditWindow {
 		this.checkUseDigitalSignature.setValue(this.config.isUseDigitalSignature());
 		this.checkAppraiserFillsGrades.setValue(this.config.isAppraiserFillsGrades());
 		this.checkUseSei.setValue(this.config.isUseSei());
+		
+		if(this.config.getAllowAsyncJury() == AsyncJury.NONE) {
+			this.checkAllowAsyncJury.setValue(false);
+			this.comboAllowAsyncJury.setStage(1);
+		} else {
+			this.checkAllowAsyncJury.setValue(true);
+			if(this.config.getAllowAsyncJury() == AsyncJury.BOTH) {
+				this.comboAllowAsyncJury.selectBoth();
+			} else {
+				this.comboAllowAsyncJury.setStage(this.config.getAllowAsyncJury().getValue());
+			}
+		}
 	}
 
 	@Override
@@ -276,6 +298,16 @@ public class EditSigetWindow extends EditWindow {
 			this.config.setUseDigitalSignature(this.checkUseDigitalSignature.getValue());
 			this.config.setAppraiserFillsGrades(this.checkAppraiserFillsGrades.getValue());
 			this.config.setUseSei(this.checkUseSei.getValue());
+			
+			if(this.checkAllowAsyncJury.getValue()) {
+				if(this.comboAllowAsyncJury.isBothSelected()) {
+					this.config.setAllowAsyncJury(AsyncJury.BOTH);
+				} else {
+					this.config.setAllowAsyncJury(AsyncJury.valueOf(this.comboAllowAsyncJury.getStage()));
+				}
+			} else {
+				this.config.setAllowAsyncJury(AsyncJury.NONE);
+			}
 			
 			bo.save(Session.getIdUserLog(), this.config);
 			

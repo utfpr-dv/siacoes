@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
+import br.edu.utfpr.dv.siacoes.model.SigetConfig.AsyncJury;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.AttendanceFrequency;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig.SupervisorFilter;
 
@@ -49,9 +50,9 @@ public class SigetConfigDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO sigetconfig(minimumScore, registerProposal, showgradestostudent, supervisorfilter, cosupervisorfilter, supervisorIndication, maxTutoredStage1, maxTutoredStage2, requestFinalDocumentStage1, repositoryLink, supervisorJuryRequest, supervisorAgreement, supervisorJuryAgreement, validateAttendances, attendanceFrequency, maxfilesize, minimumJuryMembers, minimumJurySubstitutes, jurytimestage1, jurytimestage2, supervisorAssignsGrades, useDigitalSignature, appraiserFillsGrades, usesei, idDepartment) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+				stmt = conn.prepareStatement("INSERT INTO sigetconfig(minimumScore, registerProposal, showgradestostudent, supervisorfilter, cosupervisorfilter, supervisorIndication, maxTutoredStage1, maxTutoredStage2, requestFinalDocumentStage1, repositoryLink, supervisorJuryRequest, supervisorAgreement, supervisorJuryAgreement, validateAttendances, attendanceFrequency, maxfilesize, minimumJuryMembers, minimumJurySubstitutes, jurytimestage1, jurytimestage2, supervisorAssignsGrades, useDigitalSignature, appraiserFillsGrades, usesei, allowasyncjury, idDepartment) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}else{
-				stmt = conn.prepareStatement("UPDATE sigetconfig SET minimumScore=?, registerProposal=?, showgradestostudent=?, supervisorfilter=?, cosupervisorfilter=?, supervisorIndication=?, maxTutoredStage1=?, maxTutoredStage2=?, requestFinalDocumentStage1=?, repositoryLink=?, supervisorJuryRequest=?, supervisorAgreement=?, supervisorJuryAgreement=?, validateAttendances=?, attendanceFrequency=?, maxfilesize=?, minimumJuryMembers=?, minimumJurySubstitutes=?, jurytimestage1=?, jurytimestage2=?, supervisorAssignsGrades=?, useDigitalSignature=?, appraiserFillsGrades=?, usesei=? WHERE idDepartment=?");
+				stmt = conn.prepareStatement("UPDATE sigetconfig SET minimumScore=?, registerProposal=?, showgradestostudent=?, supervisorfilter=?, cosupervisorfilter=?, supervisorIndication=?, maxTutoredStage1=?, maxTutoredStage2=?, requestFinalDocumentStage1=?, repositoryLink=?, supervisorJuryRequest=?, supervisorAgreement=?, supervisorJuryAgreement=?, validateAttendances=?, attendanceFrequency=?, maxfilesize=?, minimumJuryMembers=?, minimumJurySubstitutes=?, jurytimestage1=?, jurytimestage2=?, supervisorAssignsGrades=?, useDigitalSignature=?, appraiserFillsGrades=?, usesei=?, allowasyncjury=? WHERE idDepartment=?");
 			}
 			
 			stmt.setDouble(1, config.getMinimumScore());
@@ -78,7 +79,8 @@ public class SigetConfigDAO {
 			stmt.setInt(22, config.isUseDigitalSignature() ? 1 : 0);
 			stmt.setInt(23, config.isAppraiserFillsGrades() ? 1 : 0);
 			stmt.setInt(24, config.isUseSei() ? 1 : 0);
-			stmt.setInt(25, config.getDepartment().getIdDepartment());
+			stmt.setInt(25, config.getAllowAsyncJury().getValue());
+			stmt.setInt(26, config.getDepartment().getIdDepartment());
 			
 			stmt.execute();
 			
@@ -121,6 +123,7 @@ public class SigetConfigDAO {
 		config.setUseDigitalSignature(rs.getInt("useDigitalSignature") == 1);
 		config.setAppraiserFillsGrades(rs.getInt("appraiserFillsGrades") == 1);
 		config.setUseSei(rs.getInt("usesei") == 1);
+		config.setAllowAsyncJury(AsyncJury.valueOf(rs.getInt("allowasyncjury")));
 		
 		return config;
 	}
