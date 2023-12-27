@@ -135,6 +135,7 @@ public class EditSigetWindow extends EditWindow {
 		this.checkAllowAsyncJury = new Checkbox("Permitir bancas assíncronas para TCC");
 		
 		this.comboAllowAsyncJury = new StageComboBox(true);
+		this.comboAllowAsyncJury.setLabel("");
 		
 		HorizontalLayout layoutAsyncJury = new HorizontalLayout(this.checkAllowAsyncJury, this.comboAllowAsyncJury);
 		
@@ -220,7 +221,7 @@ public class EditSigetWindow extends EditWindow {
 		
 		VerticalLayout layout = new VerticalLayout(this.tab, pages);
 		layout.setWidth("900px");
-		layout.setHeight("410px");
+		layout.setHeight("435px");
 		layout.setSpacing(false);
 		layout.setMargin(false);
 		layout.setPadding(false);
