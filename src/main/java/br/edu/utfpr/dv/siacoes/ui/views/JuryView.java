@@ -33,11 +33,15 @@ import br.edu.utfpr.dv.siacoes.bo.ThesisBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.Jury;
 import br.edu.utfpr.dv.siacoes.model.JuryAppraiser;
+import br.edu.utfpr.dv.siacoes.model.JuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.JuryStudent;
 import br.edu.utfpr.dv.siacoes.model.Project;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.SigetConfig;
 import br.edu.utfpr.dv.siacoes.model.Thesis;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
 import br.edu.utfpr.dv.siacoes.ui.MainLayout;
 import br.edu.utfpr.dv.siacoes.ui.components.SemesterComboBox;
@@ -49,6 +53,7 @@ import br.edu.utfpr.dv.siacoes.ui.windows.EditJuryAppraiserScoreWindow;
 import br.edu.utfpr.dv.siacoes.ui.windows.EditJuryWindow;
 import br.edu.utfpr.dv.siacoes.ui.windows.JuryAppraiserChangeWindow;
 import br.edu.utfpr.dv.siacoes.ui.windows.JuryGradesWindow;
+import br.edu.utfpr.dv.siacoes.ui.windows.SignatureWindow;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 @PageTitle("Agenda de Bancas de TCC")
@@ -546,8 +551,13 @@ public class JuryView extends ListView<JuryDataSource> implements HasUrlParamete
 				if(Session.getUser().getIdUser() == new JuryAppraiserBO().findChair((int)value).getAppraiser().getIdUser()) {
 					JuryGradesWindow window = new JuryGradesWindow(new JuryBO().findById((int)value));
 					window.open();
+				} else if(new JuryAppraiserBO().isAppraiser((int)value, Session.getUser().getIdUser()) && Document.hasSignature(DocumentType.JURY, (int)value, new JuryAppraiserBO().findChair((int)value).getAppraiser().getIdUser())) {
+					JuryFormReport report = new JuryBO().getJuryFormReport((int)value);
+					
+					SignatureWindow window = new SignatureWindow(DocumentType.JURY, (int)value, SignDatasetBuilder.buildJury(report), SignDatasetBuilder.getSignaturesList(report), null, null);
+					window.open();
 				} else {
-					this.showWarningNotification("Assinar Ficha", "Apenas o presidente da banca pode efetuar a assinatura da ficha de avaliação.");
+					this.showWarningNotification("Assinar Ficha", "O presidente da banca deve efetuar a assinatura da ficha de avaliação antes.");
 				}
 			} catch(Exception e) {
 				Logger.log(Level.SEVERE, e.getMessage(), e);

@@ -354,7 +354,7 @@ public class Document {
 	}
 	
 	private static int getReportVersion(DocumentType type) {
-		if(type == DocumentType.INTERNSHIPJURY) {
+		if(type == DocumentType.INTERNSHIPJURY || type == DocumentType.JURY || type == DocumentType.JURYREQUEST) {
 			return 2;
 		} else {
 			return 1;

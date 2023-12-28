@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.edu.utfpr.dv.siacoes.model.Jury.JuryFormat;
+
 public class JuryFormReport implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -24,6 +26,7 @@ public class JuryFormReport implements Serializable {
 	private int idSupervisor;
 	private String supervisor;
 	private boolean requestFinalDocumentStage1;
+	private JuryFormat juryFormat;
 	
 	public JuryFormReport(){
 		this.setStage(0);
@@ -41,6 +44,7 @@ public class JuryFormReport implements Serializable {
 		this.setRequestFinalDocumentStage1(false);
 		this.setIdStudent(0);
 		this.setIdSupervisor(0);
+		this.setJuryFormat(JuryFormat.SYNC);
 	}
 	
 	public int getStage() {
@@ -132,6 +136,12 @@ public class JuryFormReport implements Serializable {
 	}
 	public void setIdSupervisor(int idSupervisor) {
 		this.idSupervisor = idSupervisor;
+	}
+	public JuryFormat getJuryFormat() {
+		return juryFormat;
+	}
+	public void setJuryFormat(JuryFormat juryFormat) {
+		this.juryFormat = juryFormat;
 	}
 	
 }

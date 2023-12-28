@@ -64,6 +64,18 @@ public class JuryAppraiserBO {
 		}
 	}
 	
+	public boolean isAppraiser(int idJury, int idUser) throws Exception {
+		List<JuryAppraiser> list = this.listAppraisers(idJury);
+		
+		for(JuryAppraiser a : list) {
+			if(a.getAppraiser().getIdUser() == idUser) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	public int save(int idUser, JuryAppraiser appraiser) throws Exception{
 		try {
 			JuryAppraiserDAO dao = new JuryAppraiserDAO();

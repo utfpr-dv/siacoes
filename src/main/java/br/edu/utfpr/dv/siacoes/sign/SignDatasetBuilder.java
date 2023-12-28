@@ -21,8 +21,8 @@ import br.edu.utfpr.dv.siacoes.report.dataset.v1.Attendance;
 import br.edu.utfpr.dv.siacoes.report.dataset.v2.InternshipJury;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipJuryRequest;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.InternshipPosterRequest;
-import br.edu.utfpr.dv.siacoes.report.dataset.v1.Jury;
-import br.edu.utfpr.dv.siacoes.report.dataset.v1.JuryRequest;
+import br.edu.utfpr.dv.siacoes.report.dataset.v2.Jury;
+import br.edu.utfpr.dv.siacoes.report.dataset.v2.JuryRequest;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.ProposalFeedback;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.SupervisorAgreement;
 import br.edu.utfpr.dv.siacoes.report.dataset.v1.SupervisorChange;
@@ -71,6 +71,7 @@ public class SignDatasetBuilder {
 		dataset.setIdStudent(jury.getIdStudent());
 		dataset.setIdSupervisor(jury.getIdSupervisor());
 		dataset.setComments(jury.getComments());
+		dataset.setJuryFormat(jury.getJuryFormat().getValue());
 		
 		boolean findSupervisor = false;
 		
@@ -181,6 +182,7 @@ public class SignDatasetBuilder {
 		dataset.setScore(jury.getScore());
 		dataset.setEvaluationText(jury.getEvaluationText());
 		dataset.setRequestFinalDocumentStage1(jury.isRequestFinalDocumentStage1());
+		dataset.setJuryFormat(jury.getJuryFormat().getValue());
 		
 		for(JuryFormAppraiserReport appraiser : jury.getAppraisers()) {
 			double scoreWriting = 0, scoreOral = 0, scoreArgumentation = 0;

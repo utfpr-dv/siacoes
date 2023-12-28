@@ -630,9 +630,9 @@ public class JuryBO {
 		if(Document.hasSignature(DocumentType.JURY, idJury)) {
 			return Document.getSignedDocument(DocumentType.JURY, idJury);
 		} else {
-			br.edu.utfpr.dv.siacoes.report.dataset.v1.Jury dataset = SignDatasetBuilder.buildJury(this.getJuryFormReport(idJury));
+			br.edu.utfpr.dv.siacoes.report.dataset.v2.Jury dataset = SignDatasetBuilder.buildJury(this.getJuryFormReport(idJury));
 			
-			List<br.edu.utfpr.dv.siacoes.report.dataset.v1.Jury> list = new ArrayList<br.edu.utfpr.dv.siacoes.report.dataset.v1.Jury>();
+			List<br.edu.utfpr.dv.siacoes.report.dataset.v2.Jury> list = new ArrayList<br.edu.utfpr.dv.siacoes.report.dataset.v2.Jury>();
 			list.add(dataset);
 			
 			return new ReportUtils().createPdfStream(list, "JuryForm", this.findIdDepartment(idJury)).toByteArray();
@@ -647,6 +647,7 @@ public class JuryBO {
 			
 			report.setDate(jury.getDate());
 			report.setLocal(jury.getLocal());
+			report.setJuryFormat(jury.getFormat());
 			
 			if(jury.getSupervisorAbsenceReason().trim().isEmpty()) {
 				report.setComments(jury.getComments());	

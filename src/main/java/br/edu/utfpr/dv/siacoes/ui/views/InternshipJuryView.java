@@ -25,16 +25,21 @@ import br.edu.utfpr.dv.siacoes.bo.InternshipBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryAppraiserBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryBO;
 import br.edu.utfpr.dv.siacoes.bo.InternshipJuryStudentBO;
+import br.edu.utfpr.dv.siacoes.bo.JuryBO;
 import br.edu.utfpr.dv.siacoes.bo.SemesterBO;
 import br.edu.utfpr.dv.siacoes.bo.SigesConfigBO;
 import br.edu.utfpr.dv.siacoes.log.Logger;
 import br.edu.utfpr.dv.siacoes.model.Internship;
 import br.edu.utfpr.dv.siacoes.model.InternshipJury;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryAppraiser;
+import br.edu.utfpr.dv.siacoes.model.InternshipJuryFormReport;
 import br.edu.utfpr.dv.siacoes.model.InternshipJuryStudent;
 import br.edu.utfpr.dv.siacoes.model.Semester;
 import br.edu.utfpr.dv.siacoes.model.SigesConfig;
 import br.edu.utfpr.dv.siacoes.model.Module.SystemModule;
+import br.edu.utfpr.dv.siacoes.sign.Document;
+import br.edu.utfpr.dv.siacoes.sign.SignDatasetBuilder;
+import br.edu.utfpr.dv.siacoes.sign.Document.DocumentType;
 import br.edu.utfpr.dv.siacoes.ui.MainLayout;
 import br.edu.utfpr.dv.siacoes.ui.components.SemesterComboBox;
 import br.edu.utfpr.dv.siacoes.ui.components.YearField;
@@ -46,6 +51,7 @@ import br.edu.utfpr.dv.siacoes.ui.windows.EditInternshipJurySupervisorScoreWindo
 import br.edu.utfpr.dv.siacoes.ui.windows.EditInternshipJuryWindow;
 import br.edu.utfpr.dv.siacoes.ui.windows.InternshipJuryAppraiserChangeWindow;
 import br.edu.utfpr.dv.siacoes.ui.windows.InternshipJuryGradesWindow;
+import br.edu.utfpr.dv.siacoes.ui.windows.SignatureWindow;
 import br.edu.utfpr.dv.siacoes.util.DateUtils;
 
 @PageTitle("Agenda de Bancas de Estágio")
@@ -476,11 +482,23 @@ public class InternshipJuryView extends ListView<InternshipJuryDataSource> imple
 			this.showWarningNotification("Assinar Ficha", "Selecione uma banca para assinar a ficha de avaliação.");
 		} else {
 			try {
+				SigesConfig c = new SigesConfigBO().findByDepartment(new JuryBO().findIdDepartment((int)value));
+
+				if(!c.isUseDigitalSignature()) {
+					this.showWarningNotification("Assinar Ficha", "O recurso de assinatura da ficha de avaliação não está disponível para essa banca.");
+					return;
+				}
+
 				if(Session.getUser().getIdUser() == new InternshipJuryAppraiserBO().findChair((int)value).getAppraiser().getIdUser()) {
 					InternshipJuryGradesWindow window = new InternshipJuryGradesWindow(new InternshipJuryBO().findById((int)value));
 					window.open();
+				} else if(new InternshipJuryAppraiserBO().isAppraiser((int)value, Session.getUser().getIdUser()) && Document.hasSignature(DocumentType.INTERNSHIPJURY, (int)value, new InternshipJuryAppraiserBO().findChair((int)value).getAppraiser().getIdUser())) {
+					InternshipJuryFormReport report = new InternshipJuryBO().getJuryFormReport((int)value);
+					
+					SignatureWindow window = new SignatureWindow(DocumentType.INTERNSHIPJURY, (int)value, SignDatasetBuilder.build(report), SignDatasetBuilder.getSignaturesList(report), null, null);
+					window.open();
 				} else {
-					this.showWarningNotification("Assinar Ficha", "Apenas o presidente da banca pode efetuar a assinatura da ficha de avaliação.");
+					this.showWarningNotification("Assinar Ficha", "O presidente da banca deve efetuar a assinatura da ficha de avaliação antes.");
 				}
 			} catch(Exception e) {
 				Logger.log(Level.SEVERE, e.getMessage(), e);

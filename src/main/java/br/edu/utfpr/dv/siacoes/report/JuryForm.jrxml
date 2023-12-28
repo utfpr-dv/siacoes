@@ -24,6 +24,9 @@
 	<field name="score" class="java.lang.Double">
 		<fieldDescription><![CDATA[score]]></fieldDescription>
 	</field>
+	<field name="juryFormat" class="java.lang.Integer">
+		<fieldDescription><![CDATA[juryFormat]]></fieldDescription>
+	</field>
 	<field name="comments" class="java.lang.String">
 		<fieldDescription><![CDATA[comments]]></fieldDescription>
 	</field>
@@ -221,7 +224,7 @@
 			<break>
 				<reportElement x="0" y="319" width="481" height="1" uuid="f8f92a07-2979-4d95-95e5-b0e6795e164e"/>
 			</break>
-			<staticText>
+			<textField>
 				<reportElement positionType="Float" x="0" y="0" width="110" height="20" uuid="c53ba733-0ed9-468a-8cf8-4c877bef24f4"/>
 				<box leftPadding="3">
 					<topPen lineWidth="1.0"/>
@@ -232,8 +235,8 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Data da Defesa:]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[IF($F{juryFormat} == 0, "Data da Defesa:", "Data do Vídeo:")]]></textFieldExpression>
+			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="0" y="20" width="110" height="20" uuid="3f80ceac-ac54-4418-9e80-a086dc85a915"/>
 				<box leftPadding="3">
@@ -421,7 +424,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[IF($F{score} == 0, "", $F{score})]]></textFieldExpression>
 			</textField>
-			<staticText>
+			<textField>
 				<reportElement positionType="Float" x="210" y="0" width="50" height="20" uuid="a90e520b-8bb0-47fb-8c77-edfe015742e4"/>
 				<box leftPadding="3">
 					<topPen lineWidth="1.0"/>
@@ -432,8 +435,8 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Local:]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[IF($F{juryFormat} == 0, "Local:", "Vídeo:")]]></textFieldExpression>
+			</textField>
 			<textField>
 				<reportElement positionType="Float" x="260" y="0" width="220" height="20" uuid="7e1aa840-dc91-4ac5-ae43-65ff74694e5d"/>
 				<box leftPadding="3">

@@ -24,6 +24,9 @@
 	<field name="comments" class="java.lang.String">
 		<fieldDescription><![CDATA[comments]]></fieldDescription>
 	</field>
+	<field name="juryFormat" class="java.lang.Integer">
+		<fieldDescription><![CDATA[juryFormat]]></fieldDescription>
+	</field>
 	<field name="stage" class="java.lang.Integer">
 		<fieldDescription><![CDATA[stage]]></fieldDescription>
 	</field>
@@ -222,7 +225,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{comments}]]></textFieldExpression>
 			</textField>
-			<staticText>
+			<textField>
 				<reportElement positionType="Float" x="0" y="0" width="110" height="20" uuid="c53ba733-0ed9-468a-8cf8-4c877bef24f4"/>
 				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
@@ -233,8 +236,8 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Data da Defesa:]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[IF($F{juryFormat} == 0, "Data da Defesa:", "Data do Vídeo:")]]></textFieldExpression>
+			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="0" y="40" width="110" height="20" uuid="3f80ceac-ac54-4418-9e80-a086dc85a915"/>
 				<box leftPadding="2">
@@ -320,7 +323,7 @@
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{appraisers})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["br/edu/utfpr/dv/siacoes/report/JuryFormAppraiserList.jasper"]]></subreportExpression>
 			</subreport>
-			<staticText>
+			<textField>
 				<reportElement positionType="Float" x="240" y="0" width="110" height="20" uuid="9337f776-a868-47c5-b5c3-a39d56198d11"/>
 				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
@@ -331,8 +334,8 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Horário da Defesa:]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[IF($F{juryFormat} == 0, "Horário da Defesa:", "Horário do Vídeo:")]]></textFieldExpression>
+			</textField>
 			<textField>
 				<reportElement positionType="Float" x="350" y="0" width="130" height="20" uuid="301ab141-bb96-4be4-a15f-df67da1ced43"/>
 				<box leftPadding="2">
@@ -346,7 +349,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[DATEFORMAT($F{date}, "HH:mm")]]></textFieldExpression>
 			</textField>
-			<staticText>
+			<textField>
 				<reportElement positionType="Float" x="0" y="20" width="110" height="20" uuid="4c14fc3d-d594-47e5-b0bd-1897c6dd597b"/>
 				<box leftPadding="2">
 					<topPen lineWidth="1.0"/>
@@ -357,8 +360,8 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<text><![CDATA[Local da Defesa:]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[IF($F{juryFormat} == 0, "Local da Defesa:", "Link do Vídeo:")]]></textFieldExpression>
+			</textField>
 			<textField>
 				<reportElement positionType="Float" x="110" y="20" width="370" height="20" uuid="cc01ddd9-a7d1-4c45-9e96-df8bd6b5371b"/>
 				<box leftPadding="2">
