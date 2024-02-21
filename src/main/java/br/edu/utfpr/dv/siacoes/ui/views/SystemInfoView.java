@@ -155,12 +155,12 @@ public class SystemInfoView extends LoggedView {
 		
 		this.setViewContent(layout);
 		
-		try {
+		/*try {
 			this.filterLoginStat();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	}
 	
 	private Details getDatabaseInfo() {

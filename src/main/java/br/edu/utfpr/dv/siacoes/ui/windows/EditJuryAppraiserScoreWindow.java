@@ -201,7 +201,7 @@ public class EditJuryAppraiserScoreWindow extends EditWindow {
 				} else {
 					return false;
 				}
-			}).findFirst().get();
+			}).findFirst().orElse(null);
 			
 			if(field != null) {
 				ret.add(field);

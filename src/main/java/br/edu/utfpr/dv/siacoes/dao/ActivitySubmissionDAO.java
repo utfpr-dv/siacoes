@@ -89,7 +89,11 @@ public class ActivitySubmissionDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			rs = stmt.executeQuery("SELECT DISTINCT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
+			rs = stmt.executeQuery("SELECT DISTINCT activitysubmission.idactivitysubmission, activitysubmission.idstudent, activitysubmission.idfeedbackuser, " +
+					"activitysubmission.iddepartment, activitysubmission.idactivity, activitysubmission.semester, activitysubmission.year, " +
+					"activitysubmission.submissiondate, activitysubmission.amount, activitysubmission.feedback, activitysubmission.feedbackdate, " +
+					"activitysubmission.validatedamount, activitysubmission.comments, activitysubmission.description, activitysubmission.feedbackreason, " +
+					"\"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
 					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, activitygroup.idactivitygroup, " +
 					"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester " + 
 					"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
@@ -124,7 +128,11 @@ public class ActivitySubmissionDAO {
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 		
-			String sql = "SELECT DISTINCT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
+			String sql = "SELECT DISTINCT activitysubmission.idactivitysubmission, activitysubmission.idstudent, activitysubmission.idfeedbackuser, " +
+					"activitysubmission.iddepartment, activitysubmission.idactivity, activitysubmission.semester, activitysubmission.year, " +
+					"activitysubmission.submissiondate, activitysubmission.amount, activitysubmission.feedback, activitysubmission.feedbackdate, " +
+					"activitysubmission.validatedamount, activitysubmission.comments, activitysubmission.description, activitysubmission.feedbackreason, " +
+					"\"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
 					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, activitygroup.idactivitygroup, " +
 					"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester " + 
 					"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
@@ -213,7 +221,11 @@ public class ActivitySubmissionDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			rs = stmt.executeQuery("SELECT DISTINCT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
+			rs = stmt.executeQuery("SELECT DISTINCT activitysubmission.idactivitysubmission, activitysubmission.idstudent, activitysubmission.idfeedbackuser, " +
+					"activitysubmission.iddepartment, activitysubmission.idactivity, activitysubmission.semester, activitysubmission.year, " +
+					"activitysubmission.submissiondate, activitysubmission.amount, activitysubmission.feedback, activitysubmission.feedbackdate, " +
+					"activitysubmission.validatedamount, activitysubmission.comments, activitysubmission.description, activitysubmission.feedbackreason, " +
+					"\"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
 					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, activitygroup.idactivitygroup, " +
 					"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester " + 
 					"FROM activitysubmission INNER JOIN \"user\" ON \"user\".idUser=activitysubmission.idStudent " +
@@ -251,7 +263,11 @@ public class ActivitySubmissionDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			stmt = conn.createStatement();
 		
-			rs = stmt.executeQuery("SELECT DISTINCT activitysubmission.*, \"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
+			rs = stmt.executeQuery("SELECT DISTINCT activitysubmission.idactivitysubmission, activitysubmission.idstudent, activitysubmission.idfeedbackuser, " +
+					"activitysubmission.iddepartment, activitysubmission.idactivity, activitysubmission.semester, activitysubmission.year, " +
+					"activitysubmission.submissiondate, activitysubmission.amount, activitysubmission.feedback, activitysubmission.feedbackdate, " +
+					"activitysubmission.validatedamount, activitysubmission.comments, activitysubmission.description, activitysubmission.feedbackreason, " +
+					"\"user\".name AS studentName, feedbackUser.name AS feedbackUserName, " + 
 					"activity.description AS activityDescription, activitygroup.sequence AS groupSequence, activitygroup.idactivitygroup, " +
 					"activity.score, activityunit.fillAmount, activityunit.description AS unit, activity.maximumInSemester, " +
 					"CASE WHEN project.idProject IS NOT NULL THEN 2 WHEN proposal.idProposal IS NOT NULL THEN 1 ELSE 0 END AS stage " +

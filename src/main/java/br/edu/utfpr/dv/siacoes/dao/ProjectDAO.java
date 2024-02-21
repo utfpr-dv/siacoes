@@ -459,7 +459,7 @@ public class ProjectDAO {
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO project(idProposal, semester, year, title, subarea, idStudent, idSupervisor, idCosupervisor, file, submissionDate, abstract, idThesisFormat) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?. ?)", Statement.RETURN_GENERATED_KEYS);
+				stmt = conn.prepareStatement("INSERT INTO project(idProposal, semester, year, title, subarea, idStudent, idSupervisor, idCosupervisor, file, submissionDate, abstract, idThesisFormat) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
 				stmt = conn.prepareStatement("UPDATE project SET idProposal=?, semester=?, year=?, title=?, subarea=?, idStudent=?, idSupervisor=?, idCosupervisor=?, file=?, submissionDate=?, abstract=?, idThesisFormat=? WHERE idProject=?");
 			}
