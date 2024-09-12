@@ -414,7 +414,7 @@ public class EditActivitySubmissionWindow extends EditWindow {
 			e.printStackTrace();
 		}
 		
-		this.setSaveButtonEnabled(allowEdit);
+		this.setSaveButtonEnabled(this.isSaveButtonEnabled() && allowEdit);
 	}
 	
 	private void loadCertificate(){

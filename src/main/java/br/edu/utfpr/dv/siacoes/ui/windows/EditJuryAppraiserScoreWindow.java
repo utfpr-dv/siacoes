@@ -175,6 +175,8 @@ public class EditJuryAppraiserScoreWindow extends EditWindow {
 			if(documentSigned) {
 				this.disableButtons();
 			}
+			
+			this.updateTotal();
 		} catch (Exception e) {
 			Logger.log(Level.SEVERE, e.getMessage(), e);
 			

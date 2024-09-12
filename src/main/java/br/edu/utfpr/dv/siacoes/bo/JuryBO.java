@@ -197,6 +197,7 @@ public class JuryBO {
 						jury.getProject().setIdProject(idProject);
 						jury.setAppraisers(new ArrayList<JuryAppraiser>());
 						jury.setParticipants(new ArrayList<JuryStudent>());
+						jury.setFormat(request.getFormat());
 						jury.setDate(request.getDate());
 						jury.setLocal(request.getLocal());
 						jury.setSupervisorAbsenceReason(request.getSupervisorAbsenceReason());
@@ -296,6 +297,7 @@ public class JuryBO {
 						jury.getThesis().setIdThesis(idThesis);
 						jury.setAppraisers(new ArrayList<JuryAppraiser>());
 						jury.setParticipants(new ArrayList<JuryStudent>());
+						jury.setFormat(request.getFormat());
 						jury.setDate(request.getDate());
 						jury.setLocal(request.getLocal());
 						jury.setSupervisorAbsenceReason(request.getSupervisorAbsenceReason());

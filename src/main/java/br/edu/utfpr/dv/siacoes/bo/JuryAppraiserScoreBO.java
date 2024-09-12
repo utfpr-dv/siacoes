@@ -103,7 +103,7 @@ public class JuryAppraiserScoreBO {
 			int ret = dao.save(idUser, score);
 			
 			try {
-				if((idJury > 0) && !hasAllScores && new InternshipJuryBO().hasAllScores(idJury)) {
+				if((idJury > 0) && !hasAllScores && new JuryBO().hasAllScores(idJury)) {
 					new JuryBO().sendRequestSupervisorSignJuryForm(idJury);
 				}
 			} catch(Exception e) {
